@@ -1,0 +1,112 @@
+rules_version = '2';
+
+// Membership-scoped access skeleton.
+// Phase 0: deny-by-default with helper stubs.
+// Phase 1: expand CRUD matrix per role; add emulator tests under firebase/emulator.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function membershipPath(orgId, projectId) {
+      return /databases/$(database)/documents/memberships/$(request.auth.uid + '_' + projectId);
+    }
+
+    function isProjectMember(orgId, projectId) {
+      return signedIn()
+        && exists(membershipPath(orgId, projectId))
+        && get(membershipPath(orgId, projectId)).data.orgId == orgId
+        && get(membershipPath(orgId, projectId)).data.active == true;
+    }
+
+    function memberRole(orgId, projectId) {
+      return get(membershipPath(orgId, projectId)).data.role;
+    }
+
+    function isAdmin(orgId, projectId) {
+      return isProjectMember(orgId, projectId)
+        && memberRole(orgId, projectId) == 'admin';
+    }
+
+    function isStaff(orgId, projectId) {
+      return isProjectMember(orgId, projectId)
+        && memberRole(orgId, projectId) in [
+          'admin', 'project_manager', 'site_engineer', 'qa_qc'
+        ];
+    }
+
+    match /organizations/{orgId} {
+      allow read: if signedIn();
+      allow write: if false; // bootstrap via Admin SDK / Cloud Functions
+    }
+
+    match /projects/{projectId} {
+      allow read: if signedIn()
+        && isProjectMember(resource.data.orgId, projectId);
+      allow write: if false;
+    }
+
+    match /memberships/{membershipId} {
+      allow read: if signedIn()
+        && (resource.data.userId == request.auth.uid || isAdmin(resource.data.orgId, resource.data.projectId));
+      allow write: if false; // invites via Cloud Functions
+    }
+
+    match /issues/{issueId} {
+      allow read: if isProjectMember(resource.data.orgId, resource.data.projectId);
+      allow create: if isStaff(request.resource.data.orgId, request.resource.data.projectId)
+        && request.resource.data.keys().hasAll(['orgId', 'projectId', 'status', 'createdBy']);
+      allow update: if isStaff(resource.data.orgId, resource.data.projectId);
+      allow delete: if isAdmin(resource.data.orgId, resource.data.projectId);
+    }
+
+    match /rfis/{rfiId} {
+      allow read: if isProjectMember(resource.data.orgId, resource.data.projectId);
+      allow create, update: if isStaff(request.resource.data.orgId, request.resource.data.projectId);
+      allow delete: if isAdmin(resource.data.orgId, resource.data.projectId);
+    }
+
+    match /comments/{commentId} {
+      allow read: if isProjectMember(resource.data.orgId, resource.data.projectId);
+      // Append-only: creates allowed; updates/deletes denied for field clients.
+      allow create: if isStaff(request.resource.data.orgId, request.resource.data.projectId);
+      allow update, delete: if false;
+    }
+
+    match /folders/{folderId} {
+      allow read: if isProjectMember(resource.data.orgId, resource.data.projectId);
+      allow write: if isAdmin(resource.data.orgId, resource.data.projectId)
+        || memberRole(resource.data.orgId, resource.data.projectId) == 'project_manager';
+    }
+
+    match /documents/{docId} {
+      allow read: if isProjectMember(resource.data.orgId, resource.data.projectId);
+      allow create, update: if isStaff(request.resource.data.orgId, request.resource.data.projectId);
+      allow delete: if isAdmin(resource.data.orgId, resource.data.projectId);
+    }
+
+    // Phase 2a collections — schema-ready, same membership gate.
+    match /dprs/{dprId} {
+      allow read: if isProjectMember(resource.data.orgId, resource.data.projectId);
+      allow create, update: if isStaff(request.resource.data.orgId, request.resource.data.projectId);
+      allow delete: if isAdmin(resource.data.orgId, resource.data.projectId);
+    }
+
+    match /drawing_pins/{pinId} {
+      allow read: if isProjectMember(resource.data.orgId, resource.data.projectId);
+      allow create, update: if isStaff(request.resource.data.orgId, request.resource.data.projectId);
+      allow delete: if isAdmin(resource.data.orgId, resource.data.projectId);
+    }
+
+    // Phase 2b — deny until implemented; collections reserved in plan.
+    match /safety_records/{id} { allow read, write: if false; }
+    match /inspections/{id} { allow read, write: if false; }
+    match /attendance_logs/{id} { allow read, write: if false; }
+    match /material_logs/{id} { allow read, write: if false; }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

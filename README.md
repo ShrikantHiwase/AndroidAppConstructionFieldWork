@@ -6,19 +6,52 @@ Flutter + Firebase field evidence OS for mid-market construction contractors (In
 
 - [Requirements (PDF)](Construction%20Management%20Field%20App.pdf)
 - [Requirements (PPTX)](Construction%20Management%20Field%20App.pptx)
-- [Holistic build plan](docs/Construction_Field_App_Build_Plan.md)
+- [Holistic build plan (canonical)](docs/Construction_Field_App_Build_Plan.md)
+
+## Repo layout
+
+```
+apps/mobile/       Flutter app (Android primary, iOS parity)
+firebase/          Firestore/Storage rules, indexes, Functions stubs, emulators
+docs/              Build plan and training
+.github/workflows/ CI
+```
 
 ## Planned stack
 
-- **App:** Flutter (Android primary, iOS parity)
+- **App:** Flutter + Riverpod
 - **Backend:** Firebase Auth, Firestore, Storage, Cloud Functions, FCM
+- **Local DB:** Drift (Phase 1) + sync outbox
 - **Architecture:** Offline-first with local cache + sync outbox
+- **CI / quality:** GitHub Actions, Crashlytics + Analytics (Phase 1)
 
 ## Status
 
-Build plan saved. App scaffold and MVP implementation are next (see plan phases 0–2).
+| Phase | Status |
+|-------|--------|
+| Plan + decisions | Done |
+| Phase 0 Foundations (scaffold, rules, CI, i18n stub) | In progress |
+| Phase 1 RAYNS MVP | Pending |
+| Phase 2a DPR + drawing pins | Pending (after MVP freeze) |
+| Phase 2b Safety / QA / labour / etc. | Gated on pilot metrics |
+| Phase 3 Enterprise hooks | Deferred |
 
 ## Decisions locked
 
 1. **Positioning:** Hybrid — mid-market field core first; enterprise hooks later
 2. **Stack:** Flutter + Firebase (Approach A)
+3. **Phase 2 split:** 2a = DPR + drawing pins; 2b = rest after pilot
+4. **Admin (MVP):** in-app invites/roles; web console in Phase 3
+5. **Auth (MVP):** email + org invite codes first; phone auth optional later (SMS cost)
+
+## Getting started
+
+```bash
+cd apps/mobile
+flutter pub get
+flutter gen-l10n
+flutter test
+flutter run
+```
+
+Firebase project wiring: see [firebase/README.md](firebase/README.md).

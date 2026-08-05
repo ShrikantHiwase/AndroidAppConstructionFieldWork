@@ -1,0 +1,40 @@
+rules_version = '2';
+
+// Storage paths: org/{orgId}/project/{projectId}/...
+// Mirror project membership; no public buckets.
+service firebase.storage {
+  match /b/{bucket}/o {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function membershipDoc(projectId) {
+      return firestore.get(/databases/(default)/documents/memberships/$(request.auth.uid + '_' + projectId));
+    }
+
+    function isProjectMember(orgId, projectId) {
+      return signedIn()
+        && membershipDoc(projectId).data.orgId == orgId
+        && membershipDoc(projectId).data.active == true;
+    }
+
+    function isStaff(orgId, projectId) {
+      return isProjectMember(orgId, projectId)
+        && membershipDoc(projectId).data.role in [
+          'admin', 'project_manager', 'site_engineer', 'qa_qc'
+        ];
+    }
+
+    // Photos / issue media — prefer compressed images; video allowed but size-capped.
+    match /org/{orgId}/project/{projectId}/{allPaths=**} {
+      allow read: if isProjectMember(orgId, projectId);
+      allow write: if isStaff(orgId, projectId)
+        && request.resource.size < 25 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*|application/pdf|video/.*|text/.*');
+    }
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

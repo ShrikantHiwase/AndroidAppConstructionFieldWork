@@ -17,11 +17,11 @@ todos:
   - id: offline-sync
     content: Offline-first cache, conflict policy, sync logs, cleanup, low-end device hardening
     status: pending
-  - id: diff-dpr-drawings
-    content: "Phase 2: DPR templates + PDF share, drawing-linked punch pins"
+  - id: diff-2a-dpr-drawings
+    content: "Phase 2a: DPR templates + PDF/WhatsApp share, drawing-linked punch pins"
     status: pending
-  - id: diff-safety-qa-labour
-    content: "Phase 2: safety/toolbox, QA checklists, supervisor labour muster, material lite"
+  - id: diff-2b-safety-qa-labour
+    content: "Phase 2b (after pilot metrics): safety/toolbox, QA checklists, labour muster, material lite, voice, digests"
     status: pending
   - id: pilot-launch
     content: UAT on live sites, Play Store/TestFlight, training materials, hypercare metrics
@@ -30,6 +30,8 @@ isProject: false
 ---
 
 # Construction Field App — Holistic Build Plan
+
+> **Canonical copy:** this file under `docs/`. The Cursor plan at `.cursor/plans/construction_field_app_54df27ca.plan.md` should mirror it.
 
 ## Product positioning
 
@@ -72,7 +74,7 @@ flowchart LR
 
 ## Scope: requirements + market additions
 
-### Phase 0 — Foundations (weeks 1–3)
+### Phase 0 — Foundations
 From RAYNS brief + non-negotiables for field adoption.
 
 | Area | Deliverable |
@@ -83,25 +85,35 @@ From RAYNS brief + non-negotiables for field adoption.
 | Project model | Org → Project → Members; multi-site switcher |
 | NFRs | Launch &lt;2s warm path; image compression; encrypted local prefs; HTTPS only |
 | Device bar | Target mid/low-end Android (API 24+); large tap targets; sunlight-readable contrast |
+| Tooling locks | State: Riverpod; local DB: Drift (+ Firestore persistence); CI: GitHub Actions; crash/analytics: Firebase Crashlytics + Analytics; i18n: ARB from sprint 1 |
+| Admin path (MVP) | Mobile admin for invite/roles/projects; web console deferred to Phase 3 |
 
 **Default conflict policy:** last-write-wins on scalar fields; append-only for comments/photos; status changes audited.
 
-### Phase 1 — RAYNS MVP (weeks 4–12)
-Exact brief, production-quality.
+**Hard risks to design for early:** membership-scoped Firestore/Storage rules; video + drawing cache on low-end Android; phone-auth/SMS cost in India; speech-to-text offline fallback for voice capture.
 
-1. **Authentication & access** — OAuth2-equivalent via Firebase Auth; biometric local unlock; permission matrix (CRUD by role); role dashboards.
+### Phase 1 — RAYNS MVP
+Exact brief, production-quality. Freeze feature set before starting Phase 2a.
+
+1. **Authentication & access** — Firebase Auth (email/password + phone where needed); biometric local unlock; permission matrix (CRUD by role); role dashboards.
 2. **Issues & RFIs** — create/edit/assign/track; photo/video + GPS + comments; status `Open → In Progress → Resolved → Closed`; threaded RFI comments; offline create + background sync; push on assign/status.
 3. **Documents** — hierarchy `Project → Discipline → Document Type → Files`; upload/download; in-app PDF/TXT/CSV viewer with zoom/search/page nav (defer print if heavy; offer system share/print).
-4. **Admin** — invite users, assign roles/projects, basic org settings.
+4. **Admin** — invite users, assign roles/projects, basic org settings (in-app).
 5. **Deliverables** — Android + iOS builds, API/config notes, short training PDF.
 
-### Phase 2 — Market differentiators that move the industry (weeks 10–18, overlap OK)
-These are **beyond the RAYNS PDF** and are where mid-market ROI is proven by competitors (Raken, Fieldwire, Trackovo, Site Setu) and by India site reality.
+### Phase 2a — Must-ship differentiators (after MVP freeze)
+Highest ROI for India mid-market; do not start until Phase 1 is feature-complete and sync is stable.
 
 | Module | Why it matters | Ship shape |
 |--------|----------------|------------|
 | **Daily Progress Report (DPR)** | Replaces evening WhatsApp/Excel; legal/owner evidence | Template DPR: weather, manpower summary, activities + photos, blockers; 1-tap PDF share |
 | **Drawing-linked punch / snags** | Fieldwire’s killer feature; RFIs alone are not enough | Pin issues to drawing pages/coords; markup lite (pin + cloud); versioned drawings |
+
+### Phase 2b — Post-pilot differentiators (gated on pilot metrics)
+Ship only after pilot success metrics pass (or with paid demand). Keep collections in the data model so schema stays ready.
+
+| Module | Why it matters | Ship shape |
+|--------|----------------|------------|
 | **Safety & toolbox talks** | Compliance + Procore/Raken table stakes | Checklists, observations, incident log, photo evidence, daily rollup into DPR |
 | **QA/QC inspections** | QA role in brief needs real work product | Configurable checklists (WIR-style), pass/fail, photo mandatory on fail |
 | **Labour muster (supervisor-led)** | India wage/proxy pain; not full biometric payroll | Geofenced supervisor check-in + headcount by trade/subcontractor; photo optional |
@@ -111,7 +123,7 @@ These are **beyond the RAYNS PDF** and are where mid-market ROI is proven by com
 
 **Deliberately defer (Phase 3+ enterprise hooks, not MVP):** full BIM/digital twin, submittals/cost codes/job costing, facial payroll AI, drone/360 reality capture, Tally/ERP deep sync, multi-language pack (design for i18n from day one; Hindi pack later).
 
-### Phase 3 — Enterprise readiness (post-MVP, ~weeks 18–28)
+### Phase 3 — Enterprise readiness (post-MVP)
 Keep architecture ready; implement when traction exists.
 
 - WebView shell for Autodesk Forge / Unity WebGL / photogrammetry (already in RAYNS “future”).
@@ -124,12 +136,12 @@ Keep architecture ready; implement when traction exists.
 
 ## Recommended technical architecture
 
-**Chosen stack (your 2A):** Flutter + Firebase — fastest path to offline + push + auth, matches ~16–20 week RAYNS timeline for core, with Phase 2 extending to ~22–26 weeks for a market-ready product.
+**Chosen stack:** Flutter + Firebase — fastest path to offline + push + auth for RAYNS core, then Phase 2a for a market-ready product.
 
 ```mermaid
 flowchart TB
   App[Flutter App]
-  Local[(Local DB Hive or Drift)]
+  Local[(Local DB Drift)]
   Outbox[Sync Outbox]
   Auth[Firebase Auth]
   FS[Cloud Firestore]
@@ -146,19 +158,25 @@ flowchart TB
   FCM --> App
 ```
 
-**Key packages (indicative):** `firebase_core`, `firebase_auth`, `cloud_firestore`, `firebase_storage`, `firebase_messaging`, `local_auth`, `geolocator`, `image_picker` + compression, `pdfrx`/`syncfusion_flutter_pdfviewer`, `connectivity_plus`, `workmanager` / background sync, Drift or Hive for offline mirror if Firestore persistence alone is insufficient for large drawing caches.
+**Key packages (indicative):** `flutter_riverpod`, `firebase_core`, `firebase_auth`, `cloud_firestore`, `firebase_storage`, `firebase_messaging`, `firebase_crashlytics`, `firebase_analytics`, `local_auth`, `geolocator`, `image_picker` + compression, `pdfrx`/`syncfusion_flutter_pdfviewer`, `connectivity_plus`, `workmanager` / background sync, `drift` for offline mirror + large drawing caches.
 
 **Data model (core collections):**
 - `organizations`, `projects`, `memberships`
 - `issues`, `rfis`, `comments`
-- `folders`, `documents` (+ `drawing_pins` in Phase 2)
-- `dprs`, `safety_records`, `inspections`, `attendance_logs`, `material_logs`
+- `folders`, `documents` (+ `drawing_pins` in Phase 2a)
+- `dprs` (Phase 2a); `safety_records`, `inspections`, `attendance_logs`, `material_logs` (Phase 2b schema-ready)
 - `sync_events` / client outbox metadata
 - Storage paths: `org/{id}/project/{id}/...`
 
 **Security:** Firestore rules by `memberships` role; Storage rules mirror project membership; no public buckets; FieldValue server timestamps; soft-delete + audit where status changes matter.
 
-**Repo bootstrap (greenfield today):** only [Construction Management Field App.pdf](Construction%20Management%20Field%20App.pdf) / `.pptx` exist — create Flutter monorepo (`apps/mobile`, optional `apps/admin`, `firebase/`).
+**Repo layout:**
+```
+apps/mobile/          # Flutter app
+firebase/             # rules, indexes, functions
+docs/                 # plans and training
+.github/workflows/    # CI
+```
 
 ---
 
@@ -174,13 +192,15 @@ flowchart TB
 
 ## Delivery plan
 
-| Phase | Weeks | Outcome |
-|-------|-------|---------|
-| Discovery lock + UX | 1–3 | Clickable Figma for MVP + DPR/safety wireframes; Firebase project; CI |
-| MVP build | 4–12 | Auth, issues/RFIs, docs, offline sync, roles, FCM |
-| Differentiator build | 10–18 | DPR, drawing pins, safety/QA checklists, labour lite, material lite, PDF share |
-| Harden + UAT | 18–22 | Low-end device test, sync conflict drills, pilot on 1–2 live sites |
-| Launch + support | 22–26 | Play Store / TestFlight, training, 3-month hypercare |
+| Phase | Outcome | Gate |
+|-------|---------|------|
+| Phase 0 Foundations | Flutter + Firebase scaffold, feature folders, CI, security rules skeleton, ARB i18n stub | Repo builds on CI |
+| Phase 1 MVP | Auth, issues/RFIs, docs, offline sync, roles, FCM | Feature freeze; sync failure rate trending &lt;5% on device lab |
+| Phase 2a | DPR + PDF share, drawing-linked punch pins | Phase 1 freeze complete |
+| Harden + UAT | Low-end device test, sync conflict drills, pilot on 1–2 live sites | Pilot metrics met |
+| Phase 2b | Safety/QA/labour/material/voice/digests | Pilot metrics or paid demand |
+| Launch + support | Play Store / TestFlight, training, hypercare | Store review + training pack |
+| Phase 3 | Enterprise hooks (Forge WebView, SSO, admin web) | Traction / enterprise deals |
 
 **Pilot success metrics:** ≥70% of site engineers submit DPR ≥4 days/week; issue create median &lt;90s; sync failure rate &lt;2%; client can open weekly PDF without PM manual compile.
 
@@ -191,18 +211,21 @@ flowchart TB
 | Risk | Mitigation |
 |------|------------|
 | Firebase cost at scale | Composite indexes, photo compression, Storage lifecycle, usage dashboards from day 1 |
-| Low-end device lag | Aggressive image resize, lazy lists, drawing tile cache, avoid huge offline blobs |
-| Field non-adoption | DPR in 3 minutes; WhatsApp PDF share; voice notes; supervisor-led labour not worker app mandate |
-| Scope creep to Procore | Freeze Phase 3 behind pilot metrics; enterprise = hooks only until paid demand |
+| Low-end device lag | Aggressive image resize, lazy lists, drawing tile cache, avoid huge offline blobs / prefer photo over video by default |
+| Field non-adoption | DPR in 3 minutes; WhatsApp PDF share; voice notes (2b); supervisor-led labour not worker app mandate |
+| Scope creep to Procore | Freeze Phase 1 before 2a; gate 2b on pilot metrics; enterprise = hooks only until paid demand |
 | Built-in viewer effort | Ship solid PDF viewer first; system share for exotic formats |
+| Membership security holes | Rules skeleton + emulator tests from Phase 0; no public buckets |
+| Phone auth / SMS cost (India) | Prefer email + org invite codes for MVP; phone as optional later with budget caps |
+| Voice transcript offline | Store audio offline; transcript when online (Phase 2b) |
 
 ---
 
-## What we will implement when you approve execution
+## Execution status
 
-1. Scaffold Flutter app + Firebase (Auth, Firestore, Storage, Functions, FCM) and folder architecture (features / data / sync).
-2. Implement Phase 1 MVP against RAYNS modules with offline outbox.
-3. Immediately design Phase 2 modules into the data model (DPR, pins, safety) so we do not paint ourselves into a corner.
-4. Add README, env/config, and a phased backlog matching this plan.
+1. ~~Plan + README~~ — done.
+2. **Phase 0 scaffold** — in progress (this branch): Flutter app, Firebase folder, CI, rules skeleton, feature-first layout.
+3. Phase 1 MVP against RAYNS modules with offline outbox — next after scaffold lands.
+4. Design Phase 2a/2b into the data model early so schema stays extensible.
 
 No native-only Android path; iOS ships from the same Flutter codebase. Enterprise BIM/Forge remains a WebView module after MVP.
