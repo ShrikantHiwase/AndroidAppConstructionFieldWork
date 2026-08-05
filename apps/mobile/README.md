@@ -29,3 +29,7 @@ Firebase packages are commented in `pubspec.yaml` until `flutterfire configure` 
 
 Demo repository (`FakeAuthRepository`) powers login until Firebase is configured.
 See root README for demo emails. Biometric unlock is a preference + unlock screen stub; wire `local_auth` with Firebase.
+
+## Issues / RFIs (Phase 1)
+
+Offline-first `LocalFieldRecordsRepository` with sync outbox. Demo GPS/photo buttons stand in for geolocator/image_picker until Firebase + device plugins are wired. Toggle offline from the cloud icon on home/issues.

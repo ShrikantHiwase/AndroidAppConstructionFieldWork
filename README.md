@@ -32,7 +32,8 @@ docs/              Build plan and training
 | Plan + decisions | Done |
 | Phase 0 Foundations (scaffold, rules, CI, i18n stub) | Done |
 | Phase 1 auth / RBAC (demo accounts) | Done |
-| Phase 1 issues/RFIs + offline outbox | Next |
+| Phase 1 issues/RFIs + offline outbox | Done |
+| Phase 1 documents + PDF viewer | Next |
 | Phase 2a DPR + drawing pins | Pending (after MVP freeze) |
 | Phase 2b Safety / QA / labour / etc. | Gated on pilot metrics |
 | Phase 3 Enterprise hooks | Deferred |

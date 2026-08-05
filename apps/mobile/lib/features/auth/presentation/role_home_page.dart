@@ -4,6 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/providers/connectivity_provider.dart';
 import '../../../core/widgets/offline_badge.dart';
+import '../../issues/presentation/create_issue_page.dart';
+import '../../issues/presentation/field_records_providers.dart';
+import '../../issues/presentation/issues_list_page.dart';
+import '../../rfis/presentation/rfis_pages.dart';
 import '../domain/auth_models.dart';
 import 'auth_controller.dart';
 
@@ -22,39 +26,83 @@ class RoleHomePage extends ConsumerWidget {
           session: session,
           title: 'Site capture',
           subtitle: 'Log issues with photos and location. Keep DPR ready.',
-          actions: const [
-            _PrimaryAction(Icons.report_problem_outlined, 'New Issue'),
-            _PrimaryAction(Icons.assignment_outlined, "Today's DPR"),
-            _PrimaryAction(Icons.push_pin_outlined, 'Pin on Drawing'),
+          actions: [
+            _PrimaryAction(
+              Icons.report_problem_outlined,
+              'New Issue',
+              onPressed: () => _open(context, const CreateIssuePage()),
+            ),
+            _PrimaryAction(
+              Icons.list_alt_outlined,
+              'Issues',
+              onPressed: () => _open(context, const IssuesListPage()),
+            ),
+            _PrimaryAction(
+              Icons.question_answer_outlined,
+              'RFIs',
+              onPressed: () => _open(context, const RfisListPage()),
+            ),
           ],
         ),
       AppRole.projectManager => _RoleScaffold(
           session: session,
           title: 'PM queue',
           subtitle: 'Review open issues/RFIs, assign work, approve status.',
-          actions: const [
-            _PrimaryAction(Icons.inbox_outlined, 'Open queue'),
-            _PrimaryAction(Icons.assignment_turned_in_outlined, 'Approvals'),
-            _PrimaryAction(Icons.picture_as_pdf_outlined, 'Weekly PDF'),
+          actions: [
+            _PrimaryAction(
+              Icons.inbox_outlined,
+              'Open queue',
+              onPressed: () => _open(context, const IssuesListPage()),
+            ),
+            _PrimaryAction(
+              Icons.question_answer_outlined,
+              'RFIs',
+              onPressed: () => _open(context, const RfisListPage()),
+            ),
+            _PrimaryAction(
+              Icons.report_problem_outlined,
+              'New Issue',
+              onPressed: () => _open(context, const CreateIssuePage()),
+            ),
           ],
         ),
       AppRole.qaQc => _RoleScaffold(
           session: session,
           title: 'QA / QC',
           subtitle: 'Inspections and quality issues with photo evidence.',
-          actions: const [
-            _PrimaryAction(Icons.checklist_outlined, 'Inspections'),
-            _PrimaryAction(Icons.report_problem_outlined, 'Quality issues'),
-            _PrimaryAction(Icons.comment_outlined, 'Comments'),
+          actions: [
+            _PrimaryAction(
+              Icons.report_problem_outlined,
+              'Quality issues',
+              onPressed: () => _open(context, const IssuesListPage()),
+            ),
+            _PrimaryAction(
+              Icons.question_answer_outlined,
+              'RFIs',
+              onPressed: () => _open(context, const RfisListPage()),
+            ),
+            _PrimaryAction(
+              Icons.add_circle_outline,
+              'New Issue',
+              onPressed: () => _open(context, const CreateIssuePage()),
+            ),
           ],
         ),
       AppRole.client => _RoleScaffold(
           session: session,
           title: 'Client view',
           subtitle: 'Read-only progress and project documents.',
-          actions: const [
-            _PrimaryAction(Icons.timeline_outlined, 'Progress'),
-            _PrimaryAction(Icons.folder_open_outlined, 'Documents'),
+          actions: [
+            _PrimaryAction(
+              Icons.list_alt_outlined,
+              'Issues',
+              onPressed: () => _open(context, const IssuesListPage()),
+            ),
+            _PrimaryAction(
+              Icons.question_answer_outlined,
+              'RFIs',
+              onPressed: () => _open(context, const RfisListPage()),
+            ),
           ],
           readOnly: true,
         ),
@@ -62,20 +110,43 @@ class RoleHomePage extends ConsumerWidget {
           session: session,
           title: 'Admin',
           subtitle: 'Invite users, assign roles and projects, org settings.',
-          actions: const [
-            _PrimaryAction(Icons.person_add_outlined, 'Invite user'),
-            _PrimaryAction(Icons.manage_accounts_outlined, 'Roles'),
-            _PrimaryAction(Icons.settings_outlined, 'Org settings'),
+          actions: [
+            _PrimaryAction(
+              Icons.list_alt_outlined,
+              'Issues',
+              onPressed: () => _open(context, const IssuesListPage()),
+            ),
+            _PrimaryAction(
+              Icons.question_answer_outlined,
+              'RFIs',
+              onPressed: () => _open(context, const RfisListPage()),
+            ),
+            _PrimaryAction(
+              Icons.person_add_outlined,
+              'Invite user',
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Invite flow lands with Firebase Functions'),
+                  ),
+                );
+              },
+            ),
           ],
         ),
     };
   }
+
+  void _open(BuildContext context, Widget page) {
+    Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => page));
+  }
 }
 
 class _PrimaryAction {
-  const _PrimaryAction(this.icon, this.label);
+  const _PrimaryAction(this.icon, this.label, {required this.onPressed});
   final IconData icon;
   final String label;
+  final VoidCallback onPressed;
 }
 
 class _RoleScaffold extends ConsumerWidget {
@@ -97,6 +168,7 @@ class _RoleScaffold extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final textTheme = Theme.of(context).textTheme;
     final offline = ref.watch(isOfflineProvider);
+    final pending = ref.watch(pendingSyncCountProvider).valueOrNull ?? 0;
     final role = session.activeRole;
     final perms = <String>[
       if (RolePermissions.canCreateIssues(role)) 'Create issues',
@@ -111,9 +183,32 @@ class _RoleScaffold extends ConsumerWidget {
       appBar: AppBar(
         title: Text(title),
         actions: [
+          if (pending > 0)
+            Padding(
+              padding: const EdgeInsets.only(right: 4),
+              child: Center(
+                child: Text(
+                  '$pending sync',
+                  style: textTheme.labelLarge,
+                ),
+              ),
+            ),
           Padding(
             padding: const EdgeInsets.only(right: 8),
             child: Center(child: OfflineBadge(isOffline: offline)),
+          ),
+          IconButton(
+            tooltip: offline ? 'Go online & sync' : 'Simulate offline',
+            onPressed: () async {
+              final next = !offline;
+              ref.read(isOfflineProvider.notifier).state = next;
+              if (!next) {
+                await ref
+                    .read(fieldRecordsRepositoryProvider)
+                    .flushOutbox(isOnline: true);
+              }
+            },
+            icon: Icon(offline ? Icons.cloud_off : Icons.cloud_outlined),
           ),
           IconButton(
             tooltip: 'Sign out',
@@ -149,7 +244,12 @@ class _RoleScaffold extends ConsumerWidget {
             spacing: 8,
             runSpacing: 8,
             children: perms
-                .map((p) => Chip(label: Text(p), visualDensity: VisualDensity.compact))
+                .map(
+                  (p) => Chip(
+                    label: Text(p),
+                    visualDensity: VisualDensity.compact,
+                  ),
+                )
                 .toList(),
           ),
           const SizedBox(height: 24),
@@ -161,15 +261,7 @@ class _RoleScaffold extends ConsumerWidget {
             children: actions
                 .map(
                   (a) => FilledButton.tonalIcon(
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            '${a.label} — lands in next MVP modules',
-                          ),
-                        ),
-                      );
-                    },
+                    onPressed: a.onPressed,
                     icon: Icon(a.icon),
                     label: Text(a.label),
                   ),

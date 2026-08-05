@@ -10,7 +10,7 @@ todos:
     status: completed
   - id: mvp-issues-rfis
     content: Build issues/RFIs with media, GPS, comments, status workflow, FCM, offline outbox
-    status: pending
+    status: completed
   - id: mvp-documents
     content: Document hierarchy, upload/download, PDF viewer, storage rules
     status: pending
@@ -225,7 +225,8 @@ docs/                 # plans and training
 
 1. ~~Plan + README~~ — done.
 2. ~~Phase 0 scaffold~~ — done (merged): Flutter app, Firebase folder, CI, rules skeleton, feature-first layout.
-3. ~~Phase 1 auth / RBAC~~ — done (demo `FakeAuthRepository`): email login, role dashboards, project switcher, biometric unlock stub, permission matrix. Swap to Firebase Auth after `flutterfire configure`.
-4. **Next:** Phase 1 issues/RFIs with media, GPS, comments, status workflow, offline outbox (+ FCM when Firebase is live).
+3. ~~Phase 1 auth / RBAC~~ — done (demo `FakeAuthRepository`).
+4. ~~Phase 1 issues / RFIs~~ — done (local offline-first store + outbox): create/list/detail, status workflow + audit, comments, demo GPS/photo attachments, role gates. FCM deferred until Firebase is live.
+5. **Next:** Phase 1 documents (hierarchy, upload/download, PDF viewer) and deepen offline sync (Drift / Workmanager) when Firebase is configured.
 
 No native-only Android path; iOS ships from the same Flutter codebase. Enterprise BIM/Forge remains a WebView module after MVP.
