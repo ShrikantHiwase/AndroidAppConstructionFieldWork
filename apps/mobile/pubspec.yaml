@@ -16,6 +16,7 @@ dependencies:
   flutter_riverpod: ^2.6.1
   intl: ^0.20.2
   connectivity_plus: ^6.1.4
+  shared_preferences: ^2.5.3
 
   # Wired in Phase 1 after Firebase project is created (flutterfire configure).
   # firebase_core: ^3.15.1

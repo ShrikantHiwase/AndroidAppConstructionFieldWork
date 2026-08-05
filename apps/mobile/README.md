@@ -24,3 +24,8 @@ flutter run
 ```
 
 Firebase packages are commented in `pubspec.yaml` until `flutterfire configure` is run against a real project.
+
+## Auth (Phase 1)
+
+Demo repository (`FakeAuthRepository`) powers login until Firebase is configured.
+See root README for demo emails. Biometric unlock is a preference + unlock screen stub; wire `local_auth` with Firebase.

@@ -30,11 +30,24 @@ docs/              Build plan and training
 | Phase | Status |
 |-------|--------|
 | Plan + decisions | Done |
-| Phase 0 Foundations (scaffold, rules, CI, i18n stub) | In progress |
-| Phase 1 RAYNS MVP | Pending |
+| Phase 0 Foundations (scaffold, rules, CI, i18n stub) | Done |
+| Phase 1 auth / RBAC (demo accounts) | Done |
+| Phase 1 issues/RFIs + offline outbox | Next |
 | Phase 2a DPR + drawing pins | Pending (after MVP freeze) |
 | Phase 2b Safety / QA / labour / etc. | Gated on pilot metrics |
 | Phase 3 Enterprise hooks | Deferred |
+
+## Demo login (local, no Firebase yet)
+
+Password for all: `demo1234`
+
+| Email | Role |
+|-------|------|
+| engineer@demo.rayns | Site Engineer |
+| pm@demo.rayns | Project Manager |
+| qa@demo.rayns | QA/QC |
+| client@demo.rayns | Client (read-only) |
+| admin@demo.rayns | Admin |
 
 ## Decisions locked
 

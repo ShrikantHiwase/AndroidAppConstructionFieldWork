@@ -4,10 +4,10 @@ overview: Build a Flutter + Firebase construction field app that ships the RAYNS
 todos:
   - id: scaffold
     content: Scaffold Flutter + Firebase project, feature-first architecture, CI, and security rules skeleton
-    status: in_progress
+    status: completed
   - id: mvp-auth-rbac
     content: Implement auth, biometrics unlock, org/project membership, and role-based dashboards
-    status: pending
+    status: completed
   - id: mvp-issues-rfis
     content: Build issues/RFIs with media, GPS, comments, status workflow, FCM, offline outbox
     status: pending
@@ -224,8 +224,8 @@ docs/                 # plans and training
 ## Execution status
 
 1. ~~Plan + README~~ — done.
-2. **Phase 0 scaffold** — in progress (this branch): Flutter app, Firebase folder, CI, rules skeleton, feature-first layout.
-3. Phase 1 MVP against RAYNS modules with offline outbox — next after scaffold lands.
-4. Design Phase 2a/2b into the data model early so schema stays extensible.
+2. ~~Phase 0 scaffold~~ — done (merged): Flutter app, Firebase folder, CI, rules skeleton, feature-first layout.
+3. ~~Phase 1 auth / RBAC~~ — done (demo `FakeAuthRepository`): email login, role dashboards, project switcher, biometric unlock stub, permission matrix. Swap to Firebase Auth after `flutterfire configure`.
+4. **Next:** Phase 1 issues/RFIs with media, GPS, comments, status workflow, offline outbox (+ FCM when Firebase is live).
 
 No native-only Android path; iOS ships from the same Flutter codebase. Enterprise BIM/Forge remains a WebView module after MVP.
