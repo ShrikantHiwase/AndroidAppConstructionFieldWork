@@ -1,24 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../core/theme/app_theme.dart';
-import '../../core/widgets/offline_badge.dart';
-import '../../features/auth/presentation/splash_home_page.dart';
+import '../core/providers/connectivity_provider.dart';
+import '../core/theme/app_theme.dart';
+import '../core/widgets/offline_badge.dart';
+import '../features/auth/presentation/auth_controller.dart';
+import '../features/auth/presentation/biometric_unlock_page.dart';
+import '../features/auth/presentation/login_page.dart';
+import '../features/auth/presentation/role_home_page.dart';
 
 class FieldApp extends ConsumerWidget {
   const FieldApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final auth = ref.watch(authControllerProvider);
+
     return MaterialApp(
       title: 'Field Evidence',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light(),
-      // Localizations will wire after `flutter gen-l10n` in CI / local builds.
-      home: const SplashHomePage(),
+      home: switch (auth.status) {
+        AuthStatus.unknown => const _BootSplash(),
+        AuthStatus.signedOut => const LoginPage(),
+        AuthStatus.locked => const BiometricUnlockPage(),
+        AuthStatus.signedIn => const RoleHomePage(),
+      },
       builder: (context, child) {
         return Banner(
-          message: 'PHASE 0',
+          message: 'PHASE 1',
           location: BannerLocation.topEnd,
           color: const Color(0xFF1B4D3E),
           child: child ?? const SizedBox.shrink(),
@@ -28,8 +38,16 @@ class FieldApp extends ConsumerWidget {
   }
 }
 
-/// Demo connectivity flag until connectivity_plus is hooked in Phase 1.
-final isOfflineProvider = StateProvider<bool>((ref) => false);
+class _BootSplash extends StatelessWidget {
+  const _BootSplash();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      body: Center(child: CircularProgressIndicator()),
+    );
+  }
+}
 
 class ScaffoldShell extends ConsumerWidget {
   const ScaffoldShell({

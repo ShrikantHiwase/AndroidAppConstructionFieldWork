@@ -1,0 +1,144 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../data/fake_auth_repository.dart';
+import '../domain/auth_models.dart';
+import '../domain/auth_repository.dart';
+
+final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {
+  throw UnimplementedError('Override sharedPreferencesProvider in main()');
+});
+
+final authRepositoryProvider = Provider<AuthRepository>((ref) {
+  return FakeAuthRepository(ref.watch(sharedPreferencesProvider));
+});
+
+enum AuthStatus { unknown, signedOut, locked, signedIn }
+
+class AuthState {
+  const AuthState({
+    required this.status,
+    this.session,
+    this.errorMessage,
+    this.isSubmitting = false,
+  });
+
+  final AuthStatus status;
+  final AuthSession? session;
+  final String? errorMessage;
+  final bool isSubmitting;
+
+  AuthState copyWith({
+    AuthStatus? status,
+    AuthSession? session,
+    String? errorMessage,
+    bool? isSubmitting,
+    bool clearError = false,
+  }) {
+    return AuthState(
+      status: status ?? this.status,
+      session: session ?? this.session,
+      errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
+      isSubmitting: isSubmitting ?? this.isSubmitting,
+    );
+  }
+}
+
+class AuthController extends StateNotifier<AuthState> {
+  AuthController(this._repo) : super(const AuthState(status: AuthStatus.unknown)) {
+    _bootstrap();
+  }
+
+  final AuthRepository _repo;
+
+  Future<void> _bootstrap() async {
+    try {
+      final session = await _repo.restoreSession();
+      if (session == null) {
+        state = const AuthState(status: AuthStatus.signedOut);
+        return;
+      }
+      final fake = _repo;
+      if (fake is FakeAuthRepository && fake.requiresUnlock) {
+        state = AuthState(status: AuthStatus.locked, session: session);
+      } else {
+        state = AuthState(status: AuthStatus.signedIn, session: session);
+      }
+    } catch (e) {
+      state = AuthState(
+        status: AuthStatus.signedOut,
+        errorMessage: e.toString(),
+      );
+    }
+  }
+
+  Future<void> signIn({required String email, required String password}) async {
+    state = state.copyWith(
+      clearError: true,
+      isSubmitting: true,
+      status: AuthStatus.signedOut,
+    );
+    try {
+      final session = await _repo.signInWithEmail(
+        email: email,
+        password: password,
+      );
+      state = AuthState(status: AuthStatus.signedIn, session: session);
+    } catch (e) {
+      state = AuthState(
+        status: AuthStatus.signedOut,
+        errorMessage: e.toString(),
+      );
+    }
+  }
+
+  Future<void> signOut() async {
+    await _repo.signOut();
+    state = const AuthState(status: AuthStatus.signedOut);
+  }
+
+  Future<void> switchProject(String projectId) async {
+    try {
+      final session = await _repo.switchProject(projectId);
+      state = AuthState(status: AuthStatus.signedIn, session: session);
+    } catch (e) {
+      state = state.copyWith(errorMessage: e.toString());
+    }
+  }
+
+  Future<void> setBiometricsEnabled(bool enabled) async {
+    await _repo.setBiometricsEnabled(enabled);
+    final session = state.session?.copyWith(biometricsEnabled: enabled);
+    if (session != null) {
+      state = AuthState(status: state.status, session: session);
+    }
+  }
+
+  Future<void> unlock() async {
+    final ok = await _repo.unlockWithBiometrics();
+    if (ok && state.session != null) {
+      state = AuthState(status: AuthStatus.signedIn, session: state.session);
+    } else {
+      state = state.copyWith(errorMessage: 'Unlock failed');
+    }
+  }
+
+  Future<void> lockForResume() async {
+    final repo = _repo;
+    if (repo is FakeAuthRepository) {
+      await repo.markLockedForResume();
+      if (state.session != null && state.session!.biometricsEnabled) {
+        state = AuthState(status: AuthStatus.locked, session: state.session);
+      }
+    }
+  }
+}
+
+final authControllerProvider =
+    StateNotifierProvider<AuthController, AuthState>((ref) {
+  return AuthController(ref.watch(authRepositoryProvider));
+});
+
+final authSessionProvider = Provider<AuthSession?>((ref) {
+  return ref.watch(authControllerProvider).session;
+});
