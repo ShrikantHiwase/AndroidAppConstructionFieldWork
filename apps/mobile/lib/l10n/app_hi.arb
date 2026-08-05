@@ -1,0 +1,13 @@
+{
+  "@@locale": "hi",
+  "appTitle": "Field Evidence",
+  "offlineBadge": "ऑफ़लाइन",
+  "syncPending": "सिंक हो रहा है…",
+  "newIssue": "नया इश्यू",
+  "todaysDpr": "आज का DPR",
+  "pinOnDrawing": "ड्रॉइंग पर पिन",
+  "roleEngineerHome": "साइट पर काम कैप्चर करें",
+  "rolePmHome": "क्यू और अप्रूवल",
+  "roleQaHome": "इंस्पेक्शन",
+  "roleClientHome": "प्रगति और दस्तावेज़"
+}

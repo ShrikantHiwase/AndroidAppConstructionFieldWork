@@ -1,0 +1,19 @@
+{
+  "@@locale": "en",
+  "appTitle": "Field Evidence",
+  "@appTitle": {
+    "description": "Application title shown in the OS and app chrome"
+  },
+  "offlineBadge": "Offline",
+  "@offlineBadge": {
+    "description": "Shown when the device has no network"
+  },
+  "syncPending": "Syncing…",
+  "newIssue": "New Issue",
+  "todaysDpr": "Today's DPR",
+  "pinOnDrawing": "Pin on Drawing",
+  "roleEngineerHome": "Capture work on site",
+  "rolePmHome": "Queue and approvals",
+  "roleQaHome": "Inspections",
+  "roleClientHome": "Progress and documents"
+}

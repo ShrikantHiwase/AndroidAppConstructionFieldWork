@@ -1,0 +1,26 @@
+# Construction Field App (mobile)
+
+Phase 0 scaffold for the RAYNS construction field app.
+
+## Structure
+
+```
+lib/
+  app/                 MaterialApp + Riverpod shell
+  core/                theme, constants, shared widgets
+  features/            auth, projects, issues, rfis, documents, dpr, sync, admin
+  sync/outbox/         offline outbox contracts
+  l10n/                ARB (en + hi stub)
+```
+
+## Commands
+
+```bash
+flutter pub get
+flutter gen-l10n
+flutter analyze
+flutter test
+flutter run
+```
+
+Firebase packages are commented in `pubspec.yaml` until `flutterfire configure` is run against a real project.
