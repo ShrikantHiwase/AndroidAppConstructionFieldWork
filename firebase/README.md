@@ -1,10 +1,23 @@
 # Firebase
-# --------
-# 1. Create a Firebase project (Blaze if you need phone auth / Functions).
-# 2. From repo root: `firebase use --add` and select the project.
-# 3. From apps/mobile: `dart pub global activate flutterfire_cli && flutterfire configure`
-# 4. Uncomment Firebase packages in apps/mobile/pubspec.yaml.
-# 5. Run emulators: `cd firebase && firebase emulators:start`
-#
-# Rules are deny-by-default with membership helpers. Expand with emulator tests
-# before production traffic.
+
+Backend for Auth, Firestore, Storage, Functions, and FCM.
+
+## Quick start
+
+1. Create a Firebase project and enable Auth (email/password), Firestore, Storage, FCM.
+2. Link this folder: `firebase use --add`
+3. Configure the Flutter app: see [docs/Firebase_Setup.md](../docs/Firebase_Setup.md)
+4. Emulators: `firebase emulators:start`
+
+Rules are deny-by-default with membership helpers. Expand with emulator tests
+before production traffic.
+
+## Layout
+
+```
+firebase.json
+firestore.rules
+firestore.indexes.json
+storage.rules
+functions/          # stubs
+```

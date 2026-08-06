@@ -17,22 +17,15 @@ dependencies:
   intl: ^0.20.2
   connectivity_plus: ^6.1.4
   shared_preferences: ^2.5.3
+  firebase_core: ^4.13.0
+  firebase_auth: ^6.5.7
+  cloud_firestore: ^6.8.0
+  firebase_storage: ^13.4.6
+  firebase_messaging: ^16.5.0
 
-  # Wired in Phase 1 after Firebase project is created (flutterfire configure).
-  # firebase_core: ^3.15.1
-  # firebase_auth: ^5.6.2
-  # cloud_firestore: ^5.6.11
-  # firebase_storage: ^12.4.9
-  # firebase_messaging: ^15.2.9
-  # firebase_crashlytics: ^4.3.9
-  # firebase_analytics: ^11.5.2
-  # local_auth: ^2.3.0
-  # geolocator: ^14.0.1
-  # image_picker: ^1.1.2
-  # drift: ^2.26.1
-  # path_provider: ^2.1.5
-  # path: ^1.9.1
-  # workmanager: ^0.5.2
+  # Still deferred until device plugins / Crashlytics are wired:
+  # firebase_crashlytics, firebase_analytics, local_auth, geolocator,
+  # image_picker, drift, path_provider, workmanager, pdfrx
 
 dev_dependencies:
   flutter_test:

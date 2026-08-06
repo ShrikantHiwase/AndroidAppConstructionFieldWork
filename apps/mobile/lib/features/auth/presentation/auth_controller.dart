@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../data/fake_auth_repository.dart';
+import '../data/firebase_auth_repository.dart';
 import '../domain/auth_models.dart';
 import '../domain/auth_repository.dart';
 
@@ -9,8 +10,15 @@ final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {
   throw UnimplementedError('Override sharedPreferencesProvider in main()');
 });
 
+/// Overridden in [main] after [bootstrapFirebase]. Default keeps demo auth in tests.
+final firebaseEnabledProvider = Provider<bool>((ref) => false);
+
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
-  return FakeAuthRepository(ref.watch(sharedPreferencesProvider));
+  final prefs = ref.watch(sharedPreferencesProvider);
+  if (ref.watch(firebaseEnabledProvider)) {
+    return FirebaseAuthRepository(prefs: prefs);
+  }
+  return FakeAuthRepository(prefs);
 });
 
 enum AuthStatus { unknown, signedOut, locked, signedIn }

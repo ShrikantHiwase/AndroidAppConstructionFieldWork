@@ -23,6 +23,9 @@ todos:
   - id: diff-2b-safety-qa-labour
     content: "Phase 2b (after pilot metrics): safety/toolbox, QA checklists, labour muster, material lite, voice, digests"
     status: completed
+  - id: firebase-wiring
+    content: Add Firebase packages, bootstrap gate, FirebaseAuthRepository; flutterfire configure for production
+    status: in_progress
   - id: pilot-launch
     content: UAT on live sites, Play Store/TestFlight, training materials, hypercare metrics
     status: pending
@@ -227,6 +230,7 @@ docs/                 # plans and training
 2. ~~Phase 0–1 MVP core~~ — done (auth, issues/RFIs, documents, offline sync).
 3. ~~Phase 2a DPR + drawing pins~~ — done.
 4. ~~Phase 2b site ops~~ — done: safety/toolbox + observations/incidents (photo rules), QA WIR checklists (photo-on-fail), supervisor labour muster, material inward/consumption lite. Voice capture + smart digests remain light follow-ups.
-5. **Next:** Firebase project wiring for production Auth/Firestore/Storage/FCM, then pilot launch / UAT.
+5. **Firebase wiring (in progress):** packages + `bootstrapFirebase` gate + `FirebaseAuthRepository` behind `firebaseEnabledProvider`. Demo mode remains default until `flutterfire configure` and `FirebaseOptionsGate.isConfigured = true`. See `docs/Firebase_Setup.md`.
+6. **Next:** Operator runs FlutterFire against a real project, seeds org/project/memberships, then pilot launch / UAT.
 
 No native-only Android path; iOS ships from the same Flutter codebase. Enterprise BIM/Forge remains a WebView module after MVP.

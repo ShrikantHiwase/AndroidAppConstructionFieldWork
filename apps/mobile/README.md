@@ -23,12 +23,15 @@ flutter test
 flutter run
 ```
 
-Firebase packages are commented in `pubspec.yaml` until `flutterfire configure` is run against a real project.
+Firebase packages are in `pubspec.yaml`. Until you run `flutterfire configure` and
+set `FirebaseOptionsGate.isConfigured = true`, the app uses demo auth. Full steps:
+[docs/Firebase_Setup.md](../../docs/Firebase_Setup.md).
 
 ## Auth (Phase 1)
 
-Demo repository (`FakeAuthRepository`) powers login until Firebase is configured.
-See root README for demo emails. Biometric unlock is a preference + unlock screen stub; wire `local_auth` with Firebase.
+`FakeAuthRepository` when Firebase is not configured; `FirebaseAuthRepository`
+when it is. See root README for demo emails. Biometric unlock is a preference +
+unlock screen stub; wire `local_auth` after FlutterFire.
 
 ## Issues / RFIs (Phase 1)
 

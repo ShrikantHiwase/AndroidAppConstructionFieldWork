@@ -41,6 +41,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   @override
   Widget build(BuildContext context) {
     final auth = ref.watch(authControllerProvider);
+    final firebaseEnabled = ref.watch(firebaseEnabledProvider);
     final textTheme = Theme.of(context).textTheme;
     final busy = auth.isSubmitting;
 
@@ -53,8 +54,17 @@ class _LoginPageState extends ConsumerState<LoginPage> {
             Text('Field Evidence', style: textTheme.headlineLarge),
             const SizedBox(height: 8),
             Text(
-              'Sign in with your org email. Demo password: demo1234',
+              firebaseEnabled
+                  ? 'Sign in with your org email (Firebase Auth).'
+                  : 'Demo mode — password for all accounts: demo1234',
               style: textTheme.bodyLarge,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              firebaseEnabled ? 'Backend: Firebase' : 'Backend: local demo',
+              style: textTheme.labelLarge?.copyWith(
+                color: Theme.of(context).colorScheme.primary,
+              ),
             ),
             const SizedBox(height: 32),
             Form(
@@ -106,24 +116,26 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     )
                   : const Text('Sign in'),
             ),
-            const SizedBox(height: 32),
-            Text('Demo roles', style: textTheme.titleMedium),
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: _demoHints
-                  .map(
-                    (email) => ActionChip(
-                      label: Text(email.split('@').first),
-                      onPressed: () {
-                        _email.text = email;
-                        _password.text = 'demo1234';
-                      },
-                    ),
-                  )
-                  .toList(),
-            ),
+            if (!firebaseEnabled) ...[
+              const SizedBox(height: 32),
+              Text('Demo roles', style: textTheme.titleMedium),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: _demoHints
+                    .map(
+                      (email) => ActionChip(
+                        label: Text(email.split('@').first),
+                        onPressed: () {
+                          _email.text = email;
+                          _password.text = 'demo1234';
+                        },
+                      ),
+                    )
+                    .toList(),
+              ),
+            ],
           ],
         ),
       ),
