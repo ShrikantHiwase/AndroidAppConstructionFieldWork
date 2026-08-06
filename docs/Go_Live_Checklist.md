@@ -9,7 +9,7 @@ these; production Auth/Firestore needs a real Firebase project.
 - [ ] Enable **Authentication** → Email/Password
 - [ ] Create **Firestore** (production mode) + **Storage**
 - [ ] Enable **Cloud Messaging**
-- [ ] (Optional) Upgrade to Blaze if using scheduled Functions later
+- [ ] Upgrade to **Blaze** (required for scheduled `dailyDprNudge`)
 
 ## 2. FlutterFire
 
@@ -33,6 +33,7 @@ firebase deploy --only firestore:rules,firestore:indexes,storage,functions
 
 - [ ] Deploy succeeds
 - [ ] `health` callable returns `{ ok: true }` (also: Sync status → **Probe health** after FlutterFire)
+- [ ] `dailyDprNudge` listed under Functions (disable with `DPR_NUDGE_SCHEDULE_ENABLED=false` if not ready)
 
 ## 4. Seed demo org (staging / emulator)
 

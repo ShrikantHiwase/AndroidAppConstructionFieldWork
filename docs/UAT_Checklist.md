@@ -48,7 +48,7 @@ Run on mid/low-end Android first. Mark each item in Admin → **Pilot** (or tick
 
 ## Digests & sync
 
-- [ ] 5 PM nudge prefs + Simulate 5 PM check
+- [ ] 5 PM nudge prefs + Simulate 5 PM check (local tray); Cloud `dailyDprNudge` after Blaze deploy
 - [ ] PM digest lists open issues/RFIs/blockers; Share digest PDF works
 - [ ] Sync status shows logs, background flush meta, Probe health, local cache meter, telemetry events, secure store backend; cleanup reclaims uploaded stubs without crash
 - [ ] Conflict policy labels visible on flush (LWW / append / audited)
