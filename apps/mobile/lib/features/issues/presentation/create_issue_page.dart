@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/device/device_providers.dart';
+import '../../../core/device/evidence_capture.dart';
+import '../../../core/device/evidence_image_policy.dart';
 import '../../../core/providers/connectivity_provider.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../domain/issue_models.dart';
@@ -123,13 +125,25 @@ class _CreateIssuePageState extends ConsumerState<CreateIssuePage> {
                 ),
               OutlinedButton.icon(
                 onPressed: () async {
-                  final shot =
-                      await ref.read(evidenceCaptureProvider).capturePhoto();
+                  final shot = await ref
+                      .read(evidenceCaptureProvider)
+                      .capturePhoto(source: EvidencePhotoSource.camera);
                   if (!mounted || shot == null) return;
                   setState(() => _attachments.add(shot));
                 },
                 icon: const Icon(Icons.photo_camera_outlined),
                 label: const Text('Add photo'),
+              ),
+              OutlinedButton.icon(
+                onPressed: () async {
+                  final shot = await ref
+                      .read(evidenceCaptureProvider)
+                      .capturePhoto(source: EvidencePhotoSource.gallery);
+                  if (!mounted || shot == null) return;
+                  setState(() => _attachments.add(shot));
+                },
+                icon: const Icon(Icons.photo_library_outlined),
+                label: const Text('From gallery'),
               ),
             ],
           ),
@@ -144,13 +158,21 @@ class _CreateIssuePageState extends ConsumerState<CreateIssuePage> {
           if (_attachments.isNotEmpty) ...[
             const SizedBox(height: 8),
             ..._attachments.map(
-              (a) => ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: const Icon(Icons.image_outlined),
-                title: Text(a.fileName),
-                subtitle:
-                    Text(a.pendingUpload ? 'Queued for upload' : 'Uploaded'),
-              ),
+              (a) {
+                final size = a.byteSizeBytes == null
+                    ? null
+                    : EvidenceImagePolicy.formatBytes(a.byteSizeBytes!);
+                final status =
+                    a.pendingUpload ? 'Queued for upload' : 'Uploaded';
+                return ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.image_outlined),
+                  title: Text(a.fileName),
+                  subtitle: Text(
+                    size == null ? status : '$status · ~$size',
+                  ),
+                );
+              },
             ),
           ],
           if (_error != null) ...[

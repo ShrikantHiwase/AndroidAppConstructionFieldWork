@@ -1,8 +1,8 @@
 # Device sensors (GPS / camera / biometrics)
 
-Packages `geolocator`, `image_picker`, and `local_auth` are in `pubspec.yaml`.
-CI and default runs use **Fake** implementations so tests stay green without
-hardware.
+Packages `geolocator`, `image_picker`, `local_auth`, and `image` (pure-Dart
+JPEG compress) are in `pubspec.yaml`. CI and default runs use **Fake**
+implementations so tests stay green without hardware.
 
 ## Enable native sensors on a device
 
@@ -17,13 +17,22 @@ On permission failure or plugin errors, Device* falls back to Fake*.
 | Service | Fake | Device |
 |---------|------|--------|
 | Location | Hinjewadi demo fix; geofence always OK | `geolocator` |
-| Evidence | `local://demo/...` JPEG stub | `image_picker` camera |
+| Evidence | `local://demo/...` JPEG stub + ~150 KB size | `image_picker` camera/gallery → `FileImageCompressor` |
 | Biometric | always succeeds | `local_auth` |
 
-Android permissions and iOS usage strings are already in the platform folders.
+## Evidence compression
+
+`EvidenceImagePolicy`: max width **1600px**, JPEG quality **70** (floor 40),
+soft target **~400 KB**. `DeviceEvidenceCapture` applies picker limits then
+`FileImageCompressor` (resize + quality ladder). Demo Fake paths get
+`byteSizeBytes` without I/O. New Issue shows `Queued · ~NN KB`.
+
+## Android permissions and iOS usage strings
+
+Already in the platform folders.
 
 ## Wired call sites
 
-- New Issue → Add GPS / Add photo
+- New Issue → Add GPS / Add photo / From gallery
 - Biometric unlock screen
 - Labour muster geofence check
