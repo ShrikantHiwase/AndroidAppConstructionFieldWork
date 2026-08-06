@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/providers/connectivity_provider.dart';
 import '../../../core/widgets/offline_badge.dart';
+import '../../documents/presentation/documents_browser_page.dart';
 import '../../issues/presentation/create_issue_page.dart';
 import '../../issues/presentation/field_records_providers.dart';
 import '../../issues/presentation/issues_list_page.dart';
@@ -42,6 +43,11 @@ class RoleHomePage extends ConsumerWidget {
               'RFIs',
               onPressed: () => _open(context, const RfisListPage()),
             ),
+            _PrimaryAction(
+              Icons.folder_open_outlined,
+              'Documents',
+              onPressed: () => _open(context, const DocumentsBrowserPage()),
+            ),
           ],
         ),
       AppRole.projectManager => _RoleScaffold(
@@ -60,9 +66,9 @@ class RoleHomePage extends ConsumerWidget {
               onPressed: () => _open(context, const RfisListPage()),
             ),
             _PrimaryAction(
-              Icons.report_problem_outlined,
-              'New Issue',
-              onPressed: () => _open(context, const CreateIssuePage()),
+              Icons.folder_open_outlined,
+              'Documents',
+              onPressed: () => _open(context, const DocumentsBrowserPage()),
             ),
           ],
         ),
@@ -77,9 +83,9 @@ class RoleHomePage extends ConsumerWidget {
               onPressed: () => _open(context, const IssuesListPage()),
             ),
             _PrimaryAction(
-              Icons.question_answer_outlined,
-              'RFIs',
-              onPressed: () => _open(context, const RfisListPage()),
+              Icons.folder_open_outlined,
+              'Documents',
+              onPressed: () => _open(context, const DocumentsBrowserPage()),
             ),
             _PrimaryAction(
               Icons.add_circle_outline,
@@ -99,9 +105,9 @@ class RoleHomePage extends ConsumerWidget {
               onPressed: () => _open(context, const IssuesListPage()),
             ),
             _PrimaryAction(
-              Icons.question_answer_outlined,
-              'RFIs',
-              onPressed: () => _open(context, const RfisListPage()),
+              Icons.folder_open_outlined,
+              'Documents',
+              onPressed: () => _open(context, const DocumentsBrowserPage()),
             ),
           ],
           readOnly: true,
@@ -112,14 +118,14 @@ class RoleHomePage extends ConsumerWidget {
           subtitle: 'Invite users, assign roles and projects, org settings.',
           actions: [
             _PrimaryAction(
+              Icons.folder_open_outlined,
+              'Documents',
+              onPressed: () => _open(context, const DocumentsBrowserPage()),
+            ),
+            _PrimaryAction(
               Icons.list_alt_outlined,
               'Issues',
               onPressed: () => _open(context, const IssuesListPage()),
-            ),
-            _PrimaryAction(
-              Icons.question_answer_outlined,
-              'RFIs',
-              onPressed: () => _open(context, const RfisListPage()),
             ),
             _PrimaryAction(
               Icons.person_add_outlined,
