@@ -8,6 +8,7 @@ import '../../../sync/outbox/outbox_entry.dart';
 import '../../../sync/remote/module_remote_pull.dart';
 import '../../../sync/remote/outbox_remote_sink.dart';
 import '../../../sync/remote/prefs_outbox_queue.dart';
+import '../../../sync/remote/storage_uploader.dart';
 import '../../../sync/remote/syncable_store.dart';
 import '../../auth/domain/auth_models.dart';
 import '../domain/document_models.dart';
@@ -18,8 +19,10 @@ class LocalDocumentsRepository implements DocumentsRepository, SyncableStore {
     this._prefs, {
     OutboxRemoteSink? remoteSink,
     ModuleRemotePull? remotePull,
+    StorageUploader? storageUploader,
   })  : _remoteSink = remoteSink ?? const NoOpOutboxRemoteSink(),
         _remotePull = remotePull ?? const NoOpModuleRemotePull(),
+        _storageUploader = storageUploader ?? const NoOpStorageUploader(),
         _outbox = PrefsOutboxQueue(_prefs, _outboxKey) {
     _load();
   }
@@ -27,6 +30,7 @@ class LocalDocumentsRepository implements DocumentsRepository, SyncableStore {
   final SharedPreferences _prefs;
   final OutboxRemoteSink _remoteSink;
   final ModuleRemotePull _remotePull;
+  final StorageUploader _storageUploader;
   final PrefsOutboxQueue _outbox;
 
   static const _foldersKey = 'docs.folders';
@@ -94,6 +98,7 @@ class LocalDocumentsRepository implements DocumentsRepository, SyncableStore {
     final json = doc.toJson();
     json.remove('textContent');
     json.remove('pdfPages');
+    json.remove('localFilePath');
     return json;
   }
 
@@ -257,6 +262,9 @@ class LocalDocumentsRepository implements DocumentsRepository, SyncableStore {
     }
     final now = DateTime.now().toUtc();
     final kind = DocContentTypeX.fromMimeOrName(input.contentType, input.name);
+    final localPath = (input.localFilePath == null || input.localFilePath!.isEmpty)
+        ? 'local://demo/documents/${input.name.trim()}'
+        : input.localFilePath!;
     final doc = ProjectDocument(
       id: _id('doc'),
       orgId: session.activeProject.orgId,
@@ -274,8 +282,25 @@ class LocalDocumentsRepository implements DocumentsRepository, SyncableStore {
       synced: false,
       textContent: input.textContent,
       pdfPages: input.pdfPages,
+      localFilePath: localPath,
+      pendingUpload: true,
     );
     _documents[doc.id] = doc;
+    _outbox.enqueue(
+      collection: FirestoreCollections.documents,
+      documentId: doc.id,
+      operation: OutboxOperation.upload,
+      payload: StorageUploadRequest(
+        orgId: doc.orgId,
+        projectId: doc.projectId,
+        parentType: 'documents',
+        parentId: doc.id,
+        attachmentId: doc.id,
+        fileName: doc.name,
+        contentType: doc.contentType,
+        localPath: localPath,
+      ).toPayload(),
+    );
     _outbox.enqueue(
       collection: FirestoreCollections.documents,
       documentId: doc.id,
@@ -339,10 +364,29 @@ class LocalDocumentsRepository implements DocumentsRepository, SyncableStore {
 
   @override
   Future<void> flushOutbox({required bool isOnline}) async {
-    await _outbox.flush(
-      isOnline: isOnline,
-      sink: _remoteSink,
-      onApplied: (entry) async {
+    if (!isOnline || _outbox.entries.isEmpty) {
+      _outbox.pendingController.add(_outbox.entries.length);
+      return;
+    }
+
+    final remaining = <OutboxEntry>[];
+    final failedUploadDocs = <String>{};
+    for (final entry in List<OutboxEntry>.from(_outbox.entries)) {
+      try {
+        if (entry.operation == OutboxOperation.upload) {
+          await _flushUpload(entry);
+          continue;
+        }
+
+        if (failedUploadDocs.contains(entry.documentId) &&
+            (entry.operation == OutboxOperation.create ||
+                entry.operation == OutboxOperation.update)) {
+          remaining.add(entry);
+          continue;
+        }
+
+        final toApply = _resolvePayload(entry);
+        await _remoteSink.apply(toApply);
         if (entry.collection == FirestoreCollections.folders) {
           final cur = _folders[entry.documentId];
           if (cur != null) {
@@ -354,9 +398,62 @@ class LocalDocumentsRepository implements DocumentsRepository, SyncableStore {
             _documents[entry.documentId] = cur.copyWith(synced: true);
           }
         }
-      },
-    );
+      } catch (e) {
+        if (entry.operation == OutboxOperation.upload) {
+          failedUploadDocs.add(entry.documentId);
+        }
+        remaining.add(
+          OutboxEntry(
+            id: entry.id,
+            collection: entry.collection,
+            documentId: entry.documentId,
+            operation: entry.operation,
+            payload: entry.payload,
+            createdAt: entry.createdAt,
+            attempts: entry.attempts + 1,
+            lastError: e.toString(),
+          ),
+        );
+      }
+    }
+    _outbox.entries
+      ..clear()
+      ..addAll(remaining);
+    await _outbox.persist();
     await _persistEntitiesOnly();
+  }
+
+  OutboxEntry _resolvePayload(OutboxEntry entry) {
+    if (entry.collection == FirestoreCollections.documents) {
+      final doc = _documents[entry.documentId];
+      if (doc != null &&
+          (entry.operation == OutboxOperation.create ||
+              entry.operation == OutboxOperation.update)) {
+        return OutboxEntry(
+          id: entry.id,
+          collection: entry.collection,
+          documentId: entry.documentId,
+          operation: entry.operation,
+          payload: _docMeta(doc),
+          createdAt: entry.createdAt,
+          attempts: entry.attempts,
+          lastError: entry.lastError,
+        );
+      }
+    }
+    return entry;
+  }
+
+  Future<void> _flushUpload(OutboxEntry entry) async {
+    final request = StorageUploadRequest.fromPayload(entry.payload);
+    final url = await _storageUploader.upload(request);
+    final doc = _documents[entry.documentId];
+    if (doc == null) return;
+    _documents[entry.documentId] = doc.copyWith(
+      remoteUrl: url,
+      pendingUpload: false,
+      synced: false,
+    );
   }
 
   @override
@@ -398,6 +495,9 @@ class LocalDocumentsRepository implements DocumentsRepository, SyncableStore {
           pdfPages: local?.pdfPages.isNotEmpty == true
               ? local!.pdfPages
               : r.pdfPages,
+          localFilePath: local?.localFilePath ?? r.localFilePath,
+          remoteUrl: r.remoteUrl ?? local?.remoteUrl,
+          pendingUpload: false,
         );
         changed += 1;
       }

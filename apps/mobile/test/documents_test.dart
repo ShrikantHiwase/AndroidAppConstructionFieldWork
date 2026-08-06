@@ -83,6 +83,15 @@ void main() {
     );
     expect(uploaded.downloaded, isTrue);
     expect(uploaded.synced, isFalse);
+    expect(uploaded.pendingUpload, isTrue);
+    expect(uploaded.localFilePath, startsWith('local://demo/documents/'));
+
+    await repo.flushOutbox(isOnline: true);
+    expect(await repo.watchPendingSyncCount().first, 0);
+    final after = await repo.getDocument(uploaded.id);
+    expect(after!.synced, isTrue);
+    expect(after.pendingUpload, isFalse);
+    expect(after.remoteUrl, startsWith('demo://storage/'));
   });
 
   test('markDownloaded flips on-device flag', () async {

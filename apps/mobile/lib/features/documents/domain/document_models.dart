@@ -89,6 +89,9 @@ class ProjectDocument {
     this.synced = true,
     this.textContent,
     this.pdfPages = const [],
+    this.localFilePath,
+    this.remoteUrl,
+    this.pendingUpload = false,
   });
 
   final String id;
@@ -109,11 +112,18 @@ class ProjectDocument {
   final String? textContent;
   /// Synthetic PDF pages for in-app page nav / search until pdfrx is wired.
   final List<String> pdfPages;
+  /// On-device path (or `local://demo/...` for Fake uploads).
+  final String? localFilePath;
+  final String? remoteUrl;
+  final bool pendingUpload;
 
   ProjectDocument copyWith({
     bool? downloaded,
     bool? synced,
     DateTime? updatedAt,
+    String? localFilePath,
+    String? remoteUrl,
+    bool? pendingUpload,
   }) {
     return ProjectDocument(
       id: id,
@@ -132,6 +142,9 @@ class ProjectDocument {
       synced: synced ?? this.synced,
       textContent: textContent,
       pdfPages: pdfPages,
+      localFilePath: localFilePath ?? this.localFilePath,
+      remoteUrl: remoteUrl ?? this.remoteUrl,
+      pendingUpload: pendingUpload ?? this.pendingUpload,
     );
   }
 
@@ -152,6 +165,9 @@ class ProjectDocument {
         'synced': synced,
         'textContent': textContent,
         'pdfPages': pdfPages,
+        'localFilePath': localFilePath,
+        'remoteUrl': remoteUrl,
+        'pendingUpload': pendingUpload,
       };
 
   factory ProjectDocument.fromJson(Map<String, Object?> json) =>
@@ -172,6 +188,9 @@ class ProjectDocument {
         synced: json['synced'] as bool? ?? true,
         textContent: json['textContent'] as String?,
         pdfPages: (json['pdfPages'] as List? ?? []).cast<String>(),
+        localFilePath: json['localFilePath'] as String?,
+        remoteUrl: json['remoteUrl'] as String?,
+        pendingUpload: json['pendingUpload'] as bool? ?? false,
       );
 }
 
@@ -182,6 +201,7 @@ class UploadDocumentInput {
     required this.contentType,
     this.textContent,
     this.pdfPages = const [],
+    this.localFilePath,
   });
 
   final String folderId;
@@ -189,6 +209,8 @@ class UploadDocumentInput {
   final String contentType;
   final String? textContent;
   final List<String> pdfPages;
+  /// Real path or omit — repo assigns a demo `local://` path when null.
+  final String? localFilePath;
 }
 
 class DocumentsException implements Exception {
