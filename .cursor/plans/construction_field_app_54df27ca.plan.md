@@ -300,6 +300,12 @@ docs/                 # plans and training
 21. ~~System share~~ — `share_plus` for DPR / PM digest / document summary (clipboard fallback); see core `SharePort`.
 22. ~~Local DPR nudge~~ — `flutter_local_notifications` daily tray reminder from Digests prefs; Simulate posts tray + inbox. Cloud FCM cron still deferred.
 23. ~~Notification deep links~~ — tray / FCM open / Sync inbox tap → DPR / issue / RFI; Digests hour picker for nudge.
-24. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift remains a follow-up.
+24. ~~1-tap PDF export~~ — DPR / PM digest PDFs via `package:pdf` + `SharePort.shareFile`.
+25. ~~Sync diagnostics + health~~ — Sync status background meta, device vs demo network, Probe health.
+26. ~~Evidence photo compression~~ — `EvidenceImagePolicy` + compressor; gallery pick; `byteSizeBytes`.
+27. ~~Pilot hub PDF~~ — Share pilot PDF / text from Pilot hub.
+28. ~~Site-ops evidence + Storage~~ — safety/QA photos via EvidenceCapture; outbox upload → `demo://` in NoOp.
+29. ~~Local cache budget / Cleanup~~ — Sync status soft 8MB meter; Cleanup clears uploaded `local://` stubs.
+30. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift remains a follow-up.
 
 No native-only Android path; iOS ships from the same Flutter codebase. Enterprise BIM/Forge remains a WebView module after MVP.

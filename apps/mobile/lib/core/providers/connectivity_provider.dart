@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../device/local_media_cache.dart';
 import '../../features/auth/presentation/auth_controller.dart';
 import '../../features/documents/data/local_documents_repository.dart';
 import '../../features/documents/presentation/documents_providers.dart';
@@ -20,18 +21,29 @@ import '../../sync/remote/syncable_store.dart';
 import '../../sync/sync_models.dart';
 
 final syncEngineProvider = Provider<LocalSyncEngine>((ref) {
+  final fieldRecords = ref.watch(fieldRecordsRepositoryProvider);
+  final siteOps = ref.watch(siteOpsRepositoryProvider) as LocalSiteOpsRepository;
   final stores = <SyncableStore>[
     ref.watch(dprRepositoryProvider) as LocalDprRepository,
     ref.watch(drawingPinsRepositoryProvider) as LocalDrawingPinsRepository,
-    ref.watch(siteOpsRepositoryProvider) as LocalSiteOpsRepository,
+    siteOps,
     ref.watch(documentsRepositoryProvider) as LocalDocumentsRepository,
     ref.watch(voiceNotesRepositoryProvider) as LocalVoiceNotesRepository,
   ];
   return LocalSyncEngine(
     prefs: ref.watch(sharedPreferencesProvider),
-    fieldRecords: ref.watch(fieldRecordsRepositoryProvider),
+    fieldRecords: fieldRecords,
     moduleStores: stores,
+    mediaCaches: [
+      if (fieldRecords is LocalMediaCache) fieldRecords as LocalMediaCache,
+      siteOps,
+    ],
   );
+});
+
+/// Soft local-cache estimate for Sync status (stubs; not on-disk usage).
+final localCacheSnapshotProvider = Provider<LocalCacheSnapshot>((ref) {
+  return ref.watch(syncEngineProvider).estimateLocalCache();
 });
 
 final syncLogsProvider = StreamProvider<List<SyncLogEntry>>((ref) {

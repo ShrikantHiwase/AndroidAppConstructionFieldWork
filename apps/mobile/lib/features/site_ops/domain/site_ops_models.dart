@@ -46,6 +46,7 @@ class SafetyRecord {
     int? photoByteSizeBytes,
     String? photoRemoteUrl,
     bool? pendingPhotoUpload,
+    bool clearPhotoLocalPath = false,
   }) {
     return SafetyRecord(
       id: id,
@@ -59,7 +60,8 @@ class SafetyRecord {
       createdAt: createdAt,
       photoRequired: photoRequired,
       hasPhoto: hasPhoto ?? this.hasPhoto,
-      photoLocalPath: photoLocalPath ?? this.photoLocalPath,
+      photoLocalPath:
+          clearPhotoLocalPath ? null : (photoLocalPath ?? this.photoLocalPath),
       photoByteSizeBytes: photoByteSizeBytes ?? this.photoByteSizeBytes,
       photoRemoteUrl: photoRemoteUrl ?? this.photoRemoteUrl,
       pendingPhotoUpload: pendingPhotoUpload ?? this.pendingPhotoUpload,
@@ -139,6 +141,7 @@ class InspectionItem {
     int? photoByteSizeBytes,
     String? photoRemoteUrl,
     bool? pendingPhotoUpload,
+    bool clearPhotoLocalPath = false,
   }) {
     return InspectionItem(
       id: id,
@@ -146,7 +149,8 @@ class InspectionItem {
       result: result ?? this.result,
       photoOnFail: photoOnFail,
       hasPhoto: hasPhoto ?? this.hasPhoto,
-      photoLocalPath: photoLocalPath ?? this.photoLocalPath,
+      photoLocalPath:
+          clearPhotoLocalPath ? null : (photoLocalPath ?? this.photoLocalPath),
       photoByteSizeBytes: photoByteSizeBytes ?? this.photoByteSizeBytes,
       photoRemoteUrl: photoRemoteUrl ?? this.photoRemoteUrl,
       pendingPhotoUpload: pendingPhotoUpload ?? this.pendingPhotoUpload,

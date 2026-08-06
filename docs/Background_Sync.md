@@ -35,4 +35,5 @@ Manifest permissions: `RECEIVE_BOOT_COMPLETED`, `WAKE_LOCK` (plus existing netwo
 2. **Sync status** shows last background flush time / count (from `sync.background_last_at` / `sync.background_last_flushed`)
 3. Tap **Enqueue background flush** (Workmanager one-off; may no-op on desktop tests)
 4. Tap **Probe health** — demo returns local OK; Firebase calls Functions `health`
-5. Unit: `flutter test test/background_sync_test.dart test/health_check_port_test.dart`
+5. Sync status **Local cache** meter shows soft 8MB estimate; **Cleanup** reclaims uploaded `local://` stubs
+6. Unit: `flutter test test/background_sync_test.dart test/health_check_port_test.dart test/local_cache_budget_test.dart`
