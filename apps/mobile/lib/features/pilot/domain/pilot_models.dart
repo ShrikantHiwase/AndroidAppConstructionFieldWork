@@ -123,6 +123,8 @@ class PilotMetricsSnapshot {
     required this.checklistTotal,
     this.issueCreateSampleCount = 0,
     this.issueCreateMedianMs,
+    this.dprSubmitSampleCount = 0,
+    this.dprSubmitMedianMs,
   });
 
   final DateTime generatedAt;
@@ -136,12 +138,20 @@ class PilotMetricsSnapshot {
   final int checklistTotal;
   final int issueCreateSampleCount;
   final int? issueCreateMedianMs;
+  final int dprSubmitSampleCount;
+  final int? dprSubmitMedianMs;
 
   /// Minimum successful creates before median counts toward Hypercare.
   static const int issueCreateMinSamples = 3;
 
   /// Hypercare target: median create duration under 90 seconds.
   static const int issueCreateTargetMs = 90 * 1000;
+
+  /// Minimum successful DPR submits before median counts.
+  static const int dprSubmitMinSamples = 3;
+
+  /// UAT / training target: submit Today's DPR under 3 minutes.
+  static const int dprSubmitTargetMs = 3 * 60 * 1000;
 
   /// Error rate 0..1; null when no sync samples yet.
   double? get syncFailureRate =>
@@ -163,12 +173,29 @@ class PilotMetricsSnapshot {
     return median < issueCreateTargetMs;
   }
 
-  String get issueCreateMedianLabel {
-    final median = issueCreateMedianMs;
-    if (median == null || issueCreateSampleCount == 0) return 'n/a';
+  /// Null when fewer than [dprSubmitMinSamples] samples for this project.
+  bool? get dprSubmitTargetMet {
+    if (dprSubmitSampleCount < dprSubmitMinSamples) return null;
+    final median = dprSubmitMedianMs;
+    if (median == null) return null;
+    return median < dprSubmitTargetMs;
+  }
+
+  String get issueCreateMedianLabel =>
+      _medianLabel(issueCreateMedianMs, issueCreateSampleCount);
+
+  String get dprSubmitMedianLabel =>
+      _medianLabel(dprSubmitMedianMs, dprSubmitSampleCount);
+
+  static String _medianLabel(int? median, int sampleCount) {
+    if (median == null || sampleCount == 0) return 'n/a';
     if (median < 1000) return '${median}ms';
     final seconds = median / 1000;
-    return '${seconds.toStringAsFixed(seconds < 10 ? 1 : 0)}s';
+    if (seconds < 60) {
+      return '${seconds.toStringAsFixed(seconds < 10 ? 1 : 0)}s';
+    }
+    final minutes = seconds / 60;
+    return '${minutes.toStringAsFixed(minutes < 10 ? 1 : 0)}m';
   }
 
   String toShareText({required String projectName}) {
@@ -178,12 +205,21 @@ class PilotMetricsSnapshot {
       false => 'BELOW',
       null => 'NEED $issueCreateMinSamples+',
     };
+    final dprSubmitStatus = switch (dprSubmitTargetMet) {
+      true => 'OK',
+      false => 'BELOW',
+      null => 'NEED $dprSubmitMinSamples+',
+    };
     final buf = StringBuffer()
       ..writeln('PILOT SNAPSHOT — $projectName')
       ..writeln('Generated: ${generatedAt.toIso8601String()}')
       ..writeln(
         'DPR days submitted (ISO week): $dprSubmittedDaysThisWeek '
         '(target >=4) ${dprTargetMet ? 'OK' : 'BELOW'}',
+      )
+      ..writeln(
+        'DPR submit median: $dprSubmitMedianLabel '
+        '(n=$dprSubmitSampleCount, target <3m) $dprSubmitStatus',
       )
       ..writeln(
         'Issue create median: $issueCreateMedianLabel '
@@ -203,9 +239,9 @@ class PilotMetricsSnapshot {
   }
 }
 
-/// One successful New Issue flow duration (page open → create returned).
-class IssueCreateTimingSample {
-  const IssueCreateTimingSample({
+/// Duration sample for Pilot hypercare (issue create / DPR submit).
+class PilotDurationSample {
+  const PilotDurationSample({
     required this.durationMs,
     required this.projectId,
     required this.recordedAt,
@@ -221,15 +257,20 @@ class IssueCreateTimingSample {
         'recordedAt': recordedAt.toIso8601String(),
       };
 
-  factory IssueCreateTimingSample.fromJson(Map<String, Object?> json) =>
-      IssueCreateTimingSample(
+  factory PilotDurationSample.fromJson(Map<String, Object?> json) =>
+      PilotDurationSample(
         durationMs: json['durationMs'] as int? ?? 0,
         projectId: json['projectId'] as String? ?? '',
         recordedAt: DateTime.parse(
-          json['recordedAt'] as String? ?? DateTime.now().toUtc().toIso8601String(),
+          json['recordedAt'] as String? ??
+              DateTime.now().toUtc().toIso8601String(),
         ),
       );
 }
+
+/// Alias names for call-site clarity (same shape / JSON).
+typedef IssueCreateTimingSample = PilotDurationSample;
+typedef DprSubmitTimingSample = PilotDurationSample;
 
 /// Median of [values] (ms). Empty → null.
 int? medianDurationMs(List<int> values) {
@@ -240,9 +281,9 @@ int? medianDurationMs(List<int> values) {
   return ((sorted[mid - 1] + sorted[mid]) / 2).round();
 }
 
-/// Median create duration for [projectId] from persisted samples.
-int? issueCreateMedianMsForProject(
-  List<IssueCreateTimingSample> samples, {
+/// Median duration for [projectId] from persisted samples.
+int? durationMedianMsForProject(
+  List<PilotDurationSample> samples, {
   required String projectId,
 }) {
   final durations = samples
@@ -252,14 +293,39 @@ int? issueCreateMedianMsForProject(
   return medianDurationMs(durations);
 }
 
-int issueCreateSampleCountForProject(
-  List<IssueCreateTimingSample> samples, {
+int durationSampleCountForProject(
+  List<PilotDurationSample> samples, {
   required String projectId,
 }) {
   return samples
       .where((s) => s.projectId == projectId && s.durationMs > 0)
       .length;
 }
+
+/// Median create duration for [projectId] from persisted samples.
+int? issueCreateMedianMsForProject(
+  List<IssueCreateTimingSample> samples, {
+  required String projectId,
+}) =>
+    durationMedianMsForProject(samples, projectId: projectId);
+
+int issueCreateSampleCountForProject(
+  List<IssueCreateTimingSample> samples, {
+  required String projectId,
+}) =>
+    durationSampleCountForProject(samples, projectId: projectId);
+
+int? dprSubmitMedianMsForProject(
+  List<DprSubmitTimingSample> samples, {
+  required String projectId,
+}) =>
+    durationMedianMsForProject(samples, projectId: projectId);
+
+int dprSubmitSampleCountForProject(
+  List<DprSubmitTimingSample> samples, {
+  required String projectId,
+}) =>
+    durationSampleCountForProject(samples, projectId: projectId);
 
 bool canAccessPilotHub(AppRole role) => switch (role) {
       AppRole.admin || AppRole.projectManager => true,

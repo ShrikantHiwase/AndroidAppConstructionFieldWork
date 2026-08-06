@@ -339,6 +339,16 @@ class FieldPdfExport {
             '${snapshot.dprTargetMet ? 'OK' : 'BELOW'}',
           ),
           _kv(
+            'DPR submit',
+            '${snapshot.dprSubmitMedianLabel} '
+            '(n=${snapshot.dprSubmitSampleCount}, target <3m) '
+            '${switch (snapshot.dprSubmitTargetMet) {
+              true => 'OK',
+              false => 'BELOW',
+              null => 'NEED ${PilotMetricsSnapshot.dprSubmitMinSamples}+',
+            }}',
+          ),
+          _kv(
             'Issue create',
             '${snapshot.issueCreateMedianLabel} '
             '(n=${snapshot.issueCreateSampleCount}, target <90s) '

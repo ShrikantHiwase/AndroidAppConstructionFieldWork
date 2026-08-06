@@ -325,7 +325,8 @@ docs/                 # plans and training
 40. ~~Client weekly progress share~~ — ISO-week pack from submitted DPRs + open issues; `FieldPdfExport.weekly` + Client/PM/Admin home CTA; closes Hypercare client self-serve PDF.
 41. ~~In-app PDF viewer (pdfrx)~~ — seeded GA Plan asset + on-device file paths via `pdfrx`; synthetic text pages remain fallback.
 42. ~~Pilot issue-create timing~~ — New Issue open→save duration samples; Pilot hub median (&lt;90s, ≥3 samples) + PDF/share + `issue_create` telemetry.
-43. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift remains a follow-up.
+43. ~~Pilot DPR submit timing~~ — Today's DPR open→Submit duration samples; Pilot hub median (&lt;3m, ≥3 samples) + PDF/share + `dpr_submit` telemetry.
+44. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift remains a follow-up.
 7. ~~Pilot / UAT pack~~ — training guide, UAT checklist, hypercare metrics docs + in-app Pilot hub (checklist + live snapshot). Live-site execution and store tracks still need your Firebase project / devices.
 8. ~~Admin invites~~ — in-app create invite + demo accept via FakeAuth (scoped memberships); Cloud Functions email later.
 9. ~~Device sensors~~ — `geolocator` / `image_picker` / `local_auth` / `record` / `file_picker` with Fake defaults; enable native via `--dart-define=USE_NATIVE_SENSORS=true`. See `docs/Device_Sensors.md`.
@@ -362,6 +363,7 @@ docs/                 # plans and training
 40. ~~Client weekly progress share~~ — ISO-week pack from submitted DPRs + open issues; `FieldPdfExport.weekly` + Client/PM/Admin home CTA; closes Hypercare client self-serve PDF.
 41. ~~In-app PDF viewer (pdfrx)~~ — seeded GA Plan asset + on-device file paths via `pdfrx`; synthetic text pages remain fallback.
 42. ~~Pilot issue-create timing~~ — New Issue open→save duration samples; Pilot hub median (&lt;90s, ≥3 samples) + PDF/share + `issue_create` telemetry.
-43. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift remains a follow-up.
+43. ~~Pilot DPR submit timing~~ — Today's DPR open→Submit duration samples; Pilot hub median (&lt;3m, ≥3 samples) + PDF/share + `dpr_submit` telemetry.
+44. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift remains a follow-up.
 
 No native-only Android path; iOS ships from the same Flutter codebase. Enterprise BIM/Forge remains a WebView module after MVP.

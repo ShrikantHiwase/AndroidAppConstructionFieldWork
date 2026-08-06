@@ -65,8 +65,9 @@ class PilotHubPage extends ConsumerWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            'Targets: DPR >=4 days this week · issue create median <90s · '
-            'sync errors <2%. Full guide: docs/Hypercare_Metrics.md',
+            'Targets: DPR >=4 days this week · DPR submit median <3m · '
+            'issue create median <90s · sync errors <2%. '
+            'Full guide: docs/Hypercare_Metrics.md',
             style: Theme.of(context).textTheme.bodySmall,
           ),
           const SizedBox(height: 12),
@@ -129,6 +130,17 @@ class PilotHubPage extends ConsumerWidget {
                     value: '${snap.dprSubmittedDaysThisWeek}',
                     ok: snap.dprTargetMet,
                     hint: 'target >=4',
+                  ),
+                  _MetricTile(
+                    label: 'DPR submit median',
+                    value: snap.dprSubmitMedianLabel,
+                    ok: snap.dprSubmitTargetMet != false,
+                    hint: snap.dprSubmitSampleCount <
+                            PilotMetricsSnapshot.dprSubmitMinSamples
+                        ? 'n=${snap.dprSubmitSampleCount} · need '
+                            '>=${PilotMetricsSnapshot.dprSubmitMinSamples} '
+                            'samples'
+                        : 'n=${snap.dprSubmitSampleCount} · target <3m',
                   ),
                   _MetricTile(
                     label: 'Issue create median',

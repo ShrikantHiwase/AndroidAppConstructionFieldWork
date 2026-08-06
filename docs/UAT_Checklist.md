@@ -33,7 +33,7 @@ Run on mid/low-end Android first. Mark each item in Admin → **Pilot** (or tick
 
 ## DPR & drawings
 
-- [ ] Today's DPR draft + submit in &lt;3 minutes
+- [ ] Today's DPR draft + submit in &lt;3 minutes (Pilot median updates after Submit)
 - [ ] Optional activity evidence photo uploads on flush (demo:// / Storage)
 - [ ] Share DPR PDF via system sheet; text share still works
 - [ ] Voice note on DPR after first save (demo stub or live mic when native sensors on)
