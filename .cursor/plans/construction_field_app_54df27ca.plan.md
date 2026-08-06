@@ -62,6 +62,9 @@ todos:
   - id: background-sync
     content: Workmanager + connectivity_plus background outbox flush
     status: completed
+  - id: fcm-delivery
+    content: Admin.messaging send + FCM background/open handlers
+    status: completed
 isProject: false
 ---
 
@@ -276,6 +279,7 @@ docs/                 # plans and training
 15. ~~Voice notes sync~~ — voice notes enqueue Storage + Firestore create; offline transcript pending resolves on flush; `audio/*` allowed in Storage rules.
 16. ~~FCM scaffolding~~ — `PushNotificationService` (NoOp + Firebase), local notification inbox, token → `fcm_tokens/{uid}`, assign/status intents logged; see [FCM.md](FCM.md).
 17. ~~Background sync~~ — Workmanager periodic/one-off outbox flush + `connectivity_plus` reconnect auto-flush; see [Background_Sync.md](Background_Sync.md).
-18. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift / real Admin.messaging send remain follow-ups.
+18. ~~FCM delivery~~ — Functions `admin.messaging().send` on DPR submit + issue assign/status; client background / open / cold-start handlers → inbox; see [FCM.md](FCM.md).
+19. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift and scheduled 5 PM nudge Function remain follow-ups.
 
 No native-only Android path; iOS ships from the same Flutter codebase. Enterprise BIM/Forge remains a WebView module after MVP.

@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:construction_field_app/core/notifications/local_notification_inbox.dart';
+import 'package:construction_field_app/core/notifications/notification_message_mapper.dart';
 import 'package:construction_field_app/core/notifications/push_notification_service.dart';
 
 void main() {
@@ -44,5 +45,25 @@ void main() {
     final again = LocalNotificationInbox(prefs);
     expect(again.entries, hasLength(1));
     expect(again.readToken(), 'tok_1');
+  });
+
+  test('parsePushPayload prefers notification then data type', () {
+    final fromNotification = parsePushPayload(
+      notificationTitle: 'Hello',
+      notificationBody: 'World',
+      data: {'type': 'issue_assigned'},
+    );
+    expect(fromNotification.title, 'Hello');
+    expect(fromNotification.body, 'World');
+
+    final fromType = parsePushPayload(
+      data: {'type': 'issue_status', 'status': 'resolved'},
+    );
+    expect(fromType.title, 'Issue status updated');
+    expect(fromType.body, 'resolved');
+    expect(fromType.data['type'], 'issue_status');
+
+    final dpr = parsePushPayload(data: {'type': 'dpr_submitted'});
+    expect(dpr.title, 'DPR submitted');
   });
 }

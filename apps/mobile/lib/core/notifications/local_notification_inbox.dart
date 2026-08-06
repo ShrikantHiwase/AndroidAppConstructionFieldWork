@@ -40,7 +40,7 @@ class NotificationLogEntry {
       );
 }
 
-/// On-device inbox for demo nudges + foreground FCM messages.
+/// On-device inbox for demo nudges + FCM (foreground / background / open).
 class LocalNotificationInbox {
   LocalNotificationInbox(this._prefs) {
     _load();

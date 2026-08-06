@@ -58,6 +58,7 @@ docs/              Build plan and training
 | Voice notes Firestore/Storage sync | Done |
 | FCM push scaffolding | Done |
 | Workmanager + connectivity background sync | Done |
+| FCM Admin.messaging + background handlers | Done |
 | FlutterFire configure + store release | Next (needs your Firebase project) |
 | Phase 3 Enterprise hooks | Deferred |
 

@@ -3,16 +3,19 @@
  *
  * - health: connectivity check
  * - inviteMember: admin creates Auth user + memberships + invite audit doc
- * - onDprWrite: placeholder for 5 PM nudge / digest fan-out (FCM)
+ * - onDprWrite: FCM notify creator on DPR submit
+ * - onIssueWrite: FCM on assign / status change
  *
  * Emulators: firebase emulators:start
  * Deploy: firebase deploy --only functions (after flutterfire + Blaze if needed)
+ * Dry-run FCM: FCM_SEND_ENABLED=false
  */
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const { onDocumentWritten } = require("firebase-functions/v2/firestore");
 const { initializeApp } = require("firebase-admin/app");
 const { getAuth } = require("firebase-admin/auth");
 const { getFirestore } = require("firebase-admin/firestore");
+const { sendToUser } = require("./fcm");
 
 initializeApp();
 
@@ -35,7 +38,7 @@ async function callerIsAdmin(uid, orgId, projectId) {
 }
 
 exports.health = onCall(async () => {
-  return { ok: true, service: "construction-field-functions", version: "1" };
+  return { ok: true, service: "construction-field-functions", version: "2" };
 });
 
 /**
@@ -146,30 +149,101 @@ exports.inviteMember = onCall(async (request) => {
 });
 
 /**
- * Placeholder for DPR submit → digest / nudge fan-out.
- * Looks up fcm_tokens for the creator when present; actual Admin.messaging()
- * send stays off until Cloud Messaging is enabled on the project.
+ * DPR submit → notify the creator (ack / digest hook).
  */
 exports.onDprWrite = onDocumentWritten("dprs/{dprId}", async (event) => {
+  const before = event.data?.before?.data();
   const after = event.data?.after?.data();
   if (!after) return null;
   if (after.submitted !== true) return null;
+  // Only fan out when transitioning into submitted (avoid re-send on edits).
+  if (before?.submitted === true) return null;
 
-  let tokenHint = null;
-  if (after.createdBy) {
-    const tok = await db.doc(`fcm_tokens/${after.createdBy}`).get();
-    if (tok.exists) tokenHint = tok.data()?.token ? "present" : null;
-  }
+  const result = await sendToUser(after.createdBy, {
+    title: "DPR submitted",
+    body: `DPR for ${after.date || "today"} is on record`,
+    data: {
+      type: "dpr_submitted",
+      dprId: event.params.dprId,
+      projectId: after.projectId || "",
+    },
+  });
 
   console.log(
     JSON.stringify({
       type: "dpr_submitted",
       dprId: event.params.dprId,
-      projectId: after.projectId,
+      projectId: after.projectId || null,
       createdBy: after.createdBy || null,
-      fcmToken: tokenHint,
-      note: "Call admin.messaging().send when Cloud Messaging is live",
+      fcm: result,
     })
   );
+  return null;
+});
+
+/**
+ * Issue assign / status → notify assignee and creator.
+ */
+exports.onIssueWrite = onDocumentWritten("issues/{issueId}", async (event) => {
+  const before = event.data?.before?.data();
+  const after = event.data?.after?.data();
+  if (!after) return null;
+
+  const results = [];
+  const issueId = event.params.issueId;
+  const title = after.title || "Issue";
+
+  const assigneeChanged =
+    Boolean(after.assigneeId) && after.assigneeId !== before?.assigneeId;
+  if (assigneeChanged) {
+    results.push({
+      kind: "issue_assigned",
+      ...(await sendToUser(after.assigneeId, {
+        title: "Issue assigned",
+        body: title,
+        data: {
+          type: "issue_assigned",
+          issueId,
+          projectId: after.projectId || "",
+        },
+      })),
+    });
+  }
+
+  const statusChanged =
+    Boolean(before) &&
+    Boolean(after.status) &&
+    before.status !== after.status;
+  if (statusChanged) {
+    const targets = new Set();
+    if (after.assigneeId) targets.add(after.assigneeId);
+    if (after.createdBy) targets.add(after.createdBy);
+    for (const uid of targets) {
+      results.push({
+        kind: "issue_status",
+        uid,
+        ...(await sendToUser(uid, {
+          title: "Issue status updated",
+          body: `${title} → ${after.status}`,
+          data: {
+            type: "issue_status",
+            issueId,
+            status: after.status,
+            projectId: after.projectId || "",
+          },
+        })),
+      });
+    }
+  }
+
+  if (results.length) {
+    console.log(
+      JSON.stringify({
+        type: "issue_fcm",
+        issueId,
+        results,
+      })
+    );
+  }
   return null;
 });
