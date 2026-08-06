@@ -79,6 +79,7 @@ docs/              Build plan and training
 | Document file picker (Fake + file_picker) | Done |
 | Cloud 5 PM DPR nudge Function | Done (Blaze to deploy) |
 | Client weekly progress PDF/share | Done |
+| In-app PDF viewer (pdfrx) | Done |
 | FlutterFire configure + store release | Next (needs your Firebase project) |
 | Phase 3 Enterprise hooks | Deferred |
 

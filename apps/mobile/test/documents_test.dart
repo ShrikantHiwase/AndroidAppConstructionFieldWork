@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:construction_field_app/features/auth/data/fake_auth_repository.dart';
 import 'package:construction_field_app/features/documents/data/local_documents_repository.dart';
 import 'package:construction_field_app/features/documents/domain/document_models.dart';
+import 'package:construction_field_app/features/documents/domain/pdf_open_source.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -33,7 +34,8 @@ void main() {
         .watchDocuments(projectId: session.activeProjectId)
         .first;
     expect(docs, isNotEmpty);
-    expect(docs.any((d) => d.kind == DocContentType.pdf), isTrue);
+    final pdf = docs.firstWhere((d) => d.kind == DocContentType.pdf);
+    expect(pdf.localFilePath, DemoDocumentAssets.gaPlanAssetUri);
     expect(docs.any((d) => d.kind == DocContentType.txt), isTrue);
     expect(docs.any((d) => d.kind == DocContentType.csv), isTrue);
   });

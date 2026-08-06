@@ -40,10 +40,11 @@ until flush resolves a heuristic transcript.
 
 ## Document files
 
-`DocumentFilePolicy`: Fake TXT/CSV/PDF stubs with estimated sizes. Soft cache
-includes document local paths; Cleanup clears uploaded `local://` stubs. Full
-PDF rendering (`pdfrx`) remains deferred — upload stores metadata + Storage
-bytes path.
+`DocumentFilePolicy`: Fake TXT/CSV stubs + PDF demo asset URI
+(`asset://assets/demo/ga_plan_level_02.pdf`). Soft cache includes document
+local paths; Cleanup clears uploaded `local://` stubs. PDF rendering uses
+`pdfrx` for asset and on-device file paths (synthetic text pages remain as
+fallback).
 
 ## Android permissions and iOS usage strings
 

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pdfrx/pdfrx.dart';
 
 import '../../../core/share/share_port.dart';
 import '../domain/document_models.dart';
+import '../domain/pdf_open_source.dart';
 import 'documents_providers.dart';
 
 class DocumentViewerPage extends ConsumerStatefulWidget {
@@ -59,6 +61,10 @@ class _DocumentViewerPageState extends ConsumerState<DocumentViewerPage> {
       );
     }
 
+    final pdfSource =
+        doc.kind == DocContentType.pdf ? resolvePdfOpenSource(doc) : null;
+    final usePdfrx = pdfSource?.usesPdfrx ?? false;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(doc.name),
@@ -112,22 +118,33 @@ class _DocumentViewerPageState extends ConsumerState<DocumentViewerPage> {
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-            child: TextField(
-              controller: _search,
-              decoration: InputDecoration(
-                labelText: 'Search',
-                border: const OutlineInputBorder(),
-                suffixIcon: IconButton(
-                  icon: const Icon(Icons.search),
-                  onPressed: () => setState(() => _query = _search.text.trim()),
+          if (!usePdfrx)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+              child: TextField(
+                controller: _search,
+                decoration: InputDecoration(
+                  labelText: 'Search',
+                  border: const OutlineInputBorder(),
+                  suffixIcon: IconButton(
+                    icon: const Icon(Icons.search),
+                    onPressed: () =>
+                        setState(() => _query = _search.text.trim()),
+                  ),
                 ),
+                onSubmitted: (v) => setState(() => _query = v.trim()),
               ),
-              onSubmitted: (v) => setState(() => _query = v.trim()),
             ),
-          ),
-          if (doc.kind == DocContentType.pdf) ...[
+          if (doc.kind == DocContentType.pdf && usePdfrx) ...[
+            Expanded(child: _buildPdfrxViewer(pdfSource!)),
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: Text(
+                'PDF viewer (pdfrx) — pinch to zoom, scroll pages.',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ),
+          ] else if (doc.kind == DocContentType.pdf) ...[
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
@@ -138,9 +155,13 @@ class _DocumentViewerPageState extends ConsumerState<DocumentViewerPage> {
                         : () => setState(() => _pageIndex -= 1),
                     icon: const Icon(Icons.chevron_left),
                   ),
-                  Text('Page ${_pageIndex + 1} / ${doc.pdfPages.length}'),
+                  Text(
+                    'Page ${_pageIndex + 1} / '
+                    '${doc.pdfPages.isEmpty ? 1 : doc.pdfPages.length}',
+                  ),
                   IconButton(
-                    onPressed: _pageIndex >= doc.pdfPages.length - 1
+                    onPressed: doc.pdfPages.isEmpty ||
+                            _pageIndex >= doc.pdfPages.length - 1
                         ? null
                         : () => setState(() => _pageIndex += 1),
                     icon: const Icon(Icons.chevron_right),
@@ -176,7 +197,7 @@ class _DocumentViewerPageState extends ConsumerState<DocumentViewerPage> {
                     child: _highlightedText(
                       context,
                       doc.pdfPages.isEmpty
-                          ? 'Empty PDF'
+                          ? 'No PDF preview available.'
                           : doc.pdfPages[_pageIndex],
                     ),
                   ),
@@ -186,7 +207,7 @@ class _DocumentViewerPageState extends ConsumerState<DocumentViewerPage> {
             Padding(
               padding: const EdgeInsets.all(12),
               child: Text(
-                'Demo PDF pages — replace with pdfrx when Storage is live.',
+                'Text PDF preview — open a seeded or on-device PDF for pdfrx.',
                 style: Theme.of(context).textTheme.bodySmall,
               ),
             ),
@@ -207,6 +228,17 @@ class _DocumentViewerPageState extends ConsumerState<DocumentViewerPage> {
         ],
       ),
     );
+  }
+
+  Widget _buildPdfrxViewer(PdfOpenSource source) {
+    switch (source.backend) {
+      case PdfViewerBackend.pdfrxAsset:
+        return PdfViewer.asset(source.assetPath!);
+      case PdfViewerBackend.pdfrxFile:
+        return PdfViewer.file(source.filePath!);
+      case PdfViewerBackend.syntheticPages:
+        return const SizedBox.shrink();
+    }
   }
 
   Widget _highlightedText(BuildContext context, String body) {

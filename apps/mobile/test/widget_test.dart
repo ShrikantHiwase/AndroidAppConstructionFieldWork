@@ -123,8 +123,9 @@ void main() {
 
     await tester.tap(find.text('GA Plan Level 02.pdf'));
     await tester.pumpAndSettle();
-    expect(find.textContaining('Page 1'), findsOneWidget);
-    expect(find.text('Search'), findsOneWidget);
+    // Seeded PDF opens with pdfrx (not synthetic "Page 1" / Search chrome).
+    expect(find.text('GA Plan Level 02.pdf'), findsWidgets);
+    expect(find.textContaining('pdfrx'), findsOneWidget);
   });
 
   testWidgets('engineer can open site ops hub', (tester) async {

@@ -40,9 +40,10 @@ dependencies:
   flutter_secure_storage: ^10.3.1
   record: ^6.2.1
   file_picker: ^11.0.3
+  pdfrx: ^2.1.5
 
   # Still deferred (see docs/Telemetry.md for NoOp scaffolding):
-  # firebase_crashlytics, firebase_analytics, drift, pdfrx
+  # firebase_crashlytics, firebase_analytics, drift
 
 dev_dependencies:
   flutter_test:
@@ -57,3 +58,5 @@ dependency_overrides:
 flutter:
   uses-material-design: true
   generate: true
+  assets:
+    - assets/demo/ga_plan_level_02.pdf

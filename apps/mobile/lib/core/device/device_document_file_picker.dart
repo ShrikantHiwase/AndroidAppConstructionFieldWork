@@ -48,12 +48,8 @@ class DeviceDocumentFilePicker implements DocumentFilePicker {
         } catch (_) {
           textContent = 'File on device — open externally if needed.';
         }
-      } else if (kind == DocContentType.pdf) {
-        pdfPages = [
-          'PDF on device: $name',
-          'Full PDF viewer (pdfrx) still deferred — metadata synced on flush.',
-        ];
       }
+      // PDF: leave pdfPages empty — viewer opens the on-device path with pdfrx.
 
       return PickedDocument(
         localPath: path,

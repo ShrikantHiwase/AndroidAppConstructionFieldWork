@@ -1,4 +1,5 @@
 import '../../features/documents/domain/document_models.dart';
+import '../../features/documents/domain/pdf_open_source.dart';
 import 'document_file_picker.dart';
 import 'document_file_policy.dart';
 
@@ -24,13 +25,12 @@ class FakeDocumentFilePicker implements DocumentFilePicker {
         );
       case DocContentType.pdf:
         return PickedDocument(
-          localPath: 'local://demo/documents/site_note_$_index.pdf',
+          localPath: DemoDocumentAssets.gaPlanAssetUri,
           fileName: 'site_note_$_index.pdf',
           contentType: 'application/pdf',
           byteSizeBytes: DocumentFilePolicy.demoPdfBytes,
-          pdfPages: [
-            'Uploaded PDF stub page 1 — site_note_$_index.pdf',
-            'Page 2 — continuation (demo until pdfrx).',
+          pdfPages: const [
+            'Fallback text if pdfrx cannot open the demo asset.',
           ],
         );
       case DocContentType.other:

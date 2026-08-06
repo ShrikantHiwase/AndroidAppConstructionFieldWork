@@ -2,7 +2,7 @@
 abstract final class DocumentFilePolicy {
   static const int demoTxtBytes = 512;
   static const int demoCsvBytes = 320;
-  static const int demoPdfBytes = 12 * 1024;
+  static const int demoPdfBytes = 5150;
 
   static String formatBytes(int bytes) {
     if (bytes < 1024) return '$bytes B';

@@ -14,6 +14,7 @@ import '../../../sync/remote/syncable_store.dart';
 import '../../auth/domain/auth_models.dart';
 import '../domain/document_models.dart';
 import '../domain/documents_repository.dart';
+import '../domain/pdf_open_source.dart';
 
 class LocalDocumentsRepository
     implements DocumentsRepository, SyncableStore, LocalMediaCache {
@@ -37,7 +38,7 @@ class LocalDocumentsRepository
 
   static const _foldersKey = 'docs.folders';
   static const _documentsKey = 'docs.documents';
-  static const _seededKey = 'docs.seeded_projects';
+  static const _seededKey = 'docs.seeded_projects.v2';
   static const _outboxKey = 'docs.outbox';
 
   final _folders = <String, DocFolder>{};
@@ -190,7 +191,9 @@ class LocalDocumentsRepository
       required DocContentType kind,
       String? textContent,
       List<String> pdfPages = const [],
+      String? localFilePath,
       bool downloaded = false,
+      int? sizeBytes,
     }) {
       final doc = ProjectDocument(
         id: _id('doc'),
@@ -204,11 +207,13 @@ class LocalDocumentsRepository
         createdByName: 'System',
         createdAt: now,
         updatedAt: now,
-        sizeBytes: (textContent?.length ?? pdfPages.join().length),
+        sizeBytes: sizeBytes ??
+            (textContent?.length ?? pdfPages.join().length),
         downloaded: downloaded,
         synced: true,
         textContent: textContent,
         pdfPages: pdfPages,
+        localFilePath: localFilePath,
       );
       _documents[doc.id] = doc;
     }
@@ -218,10 +223,13 @@ class LocalDocumentsRepository
       name: 'GA Plan Level 02.pdf',
       contentType: 'application/pdf',
       kind: DocContentType.pdf,
+      localFilePath: DemoDocumentAssets.gaPlanAssetUri,
+      downloaded: true,
+      sizeBytes: 5150,
       pdfPages: const [
-        'GA PLAN — LEVEL 02\nGrid A–F · Scale 1:100\nNorth arrow toward site gate.\nOpening schedules referenced on sheet S-201.',
-        'SECTION A-A\nBeam B2: 300x600\nSlab thickness 150mm\nNote: hold pour until QA sign-off.',
-        'REVISION LOG\nRev A — IFC issued\nRev B — beam depth updated\nSearch tip: look for "B2" or "QA".',
+        'GA PLAN — LEVEL 02 (fallback text if pdfrx unavailable)',
+        'SECTION A-A — Beam B2: 300x600',
+        'REVISION LOG — Rev A IFC / Rev B beam depth',
       ],
     );
     addDoc(

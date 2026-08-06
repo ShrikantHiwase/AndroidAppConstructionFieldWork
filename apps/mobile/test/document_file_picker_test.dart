@@ -6,6 +6,7 @@ import 'package:construction_field_app/core/device/fake_document_file_picker.dar
 import 'package:construction_field_app/features/auth/data/fake_auth_repository.dart';
 import 'package:construction_field_app/features/documents/data/local_documents_repository.dart';
 import 'package:construction_field_app/features/documents/domain/document_models.dart';
+import 'package:construction_field_app/features/documents/domain/pdf_open_source.dart';
 import 'package:construction_field_app/sync/remote/outbox_remote_sink.dart';
 import 'package:construction_field_app/sync/remote/storage_uploader.dart';
 import 'package:construction_field_app/sync/outbox/outbox_entry.dart';
@@ -42,7 +43,7 @@ void main() {
 
     final pdf = await picker.pick(preferredType: DocContentType.pdf);
     expect(pdf!.contentType, 'application/pdf');
-    expect(pdf.pdfPages, isNotEmpty);
+    expect(pdf.localPath, DemoDocumentAssets.gaPlanAssetUri);
     expect(pdf.byteSizeBytes, DocumentFilePolicy.demoPdfBytes);
   });
 
