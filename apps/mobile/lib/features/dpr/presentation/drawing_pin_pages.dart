@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/device/evidence_capture.dart';
+import '../../../core/device/evidence_image_policy.dart';
+import '../../../core/device/device_providers.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../../issues/domain/issue_models.dart';
 import '../../issues/presentation/field_records_providers.dart';
@@ -69,10 +72,25 @@ class _DrawingPinPageState extends ConsumerState<DrawingPinPage> {
   var _page = 1;
   Issue? _selectedIssue;
   var _busy = false;
+  String? _photoLocalPath;
+  int? _photoByteSizeBytes;
+  String? _photoLabel;
+
+  Future<void> _attachPhoto(EvidencePhotoSource source) async {
+    final shot =
+        await ref.read(evidenceCaptureProvider).capturePhoto(source: source);
+    if (shot == null || !mounted) return;
+    setState(() {
+      _photoLocalPath = shot.localPath;
+      _photoByteSizeBytes = shot.byteSizeBytes;
+      _photoLabel = shot.fileName;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    final drawings = ref.watch(drawingsProvider).valueOrNull ?? const <DrawingSheet>[];
+    final drawings =
+        ref.watch(drawingsProvider).valueOrNull ?? const <DrawingSheet>[];
     DrawingSheet? sheet;
     for (final d in drawings) {
       if (d.id == widget.drawingId) {
@@ -94,6 +112,8 @@ class _DrawingPinPageState extends ConsumerState<DrawingPinPage> {
     }
     final current = sheet;
     final pagePins = pins.where((p) => p.page == _page).toList();
+    final photoReady =
+        _photoLocalPath != null && _photoLocalPath!.isNotEmpty;
 
     return Scaffold(
       appBar: AppBar(
@@ -114,7 +134,7 @@ class _DrawingPinPageState extends ConsumerState<DrawingPinPage> {
       ),
       body: Column(
         children: [
-          if (canPin)
+          if (canPin) ...[
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
               child: DropdownMenu<Issue>(
@@ -131,6 +151,42 @@ class _DrawingPinPageState extends ConsumerState<DrawingPinPage> {
                 onSelected: (v) => setState(() => _selectedIssue = v),
               ),
             ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+              child: Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  OutlinedButton.icon(
+                    onPressed: _busy
+                        ? null
+                        : () => _attachPhoto(EvidencePhotoSource.camera),
+                    icon: const Icon(Icons.photo_camera_outlined),
+                    label: const Text('Add photo'),
+                  ),
+                  OutlinedButton.icon(
+                    onPressed: _busy
+                        ? null
+                        : () => _attachPhoto(EvidencePhotoSource.gallery),
+                    icon: const Icon(Icons.photo_library_outlined),
+                    label: const Text('Gallery'),
+                  ),
+                  if (photoReady)
+                    Text(
+                      '${_photoLabel ?? 'photo'} · '
+                      '${EvidenceImagePolicy.formatBytes(_photoByteSizeBytes ?? 0)}',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    )
+                  else
+                    Text(
+                      'Photo optional',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                ],
+              ),
+            ),
+          ],
           Expanded(
             child: LayoutBuilder(
               builder: (context, constraints) {
@@ -159,16 +215,28 @@ class _DrawingPinPageState extends ConsumerState<DrawingPinPage> {
                                     issueId: _selectedIssue!.id,
                                     issueTitle: _selectedIssue!.title,
                                     note: 'Punch on ${current.version}',
+                                    photoLocalPath: _photoLocalPath,
+                                    photoByteSizeBytes: _photoByteSizeBytes,
                                   ),
                                 );
                             if (context.mounted) {
+                              final photoNote = photoReady
+                                  ? ' + evidence photo'
+                                  : '';
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text(
-                                    'Pinned "${_selectedIssue!.title}"',
+                                    'Pinned "${_selectedIssue!.title}"$photoNote',
                                   ),
                                 ),
                               );
+                            }
+                            if (mounted) {
+                              setState(() {
+                                _photoLocalPath = null;
+                                _photoByteSizeBytes = null;
+                                _photoLabel = null;
+                              });
                             }
                           } catch (e) {
                             if (context.mounted) {
@@ -199,7 +267,8 @@ class _DrawingPinPageState extends ConsumerState<DrawingPinPage> {
                             child: Text(
                               '${current.title}\n${current.version}\nPage $_page\n\n'
                               'Tap to drop a punch pin'
-                              '${_selectedIssue == null ? ' (select an issue first)' : ''}.',
+                              '${_selectedIssue == null ? ' (select an issue first)' : ''}'
+                              '${photoReady ? ' with evidence photo' : ''}.',
                               style: Theme.of(context).textTheme.bodyLarge,
                             ),
                           ),
@@ -209,10 +278,14 @@ class _DrawingPinPageState extends ConsumerState<DrawingPinPage> {
                             left: pin.x * constraints.maxWidth - 14,
                             top: pin.y * constraints.maxHeight - 14,
                             child: Tooltip(
-                              message: pin.issueTitle,
-                              child: const Icon(
-                                Icons.location_on,
-                                color: Color(0xFFB3261E),
+                              message: pin.hasPhoto
+                                  ? '${pin.issueTitle} · photo'
+                                  : pin.issueTitle,
+                              child: Icon(
+                                pin.hasPhoto
+                                    ? Icons.add_a_photo
+                                    : Icons.location_on,
+                                color: const Color(0xFFB3261E),
                                 size: 28,
                               ),
                             ),
@@ -229,7 +302,7 @@ class _DrawingPinPageState extends ConsumerState<DrawingPinPage> {
             child: Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                '${pagePins.length} pin(s) on this page · markup lite (pin + cloud)',
+                '${pagePins.length} pin(s) on this page · optional evidence photo',
                 style: Theme.of(context).textTheme.bodySmall,
               ),
             ),

@@ -23,9 +23,11 @@ import '../../sync/sync_models.dart';
 final syncEngineProvider = Provider<LocalSyncEngine>((ref) {
   final fieldRecords = ref.watch(fieldRecordsRepositoryProvider);
   final siteOps = ref.watch(siteOpsRepositoryProvider) as LocalSiteOpsRepository;
+  final pins =
+      ref.watch(drawingPinsRepositoryProvider) as LocalDrawingPinsRepository;
   final stores = <SyncableStore>[
     ref.watch(dprRepositoryProvider) as LocalDprRepository,
-    ref.watch(drawingPinsRepositoryProvider) as LocalDrawingPinsRepository,
+    pins,
     siteOps,
     ref.watch(documentsRepositoryProvider) as LocalDocumentsRepository,
     ref.watch(voiceNotesRepositoryProvider) as LocalVoiceNotesRepository,
@@ -37,6 +39,7 @@ final syncEngineProvider = Provider<LocalSyncEngine>((ref) {
     mediaCaches: [
       if (fieldRecords is LocalMediaCache) fieldRecords as LocalMediaCache,
       siteOps,
+      pins,
     ],
   );
 });

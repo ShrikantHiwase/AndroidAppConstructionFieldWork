@@ -313,7 +313,8 @@ docs/                 # plans and training
 28. ~~Site-ops evidence photos~~ — Safety observation/incident + QA fail capture via `EvidenceCapture` / compression (`photoLocalPath` + size).
 29. ~~Site-ops Storage upload~~ — safety/QA photos enqueue `OutboxOperation.upload` then create; NoOp → `demo://` URLs.
 30. ~~Local cache budget / Cleanup~~ — Sync status soft 8MB meter (issues + site-ops stubs); Cleanup clears uploaded `local://` paths.
-31. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift and scheduled 5 PM nudge Function remain follow-ups.
+31. ~~Drawing-pin evidence photos~~ — optional pin photo via EvidenceCapture; outbox Storage upload then create; soft cache includes pins.
+32. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift and scheduled 5 PM nudge Function remain follow-ups.
 7. ~~Pilot / UAT pack~~ — training guide, UAT checklist, hypercare metrics docs + in-app Pilot hub (checklist + live snapshot). Live-site execution and store tracks still need your Firebase project / devices.
 8. ~~Admin invites~~ — in-app create invite + demo accept via FakeAuth (scoped memberships); Cloud Functions email later.
 9. ~~Device sensors~~ — `geolocator` / `image_picker` / `local_auth` with Fake defaults; enable native via `--dart-define=USE_NATIVE_SENSORS=true`. See `docs/Device_Sensors.md`.
@@ -338,6 +339,7 @@ docs/                 # plans and training
 28. ~~Site-ops evidence photos~~ — Safety observation/incident + QA fail capture via `EvidenceCapture` / compression (`photoLocalPath` + size).
 29. ~~Site-ops Storage upload~~ — safety/QA photos enqueue `OutboxOperation.upload` then create; NoOp → `demo://` URLs.
 30. ~~Local cache budget / Cleanup~~ — Sync status soft 8MB meter (issues + site-ops stubs); Cleanup clears uploaded `local://` paths.
-31. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift remains a follow-up.
+31. ~~Drawing-pin evidence photos~~ — optional pin photo via EvidenceCapture; outbox Storage upload then create; soft cache includes pins.
+32. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift remains a follow-up.
 
 No native-only Android path; iOS ships from the same Flutter codebase. Enterprise BIM/Forge remains a WebView module after MVP.

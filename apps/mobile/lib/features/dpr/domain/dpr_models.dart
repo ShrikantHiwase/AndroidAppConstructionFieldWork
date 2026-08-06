@@ -223,6 +223,11 @@ class DrawingPin {
     required this.createdByName,
     required this.createdAt,
     this.note,
+    this.hasPhoto = false,
+    this.photoLocalPath,
+    this.photoByteSizeBytes,
+    this.photoRemoteUrl,
+    this.pendingPhotoUpload = false,
     this.synced = false,
   });
 
@@ -240,9 +245,22 @@ class DrawingPin {
   final String createdByName;
   final DateTime createdAt;
   final String? note;
+  final bool hasPhoto;
+  final String? photoLocalPath;
+  final int? photoByteSizeBytes;
+  final String? photoRemoteUrl;
+  final bool pendingPhotoUpload;
   final bool synced;
 
-  DrawingPin copyWith({bool? synced}) {
+  DrawingPin copyWith({
+    bool? synced,
+    bool? hasPhoto,
+    String? photoLocalPath,
+    int? photoByteSizeBytes,
+    String? photoRemoteUrl,
+    bool? pendingPhotoUpload,
+    bool clearPhotoLocalPath = false,
+  }) {
     return DrawingPin(
       id: id,
       orgId: orgId,
@@ -257,6 +275,12 @@ class DrawingPin {
       createdByName: createdByName,
       createdAt: createdAt,
       note: note,
+      hasPhoto: hasPhoto ?? this.hasPhoto,
+      photoLocalPath:
+          clearPhotoLocalPath ? null : (photoLocalPath ?? this.photoLocalPath),
+      photoByteSizeBytes: photoByteSizeBytes ?? this.photoByteSizeBytes,
+      photoRemoteUrl: photoRemoteUrl ?? this.photoRemoteUrl,
+      pendingPhotoUpload: pendingPhotoUpload ?? this.pendingPhotoUpload,
       synced: synced ?? this.synced,
     );
   }
@@ -275,6 +299,11 @@ class DrawingPin {
         'createdByName': createdByName,
         'createdAt': createdAt.toIso8601String(),
         'note': note,
+        'hasPhoto': hasPhoto,
+        'photoLocalPath': photoLocalPath,
+        'photoByteSizeBytes': photoByteSizeBytes,
+        'photoRemoteUrl': photoRemoteUrl,
+        'pendingPhotoUpload': pendingPhotoUpload,
         'synced': synced,
       };
 
@@ -292,6 +321,12 @@ class DrawingPin {
         createdByName: json['createdByName'] as String,
         createdAt: DateTime.parse(json['createdAt'] as String),
         note: json['note'] as String?,
+        hasPhoto: json['hasPhoto'] as bool? ??
+            ((json['photoLocalPath'] as String?)?.isNotEmpty ?? false),
+        photoLocalPath: json['photoLocalPath'] as String?,
+        photoByteSizeBytes: json['photoByteSizeBytes'] as int?,
+        photoRemoteUrl: json['photoRemoteUrl'] as String?,
+        pendingPhotoUpload: json['pendingPhotoUpload'] as bool? ?? false,
         synced: json['synced'] as bool? ?? false,
       );
 }
@@ -305,6 +340,8 @@ class CreatePinInput {
     required this.issueId,
     required this.issueTitle,
     this.note,
+    this.photoLocalPath,
+    this.photoByteSizeBytes,
   });
 
   final String drawingId;
@@ -314,6 +351,8 @@ class CreatePinInput {
   final String issueId;
   final String issueTitle;
   final String? note;
+  final String? photoLocalPath;
+  final int? photoByteSizeBytes;
 }
 
 class DrawingException implements Exception {

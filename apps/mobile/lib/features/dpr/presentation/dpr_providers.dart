@@ -28,6 +28,7 @@ final drawingPinsRepositoryProvider = Provider<DrawingPinsRepository>((ref) {
     ref.watch(sharedPreferencesProvider),
     remoteSink: ref.watch(outboxRemoteSinkProvider),
     remotePull: ref.watch(moduleRemotePullProvider),
+    storageUploader: ref.watch(storageUploaderProvider),
   );
 });
 
