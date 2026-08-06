@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../auth/presentation/auth_controller.dart';
+import '../../voice_notes/domain/voice_note_models.dart';
+import '../../voice_notes/presentation/voice_notes_section.dart';
 import '../domain/dpr_models.dart';
 import 'dpr_providers.dart';
 
@@ -246,6 +248,20 @@ class _TodaysDprPageState extends ConsumerState<TodaysDprPage> {
               border: OutlineInputBorder(),
             ),
           ),
+          if (_existing != null) ...[
+            const SizedBox(height: 20),
+            VoiceNotesSection(
+              parentType: VoiceParentType.dpr,
+              parentId: _existing!.id,
+              canAdd: !submitted,
+            ),
+          ] else ...[
+            const SizedBox(height: 12),
+            Text(
+              'Save a draft once to attach voice notes to today\'s DPR.',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ],
           if (_error != null) ...[
             const SizedBox(height: 12),
             Text(
@@ -342,6 +358,12 @@ class DprDetailPage extends ConsumerWidget {
           const SizedBox(height: 8),
           Text(
             'Blockers: ${current.blockers.isEmpty ? 'None' : current.blockers}',
+          ),
+          const SizedBox(height: 20),
+          VoiceNotesSection(
+            parentType: VoiceParentType.dpr,
+            parentId: current.id,
+            canAdd: !current.submitted && canEditDpr(session.activeRole),
           ),
           const SizedBox(height: 24),
           Text('Share preview', style: Theme.of(context).textTheme.titleMedium),

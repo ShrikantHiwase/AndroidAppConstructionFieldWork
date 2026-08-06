@@ -53,3 +53,8 @@ Browse Project → Discipline → Document Type → Files. Seeded demo PDF/TXT/C
 ## Phase 2b — Site ops
 
 Hub with Safety / QA/QC / Labour / Materials tabs. Photo required on safety observations/incidents and failed QA checks. Labour is supervisor-led muster (demo geofence OK). Materials support inward + consumption logs.
+
+## Voice notes & digests
+
+- **Voice notes:** demo capture on DPR (after first draft save) and issue detail. Stores stub audio path + transcript; offline marks transcript pending.
+- **Digests:** engineer **Reminders** / PM **Digests** — 5 PM DPR nudge prefs, simulate evening check, PM digest of open issues/RFIs/blockers with copy-to-clipboard share.

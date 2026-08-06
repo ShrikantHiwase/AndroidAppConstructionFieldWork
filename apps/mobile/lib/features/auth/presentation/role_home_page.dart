@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/providers/connectivity_provider.dart';
 import '../../../core/widgets/offline_badge.dart';
+import '../../digests/presentation/digests_page.dart';
 import '../../documents/presentation/documents_browser_page.dart';
 import '../../dpr/presentation/dpr_pages.dart';
 import '../../dpr/presentation/drawing_pin_pages.dart';
@@ -52,6 +53,11 @@ class RoleHomePage extends ConsumerWidget {
               'Site ops',
               onPressed: () => _open(context, const SiteOpsHubPage()),
             ),
+            _PrimaryAction(
+              Icons.notifications_active_outlined,
+              'Reminders',
+              onPressed: () => _open(context, const DigestsPage()),
+            ),
           ],
         ),
       AppRole.projectManager => _RoleScaffold(
@@ -68,6 +74,11 @@ class RoleHomePage extends ConsumerWidget {
               Icons.assignment_outlined,
               'DPRs',
               onPressed: () => _open(context, const DprHomePage()),
+            ),
+            _PrimaryAction(
+              Icons.notifications_active_outlined,
+              'Digests',
+              onPressed: () => _open(context, const DigestsPage()),
             ),
             _PrimaryAction(
               Icons.health_and_safety_outlined,
@@ -142,6 +153,11 @@ class RoleHomePage extends ConsumerWidget {
                   ),
                 );
               },
+            ),
+            _PrimaryAction(
+              Icons.notifications_active_outlined,
+              'Digests',
+              onPressed: () => _open(context, const DigestsPage()),
             ),
           ],
         ),
