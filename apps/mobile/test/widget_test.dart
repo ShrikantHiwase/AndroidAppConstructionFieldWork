@@ -101,6 +101,9 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
+
+    await tester.tap(find.widgetWithText(ActionChip, 'client'));
+    await tester.pump();
     await tester.tap(find.text('Sign in'));
     await tester.pumpAndSettle();
 
@@ -122,5 +125,27 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.textContaining('Page 1'), findsOneWidget);
     expect(find.text('Search'), findsOneWidget);
+  });
+
+  testWidgets('engineer can open site ops hub', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          sharedPreferencesProvider.overrideWithValue(prefs),
+        ],
+        child: const FieldApp(),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Sign in'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Site ops'));
+    await tester.pumpAndSettle();
+    expect(find.text('Safety'), findsWidgets);
+    expect(find.text('QA/QC'), findsOneWidget);
   });
 }

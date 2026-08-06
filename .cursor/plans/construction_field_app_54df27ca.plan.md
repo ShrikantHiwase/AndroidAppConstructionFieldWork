@@ -224,12 +224,9 @@ docs/                 # plans and training
 ## Execution status
 
 1. ~~Plan + README~~ — done.
-2. ~~Phase 0 scaffold~~ — done (merged).
-3. ~~Phase 1 auth / RBAC~~ — done.
-4. ~~Phase 1 issues / RFIs~~ — done.
-5. ~~Phase 1 documents~~ — done.
-6. ~~Phase 1 offline sync hardening~~ — done.
-7. ~~Phase 2a DPR + drawing pins~~ — done: today's DPR template (weather/manpower/activities/blockers), submit + WhatsApp/PDF summary copy, versioned drawing sheets with tap-to-pin issues.
-8. **Next:** Phase 2b (gated on pilot metrics) or Firebase wiring for production sync/FCM/Storage.
+2. ~~Phase 0–1 MVP core~~ — done (auth, issues/RFIs, documents, offline sync).
+3. ~~Phase 2a DPR + drawing pins~~ — done.
+4. ~~Phase 2b site ops~~ — done: safety/toolbox + observations/incidents (photo rules), QA WIR checklists (photo-on-fail), supervisor labour muster, material inward/consumption lite. Voice capture + smart digests remain light follow-ups.
+5. **Next:** Firebase project wiring for production Auth/Firestore/Storage/FCM, then pilot launch / UAT.
 
 No native-only Android path; iOS ships from the same Flutter codebase. Enterprise BIM/Forge remains a WebView module after MVP.
