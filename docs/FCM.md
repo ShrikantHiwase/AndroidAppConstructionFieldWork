@@ -16,6 +16,7 @@ Demo-safe client + Cloud Functions delivery. Real device pushes need
 |---------|--------|
 | `onDprWrite` | When `submitted` flips to true → `admin.messaging().send` to creator token |
 | `onIssueWrite` | Assignee change → assignee; status change → assignee + creator |
+| `onRfiWrite` | Same assign/status fan-out for RFIs (`rfi_assigned` / `rfi_status`) |
 
 `sendToUser` soft-skips when: `FCM_SEND_ENABLED=false`, no uid, no token doc, or demo token prefix. Send errors are logged, never thrown.
 
@@ -32,7 +33,7 @@ Demo-safe client + Cloud Functions delivery. Real device pushes need
 2. `flutterfire configure` + `FirebaseOptionsGate.isConfigured = true`
 3. Deploy: `firebase deploy --only functions,firestore:rules`
 4. Sign in on a device → grant notification permission → confirm token on **Sync status**
-5. Submit a DPR or assign an issue → recipient should get a push (and inbox row)
+5. Submit a DPR, assign an issue/RFI, or change status → recipient should get a push (and inbox row)
 
 Dry-run without Messaging: set `FCM_SEND_ENABLED=false` on the Functions runtime.
 

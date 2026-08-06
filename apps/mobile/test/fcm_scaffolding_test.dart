@@ -65,5 +65,13 @@ void main() {
 
     final dpr = parsePushPayload(data: {'type': 'dpr_submitted'});
     expect(dpr.title, 'DPR submitted');
+
+    final rfiAssign = parsePushPayload(data: {'type': 'rfi_assigned'});
+    expect(rfiAssign.title, 'RFI assigned');
+    final rfiStatus = parsePushPayload(
+      data: {'type': 'rfi_status', 'status': 'in_progress'},
+    );
+    expect(rfiStatus.title, 'RFI status updated');
+    expect(rfiStatus.body, 'in_progress');
   });
 }

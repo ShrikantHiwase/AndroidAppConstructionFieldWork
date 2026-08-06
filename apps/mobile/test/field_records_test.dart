@@ -124,6 +124,35 @@ void main() {
     expect(RolePermissions.canAssignWork(pm.activeRole), isTrue);
   });
 
+  test('pm can assign RFI; engineer cannot', () async {
+    final rfi = await repo.createRfi(
+      session: engineer,
+      input: const CreateRfiInput(
+        subject: 'Assign RFI',
+        question: 'Who owns this?',
+      ),
+    );
+    expect(
+      () => repo.assignRfi(
+        session: engineer,
+        rfiId: rfi.id,
+        assigneeId: 'u_x',
+        assigneeName: 'X',
+      ),
+      throwsA(isA<FieldRecordsException>()),
+    );
+
+    final assigned = await repo.assignRfi(
+      session: pm,
+      rfiId: rfi.id,
+      assigneeId: 'u_engineer',
+      assigneeName: 'Asha Patil',
+    );
+    expect(assigned.assigneeId, 'u_engineer');
+    expect(assigned.assigneeName, 'Asha Patil');
+    expect(assigned.synced, isFalse);
+  });
+
   test('rfi comments are append-only via create', () async {
     final rfi = await repo.createRfi(
       session: engineer,

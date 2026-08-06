@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/notifications/notification_providers.dart';
 import '../../../core/providers/connectivity_provider.dart';
 import '../../auth/domain/auth_models.dart';
 import '../../auth/presentation/auth_controller.dart';
@@ -65,6 +66,7 @@ class RfisListPage extends ConsumerWidget {
                 title: Text(rfi.subject),
                 subtitle: Text(
                   '${rfi.status.label}'
+                  '${rfi.assigneeName == null ? '' : ' · ${rfi.assigneeName}'}'
                   '${rfi.synced ? '' : ' · not synced'}',
                 ),
                 onTap: () {
@@ -208,6 +210,24 @@ class _RfiDetailPageState extends ConsumerState<RfiDetailPage> {
     super.dispose();
   }
 
+  Future<void> _afterMutate() async {
+    if (!ref.read(isOfflineProvider)) {
+      await ref.read(syncEngineProvider).flushNow(isOnline: true);
+    }
+  }
+
+  Future<void> _notify({
+    required String title,
+    required String body,
+    Map<String, String> data = const {},
+  }) async {
+    await ref.read(pushNotificationServiceProvider).notifyLocal(
+          title: title,
+          body: body,
+          data: data,
+        );
+  }
+
   @override
   Widget build(BuildContext context) {
     final rfis = ref.watch(rfisProvider).valueOrNull ?? const <Rfi>[];
@@ -233,6 +253,7 @@ class _RfiDetailPageState extends ConsumerState<RfiDetailPage> {
     final activeSession = session;
     final canStatus =
         RolePermissions.canChangeIssueStatus(activeSession.activeRole);
+    final canAssign = RolePermissions.canAssignWork(activeSession.activeRole);
     final canComment = canMutateFieldRecords(activeSession.activeRole);
 
     return Scaffold(
@@ -245,7 +266,9 @@ class _RfiDetailPageState extends ConsumerState<RfiDetailPage> {
           Text(current.question),
           const SizedBox(height: 8),
           Text(
-            'By ${current.createdByName}${current.synced ? ' · synced' : ' · pending sync'}',
+            'By ${current.createdByName}'
+            '${current.assigneeName == null ? '' : ' · Assigned to ${current.assigneeName}'}'
+            '${current.synced ? ' · synced' : ' · pending sync'}',
             style: Theme.of(context).textTheme.bodySmall,
           ),
           if (canStatus && current.status.nextStatuses.isNotEmpty) ...[
@@ -267,11 +290,16 @@ class _RfiDetailPageState extends ConsumerState<RfiDetailPage> {
                                       rfiId: current.id,
                                       status: s,
                                     );
-                                if (!ref.read(isOfflineProvider)) {
-                                  await ref
-                                      .read(syncEngineProvider)
-                                      .flushNow(isOnline: true);
-                                }
+                                await _notify(
+                                  title: 'RFI status updated',
+                                  body: '${current.subject} → ${s.label}',
+                                  data: {
+                                    'type': 'rfi_status',
+                                    'rfiId': current.id,
+                                    'status': s.firestoreValue,
+                                  },
+                                );
+                                await _afterMutate();
                               } finally {
                                 if (mounted) setState(() => _busy = false);
                               }
@@ -280,6 +308,43 @@ class _RfiDetailPageState extends ConsumerState<RfiDetailPage> {
                     ),
                   )
                   .toList(),
+            ),
+          ],
+          if (canAssign) ...[
+            const SizedBox(height: 12),
+            OutlinedButton(
+              onPressed: _busy
+                  ? null
+                  : () async {
+                      setState(() => _busy = true);
+                      try {
+                        await ref.read(fieldRecordsRepositoryProvider).assignRfi(
+                              session: activeSession,
+                              rfiId: current.id,
+                              assigneeId: 'u_engineer',
+                              assigneeName: 'Asha Patil',
+                            );
+                        await _notify(
+                          title: 'RFI assigned',
+                          body: '${current.subject} → Asha Patil',
+                          data: {
+                            'type': 'rfi_assigned',
+                            'rfiId': current.id,
+                            'assigneeId': 'u_engineer',
+                          },
+                        );
+                        await _afterMutate();
+                      } catch (e) {
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('$e')),
+                          );
+                        }
+                      } finally {
+                        if (mounted) setState(() => _busy = false);
+                      }
+                    },
+              child: const Text('Assign to Asha Patil'),
             ),
           ],
           const SizedBox(height: 16),
@@ -322,11 +387,7 @@ class _RfiDetailPageState extends ConsumerState<RfiDetailPage> {
                               body: _comment.text,
                             );
                         _comment.clear();
-                        if (!ref.read(isOfflineProvider)) {
-                          await ref
-                              .read(syncEngineProvider)
-                              .flushNow(isOnline: true);
-                        }
+                        await _afterMutate();
                       } finally {
                         if (mounted) setState(() => _busy = false);
                       }

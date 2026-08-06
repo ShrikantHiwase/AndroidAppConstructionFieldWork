@@ -36,6 +36,10 @@ String? _titleForType(String? type) {
       return 'Issue assigned';
     case 'issue_status':
       return 'Issue status updated';
+    case 'rfi_assigned':
+      return 'RFI assigned';
+    case 'rfi_status':
+      return 'RFI status updated';
     case 'dpr_submitted':
       return 'DPR submitted';
     default:
