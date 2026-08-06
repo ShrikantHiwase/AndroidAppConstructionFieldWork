@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../device/local_media_cache.dart';
 import '../../features/auth/presentation/auth_controller.dart';
 import '../../features/documents/data/local_documents_repository.dart';
 import '../../features/documents/presentation/documents_providers.dart';
@@ -19,6 +18,8 @@ import '../../sync/background/background_sync_scheduler.dart';
 import '../../sync/local_sync_engine.dart';
 import '../../sync/remote/syncable_store.dart';
 import '../../sync/sync_models.dart';
+import '../device/local_media_cache.dart';
+import '../telemetry/telemetry_providers.dart';
 
 final syncEngineProvider = Provider<LocalSyncEngine>((ref) {
   final fieldRecords = ref.watch(fieldRecordsRepositoryProvider);
@@ -108,10 +109,18 @@ class ConnectivityController extends StateNotifier<bool> {
 
   Future<void> _flushAndEnqueue() async {
     final session = _ref.read(authSessionProvider);
-    await _ref.read(syncEngineProvider).flushNow(
+    final flushed = await _ref.read(syncEngineProvider).flushNow(
           isOnline: true,
           projectId: session?.activeProjectId,
         );
+    await logTelemetryEventFromRef(
+      _ref,
+      name: 'sync_flush',
+      params: {
+        'flushed': flushed,
+        'source': 'connectivity',
+      },
+    );
     await _ref.read(backgroundSyncSchedulerProvider).enqueueOneOffFlush();
   }
 

@@ -28,4 +28,5 @@ Admin (and PM) → **Pilot**:
 ## Store release notes (stub)
 
 - Internal testing / TestFlight / Play internal track after Firebase project is live.
-- Crashlytics + Analytics packages still deferred until FlutterFire is on.
+- Crashlytics + Analytics packages still deferred until FlutterFire is on; in-app
+  [Telemetry.md](Telemetry.md) NoOp/deferred port records sync/health events locally for Sync status.

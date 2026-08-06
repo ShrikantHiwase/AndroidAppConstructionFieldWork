@@ -307,6 +307,7 @@ docs/                 # plans and training
 28. ~~Site-ops evidence + Storage~~ — safety/QA photos via EvidenceCapture; outbox upload → `demo://` in NoOp.
 29. ~~Local cache budget / Cleanup~~ — Sync status soft 8MB meter; Cleanup clears uploaded `local://` stubs.
 30. ~~Drawing-pin evidence photos~~ — optional pin photo + Storage upload (demo NoOp); pins in soft cache.
-31. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift remains a follow-up.
+31. ~~Telemetry NoOp scaffolding~~ — `TelemetryPort` + Sync status event ring; Crashlytics/Analytics packages still deferred.
+32. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift remains a follow-up.
 
 No native-only Android path; iOS ships from the same Flutter codebase. Enterprise BIM/Forge remains a WebView module after MVP.

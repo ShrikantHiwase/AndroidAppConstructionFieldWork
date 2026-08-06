@@ -49,7 +49,7 @@ Run on mid/low-end Android first. Mark each item in Admin → **Pilot** (or tick
 
 - [ ] 5 PM nudge prefs + Simulate 5 PM check
 - [ ] PM digest lists open issues/RFIs/blockers; Share digest PDF works
-- [ ] Sync status shows logs, background flush meta, Probe health, local cache meter; cleanup reclaims uploaded stubs without crash
+- [ ] Sync status shows logs, background flush meta, Probe health, local cache meter, telemetry events; cleanup reclaims uploaded stubs without crash
 - [ ] Conflict policy labels visible on flush (LWW / append / audited)
 - [ ] Pilot hub Share pilot PDF works (PM/Admin)
 

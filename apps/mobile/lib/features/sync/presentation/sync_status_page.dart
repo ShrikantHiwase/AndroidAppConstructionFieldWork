@@ -5,6 +5,7 @@ import '../../../core/device/evidence_image_policy.dart';
 import '../../../core/health/health_check_port.dart';
 import '../../../core/notifications/notification_deep_link.dart';
 import '../../../core/notifications/notification_providers.dart';
+import '../../../core/telemetry/telemetry_providers.dart';
 import '../../../sync/conflict/conflict_policy.dart';
 import '../../auth/presentation/auth_controller.dart';
 import 'sync_providers.dart';
@@ -26,6 +27,8 @@ class SyncStatusPage extends ConsumerWidget {
     final bgMeta = ref.watch(backgroundSyncMetaProvider);
     final lastHealth = ref.watch(lastHealthCheckProvider);
     final cache = ref.watch(localCacheSnapshotProvider);
+    ref.watch(telemetryRevisionProvider);
+    final telemetry = ref.watch(telemetryPortProvider);
     final textTheme = Theme.of(context).textTheme;
     final scheme = Theme.of(context).colorScheme;
     final overBudget = cache.estimatedBytes > cache.capBytes;
@@ -155,6 +158,14 @@ class SyncStatusPage extends ConsumerWidget {
             onPressed: () async {
               final result = await ref.read(healthCheckPortProvider).ping();
               ref.read(lastHealthCheckProvider.notifier).state = result;
+              await logTelemetryEvent(
+                ref,
+                name: 'health_probe',
+                params: {
+                  'ok': result.ok,
+                  'source': result.source,
+                },
+              );
               if (context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text(result.summary)),
@@ -164,6 +175,39 @@ class SyncStatusPage extends ConsumerWidget {
             icon: const Icon(Icons.monitor_heart_outlined),
             label: const Text('Probe health'),
           ),
+          const SizedBox(height: 16),
+          Text('Telemetry', style: textTheme.titleMedium),
+          const SizedBox(height: 4),
+          Text(
+            'Backend: ${telemetry.backendLabel}'
+            '${telemetry.userId == null ? '' : ' · user ${telemetry.userId}'}',
+            style: textTheme.bodySmall,
+          ),
+          Text(
+            firebase
+                ? 'Crashlytics/Analytics packages still deferred — '
+                    'events stay local until FlutterFire go-live.'
+                : 'Demo NoOp recorder — no network. Events listed below.',
+            style: textTheme.bodySmall,
+          ),
+          if (telemetry.recentEvents.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            ...telemetry.recentEvents.take(6).map(
+                  (e) => ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    dense: true,
+                    leading: Icon(
+                      e.kind == 'error'
+                          ? Icons.bug_report_outlined
+                          : (e.kind == 'user'
+                              ? Icons.person_outline
+                              : Icons.analytics_outlined),
+                    ),
+                    title: Text(e.summary),
+                    subtitle: Text('${e.at.toLocal()} · ${e.kind}'),
+                  ),
+                ),
+          ],
           const SizedBox(height: 16),
           Text('Push (FCM)', style: textTheme.titleMedium),
           const SizedBox(height: 4),
@@ -230,6 +274,14 @@ class SyncStatusPage extends ConsumerWidget {
                               projectId: session?.activeProjectId,
                             );
                         ref.invalidate(backgroundSyncMetaProvider);
+                        await logTelemetryEvent(
+                          ref,
+                          name: 'sync_flush',
+                          params: {
+                            'flushed': n,
+                            'source': 'manual',
+                          },
+                        );
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text('Flushed $n item(s)')),
@@ -251,6 +303,15 @@ class SyncStatusPage extends ConsumerWidget {
                       .read(syncEngineProvider)
                       .runStorageCleanup();
                   ref.invalidate(localCacheSnapshotProvider);
+                  await logTelemetryEvent(
+                    ref,
+                    name: 'sync_cleanup',
+                    params: {
+                      'logs_removed': result.removedLogEntries,
+                      'media_reclaimed': result.reclaimedMediaPaths,
+                      'bytes_freed': result.bytesFreedEstimate,
+                    },
+                  );
                   if (context.mounted) {
                     final freed = EvidenceImagePolicy.formatBytes(
                       result.bytesFreedEstimate,

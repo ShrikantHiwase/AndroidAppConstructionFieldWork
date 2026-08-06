@@ -5,6 +5,7 @@ import '../../../core/constants/app_constants.dart';
 import '../../../core/notifications/notification_deep_link.dart';
 import '../../../core/notifications/notification_providers.dart';
 import '../../../core/providers/connectivity_provider.dart';
+import '../../../core/telemetry/telemetry_providers.dart';
 import '../../../core/widgets/offline_badge.dart';
 import '../../admin/presentation/admin_invites_page.dart';
 import '../../digests/presentation/digests_page.dart';
@@ -40,6 +41,8 @@ class _RoleHomePageState extends ConsumerState<RoleHomePage> {
     final session = ref.watch(authSessionProvider);
     // Keep FCM / demo push token registration warm while home is open.
     ref.watch(pushRegistrationProvider);
+    // Align telemetry user id with the signed-in session.
+    ref.watch(telemetryBootstrapProvider);
     if (session == null) {
       return const Scaffold(body: Center(child: Text('No session')));
     }
