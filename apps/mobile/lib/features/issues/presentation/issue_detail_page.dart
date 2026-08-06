@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/providers/connectivity_provider.dart';
 import '../../auth/domain/auth_models.dart';
 import '../../auth/presentation/auth_controller.dart';
+import '../../voice_notes/domain/voice_note_models.dart';
+import '../../voice_notes/presentation/voice_notes_section.dart';
 import '../domain/issue_models.dart';
 import 'field_records_providers.dart';
 
@@ -92,6 +94,12 @@ class _IssueDetailPageState extends ConsumerState<IssueDetailPage> {
               ),
             ),
           ],
+          const SizedBox(height: 16),
+          VoiceNotesSection(
+            parentType: VoiceParentType.issue,
+            parentId: issue.id,
+            canAdd: canComment,
+          ),
           if (canStatus && issue.status.nextStatuses.isNotEmpty) ...[
             const SizedBox(height: 16),
             Text('Status', style: Theme.of(context).textTheme.titleMedium),

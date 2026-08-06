@@ -37,7 +37,8 @@ docs/              Build plan and training
 | Offline sync hardening (logs/cleanup/status) | Done |
 | Phase 2a DPR + drawing pins | Done |
 | Phase 2b Safety / QA / labour / materials | Done |
-| Firebase packages + auth switch (demo fallback) | In progress |
+| Firebase packages + auth switch (demo fallback) | Done |
+| Voice notes + smart digests | Done |
 | FlutterFire configure + pilot launch | Next (needs your Firebase project) |
 | Phase 3 Enterprise hooks | Deferred |
 

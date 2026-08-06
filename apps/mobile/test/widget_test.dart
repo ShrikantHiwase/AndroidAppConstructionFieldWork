@@ -148,4 +148,31 @@ void main() {
     expect(find.text('Safety'), findsWidgets);
     expect(find.text('QA/QC'), findsOneWidget);
   });
+
+  testWidgets('pm can open digests', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          sharedPreferencesProvider.overrideWithValue(prefs),
+        ],
+        child: const FieldApp(),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.widgetWithText(ActionChip, 'pm'));
+    await tester.pump();
+    await tester.tap(find.text('Sign in'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('PM queue'), findsOneWidget);
+    await tester.tap(find.text('Digests'));
+    await tester.pumpAndSettle();
+    expect(find.text('Digests & reminders'), findsOneWidget);
+    expect(find.text('5 PM DPR nudge'), findsOneWidget);
+    expect(find.text('PM digest'), findsOneWidget);
+  });
 }
