@@ -5,6 +5,7 @@
  * - inviteMember: admin creates Auth user + memberships + invite audit doc
  * - onDprWrite: FCM notify creator on DPR submit
  * - onIssueWrite: FCM on assign / status change
+ * - onRfiWrite: FCM on RFI assign / status change
  *
  * Emulators: firebase emulators:start
  * Deploy: firebase deploy --only functions (after flutterfire + Blaze if needed)
@@ -245,6 +246,73 @@ exports.onIssueWrite = onDocumentWritten("issues/{issueId}", async (event) => {
       JSON.stringify({
         type: "issue_fcm",
         issueId,
+        results,
+      })
+    );
+  }
+  return null;
+});
+
+/**
+ * RFI assign / status → notify assignee and creator (parity with issues).
+ */
+exports.onRfiWrite = onDocumentWritten("rfis/{rfiId}", async (event) => {
+  const before = event.data?.before?.data();
+  const after = event.data?.after?.data();
+  if (!after) return null;
+
+  const results = [];
+  const rfiId = event.params.rfiId;
+  const subject = after.subject || after.title || "RFI";
+
+  const assigneeChanged =
+    Boolean(after.assigneeId) && after.assigneeId !== before?.assigneeId;
+  if (assigneeChanged) {
+    results.push({
+      kind: "rfi_assigned",
+      ...(await sendToUser(after.assigneeId, {
+        title: "RFI assigned",
+        body: subject,
+        data: {
+          type: "rfi_assigned",
+          rfiId,
+          projectId: after.projectId || "",
+        },
+      })),
+    });
+  }
+
+  const statusChanged =
+    Boolean(before) &&
+    Boolean(after.status) &&
+    before.status !== after.status;
+  if (statusChanged) {
+    const targets = new Set();
+    if (after.assigneeId) targets.add(after.assigneeId);
+    if (after.createdBy) targets.add(after.createdBy);
+    for (const uid of targets) {
+      results.push({
+        kind: "rfi_status",
+        uid,
+        ...(await sendToUser(uid, {
+          title: "RFI status updated",
+          body: `${subject} → ${after.status}`,
+          data: {
+            type: "rfi_status",
+            rfiId,
+            status: after.status,
+            projectId: after.projectId || "",
+          },
+        })),
+      });
+    }
+  }
+
+  if (results.length) {
+    console.log(
+      JSON.stringify({
+        type: "rfi_fcm",
+        rfiId,
         results,
       })
     );

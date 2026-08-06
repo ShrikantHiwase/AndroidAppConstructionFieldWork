@@ -386,6 +386,38 @@ class LocalFieldRecordsRepository implements FieldRecordsRepository {
   }
 
   @override
+  Future<Rfi> assignRfi({
+    required AuthSession session,
+    required String rfiId,
+    required String assigneeId,
+    required String assigneeName,
+  }) async {
+    _ensureCanAssign(session);
+    final current = _rfis[rfiId];
+    if (current == null) throw FieldRecordsException('RFI not found');
+    final now = DateTime.now().toUtc();
+    final updated = current.copyWith(
+      assigneeId: assigneeId,
+      assigneeName: assigneeName,
+      updatedAt: now,
+      synced: false,
+    );
+    _rfis[rfiId] = updated;
+    await _enqueue(
+      collection: FirestoreCollections.rfis,
+      documentId: rfiId,
+      operation: OutboxOperation.update,
+      payload: {
+        'assigneeId': assigneeId,
+        'assigneeName': assigneeName,
+        'updatedAt': now.toIso8601String(),
+      },
+    );
+    await _persist();
+    return updated;
+  }
+
+  @override
   Future<Rfi> updateRfiStatus({
     required AuthSession session,
     required String rfiId,

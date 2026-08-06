@@ -33,6 +33,13 @@ abstract class FieldRecordsRepository {
     required CreateRfiInput input,
   });
 
+  Future<Rfi> assignRfi({
+    required AuthSession session,
+    required String rfiId,
+    required String assigneeId,
+    required String assigneeName,
+  });
+
   Future<Rfi> updateRfiStatus({
     required AuthSession session,
     required String rfiId,
