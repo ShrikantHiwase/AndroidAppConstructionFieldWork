@@ -65,9 +65,17 @@ Future<BackgroundFlushResult> runBackgroundOutboxFlush({
           ? FirebaseStorageUploader()
           : const NoOpStorageUploader(),
     );
+    final pins = LocalDrawingPinsRepository(
+      shared,
+      remoteSink: sink,
+      remotePull: pull,
+      storageUploader: firebase.enabled
+          ? FirebaseStorageUploader()
+          : const NoOpStorageUploader(),
+    );
     final stores = <SyncableStore>[
       LocalDprRepository(shared, remoteSink: sink, remotePull: pull),
-      LocalDrawingPinsRepository(shared, remoteSink: sink, remotePull: pull),
+      pins,
       siteOps,
       LocalDocumentsRepository(shared, remoteSink: sink, remotePull: pull),
       LocalVoiceNotesRepository(shared, remoteSink: sink, remotePull: pull),
@@ -76,7 +84,7 @@ Future<BackgroundFlushResult> runBackgroundOutboxFlush({
       prefs: shared,
       fieldRecords: field,
       moduleStores: stores,
-      mediaCaches: [field, siteOps],
+      mediaCaches: [field, siteOps, pins],
     );
 
     final projectId = shared.getString('auth.active_project');

@@ -4,10 +4,12 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/constants/app_constants.dart';
+import '../../../core/device/local_media_cache.dart';
 import '../../../sync/outbox/outbox_entry.dart';
 import '../../../sync/remote/module_remote_pull.dart';
 import '../../../sync/remote/outbox_remote_sink.dart';
 import '../../../sync/remote/prefs_outbox_queue.dart';
+import '../../../sync/remote/storage_uploader.dart';
 import '../../../sync/remote/syncable_store.dart';
 import '../../auth/domain/auth_models.dart';
 import '../domain/dpr_models.dart';
@@ -226,13 +228,15 @@ class LocalDprRepository implements DprRepository, SyncableStore {
 }
 
 class LocalDrawingPinsRepository
-    implements DrawingPinsRepository, SyncableStore {
+    implements DrawingPinsRepository, SyncableStore, LocalMediaCache {
   LocalDrawingPinsRepository(
     this._prefs, {
     OutboxRemoteSink? remoteSink,
     ModuleRemotePull? remotePull,
+    StorageUploader? storageUploader,
   })  : _remoteSink = remoteSink ?? const NoOpOutboxRemoteSink(),
         _remotePull = remotePull ?? const NoOpModuleRemotePull(),
+        _storageUploader = storageUploader ?? const NoOpStorageUploader(),
         _outbox = PrefsOutboxQueue(_prefs, _outboxKey) {
     _load();
   }
@@ -240,6 +244,7 @@ class LocalDrawingPinsRepository
   final SharedPreferences _prefs;
   final OutboxRemoteSink _remoteSink;
   final ModuleRemotePull _remotePull;
+  final StorageUploader _storageUploader;
   final PrefsOutboxQueue _outbox;
 
   static const _drawingsKey = 'drawings.sheets';
@@ -280,6 +285,14 @@ class LocalDrawingPinsRepository
     );
     await _outbox.persist();
     _drawingsController.add(_drawings.values.toList());
+    _pinsController.add(_pins.values.toList());
+  }
+
+  Future<void> _persistPinsOnly() async {
+    await _prefs.setStringList(
+      _pinsKey,
+      _pins.values.map((e) => jsonEncode(e.toJson())).toList(),
+    );
     _pinsController.add(_pins.values.toList());
   }
 
@@ -337,6 +350,8 @@ class LocalDrawingPinsRepository
     if (input.x < 0 || input.x > 1 || input.y < 0 || input.y > 1) {
       throw DrawingException('Pin must be within the drawing page');
     }
+    final path = input.photoLocalPath;
+    final pendingUpload = path != null && path.isNotEmpty;
     final pin = DrawingPin(
       id: 'pin_${DateTime.now().microsecondsSinceEpoch}_${++_seq}',
       orgId: session.activeProject.orgId,
@@ -351,8 +366,31 @@ class LocalDrawingPinsRepository
       createdByName: session.user.displayName,
       createdAt: DateTime.now().toUtc(),
       note: input.note,
+      hasPhoto: pendingUpload,
+      photoLocalPath: pendingUpload ? path : null,
+      photoByteSizeBytes: input.photoByteSizeBytes,
+      pendingPhotoUpload: pendingUpload,
     );
     _pins[pin.id] = pin;
+    if (pendingUpload) {
+      final localPath = path;
+      final fileName = localPath.split('/').last;
+      _outbox.enqueue(
+        collection: FirestoreCollections.drawingPins,
+        documentId: pin.id,
+        operation: OutboxOperation.upload,
+        payload: StorageUploadRequest(
+          orgId: pin.orgId,
+          projectId: pin.projectId,
+          parentType: 'drawing_pins',
+          parentId: pin.id,
+          attachmentId: 'photo',
+          fileName: fileName.isEmpty ? 'pin.jpg' : fileName,
+          contentType: 'image/jpeg',
+          localPath: localPath,
+        ).toPayload(),
+      );
+    }
     _outbox.enqueue(
       collection: FirestoreCollections.drawingPins,
       documentId: pin.id,
@@ -368,21 +406,86 @@ class LocalDrawingPinsRepository
 
   @override
   Future<void> flushOutbox({required bool isOnline}) async {
-    await _outbox.flush(
-      isOnline: isOnline,
-      sink: _remoteSink,
-      onApplied: (entry) async {
+    if (!isOnline || _outbox.entries.isEmpty) {
+      _outbox.pendingController.add(_outbox.entries.length);
+      return;
+    }
+
+    final remaining = <OutboxEntry>[];
+    final failedUploadDocs = <String>{};
+    for (final entry in List<OutboxEntry>.from(_outbox.entries)) {
+      try {
+        if (entry.operation == OutboxOperation.upload) {
+          await _flushUpload(entry);
+          continue;
+        }
+
+        if (failedUploadDocs.contains(entry.documentId) &&
+            (entry.operation == OutboxOperation.create ||
+                entry.operation == OutboxOperation.update)) {
+          remaining.add(entry);
+          continue;
+        }
+
+        final toApply = _resolvePayload(entry);
+        await _remoteSink.apply(toApply);
         final current = _pins[entry.documentId];
         if (current != null) {
           _pins[entry.documentId] = current.copyWith(synced: true);
         }
-      },
+      } catch (e) {
+        if (entry.operation == OutboxOperation.upload) {
+          failedUploadDocs.add(entry.documentId);
+        }
+        remaining.add(
+          OutboxEntry(
+            id: entry.id,
+            collection: entry.collection,
+            documentId: entry.documentId,
+            operation: entry.operation,
+            payload: entry.payload,
+            createdAt: entry.createdAt,
+            attempts: entry.attempts + 1,
+            lastError: e.toString(),
+          ),
+        );
+      }
+    }
+    _outbox.entries
+      ..clear()
+      ..addAll(remaining);
+    await _persist();
+  }
+
+  OutboxEntry _resolvePayload(OutboxEntry entry) {
+    final cur = _pins[entry.documentId];
+    if (cur != null &&
+        (entry.operation == OutboxOperation.create ||
+            entry.operation == OutboxOperation.update)) {
+      return OutboxEntry(
+        id: entry.id,
+        collection: entry.collection,
+        documentId: entry.documentId,
+        operation: entry.operation,
+        payload: cur.toJson(),
+        createdAt: entry.createdAt,
+        attempts: entry.attempts,
+        lastError: entry.lastError,
+      );
+    }
+    return entry;
+  }
+
+  Future<void> _flushUpload(OutboxEntry entry) async {
+    final request = StorageUploadRequest.fromPayload(entry.payload);
+    final url = await _storageUploader.upload(request);
+    final cur = _pins[entry.documentId];
+    if (cur == null) return;
+    _pins[entry.documentId] = cur.copyWith(
+      photoRemoteUrl: url,
+      pendingPhotoUpload: false,
+      hasPhoto: true,
     );
-    await _prefs.setStringList(
-      _pinsKey,
-      _pins.values.map((e) => jsonEncode(e.toJson())).toList(),
-    );
-    _pinsController.add(_pins.values.toList());
   }
 
   @override
@@ -405,18 +508,71 @@ class LocalDrawingPinsRepository
           createdByName: r.createdByName,
           createdAt: r.createdAt,
           note: r.note,
+          hasPhoto: r.hasPhoto,
+          photoLocalPath: r.photoLocalPath,
+          photoByteSizeBytes: r.photoByteSizeBytes,
+          photoRemoteUrl: r.photoRemoteUrl,
+          pendingPhotoUpload: r.pendingPhotoUpload,
           synced: true,
         );
         changed += 1;
       }
     }
-    if (changed > 0) {
-      await _prefs.setStringList(
-        _pinsKey,
-        _pins.values.map((e) => jsonEncode(e.toJson())).toList(),
-      );
-      _pinsController.add(_pins.values.toList());
-    }
+    if (changed > 0) await _persistPinsOnly();
     return changed;
+  }
+
+  @override
+  LocalCacheSlice estimateLocalCache() {
+    var bytes = 0;
+    var reclaimable = 0;
+    var reclaimableCount = 0;
+    var count = 0;
+    for (final pin in _pins.values) {
+      final path = pin.photoLocalPath;
+      if (path == null || path.isEmpty) continue;
+      count += 1;
+      final size = LocalCacheEstimates.bytesFor(
+        localPath: path,
+        byteSizeBytes: pin.photoByteSizeBytes,
+      );
+      bytes += size;
+      if (LocalCacheEstimates.isReclaimableLocalStub(
+        localPath: path,
+        remoteUrl: pin.photoRemoteUrl,
+      )) {
+        reclaimable += size;
+        reclaimableCount += 1;
+      }
+    }
+    return LocalCacheSlice(
+      label: 'pins',
+      estimatedBytes: bytes,
+      reclaimableBytes: reclaimable,
+      reclaimableItemCount: reclaimableCount,
+      itemCount: count,
+    );
+  }
+
+  @override
+  Future<int> reclaimUploadedLocalPaths() async {
+    var freed = 0;
+    var changed = false;
+    for (final pin in _pins.values.toList()) {
+      if (!LocalCacheEstimates.isReclaimableLocalStub(
+        localPath: pin.photoLocalPath,
+        remoteUrl: pin.photoRemoteUrl,
+      )) {
+        continue;
+      }
+      freed += LocalCacheEstimates.bytesFor(
+        localPath: pin.photoLocalPath,
+        byteSizeBytes: pin.photoByteSizeBytes,
+      );
+      _pins[pin.id] = pin.copyWith(clearPhotoLocalPath: true);
+      changed = true;
+    }
+    if (changed) await _persist();
+    return freed;
   }
 }

@@ -43,12 +43,12 @@ Browse Project → Discipline → Document Type → Files. Seeded demo PDF/TXT/C
 
 ## Sync (Phase 1)
 
-`LocalSyncEngine` logs flushes, applies conflict-policy labels, and supports cleanup. Open **Sync** from the home app bar. Going online auto-flushes the outbox. When Firebase is enabled, flush writes issues/RFIs/comments to Firestore and pulls remote issues/RFIs (demo mode uses a no-op sink). Sync status shows a soft **8MB local cache** meter (issue + site-ops media stubs); **Cleanup** trims sync logs and clears uploaded `local://` paths once a remote/demo URL exists.
+`LocalSyncEngine` logs flushes, applies conflict-policy labels, and supports cleanup. Open **Sync** from the home app bar. Going online auto-flushes the outbox. When Firebase is enabled, flush writes issues/RFIs/comments to Firestore and pulls remote issues/RFIs (demo mode uses a no-op sink). Sync status shows a soft **8MB local cache** meter (issue + site-ops + pin media stubs); **Cleanup** trims sync logs and clears uploaded `local://` paths once a remote/demo URL exists.
 
 ## Phase 2a — DPR & drawing pins
 
 - **Today's DPR:** weather, manpower, activities (+ demo photos), blockers; submit; copy WhatsApp/PDF summary.
-- **Pin on Drawing:** seeded GA Plan sheet; select an issue and tap the page to drop a punch pin.
+- **Pin on Drawing:** seeded GA Plan sheet; select an issue, optionally attach evidence photo (camera/gallery), tap to drop a punch pin. Photos enqueue Storage upload then create (demo → `demo://`).
 
 ## Phase 2b — Site ops
 

@@ -36,7 +36,7 @@ Run on mid/low-end Android first. Mark each item in Admin → **Pilot** (or tick
 - [ ] Today's DPR draft + submit in &lt;3 minutes
 - [ ] Share DPR PDF via system sheet; text share still works
 - [ ] Voice note on DPR after first save
-- [ ] Drawing pin linked to an issue
+- [ ] Drawing pin linked to an issue; optional evidence photo uploads on flush (demo:// / Storage)
 
 ## Site ops
 
