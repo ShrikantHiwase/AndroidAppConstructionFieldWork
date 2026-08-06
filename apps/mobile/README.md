@@ -39,11 +39,14 @@ Offline-first `LocalFieldRecordsRepository` with sync outbox. Demo GPS/photo but
 
 ## Documents (Phase 1)
 
-Browse Project → Discipline → Document Type → Files. Seeded demo PDF/TXT/CSV. Upload is a content stub until Firebase Storage + file picker. Viewer supports search; PDF uses demo pages with zoom/page nav (pdfrx later).
+Browse Project → Discipline → Document Type → Files. Seeded demo PDF/TXT/CSV. Upload uses
+`DocumentFilePicker` (Fake `local://` stub by default; native `file_picker` with
+`USE_NATIVE_SENSORS=true`). Viewer supports search; PDF uses demo pages with zoom/page
+nav (pdfrx later).
 
 ## Sync (Phase 1)
 
-`LocalSyncEngine` logs flushes, applies conflict-policy labels, and supports cleanup. Open **Sync** from the home app bar. Going online auto-flushes the outbox. When Firebase is enabled, flush writes issues/RFIs/comments to Firestore and pulls remote issues/RFIs (demo mode uses a no-op sink). Sync status shows a soft **8MB local cache** meter (issue + site-ops + pin media stubs); **Cleanup** trims sync logs and clears uploaded `local://` paths once a remote/demo URL exists. **Telemetry** records sync/health events locally (`TelemetryPort` NoOp) until Crashlytics/Analytics packages are added — see [docs/Telemetry.md](../../docs/Telemetry.md). **Secure store** holds session email, biometrics flag, and FCM token (Fake by default; platform via `--dart-define=USE_SECURE_STORAGE=true`) — see [docs/Secure_Store.md](../../docs/Secure_Store.md).
+`LocalSyncEngine` logs flushes, applies conflict-policy labels, and supports cleanup. Open **Sync** from the home app bar. Going online auto-flushes the outbox. When Firebase is enabled, flush writes issues/RFIs/comments to Firestore and pulls remote issues/RFIs (demo mode uses a no-op sink). Sync status shows a soft **8MB local cache** meter (issue + site-ops + pin + DPR + voice + docs media stubs); **Cleanup** trims sync logs and clears uploaded `local://` paths once a remote/demo URL exists. **Telemetry** records sync/health events locally (`TelemetryPort` NoOp) until Crashlytics/Analytics packages are added — see [docs/Telemetry.md](../../docs/Telemetry.md). **Secure store** holds session email, biometrics flag, and FCM token (Fake by default; platform via `--dart-define=USE_SECURE_STORAGE=true`) — see [docs/Secure_Store.md](../../docs/Secure_Store.md).
 
 ## Phase 2a — DPR & drawing pins
 

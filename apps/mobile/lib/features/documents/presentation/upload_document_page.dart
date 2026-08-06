@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/device/device_providers.dart';
+import '../../../core/device/document_file_policy.dart';
 import '../../../core/providers/connectivity_provider.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../domain/document_models.dart';
@@ -23,12 +25,35 @@ class _UploadDocumentPageState extends ConsumerState<UploadDocumentPage> {
   var _type = DocContentType.txt;
   var _saving = false;
   String? _error;
+  String? _localPath;
+  int? _byteSizeBytes;
+  List<String> _pdfPages = const [];
 
   @override
   void dispose() {
     _name.dispose();
     _body.dispose();
     super.dispose();
+  }
+
+  Future<void> _pick() async {
+    final picked = await ref.read(documentFilePickerProvider).pick(
+          preferredType: _type,
+        );
+    if (picked == null || !mounted) return;
+    setState(() {
+      _name.text = picked.fileName;
+      _type = picked.kind;
+      _localPath = picked.localPath;
+      _byteSizeBytes = picked.byteSizeBytes;
+      _pdfPages = picked.pdfPages;
+      if (picked.textContent != null) {
+        _body.text = picked.textContent!;
+      } else if (picked.pdfPages.isNotEmpty) {
+        _body.text = picked.pdfPages.first;
+      }
+      _error = null;
+    });
   }
 
   Future<void> _save() async {
@@ -45,6 +70,7 @@ class _UploadDocumentPageState extends ConsumerState<UploadDocumentPage> {
         DocContentType.txt => 'text/plain',
         DocContentType.other => 'application/octet-stream',
       };
+      final path = _localPath;
       await ref.read(documentsRepositoryProvider).uploadDocument(
             session: session,
             input: UploadDocumentInput(
@@ -53,11 +79,15 @@ class _UploadDocumentPageState extends ConsumerState<UploadDocumentPage> {
               contentType: contentType,
               textContent: _type == DocContentType.pdf ? null : _body.text,
               pdfPages: _type == DocContentType.pdf
-                  ? [
-                      _body.text,
-                      'Page 2 — continuation of ${_name.text}',
-                    ]
+                  ? (_pdfPages.isNotEmpty
+                      ? _pdfPages
+                      : [
+                          _body.text,
+                          'Page 2 — continuation of ${_name.text}',
+                        ])
                   : const [],
+              localFilePath: path,
+              sizeBytes: _byteSizeBytes,
             ),
           );
       if (!ref.read(isOfflineProvider)) {
@@ -76,6 +106,7 @@ class _UploadDocumentPageState extends ConsumerState<UploadDocumentPage> {
 
   @override
   Widget build(BuildContext context) {
+    final native = ref.watch(usingNativeSensorsProvider);
     return Scaffold(
       appBar: AppBar(title: const Text('Upload document')),
       body: ListView(
@@ -103,12 +134,28 @@ class _UploadDocumentPageState extends ConsumerState<UploadDocumentPage> {
             },
           ),
           const SizedBox(height: 16),
+          OutlinedButton.icon(
+            onPressed: _saving ? null : _pick,
+            icon: const Icon(Icons.attach_file),
+            label: Text(native ? 'Pick file' : 'Pick demo file'),
+          ),
+          if (_localPath != null) ...[
+            const SizedBox(height: 8),
+            Text(
+              '${_localPath!.startsWith('local://') ? 'Demo stub' : 'File'} · '
+              '${DocumentFilePolicy.formatBytes(_byteSizeBytes ?? _body.text.length)}',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ],
+          const SizedBox(height: 16),
           TextFormField(
             controller: _body,
             maxLines: 8,
-            decoration: const InputDecoration(
-              labelText: 'Content (demo)',
-              border: OutlineInputBorder(),
+            decoration: InputDecoration(
+              labelText: _type == DocContentType.pdf
+                  ? 'Preview / notes'
+                  : 'Content preview',
+              border: const OutlineInputBorder(),
             ),
           ),
           if (_error != null) ...[
@@ -131,8 +178,12 @@ class _UploadDocumentPageState extends ConsumerState<UploadDocumentPage> {
           ),
           const SizedBox(height: 8),
           Text(
-            'Saves offline immediately. On flush, demo paths use demo:// Storage '
-            'URLs; real file paths upload to Firebase Storage when configured.',
+            native
+                ? 'Pick a file from the device, or upload with typed preview. '
+                    'On flush, paths upload to Firebase Storage when configured.'
+                : 'Pick demo file fills a local:// stub + preview. On flush, '
+                    'demo paths use demo:// Storage URLs. Enable native pick '
+                    'with --dart-define=USE_NATIVE_SENSORS=true.',
             style: Theme.of(context).textTheme.bodySmall,
           ),
         ],

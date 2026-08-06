@@ -29,7 +29,7 @@ Run on mid/low-end Android first. Mark each item in Admin → **Pilot** (or tick
 
 - [ ] Browse Project → Discipline → Type → Files
 - [ ] Open seeded PDF/TXT/CSV viewer (zoom/search/page)
-- [ ] Engineer upload stub; client blocked
+- [ ] Engineer upload via Pick demo file (or native file pick); client blocked
 
 ## DPR & drawings
 

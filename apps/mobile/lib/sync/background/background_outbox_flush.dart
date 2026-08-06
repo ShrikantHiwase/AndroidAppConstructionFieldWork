@@ -89,18 +89,26 @@ Future<BackgroundFlushResult> runBackgroundOutboxFlush({
           ? FirebaseStorageUploader()
           : const NoOpStorageUploader(),
     );
+    final docs = LocalDocumentsRepository(
+      shared,
+      remoteSink: sink,
+      remotePull: pull,
+      storageUploader: firebase.enabled
+          ? FirebaseStorageUploader()
+          : const NoOpStorageUploader(),
+    );
     final stores = <SyncableStore>[
       dpr,
       pins,
       siteOps,
-      LocalDocumentsRepository(shared, remoteSink: sink, remotePull: pull),
+      docs,
       voices,
     ];
     final engine = LocalSyncEngine(
       prefs: shared,
       fieldRecords: field,
       moduleStores: stores,
-      mediaCaches: [field, siteOps, pins, dpr, voices],
+      mediaCaches: [field, siteOps, pins, dpr, voices, docs],
     );
 
     final projectId = shared.getString('auth.active_project');

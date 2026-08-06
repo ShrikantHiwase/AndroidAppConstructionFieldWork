@@ -76,6 +76,7 @@ docs/              Build plan and training
 | DPR activity evidence photos | Done |
 | Device voice capture (Fake + record) | Done |
 | Material log evidence photos | Done |
+| Document file picker (Fake + file_picker) | Done |
 | FlutterFire configure + store release | Next (needs your Firebase project) |
 | Phase 3 Enterprise hooks | Deferred |
 
