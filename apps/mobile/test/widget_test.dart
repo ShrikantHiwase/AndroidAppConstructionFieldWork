@@ -32,6 +32,7 @@ void main() {
 
     expect(find.text('Site capture'), findsOneWidget);
     expect(find.text('New Issue'), findsOneWidget);
+    expect(find.text("Today's DPR"), findsOneWidget);
     expect(find.text('Create issues'), findsOneWidget);
   });
 
@@ -62,9 +63,29 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Site capture'), findsOneWidget);
-    await tester.tap(find.text('Issues'));
+    expect(find.text("Today's DPR"), findsOneWidget);
+  });
+
+  testWidgets('engineer can open today DPR form', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          sharedPreferencesProvider.overrideWithValue(prefs),
+        ],
+        child: const FieldApp(),
+      ),
+    );
     await tester.pumpAndSettle();
-    expect(find.text('Scaffold gap'), findsOneWidget);
+    await tester.tap(find.text('Sign in'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text("Today's DPR"));
+    await tester.pumpAndSettle();
+    expect(find.text('Submit DPR'), findsOneWidget);
+    expect(find.text('Weather'), findsOneWidget);
   });
 
   testWidgets('documents browser shows seeded hierarchy', (tester) async {

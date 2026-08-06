@@ -35,7 +35,7 @@ docs/              Build plan and training
 | Phase 1 issues/RFIs + offline outbox | Done |
 | Phase 1 documents + PDF viewer | Done |
 | Offline sync hardening (logs/cleanup/status) | Done |
-| Phase 2a DPR + drawing pins | Next |
+| Phase 2a DPR + drawing pins | Done |
 | Phase 2b Safety / QA / labour / etc. | Gated on pilot metrics |
 | Phase 3 Enterprise hooks | Deferred |
 

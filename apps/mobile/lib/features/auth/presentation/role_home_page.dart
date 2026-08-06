@@ -5,11 +5,12 @@ import '../../../core/constants/app_constants.dart';
 import '../../../core/providers/connectivity_provider.dart';
 import '../../../core/widgets/offline_badge.dart';
 import '../../documents/presentation/documents_browser_page.dart';
+import '../../dpr/presentation/dpr_pages.dart';
+import '../../dpr/presentation/drawing_pin_pages.dart';
 import '../../issues/presentation/create_issue_page.dart';
 import '../../issues/presentation/field_records_providers.dart'
     show pendingSyncCountProvider;
 import '../../issues/presentation/issues_list_page.dart';
-import '../../rfis/presentation/rfis_pages.dart';
 import '../../sync/presentation/sync_status_page.dart';
 import '../domain/auth_models.dart';
 import 'auth_controller.dart';
@@ -36,14 +37,14 @@ class RoleHomePage extends ConsumerWidget {
               onPressed: () => _open(context, const CreateIssuePage()),
             ),
             _PrimaryAction(
-              Icons.list_alt_outlined,
-              'Issues',
-              onPressed: () => _open(context, const IssuesListPage()),
+              Icons.assignment_outlined,
+              "Today's DPR",
+              onPressed: () => _open(context, const TodaysDprPage()),
             ),
             _PrimaryAction(
-              Icons.question_answer_outlined,
-              'RFIs',
-              onPressed: () => _open(context, const RfisListPage()),
+              Icons.push_pin_outlined,
+              'Pin on Drawing',
+              onPressed: () => _open(context, const DrawingsListPage()),
             ),
             _PrimaryAction(
               Icons.folder_open_outlined,
@@ -63,14 +64,14 @@ class RoleHomePage extends ConsumerWidget {
               onPressed: () => _open(context, const IssuesListPage()),
             ),
             _PrimaryAction(
-              Icons.question_answer_outlined,
-              'RFIs',
-              onPressed: () => _open(context, const RfisListPage()),
+              Icons.assignment_outlined,
+              'DPRs',
+              onPressed: () => _open(context, const DprHomePage()),
             ),
             _PrimaryAction(
-              Icons.folder_open_outlined,
-              'Documents',
-              onPressed: () => _open(context, const DocumentsBrowserPage()),
+              Icons.push_pin_outlined,
+              'Drawing pins',
+              onPressed: () => _open(context, const DrawingsListPage()),
             ),
           ],
         ),
