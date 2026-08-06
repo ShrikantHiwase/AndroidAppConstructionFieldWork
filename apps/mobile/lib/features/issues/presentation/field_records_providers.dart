@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../sync/remote/field_remote_pull.dart';
 import '../../../sync/remote/firestore_field_remote_pull.dart';
 import '../../../sync/remote/firestore_outbox_remote_sink.dart';
+import '../../../sync/remote/firebase_storage_uploader.dart';
 import '../../../sync/remote/outbox_remote_sink.dart';
+import '../../../sync/remote/storage_uploader.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../data/local_field_records_repository.dart';
 import '../domain/field_records_repository.dart';
@@ -14,6 +16,13 @@ final outboxRemoteSinkProvider = Provider<OutboxRemoteSink>((ref) {
     return FirestoreOutboxRemoteSink();
   }
   return const NoOpOutboxRemoteSink();
+});
+
+final storageUploaderProvider = Provider<StorageUploader>((ref) {
+  if (ref.watch(firebaseEnabledProvider)) {
+    return FirebaseStorageUploader();
+  }
+  return const NoOpStorageUploader();
 });
 
 final fieldRemotePullProvider = Provider<FieldRemotePull>((ref) {
@@ -28,6 +37,7 @@ final fieldRecordsRepositoryProvider = Provider<FieldRecordsRepository>((ref) {
     ref.watch(sharedPreferencesProvider),
     remoteSink: ref.watch(outboxRemoteSinkProvider),
     remotePull: ref.watch(fieldRemotePullProvider),
+    storageUploader: ref.watch(storageUploaderProvider),
   );
 });
 

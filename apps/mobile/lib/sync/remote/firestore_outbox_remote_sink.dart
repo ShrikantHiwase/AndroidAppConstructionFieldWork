@@ -27,7 +27,7 @@ class FirestoreOutboxRemoteSink implements OutboxRemoteSink {
       case OutboxOperation.delete:
         await ref.delete();
       case OutboxOperation.upload:
-        // Storage upload path is separate; treat as acknowledged for outbox.
+        // Handled by [StorageUploader] in LocalFieldRecordsRepository.flushOutbox.
         return;
     }
   }

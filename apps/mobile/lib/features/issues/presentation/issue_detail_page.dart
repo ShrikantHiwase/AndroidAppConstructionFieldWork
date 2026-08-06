@@ -91,6 +91,15 @@ class _IssueDetailPageState extends ConsumerState<IssueDetailPage> {
                 contentPadding: EdgeInsets.zero,
                 leading: const Icon(Icons.image_outlined),
                 title: Text(a.fileName),
+                subtitle: Text(
+                  a.pendingUpload
+                      ? 'Queued for upload'
+                      : (a.remoteUrl == null
+                          ? 'On device'
+                          : (a.remoteUrl!.startsWith('demo://')
+                              ? 'Synced (demo)'
+                              : 'Uploaded')),
+                ),
               ),
             ),
           ],
