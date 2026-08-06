@@ -25,6 +25,9 @@ firebase/functions/lib/
 # Secrets — never commit
 **/google-services.json
 **/GoogleService-Info.plist
-**/firebase_options.dart
 .env
 .env.*
+
+# firebase_options.dart is committed as a placeholder (isConfigured=false).
+# After flutterfire configure, commit the regenerated file with isConfigured=true.
+# Platform credential JSON/plist files remain gitignored above.

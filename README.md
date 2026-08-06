@@ -37,10 +37,14 @@ docs/              Build plan and training
 | Offline sync hardening (logs/cleanup/status) | Done |
 | Phase 2a DPR + drawing pins | Done |
 | Phase 2b Safety / QA / labour / materials | Done |
-| Firebase wiring + pilot launch | Next |
+| Firebase packages + auth switch (demo fallback) | In progress |
+| FlutterFire configure + pilot launch | Next (needs your Firebase project) |
 | Phase 3 Enterprise hooks | Deferred |
 
-## Demo login (local, no Firebase yet)
+## Demo login (local demo mode)
+
+App stays in demo mode until `flutterfire configure` sets
+`FirebaseOptionsGate.isConfigured = true` (see [docs/Firebase_Setup.md](docs/Firebase_Setup.md)).
 
 Password for all: `demo1234`
 
@@ -70,4 +74,4 @@ flutter test
 flutter run
 ```
 
-Firebase project wiring: see [firebase/README.md](firebase/README.md).
+Firebase project wiring: [docs/Firebase_Setup.md](docs/Firebase_Setup.md) · [firebase/README.md](firebase/README.md).

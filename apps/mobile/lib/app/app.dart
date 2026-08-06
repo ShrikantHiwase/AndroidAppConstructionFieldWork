@@ -15,6 +15,7 @@ class FieldApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final auth = ref.watch(authControllerProvider);
+    final firebaseEnabled = ref.watch(firebaseEnabledProvider);
 
     return MaterialApp(
       title: 'Field Evidence',
@@ -28,7 +29,7 @@ class FieldApp extends ConsumerWidget {
       },
       builder: (context, child) {
         return Banner(
-          message: 'PHASE 1',
+          message: firebaseEnabled ? 'FIREBASE' : 'DEMO',
           location: BannerLocation.topEnd,
           color: const Color(0xFF1B4D3E),
           child: child ?? const SizedBox.shrink(),

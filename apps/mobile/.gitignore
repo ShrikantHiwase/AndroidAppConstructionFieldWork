@@ -44,7 +44,7 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-# Firebase secrets (configured via flutterfire)
+# Firebase platform credentials (configured via flutterfire)
 google-services.json
 GoogleService-Info.plist
-lib/firebase_options.dart
+# lib/firebase_options.dart is tracked as a placeholder until configured.
