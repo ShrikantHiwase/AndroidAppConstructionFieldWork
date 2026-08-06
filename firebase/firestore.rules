@@ -127,6 +127,11 @@ service cloud.firestore {
       allow delete: if isAdmin(resource.data.orgId, resource.data.projectId);
     }
 
+    // Device FCM tokens — owner read/write only (Functions use Admin SDK).
+    match /fcm_tokens/{uid} {
+      allow read, write: if signedIn() && request.auth.uid == uid;
+    }
+
     // Invite audit trail — admins / inviter read; writes via Admin SDK / Functions only.
     match /invites/{inviteId} {
       allow read: if signedIn()

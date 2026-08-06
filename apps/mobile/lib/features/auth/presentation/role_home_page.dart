@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/constants/app_constants.dart';
+import '../../../core/notifications/notification_providers.dart';
 import '../../../core/providers/connectivity_provider.dart';
 import '../../../core/widgets/offline_badge.dart';
 import '../../admin/presentation/admin_invites_page.dart';
@@ -23,6 +24,8 @@ class RoleHomePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final session = ref.watch(authSessionProvider);
+    // Keep FCM / demo push token registration warm while home is open.
+    ref.watch(pushRegistrationProvider);
     if (session == null) {
       return const Scaffold(body: Center(child: Text('No session')));
     }

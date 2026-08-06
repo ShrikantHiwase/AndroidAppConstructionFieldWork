@@ -147,19 +147,28 @@ exports.inviteMember = onCall(async (request) => {
 
 /**
  * Placeholder for DPR submit → digest / nudge fan-out.
- * Replace body with FCM topic / token lookup when messaging is live.
+ * Looks up fcm_tokens for the creator when present; actual Admin.messaging()
+ * send stays off until Cloud Messaging is enabled on the project.
  */
 exports.onDprWrite = onDocumentWritten("dprs/{dprId}", async (event) => {
   const after = event.data?.after?.data();
   if (!after) return null;
   if (after.submitted !== true) return null;
 
+  let tokenHint = null;
+  if (after.createdBy) {
+    const tok = await db.doc(`fcm_tokens/${after.createdBy}`).get();
+    if (tok.exists) tokenHint = tok.data()?.token ? "present" : null;
+  }
+
   console.log(
     JSON.stringify({
       type: "dpr_submitted",
       dprId: event.params.dprId,
       projectId: after.projectId,
-      note: "Enqueue FCM PM digest / engineer confirmation here",
+      createdBy: after.createdBy || null,
+      fcmToken: tokenHint,
+      note: "Call admin.messaging().send when Cloud Messaging is live",
     })
   );
   return null;
