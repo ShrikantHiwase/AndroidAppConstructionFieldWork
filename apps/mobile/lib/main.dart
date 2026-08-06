@@ -7,6 +7,7 @@ import 'app/app.dart';
 import 'core/firebase/firebase_bootstrap.dart';
 import 'core/notifications/dpr_nudge_scheduler.dart';
 import 'core/notifications/fcm_background.dart';
+import 'core/secure/secure_store.dart';
 import 'features/auth/presentation/auth_controller.dart';
 import 'features/digests/data/local_digests_repository.dart';
 import 'sync/background/background_sync_scheduler.dart';
@@ -14,6 +15,8 @@ import 'sync/background/background_sync_scheduler.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final prefs = await SharedPreferences.getInstance();
+  final secure = createSecureStore(prefs);
+  await secure.migrateFromPrefs(prefs);
   final firebase = await bootstrapFirebase();
 
   if (firebase.enabled) {
@@ -39,6 +42,7 @@ Future<void> main() async {
     ProviderScope(
       overrides: [
         sharedPreferencesProvider.overrideWithValue(prefs),
+        secureStoreProvider.overrideWithValue(secure),
         firebaseEnabledProvider.overrideWithValue(firebase.enabled),
         dprNudgeSchedulerProvider.overrideWithValue(nudgeScheduler),
       ],

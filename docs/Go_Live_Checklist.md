@@ -63,6 +63,7 @@ flutter run --dart-define=USE_NATIVE_SENSORS=true
 ```
 
 - [ ] GPS / camera / biometrics prompts appear
+- [ ] Optional: `flutter run --dart-define=USE_SECURE_STORAGE=true` so session email / FCM token use platform secure storage (see [Secure_Store.md](Secure_Store.md))
 - [ ] Offline create → online sync still works (issues + DPR/site-ops/docs outboxes)
 - [ ] Issue / site-ops / drawing-pin with photo: flush uploads to Storage when Firebase is on; Fake `local://` paths stay demo URLs
 

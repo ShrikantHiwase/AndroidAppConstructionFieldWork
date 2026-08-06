@@ -29,6 +29,7 @@ class SyncStatusPage extends ConsumerWidget {
     final cache = ref.watch(localCacheSnapshotProvider);
     ref.watch(telemetryRevisionProvider);
     final telemetry = ref.watch(telemetryPortProvider);
+    final secure = ref.watch(secureStoreProvider);
     final textTheme = Theme.of(context).textTheme;
     final scheme = Theme.of(context).colorScheme;
     final overBudget = cache.estimatedBytes > cache.capBytes;
@@ -181,6 +182,11 @@ class SyncStatusPage extends ConsumerWidget {
           Text(
             'Backend: ${telemetry.backendLabel}'
             '${telemetry.userId == null ? '' : ' · user ${telemetry.userId}'}',
+            style: textTheme.bodySmall,
+          ),
+          Text(
+            'Secure store: ${secure.backendLabel} '
+            '(session email, biometrics flag, FCM token)',
             style: textTheme.bodySmall,
           ),
           Text(

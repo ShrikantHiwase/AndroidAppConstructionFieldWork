@@ -44,7 +44,7 @@ void main() {
 
     final again = LocalNotificationInbox(prefs);
     expect(again.entries, hasLength(1));
-    expect(again.readToken(), 'tok_1');
+    expect(await again.readToken(), 'tok_1');
   });
 
   test('parsePushPayload prefers notification then data type', () {

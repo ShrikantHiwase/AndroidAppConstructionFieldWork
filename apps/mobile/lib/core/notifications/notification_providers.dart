@@ -6,7 +6,10 @@ import 'local_notification_inbox.dart';
 import 'push_notification_service.dart';
 
 final notificationInboxProvider = Provider<LocalNotificationInbox>((ref) {
-  return LocalNotificationInbox(ref.watch(sharedPreferencesProvider));
+  return LocalNotificationInbox(
+    ref.watch(sharedPreferencesProvider),
+    secure: ref.watch(secureStoreProvider),
+  );
 });
 
 final pushNotificationServiceProvider = Provider<PushNotificationService>((ref) {

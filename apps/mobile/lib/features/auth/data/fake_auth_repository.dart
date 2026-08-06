@@ -1,6 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/constants/app_constants.dart';
+import '../../../core/secure/secure_store.dart';
 import '../../admin/domain/admin_invite_models.dart';
 import '../domain/auth_models.dart';
 import '../domain/auth_repository.dart';
@@ -13,20 +14,41 @@ import '../domain/auth_repository.dart';
 ///
 /// Invited emails (same password) honor pending [InviteAuthBridge] grants.
 class FakeAuthRepository implements AuthRepository {
-  FakeAuthRepository(this._prefs, {InviteAuthBridge? invites})
-      : _invites = invites;
+  FakeAuthRepository(
+    this._prefs, {
+    InviteAuthBridge? invites,
+    SecureStore? secure,
+  })  : _invites = invites,
+        _secure = secure ?? FakeSecureStore(_prefs);
 
   final SharedPreferences _prefs;
   final InviteAuthBridge? _invites;
+  final SecureStore _secure;
 
-  static const _sessionEmailKey = 'auth.session_email';
+  static const _sessionEmailKey = SecureKeys.sessionEmail;
   static const _projectKey = 'auth.active_project';
-  static const _biometricsKey = 'auth.biometrics_enabled';
+  static const _biometricsKey = SecureKeys.biometricsEnabled;
   static const _lockedKey = 'auth.requires_unlock';
 
   static const demoPassword = 'demo1234';
 
   AuthSession? _session;
+  var _biometricsEnabled = false;
+  var _secureReady = false;
+
+  Future<void> _ensureSecure() async {
+    if (_secureReady) return;
+    await _secure.migrateFromPrefs(_prefs);
+    _biometricsEnabled =
+        (await _secure.read(_biometricsKey)) == 'true';
+    _secureReady = true;
+  }
+
+  Future<void> _writeBiometrics(bool enabled) async {
+    await _ensureSecure();
+    _biometricsEnabled = enabled;
+    await _secure.write(_biometricsKey, enabled ? 'true' : 'false');
+  }
 
   static final _org =
       const Organization(id: 'org_demo', name: 'RAYNS Demo Contractors');
@@ -113,7 +135,7 @@ class FakeAuthRepository implements AuthRepository {
       organizations: [_org],
       projects: _projects,
       activeProjectId: active,
-      biometricsEnabled: _prefs.getBool(_biometricsKey) ?? false,
+      biometricsEnabled: _biometricsEnabled,
     );
   }
 
@@ -150,13 +172,14 @@ class FakeAuthRepository implements AuthRepository {
       organizations: [_org],
       projects: projects,
       activeProjectId: active,
-      biometricsEnabled: _prefs.getBool(_biometricsKey) ?? false,
+      biometricsEnabled: _biometricsEnabled,
     );
   }
 
   @override
   Future<AuthSession?> restoreSession() async {
-    final email = _prefs.getString(_sessionEmailKey);
+    await _ensureSecure();
+    final email = await _secure.read(_sessionEmailKey);
     if (email == null) return null;
     final demo = _demoUsers[email];
     if (demo != null) {
@@ -174,6 +197,7 @@ class FakeAuthRepository implements AuthRepository {
     required String email,
     required String password,
   }) async {
+    await _ensureSecure();
     final normalized = email.trim().toLowerCase();
     if (password != demoPassword) {
       throw AuthFailure('Invalid email or password. Try a demo account.');
@@ -181,7 +205,7 @@ class FakeAuthRepository implements AuthRepository {
 
     final demo = _demoUsers[normalized];
     if (demo != null) {
-      await _prefs.setString(_sessionEmailKey, normalized);
+      await _secure.write(_sessionEmailKey, normalized);
       await _prefs.setBool(_lockedKey, false);
       _session = _buildDemoSession(demo.user, demo.role);
       await _prefs.setString(_projectKey, _session!.activeProjectId);
@@ -196,7 +220,7 @@ class FakeAuthRepository implements AuthRepository {
       );
     }
 
-    await _prefs.setString(_sessionEmailKey, normalized);
+    await _secure.write(_sessionEmailKey, normalized);
     await _prefs.setBool(_lockedKey, false);
     _session = _buildInviteSession(grant);
     await _prefs.setString(_projectKey, _session!.activeProjectId);
@@ -205,8 +229,9 @@ class FakeAuthRepository implements AuthRepository {
 
   @override
   Future<void> signOut() async {
+    await _ensureSecure();
     _session = null;
-    await _prefs.remove(_sessionEmailKey);
+    await _secure.delete(_sessionEmailKey);
     await _prefs.remove(_projectKey);
     await _prefs.setBool(_lockedKey, false);
   }
@@ -227,7 +252,7 @@ class FakeAuthRepository implements AuthRepository {
 
   @override
   Future<void> setBiometricsEnabled(bool enabled) async {
-    await _prefs.setBool(_biometricsKey, enabled);
+    await _writeBiometrics(enabled);
     if (_session != null) {
       _session = _session!.copyWith(biometricsEnabled: enabled);
     }
@@ -236,18 +261,18 @@ class FakeAuthRepository implements AuthRepository {
   /// Demo unlock: succeeds when biometrics are enabled (no device API yet).
   @override
   Future<bool> unlockWithBiometrics() async {
-    final enabled = _prefs.getBool(_biometricsKey) ?? false;
-    if (!enabled) return true;
+    await _ensureSecure();
+    if (!_biometricsEnabled) return true;
     await _prefs.setBool(_lockedKey, false);
     return true;
   }
 
   bool get requiresUnlock =>
-      (_prefs.getBool(_biometricsKey) ?? false) &&
-      (_prefs.getBool(_lockedKey) ?? false);
+      _biometricsEnabled && (_prefs.getBool(_lockedKey) ?? false);
 
   Future<void> markLockedForResume() async {
-    if (_prefs.getBool(_biometricsKey) ?? false) {
+    await _ensureSecure();
+    if (_biometricsEnabled) {
       await _prefs.setBool(_lockedKey, true);
     }
   }

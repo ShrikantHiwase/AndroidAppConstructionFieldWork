@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/constants/app_constants.dart';
+import '../../../core/secure/secure_store.dart';
 import '../domain/auth_models.dart';
 import '../domain/auth_repository.dart';
 
@@ -15,21 +16,34 @@ import '../domain/auth_repository.dart';
 class FirebaseAuthRepository implements AuthRepository {
   FirebaseAuthRepository({
     required SharedPreferences prefs,
+    SecureStore? secure,
     FirebaseAuth? auth,
     FirebaseFirestore? firestore,
   })  : _prefs = prefs,
+        _secure = secure ?? FakeSecureStore(prefs),
         _auth = auth ?? FirebaseAuth.instance,
         _db = firestore ?? FirebaseFirestore.instance;
 
   final SharedPreferences _prefs;
+  final SecureStore _secure;
   final FirebaseAuth _auth;
   final FirebaseFirestore _db;
 
   static const _projectKey = 'auth.active_project';
-  static const _biometricsKey = 'auth.biometrics_enabled';
+  static const _biometricsKey = SecureKeys.biometricsEnabled;
   static const _lockedKey = 'auth.requires_unlock';
 
   AuthSession? _session;
+  var _biometricsEnabled = false;
+  var _secureReady = false;
+
+  Future<void> _ensureSecure() async {
+    if (_secureReady) return;
+    await _secure.migrateFromPrefs(_prefs);
+    _biometricsEnabled =
+        (await _secure.read(_biometricsKey)) == 'true';
+    _secureReady = true;
+  }
 
   AppRole _roleFrom(String raw) {
     for (final role in AppRole.values) {
@@ -39,6 +53,7 @@ class FirebaseAuthRepository implements AuthRepository {
   }
 
   Future<AuthSession> _sessionFor(User user) async {
+    await _ensureSecure();
     final membershipSnap = await _db
         .collection(FirestoreCollections.memberships)
         .where('userId', isEqualTo: user.uid)
@@ -118,12 +133,13 @@ class FirebaseAuthRepository implements AuthRepository {
       organizations: organizations,
       projects: projects,
       activeProjectId: activeProjectId,
-      biometricsEnabled: _prefs.getBool(_biometricsKey) ?? false,
+      biometricsEnabled: _biometricsEnabled,
     );
   }
 
   @override
   Future<AuthSession?> restoreSession() async {
+    await _ensureSecure();
     final user = _auth.currentUser;
     if (user == null) return null;
     _session = await _sessionFor(user);
@@ -173,7 +189,9 @@ class FirebaseAuthRepository implements AuthRepository {
 
   @override
   Future<void> setBiometricsEnabled(bool enabled) async {
-    await _prefs.setBool(_biometricsKey, enabled);
+    await _ensureSecure();
+    _biometricsEnabled = enabled;
+    await _secure.write(_biometricsKey, enabled ? 'true' : 'false');
     if (_session != null) {
       _session = _session!.copyWith(biometricsEnabled: enabled);
     }
@@ -181,8 +199,8 @@ class FirebaseAuthRepository implements AuthRepository {
 
   @override
   Future<bool> unlockWithBiometrics() async {
-    final enabled = _prefs.getBool(_biometricsKey) ?? false;
-    if (!enabled) return true;
+    await _ensureSecure();
+    if (!_biometricsEnabled) return true;
     await _prefs.setBool(_lockedKey, false);
     return true;
   }
