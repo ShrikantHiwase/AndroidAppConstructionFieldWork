@@ -8,6 +8,7 @@ import '../../../sync/outbox/outbox_entry.dart';
 import '../../../sync/remote/module_remote_pull.dart';
 import '../../../sync/remote/outbox_remote_sink.dart';
 import '../../../sync/remote/prefs_outbox_queue.dart';
+import '../../../sync/remote/storage_uploader.dart';
 import '../../../sync/remote/syncable_store.dart';
 import '../../auth/domain/auth_models.dart';
 import '../domain/site_ops_models.dart';
@@ -57,8 +58,10 @@ class LocalSiteOpsRepository implements SiteOpsRepository, SyncableStore {
     this._prefs, {
     OutboxRemoteSink? remoteSink,
     ModuleRemotePull? remotePull,
+    StorageUploader? storageUploader,
   })  : _remoteSink = remoteSink ?? const NoOpOutboxRemoteSink(),
         _remotePull = remotePull ?? const NoOpModuleRemotePull(),
+        _storageUploader = storageUploader ?? const NoOpStorageUploader(),
         _outbox = PrefsOutboxQueue(_prefs, _outboxKey) {
     _load();
   }
@@ -66,6 +69,7 @@ class LocalSiteOpsRepository implements SiteOpsRepository, SyncableStore {
   final SharedPreferences _prefs;
   final OutboxRemoteSink _remoteSink;
   final ModuleRemotePull _remotePull;
+  final StorageUploader _storageUploader;
   final PrefsOutboxQueue _outbox;
 
   static const _safetyKey = 'siteops.safety';
@@ -220,6 +224,8 @@ class LocalSiteOpsRepository implements SiteOpsRepository, SyncableStore {
       throw SiteOpsException('Photo evidence required for ${kind.name}');
     }
     final now = DateTime.now().toUtc();
+    final pendingUpload =
+        attached && photoLocalPath != null && photoLocalPath.isNotEmpty;
     final record = SafetyRecord(
       id: _id('safety'),
       orgId: session.activeProject.orgId,
@@ -234,8 +240,28 @@ class LocalSiteOpsRepository implements SiteOpsRepository, SyncableStore {
       hasPhoto: attached,
       photoLocalPath: photoLocalPath,
       photoByteSizeBytes: photoByteSizeBytes,
+      pendingPhotoUpload: pendingUpload,
     );
     _safety[record.id] = record;
+    if (pendingUpload) {
+      final path = photoLocalPath;
+      final fileName = path.split('/').last;
+      _outbox.enqueue(
+        collection: FirestoreCollections.safetyRecords,
+        documentId: record.id,
+        operation: OutboxOperation.upload,
+        payload: StorageUploadRequest(
+          orgId: record.orgId,
+          projectId: record.projectId,
+          parentType: 'safety_records',
+          parentId: record.id,
+          attachmentId: 'photo',
+          fileName: fileName.isEmpty ? 'safety.jpg' : fileName,
+          contentType: 'image/jpeg',
+          localPath: path,
+        ).toPayload(),
+      );
+    }
     _outbox.enqueue(
       collection: FirestoreCollections.safetyRecords,
       documentId: record.id,
@@ -262,17 +288,46 @@ class LocalSiteOpsRepository implements SiteOpsRepository, SyncableStore {
         throw SiteOpsException('Photo required on fail: ${item.label}');
       }
     }
+    final preparedItems = items.map((item) {
+      final path = item.photoLocalPath;
+      final needsUpload =
+          path != null && path.isNotEmpty && item.photoRemoteUrl == null;
+      return needsUpload
+          ? item.copyWith(pendingPhotoUpload: true, hasPhoto: true)
+          : item;
+    }).toList();
+
     final insp = QaInspection(
       id: _id('insp'),
       orgId: session.activeProject.orgId,
       projectId: session.activeProjectId,
       title: title.trim(),
-      items: items,
+      items: preparedItems,
       createdBy: session.user.id,
       createdByName: session.user.displayName,
       createdAt: DateTime.now().toUtc(),
     );
     _inspections[insp.id] = insp;
+    for (final item in preparedItems) {
+      final path = item.photoLocalPath;
+      if (!item.pendingPhotoUpload || path == null || path.isEmpty) continue;
+      final fileName = path.split('/').last;
+      _outbox.enqueue(
+        collection: FirestoreCollections.inspections,
+        documentId: insp.id,
+        operation: OutboxOperation.upload,
+        payload: StorageUploadRequest(
+          orgId: insp.orgId,
+          projectId: insp.projectId,
+          parentType: 'inspections',
+          parentId: insp.id,
+          attachmentId: item.id,
+          fileName: fileName.isEmpty ? 'qa_fail.jpg' : fileName,
+          contentType: 'image/jpeg',
+          localPath: path,
+        ).toPayload(),
+      );
+    }
     _outbox.enqueue(
       collection: FirestoreCollections.inspections,
       documentId: insp.id,
@@ -358,10 +413,29 @@ class LocalSiteOpsRepository implements SiteOpsRepository, SyncableStore {
 
   @override
   Future<void> flushOutbox({required bool isOnline}) async {
-    await _outbox.flush(
-      isOnline: isOnline,
-      sink: _remoteSink,
-      onApplied: (entry) async {
+    if (!isOnline || _outbox.entries.isEmpty) {
+      _outbox.pendingController.add(_outbox.entries.length);
+      return;
+    }
+
+    final remaining = <OutboxEntry>[];
+    final failedUploadDocs = <String>{};
+    for (final entry in List<OutboxEntry>.from(_outbox.entries)) {
+      try {
+        if (entry.operation == OutboxOperation.upload) {
+          await _flushUpload(entry);
+          continue;
+        }
+
+        if (failedUploadDocs.contains(entry.documentId) &&
+            (entry.operation == OutboxOperation.create ||
+                entry.operation == OutboxOperation.update)) {
+          remaining.add(entry);
+          continue;
+        }
+
+        final toApply = _resolvePayload(entry);
+        await _remoteSink.apply(toApply);
         switch (entry.collection) {
           case FirestoreCollections.safetyRecords:
             final cur = _safety[entry.documentId];
@@ -384,9 +458,106 @@ class LocalSiteOpsRepository implements SiteOpsRepository, SyncableStore {
               _materials[entry.documentId] = cur.copyWith(synced: true);
             }
         }
-      },
-    );
-    await _persistEntitiesOnly();
+      } catch (e) {
+        if (entry.operation == OutboxOperation.upload) {
+          failedUploadDocs.add(entry.documentId);
+        }
+        remaining.add(
+          OutboxEntry(
+            id: entry.id,
+            collection: entry.collection,
+            documentId: entry.documentId,
+            operation: entry.operation,
+            payload: entry.payload,
+            createdAt: entry.createdAt,
+            attempts: entry.attempts + 1,
+            lastError: e.toString(),
+          ),
+        );
+      }
+    }
+    _outbox.entries
+      ..clear()
+      ..addAll(remaining);
+    await _persist();
+  }
+
+  OutboxEntry _resolvePayload(OutboxEntry entry) {
+    if (entry.collection == FirestoreCollections.safetyRecords) {
+      final cur = _safety[entry.documentId];
+      if (cur != null &&
+          (entry.operation == OutboxOperation.create ||
+              entry.operation == OutboxOperation.update)) {
+        return OutboxEntry(
+          id: entry.id,
+          collection: entry.collection,
+          documentId: entry.documentId,
+          operation: entry.operation,
+          payload: cur.toJson(),
+          createdAt: entry.createdAt,
+          attempts: entry.attempts,
+          lastError: entry.lastError,
+        );
+      }
+    }
+    if (entry.collection == FirestoreCollections.inspections) {
+      final cur = _inspections[entry.documentId];
+      if (cur != null &&
+          (entry.operation == OutboxOperation.create ||
+              entry.operation == OutboxOperation.update)) {
+        return OutboxEntry(
+          id: entry.id,
+          collection: entry.collection,
+          documentId: entry.documentId,
+          operation: entry.operation,
+          payload: cur.toJson(),
+          createdAt: entry.createdAt,
+          attempts: entry.attempts,
+          lastError: entry.lastError,
+        );
+      }
+    }
+    return entry;
+  }
+
+  Future<void> _flushUpload(OutboxEntry entry) async {
+    final request = StorageUploadRequest.fromPayload(entry.payload);
+    final url = await _storageUploader.upload(request);
+
+    if (entry.collection == FirestoreCollections.safetyRecords) {
+      final cur = _safety[entry.documentId];
+      if (cur == null) return;
+      _safety[entry.documentId] = cur.copyWith(
+        photoRemoteUrl: url,
+        pendingPhotoUpload: false,
+        hasPhoto: true,
+      );
+      return;
+    }
+
+    if (entry.collection == FirestoreCollections.inspections) {
+      final cur = _inspections[entry.documentId];
+      if (cur == null) return;
+      final updatedItems = cur.items.map((item) {
+        if (item.id != request.attachmentId) return item;
+        return item.copyWith(
+          photoRemoteUrl: url,
+          pendingPhotoUpload: false,
+          hasPhoto: true,
+        );
+      }).toList();
+      _inspections[entry.documentId] = QaInspection(
+        id: cur.id,
+        orgId: cur.orgId,
+        projectId: cur.projectId,
+        title: cur.title,
+        items: updatedItems,
+        createdBy: cur.createdBy,
+        createdByName: cur.createdByName,
+        createdAt: cur.createdAt,
+        synced: cur.synced,
+      );
+    }
   }
 
   @override
@@ -409,6 +580,8 @@ class LocalSiteOpsRepository implements SiteOpsRepository, SyncableStore {
           hasPhoto: r.hasPhoto,
           photoLocalPath: r.photoLocalPath,
           photoByteSizeBytes: r.photoByteSizeBytes,
+          photoRemoteUrl: r.photoRemoteUrl,
+          pendingPhotoUpload: r.pendingPhotoUpload,
           synced: true,
         );
         changed += 1;
