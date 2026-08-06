@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/notifications/dpr_nudge_scheduler.dart';
+import '../../../core/notifications/notification_providers.dart';
 import '../../../core/share/share_port.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../../dpr/presentation/dpr_pages.dart';
@@ -38,7 +40,8 @@ class DigestsPage extends ConsumerWidget {
             contentPadding: EdgeInsets.zero,
             title: const Text('5 PM DPR nudge'),
             subtitle: Text(
-              'Show reminder after ${prefs.nudgeHourLocal}:00 if today\'s DPR is not submitted. FCM schedule lands with Firebase.',
+              'Local tray reminder around ${prefs.nudgeHourLocal}:00 if '
+              'today\'s DPR is not submitted. Cloud FCM cron still deferred.',
             ),
             value: prefs.dprNudgeEnabled,
             onChanged: canPrefs
@@ -93,6 +96,18 @@ class DigestsPage extends ConsumerWidget {
                         5,
                       ),
                     );
+                    if (simulated != null) {
+                      await ref.read(dprNudgeSchedulerProvider).showNow(
+                            title: 'DPR reminder',
+                            body: simulated.message,
+                          );
+                      await ref.read(notificationInboxProvider).add(
+                            title: 'DPR reminder',
+                            body: simulated.message,
+                            data: const {'type': 'dpr_nudge'},
+                            source: 'local_nudge',
+                          );
+                    }
                     if (!context.mounted) return;
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(

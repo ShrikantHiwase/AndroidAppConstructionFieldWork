@@ -74,6 +74,9 @@ todos:
   - id: system-share
     content: share_plus for DPR/digest/document summaries with clipboard fallback
     status: completed
+  - id: local-dpr-nudge
+    content: Local tray DPR nudge via flutter_local_notifications
+    status: completed
 isProject: false
 ---
 
@@ -292,6 +295,7 @@ docs/                 # plans and training
 19. ~~Firebase invite callable~~ — Admin UI calls `inviteMember` via `cloud_functions` when Firebase is enabled; demo keeps local FakeAuth invites.
 20. ~~RFI FCM parity~~ — `onRfiWrite` assign/status pushes + client `assignRfi` / local notify intents (`rfi_assigned` / `rfi_status`).
 21. ~~System share~~ — `share_plus` for DPR / PM digest / document summary (clipboard fallback); see core `SharePort`.
-22. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift and scheduled 5 PM nudge Function remain follow-ups.
+22. ~~Local DPR nudge~~ — `flutter_local_notifications` daily tray reminder from Digests prefs; Simulate posts tray + inbox. Cloud FCM cron still deferred.
+23. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift remains a follow-up.
 
 No native-only Android path; iOS ships from the same Flutter codebase. Enterprise BIM/Forge remains a WebView module after MVP.

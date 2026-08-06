@@ -5,8 +5,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app/app.dart';
 import 'core/firebase/firebase_bootstrap.dart';
+import 'core/notifications/dpr_nudge_scheduler.dart';
 import 'core/notifications/fcm_background.dart';
 import 'features/auth/presentation/auth_controller.dart';
+import 'features/digests/data/local_digests_repository.dart';
 import 'sync/background/background_sync_scheduler.dart';
 
 Future<void> main() async {
@@ -24,11 +26,21 @@ Future<void> main() async {
     await scheduler.registerPeriodicFlush();
   }
 
+  final nudgeScheduler = LocalNotificationsDprNudgeScheduler();
+  await nudgeScheduler.initialize();
+  final digestPrefs = LocalDigestsRepository(prefs).getPrefs();
+  await syncDprNudgeSchedule(
+    scheduler: nudgeScheduler,
+    enabled: digestPrefs.dprNudgeEnabled,
+    hourLocal: digestPrefs.nudgeHourLocal,
+  );
+
   runApp(
     ProviderScope(
       overrides: [
         sharedPreferencesProvider.overrideWithValue(prefs),
         firebaseEnabledProvider.overrideWithValue(firebase.enabled),
+        dprNudgeSchedulerProvider.overrideWithValue(nudgeScheduler),
       ],
       child: const FieldApp(),
     ),

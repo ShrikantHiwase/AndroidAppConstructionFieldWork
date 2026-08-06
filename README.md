@@ -62,6 +62,7 @@ docs/              Build plan and training
 | Firebase inviteMember callable (admin UI) | Done |
 | RFI FCM assign/status parity | Done |
 | System share (DPR / digests / docs) | Done |
+| Local DPR tray nudge (5 PM prefs) | Done |
 | FlutterFire configure + store release | Next (needs your Firebase project) |
 | Phase 3 Enterprise hooks | Deferred |
 

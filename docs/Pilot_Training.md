@@ -24,7 +24,7 @@ Password for all: `demo1234`
 2. **New Issue** → title, Add demo GPS, Add demo photo → Save. Toggle cloud icon offline, create another issue, go online (auto-sync).
 3. **Today's DPR** → weather, manpower, ≥1 activity, blockers if any → Save draft → add demo voice note → Submit → **Share** summary to WhatsApp.
 4. **Pin on Drawing** → pick issue → tap sheet to drop pin.
-5. **Reminders** → leave 5 PM DPR nudge on; use Simulate 5 PM if testing after hours.
+5. **Reminders** → leave 5 PM DPR nudge on (schedules a local tray reminder); use **Simulate 5 PM** to fire tray + inbox.
 
 ## PM — day-one script (10 minutes)
 
