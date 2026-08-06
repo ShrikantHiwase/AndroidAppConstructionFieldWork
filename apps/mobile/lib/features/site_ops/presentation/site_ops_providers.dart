@@ -1,11 +1,17 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../auth/presentation/auth_controller.dart';
+import '../../dpr/presentation/dpr_providers.dart';
+import '../../issues/presentation/field_records_providers.dart';
 import '../data/local_site_ops_repository.dart';
 import '../domain/site_ops_models.dart';
 
 final siteOpsRepositoryProvider = Provider<SiteOpsRepository>((ref) {
-  return LocalSiteOpsRepository(ref.watch(sharedPreferencesProvider));
+  return LocalSiteOpsRepository(
+    ref.watch(sharedPreferencesProvider),
+    remoteSink: ref.watch(outboxRemoteSinkProvider),
+    remotePull: ref.watch(moduleRemotePullProvider),
+  );
 });
 
 final safetyProvider = StreamProvider<List<SafetyRecord>>((ref) {

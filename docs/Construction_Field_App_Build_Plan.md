@@ -44,6 +44,9 @@ todos:
   - id: firestore-outbox
     content: Outbox push to Firestore + pull issues/RFIs when Firebase enabled
     status: completed
+  - id: firestore-modules
+    content: Outbox push/pull for DPR, site ops, documents, drawing pins
+    status: completed
 isProject: false
 ---
 
@@ -252,6 +255,7 @@ docs/                 # plans and training
 9. ~~Device sensors~~ — `geolocator` / `image_picker` / `local_auth` with Fake defaults; enable native via `--dart-define=USE_NATIVE_SENSORS=true`. See `docs/Device_Sensors.md`.
 10. ~~Firebase go-live prep~~ — emulator seed (`firebase/seed`), `inviteMember` + `onDprWrite` Functions, membership indexes, rules for `invites`/`voice_notes`, [Go_Live_Checklist.md](Go_Live_Checklist.md).
 11. ~~Firestore outbox sync~~ — when Firebase is enabled, flush pushes issues/RFIs/comments to Firestore and pulls remote issues/RFIs (LWW by `updatedAt`); demo keeps no-op sink.
-12. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. DPR/site-ops/docs remotes and Drift/Workmanager remain follow-ups.
+12. ~~Module Firestore sync~~ — DPR, site ops, documents (metadata), and drawing pins enqueue to the same outbox sink; `LocalSyncEngine` flushes/pulls all `SyncableStore`s. Storage blob upload still deferred.
+13. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift/Workmanager remain follow-ups.
 
 No native-only Android path; iOS ships from the same Flutter codebase. Enterprise BIM/Forge remains a WebView module after MVP.

@@ -18,6 +18,15 @@ abstract final class ConflictPolicy {
       case 'issues':
       case 'rfis':
         return ConflictStrategy.auditedStatus;
+      case 'dprs':
+      case 'safety_records':
+      case 'inspections':
+      case 'attendance_logs':
+      case 'material_logs':
+      case 'folders':
+      case 'documents':
+      case 'drawing_pins':
+        return ConflictStrategy.lastWriteWins;
       default:
         return ConflictStrategy.lastWriteWins;
     }

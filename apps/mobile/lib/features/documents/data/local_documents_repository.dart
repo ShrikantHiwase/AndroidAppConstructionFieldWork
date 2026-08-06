@@ -3,20 +3,36 @@ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../core/constants/app_constants.dart';
+import '../../../sync/outbox/outbox_entry.dart';
+import '../../../sync/remote/module_remote_pull.dart';
+import '../../../sync/remote/outbox_remote_sink.dart';
+import '../../../sync/remote/prefs_outbox_queue.dart';
+import '../../../sync/remote/syncable_store.dart';
 import '../../auth/domain/auth_models.dart';
 import '../domain/document_models.dart';
 import '../domain/documents_repository.dart';
 
-class LocalDocumentsRepository implements DocumentsRepository {
-  LocalDocumentsRepository(this._prefs) {
+class LocalDocumentsRepository implements DocumentsRepository, SyncableStore {
+  LocalDocumentsRepository(
+    this._prefs, {
+    OutboxRemoteSink? remoteSink,
+    ModuleRemotePull? remotePull,
+  })  : _remoteSink = remoteSink ?? const NoOpOutboxRemoteSink(),
+        _remotePull = remotePull ?? const NoOpModuleRemotePull(),
+        _outbox = PrefsOutboxQueue(_prefs, _outboxKey) {
     _load();
   }
 
   final SharedPreferences _prefs;
+  final OutboxRemoteSink _remoteSink;
+  final ModuleRemotePull _remotePull;
+  final PrefsOutboxQueue _outbox;
 
   static const _foldersKey = 'docs.folders';
   static const _documentsKey = 'docs.documents';
   static const _seededKey = 'docs.seeded_projects';
+  static const _outboxKey = 'docs.outbox';
 
   final _folders = <String, DocFolder>{};
   final _documents = <String, ProjectDocument>{};
@@ -43,6 +59,7 @@ class LocalDocumentsRepository implements DocumentsRepository {
       );
       _documents[doc.id] = doc;
     }
+    _outbox.load();
   }
 
   Future<void> _persist() async {
@@ -54,8 +71,30 @@ class LocalDocumentsRepository implements DocumentsRepository {
       _documentsKey,
       _documents.values.map((e) => jsonEncode(e.toJson())).toList(),
     );
+    await _outbox.persist();
     _foldersController.add(_folders.values.toList());
     _documentsController.add(_documents.values.toList());
+  }
+
+  Future<void> _persistEntitiesOnly() async {
+    await _prefs.setStringList(
+      _foldersKey,
+      _folders.values.map((e) => jsonEncode(e.toJson())).toList(),
+    );
+    await _prefs.setStringList(
+      _documentsKey,
+      _documents.values.map((e) => jsonEncode(e.toJson())).toList(),
+    );
+    _foldersController.add(_folders.values.toList());
+    _documentsController.add(_documents.values.toList());
+  }
+
+  /// Metadata payload for Firestore (skips large inline demo bodies).
+  Map<String, Object?> _docMeta(ProjectDocument doc) {
+    final json = doc.toJson();
+    json.remove('textContent');
+    json.remove('pdfPages');
+    return json;
   }
 
   List<DocFolder> _foldersFor(String projectId) =>
@@ -113,6 +152,7 @@ class LocalDocumentsRepository implements DocumentsRepository {
         name: name,
         kind: kind,
         parentId: parentId,
+        synced: true,
       );
       _folders[folder.id] = folder;
       return folder;
@@ -159,6 +199,7 @@ class LocalDocumentsRepository implements DocumentsRepository {
         updatedAt: now,
         sizeBytes: (textContent?.length ?? pdfPages.join().length),
         downloaded: downloaded,
+        synced: true,
         textContent: textContent,
         pdfPages: pdfPages,
       );
@@ -235,6 +276,12 @@ class LocalDocumentsRepository implements DocumentsRepository {
       pdfPages: input.pdfPages,
     );
     _documents[doc.id] = doc;
+    _outbox.enqueue(
+      collection: FirestoreCollections.documents,
+      documentId: doc.id,
+      operation: OutboxOperation.create,
+      payload: _docMeta(doc),
+    );
     await _persist();
     return doc;
   }
@@ -277,7 +324,85 @@ class LocalDocumentsRepository implements DocumentsRepository {
       parentId: parentId,
     );
     _folders[folder.id] = folder;
+    _outbox.enqueue(
+      collection: FirestoreCollections.folders,
+      documentId: folder.id,
+      operation: OutboxOperation.create,
+      payload: folder.toJson(),
+    );
     await _persist();
     return folder;
+  }
+
+  @override
+  Stream<int> watchPendingSyncCount() => _outbox.watchPending();
+
+  @override
+  Future<void> flushOutbox({required bool isOnline}) async {
+    await _outbox.flush(
+      isOnline: isOnline,
+      sink: _remoteSink,
+      onApplied: (entry) async {
+        if (entry.collection == FirestoreCollections.folders) {
+          final cur = _folders[entry.documentId];
+          if (cur != null) {
+            _folders[entry.documentId] = cur.copyWith(synced: true);
+          }
+        } else if (entry.collection == FirestoreCollections.documents) {
+          final cur = _documents[entry.documentId];
+          if (cur != null) {
+            _documents[entry.documentId] = cur.copyWith(synced: true);
+          }
+        }
+      },
+    );
+    await _persistEntitiesOnly();
+  }
+
+  @override
+  Future<int> pullRemote({required String projectId}) async {
+    var changed = 0;
+    for (final r in await _remotePull.pullFolders(projectId)) {
+      if (!_folders.containsKey(r.id)) {
+        _folders[r.id] = DocFolder(
+          id: r.id,
+          orgId: r.orgId,
+          projectId: r.projectId,
+          name: r.name,
+          kind: r.kind,
+          parentId: r.parentId,
+          synced: true,
+        );
+        changed += 1;
+      }
+    }
+    for (final r in await _remotePull.pullDocuments(projectId)) {
+      final local = _documents[r.id];
+      if (local == null || r.updatedAt.isAfter(local.updatedAt)) {
+        _documents[r.id] = ProjectDocument(
+          id: r.id,
+          orgId: r.orgId,
+          projectId: r.projectId,
+          folderId: r.folderId,
+          name: r.name,
+          contentType: r.contentType,
+          kind: r.kind,
+          createdBy: r.createdBy,
+          createdByName: r.createdByName,
+          createdAt: r.createdAt,
+          updatedAt: r.updatedAt,
+          sizeBytes: r.sizeBytes,
+          downloaded: local?.downloaded ?? r.downloaded,
+          synced: true,
+          textContent: local?.textContent ?? r.textContent,
+          pdfPages: local?.pdfPages.isNotEmpty == true
+              ? local!.pdfPages
+              : r.pdfPages,
+        );
+        changed += 1;
+      }
+    }
+    if (changed > 0) await _persistEntitiesOnly();
+    return changed;
   }
 }

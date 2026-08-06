@@ -3,6 +3,12 @@ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../core/constants/app_constants.dart';
+import '../../../sync/outbox/outbox_entry.dart';
+import '../../../sync/remote/module_remote_pull.dart';
+import '../../../sync/remote/outbox_remote_sink.dart';
+import '../../../sync/remote/prefs_outbox_queue.dart';
+import '../../../sync/remote/syncable_store.dart';
 import '../../auth/domain/auth_models.dart';
 import '../domain/site_ops_models.dart';
 
@@ -44,16 +50,27 @@ abstract class SiteOpsRepository {
   });
 }
 
-class LocalSiteOpsRepository implements SiteOpsRepository {
-  LocalSiteOpsRepository(this._prefs) {
+class LocalSiteOpsRepository implements SiteOpsRepository, SyncableStore {
+  LocalSiteOpsRepository(
+    this._prefs, {
+    OutboxRemoteSink? remoteSink,
+    ModuleRemotePull? remotePull,
+  })  : _remoteSink = remoteSink ?? const NoOpOutboxRemoteSink(),
+        _remotePull = remotePull ?? const NoOpModuleRemotePull(),
+        _outbox = PrefsOutboxQueue(_prefs, _outboxKey) {
     _load();
   }
 
   final SharedPreferences _prefs;
+  final OutboxRemoteSink _remoteSink;
+  final ModuleRemotePull _remotePull;
+  final PrefsOutboxQueue _outbox;
+
   static const _safetyKey = 'siteops.safety';
   static const _inspKey = 'siteops.inspections';
   static const _musterKey = 'siteops.muster';
   static const _matKey = 'siteops.materials';
+  static const _outboxKey = 'siteops.outbox';
 
   final _safety = <String, SafetyRecord>{};
   final _inspections = <String, QaInspection>{};
@@ -85,6 +102,7 @@ class LocalSiteOpsRepository implements SiteOpsRepository {
       final e = MaterialLog.fromJson(Map<String, Object?>.from(jsonDecode(r) as Map));
       _materials[e.id] = e;
     }
+    _outbox.load();
   }
 
   Future<void> _persist() async {
@@ -104,10 +122,35 @@ class LocalSiteOpsRepository implements SiteOpsRepository {
       _matKey,
       _materials.values.map((e) => jsonEncode(e.toJson())).toList(),
     );
+    await _outbox.persist();
+    _emit();
+  }
+
+  void _emit() {
     _safetyC.add(_safety.values.toList());
     _inspC.add(_inspections.values.toList());
     _musterC.add(_muster.values.toList());
     _matC.add(_materials.values.toList());
+  }
+
+  Future<void> _persistEntitiesOnly() async {
+    await _prefs.setStringList(
+      _safetyKey,
+      _safety.values.map((e) => jsonEncode(e.toJson())).toList(),
+    );
+    await _prefs.setStringList(
+      _inspKey,
+      _inspections.values.map((e) => jsonEncode(e.toJson())).toList(),
+    );
+    await _prefs.setStringList(
+      _musterKey,
+      _muster.values.map((e) => jsonEncode(e.toJson())).toList(),
+    );
+    await _prefs.setStringList(
+      _matKey,
+      _materials.values.map((e) => jsonEncode(e.toJson())).toList(),
+    );
+    _emit();
   }
 
   void _ensure(AuthSession session) {
@@ -185,6 +228,12 @@ class LocalSiteOpsRepository implements SiteOpsRepository {
       hasPhoto: hasPhoto,
     );
     _safety[record.id] = record;
+    _outbox.enqueue(
+      collection: FirestoreCollections.safetyRecords,
+      documentId: record.id,
+      operation: OutboxOperation.create,
+      payload: record.toJson(),
+    );
     await _persist();
     return record;
   }
@@ -216,6 +265,12 @@ class LocalSiteOpsRepository implements SiteOpsRepository {
       createdAt: DateTime.now().toUtc(),
     );
     _inspections[insp.id] = insp;
+    _outbox.enqueue(
+      collection: FirestoreCollections.inspections,
+      documentId: insp.id,
+      operation: OutboxOperation.create,
+      payload: insp.toJson(),
+    );
     await _persist();
     return insp;
   }
@@ -244,6 +299,12 @@ class LocalSiteOpsRepository implements SiteOpsRepository {
       geofenceOk: geofenceOk,
     );
     _muster[muster.id] = muster;
+    _outbox.enqueue(
+      collection: FirestoreCollections.attendanceLogs,
+      documentId: muster.id,
+      operation: OutboxOperation.create,
+      payload: muster.toJson(),
+    );
     await _persist();
     return muster;
   }
@@ -274,7 +335,132 @@ class LocalSiteOpsRepository implements SiteOpsRepository {
       activityRef: activityRef?.trim(),
     );
     _materials[log.id] = log;
+    _outbox.enqueue(
+      collection: FirestoreCollections.materialLogs,
+      documentId: log.id,
+      operation: OutboxOperation.create,
+      payload: log.toJson(),
+    );
     await _persist();
     return log;
+  }
+
+  @override
+  Stream<int> watchPendingSyncCount() => _outbox.watchPending();
+
+  @override
+  Future<void> flushOutbox({required bool isOnline}) async {
+    await _outbox.flush(
+      isOnline: isOnline,
+      sink: _remoteSink,
+      onApplied: (entry) async {
+        switch (entry.collection) {
+          case FirestoreCollections.safetyRecords:
+            final cur = _safety[entry.documentId];
+            if (cur != null) {
+              _safety[entry.documentId] = cur.copyWith(synced: true);
+            }
+          case FirestoreCollections.inspections:
+            final cur = _inspections[entry.documentId];
+            if (cur != null) {
+              _inspections[entry.documentId] = cur.copyWith(synced: true);
+            }
+          case FirestoreCollections.attendanceLogs:
+            final cur = _muster[entry.documentId];
+            if (cur != null) {
+              _muster[entry.documentId] = cur.copyWith(synced: true);
+            }
+          case FirestoreCollections.materialLogs:
+            final cur = _materials[entry.documentId];
+            if (cur != null) {
+              _materials[entry.documentId] = cur.copyWith(synced: true);
+            }
+        }
+      },
+    );
+    await _persistEntitiesOnly();
+  }
+
+  @override
+  Future<int> pullRemote({required String projectId}) async {
+    var changed = 0;
+
+    for (final r in await _remotePull.pullSafety(projectId)) {
+      if (!_safety.containsKey(r.id)) {
+        _safety[r.id] = SafetyRecord(
+          id: r.id,
+          orgId: r.orgId,
+          projectId: r.projectId,
+          kind: r.kind,
+          title: r.title,
+          notes: r.notes,
+          createdBy: r.createdBy,
+          createdByName: r.createdByName,
+          createdAt: r.createdAt,
+          photoRequired: r.photoRequired,
+          hasPhoto: r.hasPhoto,
+          synced: true,
+        );
+        changed += 1;
+      }
+    }
+    for (final r in await _remotePull.pullInspections(projectId)) {
+      if (!_inspections.containsKey(r.id)) {
+        _inspections[r.id] = QaInspection(
+          id: r.id,
+          orgId: r.orgId,
+          projectId: r.projectId,
+          title: r.title,
+          items: r.items,
+          createdBy: r.createdBy,
+          createdByName: r.createdByName,
+          createdAt: r.createdAt,
+          synced: true,
+        );
+        changed += 1;
+      }
+    }
+    for (final r in await _remotePull.pullMuster(projectId)) {
+      if (!_muster.containsKey(r.id)) {
+        _muster[r.id] = LabourMuster(
+          id: r.id,
+          orgId: r.orgId,
+          projectId: r.projectId,
+          musterDate: r.musterDate,
+          trade: r.trade,
+          subcontractor: r.subcontractor,
+          headcount: r.headcount,
+          createdBy: r.createdBy,
+          createdByName: r.createdByName,
+          createdAt: r.createdAt,
+          geofenceOk: r.geofenceOk,
+          photoOptional: r.photoOptional,
+          synced: true,
+        );
+        changed += 1;
+      }
+    }
+    for (final r in await _remotePull.pullMaterials(projectId)) {
+      if (!_materials.containsKey(r.id)) {
+        _materials[r.id] = MaterialLog(
+          id: r.id,
+          orgId: r.orgId,
+          projectId: r.projectId,
+          kind: r.kind,
+          material: r.material,
+          quantity: r.quantity,
+          unit: r.unit,
+          createdBy: r.createdBy,
+          createdByName: r.createdByName,
+          createdAt: r.createdAt,
+          activityRef: r.activityRef,
+          synced: true,
+        );
+        changed += 1;
+      }
+    }
+
+    if (changed > 0) await _persistEntitiesOnly();
+    return changed;
   }
 }

@@ -31,6 +31,23 @@ class SafetyRecord {
   final bool hasPhoto;
   final bool synced;
 
+  SafetyRecord copyWith({bool? synced}) {
+    return SafetyRecord(
+      id: id,
+      orgId: orgId,
+      projectId: projectId,
+      kind: kind,
+      title: title,
+      notes: notes,
+      createdBy: createdBy,
+      createdByName: createdByName,
+      createdAt: createdAt,
+      photoRequired: photoRequired,
+      hasPhoto: hasPhoto,
+      synced: synced ?? this.synced,
+    );
+  }
+
   Map<String, Object?> toJson() => {
         'id': id,
         'orgId': orgId,
@@ -122,6 +139,20 @@ class QaInspection {
   bool get hasFailures =>
       items.any((i) => i.result == InspectionResult.fail);
 
+  QaInspection copyWith({bool? synced}) {
+    return QaInspection(
+      id: id,
+      orgId: orgId,
+      projectId: projectId,
+      title: title,
+      items: items,
+      createdBy: createdBy,
+      createdByName: createdByName,
+      createdAt: createdAt,
+      synced: synced ?? this.synced,
+    );
+  }
+
   Map<String, Object?> toJson() => {
         'id': id,
         'orgId': orgId,
@@ -179,6 +210,24 @@ class LabourMuster {
   final bool geofenceOk;
   final bool photoOptional;
   final bool synced;
+
+  LabourMuster copyWith({bool? synced}) {
+    return LabourMuster(
+      id: id,
+      orgId: orgId,
+      projectId: projectId,
+      musterDate: musterDate,
+      trade: trade,
+      subcontractor: subcontractor,
+      headcount: headcount,
+      createdBy: createdBy,
+      createdByName: createdByName,
+      createdAt: createdAt,
+      geofenceOk: geofenceOk,
+      photoOptional: photoOptional,
+      synced: synced ?? this.synced,
+    );
+  }
 
   Map<String, Object?> toJson() => {
         'id': id,
@@ -243,6 +292,23 @@ class MaterialLog {
   final DateTime createdAt;
   final String? activityRef;
   final bool synced;
+
+  MaterialLog copyWith({bool? synced}) {
+    return MaterialLog(
+      id: id,
+      orgId: orgId,
+      projectId: projectId,
+      kind: kind,
+      material: material,
+      quantity: quantity,
+      unit: unit,
+      createdBy: createdBy,
+      createdByName: createdByName,
+      createdAt: createdAt,
+      activityRef: activityRef,
+      synced: synced ?? this.synced,
+    );
+  }
 
   Map<String, Object?> toJson() => {
         'id': id,

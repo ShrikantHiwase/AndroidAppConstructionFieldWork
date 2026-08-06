@@ -10,8 +10,6 @@ import '../../documents/presentation/documents_browser_page.dart';
 import '../../dpr/presentation/dpr_pages.dart';
 import '../../dpr/presentation/drawing_pin_pages.dart';
 import '../../issues/presentation/create_issue_page.dart';
-import '../../issues/presentation/field_records_providers.dart'
-    show pendingSyncCountProvider;
 import '../../issues/presentation/issues_list_page.dart';
 import '../../pilot/presentation/pilot_hub_page.dart';
 import '../../site_ops/presentation/site_ops_hub_page.dart';

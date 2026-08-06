@@ -50,6 +50,7 @@ docs/              Build plan and training
 | Device sensors (GPS/camera/biometrics) | Done |
 | Firebase go-live prep (seed + Functions) | Done |
 | Firestore outbox push + issue/RFI pull | Done |
+| Firestore module sync (DPR/ops/docs/pins) | Done |
 | FlutterFire configure + store release | Next (needs your Firebase project) |
 | Phase 3 Enterprise hooks | Deferred |
 

@@ -63,7 +63,7 @@ flutter run --dart-define=USE_NATIVE_SENSORS=true
 ```
 
 - [ ] GPS / camera / biometrics prompts appear
-- [ ] Offline create → online sync still works (local outbox until Firestore field repos land)
+- [ ] Offline create → online sync still works (issues + DPR/site-ops/docs outboxes)
 
 ## 6. Pilot
 
@@ -81,6 +81,7 @@ flutter run --dart-define=USE_NATIVE_SENSORS=true
 
 - In-app admin invites still work in **demo** FakeAuth; production invites should call
   callable `inviteMember` (see `firebase/functions/index.js`).
-- When Firebase is enabled, the local outbox **pushes** issues/RFIs/comments to Firestore
-  on flush and **pulls** remote issues/RFIs into the on-device cache (LWW by `updatedAt`).
-  DPR/site-ops/docs still use local stores until their remotes are wired.
+- When Firebase is enabled, the local outbox **pushes** issues/RFIs/comments **and**
+  DPR / site-ops / document metadata / drawing pins to Firestore on flush, and
+  **pulls** those collections into the on-device cache. Document **file bytes**
+  (Storage) are not uploaded yet — metadata only.

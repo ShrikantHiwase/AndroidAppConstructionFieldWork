@@ -11,6 +11,7 @@ class DocFolder {
     required this.name,
     required this.kind,
     this.parentId,
+    this.synced = false,
   });
 
   final String id;
@@ -19,6 +20,19 @@ class DocFolder {
   final String name;
   final FolderKind kind;
   final String? parentId;
+  final bool synced;
+
+  DocFolder copyWith({bool? synced}) {
+    return DocFolder(
+      id: id,
+      orgId: orgId,
+      projectId: projectId,
+      name: name,
+      kind: kind,
+      parentId: parentId,
+      synced: synced ?? this.synced,
+    );
+  }
 
   Map<String, Object?> toJson() => {
         'id': id,
@@ -27,6 +41,7 @@ class DocFolder {
         'name': name,
         'kind': kind.name,
         'parentId': parentId,
+        'synced': synced,
       };
 
   factory DocFolder.fromJson(Map<String, Object?> json) => DocFolder(
@@ -36,6 +51,7 @@ class DocFolder {
         name: json['name'] as String,
         kind: FolderKind.values.byName(json['kind'] as String),
         parentId: json['parentId'] as String?,
+        synced: json['synced'] as bool? ?? true,
       );
 }
 
