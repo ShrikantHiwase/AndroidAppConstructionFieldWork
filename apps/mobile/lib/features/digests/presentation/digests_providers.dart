@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/notifications/dpr_nudge_scheduler.dart';
 import '../../auth/domain/auth_models.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../../dpr/domain/dpr_models.dart';
@@ -16,17 +17,28 @@ final digestsRepositoryProvider = Provider<DigestsRepository>((ref) {
 
 final digestPrefsProvider =
     StateNotifierProvider<DigestPrefsController, DigestPrefs>((ref) {
-  return DigestPrefsController(ref.watch(digestsRepositoryProvider));
+  return DigestPrefsController(
+    ref.watch(digestsRepositoryProvider),
+    scheduler: ref.watch(dprNudgeSchedulerProvider),
+  );
 });
 
 class DigestPrefsController extends StateNotifier<DigestPrefs> {
-  DigestPrefsController(this._repo) : super(_repo.getPrefs());
+  DigestPrefsController(this._repo, {required DprNudgeScheduler scheduler})
+      : _scheduler = scheduler,
+        super(_repo.getPrefs());
 
   final DigestsRepository _repo;
+  final DprNudgeScheduler _scheduler;
 
   Future<void> update(DigestPrefs prefs) async {
     await _repo.setPrefs(prefs);
     state = prefs;
+    await syncDprNudgeSchedule(
+      scheduler: _scheduler,
+      enabled: prefs.dprNudgeEnabled,
+      hourLocal: prefs.nudgeHourLocal,
+    );
   }
 }
 

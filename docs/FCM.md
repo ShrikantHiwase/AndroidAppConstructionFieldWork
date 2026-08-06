@@ -18,6 +18,12 @@ Demo-safe client + Cloud Functions delivery. Real device pushes need
 | `onIssueWrite` | Assignee change → assignee; status change → assignee + creator |
 | `onRfiWrite` | Same assign/status fan-out for RFIs (`rfi_assigned` / `rfi_status`) |
 
+## Local DPR nudge (not FCM)
+
+Digests prefs schedule a **device-local** daily tray reminder via
+`flutter_local_notifications` (`DprNudgeScheduler`). Cloud cron / FCM fan-out
+for 5 PM remains deferred (needs Blaze + live Messaging).
+
 `sendToUser` soft-skips when: `FCM_SEND_ENABLED=false`, no uid, no token doc, or demo token prefix. Send errors are logged, never thrown.
 
 ## Paths
@@ -41,5 +47,5 @@ Dry-run without Messaging: set `FCM_SEND_ENABLED=false` on the Functions runtime
 
 - Topics / marketing campaigns
 - iOS APNs key upload (required for iOS push)
-- Scheduled 5 PM DPR nudge Function (prefs exist client-side; Blaze cron later)
-- `flutter_local_notifications` tray UI beyond OS notification payloads
+- Scheduled **Cloud** 5 PM DPR nudge Function (local tray nudge ships; Blaze cron later)
+- `flutter_local_notifications` as a full FCM replacement

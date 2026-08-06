@@ -42,6 +42,8 @@ String? _titleForType(String? type) {
       return 'RFI status updated';
     case 'dpr_submitted':
       return 'DPR submitted';
+    case 'dpr_nudge':
+      return 'DPR reminder';
     default:
       return null;
   }
