@@ -182,9 +182,11 @@ class SyncStatusPage extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            'Workmanager / Drift background sync wires after Firebase configure. '
+            'Periodic Workmanager flush (~15 min, network required) + '
+            'connectivity_plus auto-flush when the device reconnects. '
             'Soft local cache budget: '
-            '${SyncCleanupPolicy.softLocalBytesCap ~/ (1024 * 1024)}MB.',
+            '${SyncCleanupPolicy.softLocalBytesCap ~/ (1024 * 1024)}MB. '
+            'Drift still deferred.',
             style: textTheme.bodySmall,
           ),
         ],

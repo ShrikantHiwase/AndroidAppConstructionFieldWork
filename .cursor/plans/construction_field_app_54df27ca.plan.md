@@ -56,6 +56,12 @@ todos:
   - id: voice-sync
     content: Voice notes outbox push/pull + Storage audio path (demo-safe)
     status: completed
+  - id: fcm-scaffolding
+    content: FCM push scaffolding with NoOp demo + token registration
+    status: completed
+  - id: background-sync
+    content: Workmanager + connectivity_plus background outbox flush
+    status: completed
 isProject: false
 ---
 
@@ -268,6 +274,8 @@ docs/                 # plans and training
 13. ~~Storage media upload~~ — issue photo attachments enqueue `OutboxOperation.upload`; `StorageUploader` / `FirebaseStorageUploader` behind `firebaseEnabledProvider` (Fake `local://` paths get `demo://` URLs). Document file bytes still deferred.
 14. ~~Document Storage upload~~ — document uploads enqueue Storage then Firestore create (demo `local://` paths → `demo://` URLs); metadata still omits inline bodies.
 15. ~~Voice notes sync~~ — voice notes enqueue Storage + Firestore create; offline transcript pending resolves on flush; `audio/*` allowed in Storage rules.
-16. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift/Workmanager / FCM remain follow-ups.
+16. ~~FCM scaffolding~~ — `PushNotificationService` (NoOp + Firebase), local notification inbox, token → `fcm_tokens/{uid}`, assign/status intents logged; see [FCM.md](FCM.md).
+17. ~~Background sync~~ — Workmanager periodic/one-off outbox flush + `connectivity_plus` reconnect auto-flush; see [Background_Sync.md](Background_Sync.md).
+18. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift / real Admin.messaging send remain follow-ups.
 
 No native-only Android path; iOS ships from the same Flutter codebase. Enterprise BIM/Forge remains a WebView module after MVP.
