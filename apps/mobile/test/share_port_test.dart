@@ -106,7 +106,7 @@ DailyProgressReport _sampleDpr() {
     weather: 'Clear',
     manpowerSummary: '40',
     activities: const [
-      DprActivity(id: 'a1', description: 'Pour', photoCount: 1),
+      DprActivity(id: 'a1', description: 'Pour', hasPhoto: true),
     ],
     blockers: 'None',
     createdBy: 'u',

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/device/device_providers.dart';
+import '../../../core/device/evidence_capture.dart';
+import '../../../core/device/evidence_image_policy.dart';
 import '../../../core/share/field_pdf_export.dart';
 import '../../../core/share/share_port.dart';
 import '../../auth/presentation/auth_controller.dart';
@@ -96,6 +99,9 @@ class _TodaysDprPageState extends ConsumerState<TodaysDprPage> {
   var _saving = false;
   String? _error;
   DailyProgressReport? _existing;
+  String? _pendingPhotoPath;
+  int? _pendingPhotoBytes;
+  String? _pendingPhotoLabel;
 
   @override
   void initState() {
@@ -199,7 +205,7 @@ class _TodaysDprPageState extends ConsumerState<TodaysDprPage> {
           const SizedBox(height: 16),
           Text('Activities', style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 8),
-          if (!submitted)
+          if (!submitted) ...[
             Row(
               children: [
                 Expanded(
@@ -216,27 +222,94 @@ class _TodaysDprPageState extends ConsumerState<TodaysDprPage> {
                   onPressed: () {
                     final text = _activity.text.trim();
                     if (text.isEmpty) return;
+                    final path = _pendingPhotoPath;
+                    final hasPhoto = path != null && path.isNotEmpty;
                     setState(() {
                       _activities.add(
                         DprActivity(
-                          id: 'act_${_activities.length + 1}',
+                          id: 'act_${DateTime.now().microsecondsSinceEpoch}',
                           description: text,
-                          photoCount: 1,
+                          hasPhoto: hasPhoto,
+                          photoLocalPath: hasPhoto ? path : null,
+                          photoByteSizeBytes:
+                              hasPhoto ? _pendingPhotoBytes : null,
                         ),
                       );
                       _activity.clear();
+                      _pendingPhotoPath = null;
+                      _pendingPhotoBytes = null;
+                      _pendingPhotoLabel = null;
                     });
                   },
                   icon: const Icon(Icons.add),
                 ),
               ],
             ),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                OutlinedButton.icon(
+                  onPressed: () async {
+                    final shot = await ref
+                        .read(evidenceCaptureProvider)
+                        .capturePhoto(source: EvidencePhotoSource.camera);
+                    if (shot == null || !mounted) return;
+                    setState(() {
+                      _pendingPhotoPath = shot.localPath;
+                      _pendingPhotoBytes = shot.byteSizeBytes;
+                      _pendingPhotoLabel = shot.fileName;
+                    });
+                  },
+                  icon: const Icon(Icons.photo_camera_outlined),
+                  label: const Text('Activity photo'),
+                ),
+                OutlinedButton.icon(
+                  onPressed: () async {
+                    final shot = await ref
+                        .read(evidenceCaptureProvider)
+                        .capturePhoto(source: EvidencePhotoSource.gallery);
+                    if (shot == null || !mounted) return;
+                    setState(() {
+                      _pendingPhotoPath = shot.localPath;
+                      _pendingPhotoBytes = shot.byteSizeBytes;
+                      _pendingPhotoLabel = shot.fileName;
+                    });
+                  },
+                  icon: const Icon(Icons.photo_library_outlined),
+                  label: const Text('Gallery'),
+                ),
+                if (_pendingPhotoPath != null)
+                  Text(
+                    '${_pendingPhotoLabel ?? 'photo'} · '
+                    '${EvidenceImagePolicy.formatBytes(_pendingPhotoBytes ?? 0)}'
+                    ' (attaches to next activity)',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+              ],
+            ),
+          ],
           ..._activities.map(
             (a) => ListTile(
               contentPadding: EdgeInsets.zero,
-              leading: const Icon(Icons.check_circle_outline),
+              leading: Icon(
+                a.hasPhoto
+                    ? Icons.photo_outlined
+                    : Icons.check_circle_outline,
+              ),
               title: Text(a.description),
-              subtitle: Text('${a.photoCount} demo photo'),
+              subtitle: Text(
+                a.hasPhoto
+                    ? (a.pendingPhotoUpload
+                        ? 'Evidence photo · queued upload'
+                        : a.photoRemoteUrl != null
+                            ? 'Evidence photo · synced'
+                            : 'Evidence photo attached'
+                                '${a.photoByteSizeBytes == null ? '' : ' · ${EvidenceImagePolicy.formatBytes(a.photoByteSizeBytes!)}'}')
+                    : 'No evidence photo',
+              ),
             ),
           ),
           const SizedBox(height: 12),
@@ -385,7 +458,13 @@ class DprDetailPage extends ConsumerWidget {
             (a) => ListTile(
               contentPadding: EdgeInsets.zero,
               title: Text(a.description),
-              subtitle: Text('${a.photoCount} photo evidence'),
+              subtitle: Text(
+                a.hasPhoto
+                    ? (a.pendingPhotoUpload
+                        ? 'Evidence photo · queued upload'
+                        : '${a.photoCount} photo evidence')
+                    : 'No photo evidence',
+              ),
             ),
           ),
           const SizedBox(height: 8),

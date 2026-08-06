@@ -26,8 +26,9 @@ final syncEngineProvider = Provider<LocalSyncEngine>((ref) {
   final siteOps = ref.watch(siteOpsRepositoryProvider) as LocalSiteOpsRepository;
   final pins =
       ref.watch(drawingPinsRepositoryProvider) as LocalDrawingPinsRepository;
+  final dpr = ref.watch(dprRepositoryProvider) as LocalDprRepository;
   final stores = <SyncableStore>[
-    ref.watch(dprRepositoryProvider) as LocalDprRepository,
+    dpr,
     pins,
     siteOps,
     ref.watch(documentsRepositoryProvider) as LocalDocumentsRepository,
@@ -41,6 +42,7 @@ final syncEngineProvider = Provider<LocalSyncEngine>((ref) {
       if (fieldRecords is LocalMediaCache) fieldRecords as LocalMediaCache,
       siteOps,
       pins,
+      dpr,
     ],
   );
 });

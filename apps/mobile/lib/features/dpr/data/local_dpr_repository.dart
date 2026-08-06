@@ -15,13 +15,16 @@ import '../../auth/domain/auth_models.dart';
 import '../domain/dpr_models.dart';
 import '../domain/dpr_repository.dart';
 
-class LocalDprRepository implements DprRepository, SyncableStore {
+class LocalDprRepository
+    implements DprRepository, SyncableStore, LocalMediaCache {
   LocalDprRepository(
     this._prefs, {
     OutboxRemoteSink? remoteSink,
     ModuleRemotePull? remotePull,
+    StorageUploader? storageUploader,
   })  : _remoteSink = remoteSink ?? const NoOpOutboxRemoteSink(),
         _remotePull = remotePull ?? const NoOpModuleRemotePull(),
+        _storageUploader = storageUploader ?? const NoOpStorageUploader(),
         _outbox = PrefsOutboxQueue(_prefs, _outboxKey) {
     _load();
   }
@@ -29,6 +32,7 @@ class LocalDprRepository implements DprRepository, SyncableStore {
   final SharedPreferences _prefs;
   final OutboxRemoteSink _remoteSink;
   final ModuleRemotePull _remotePull;
+  final StorageUploader _storageUploader;
   final PrefsOutboxQueue _outbox;
 
   static const _key = 'dpr.reports';
@@ -57,6 +61,14 @@ class LocalDprRepository implements DprRepository, SyncableStore {
     _controller.add(_items.values.toList());
   }
 
+  Future<void> _persistReportsOnly() async {
+    await _prefs.setStringList(
+      _key,
+      _items.values.map((e) => jsonEncode(e.toJson())).toList(),
+    );
+    _controller.add(_items.values.toList());
+  }
+
   String _dayKey(DateTime d) =>
       DateTime.utc(d.year, d.month, d.day).toIso8601String();
 
@@ -64,6 +76,82 @@ class LocalDprRepository implements DprRepository, SyncableStore {
     final list = _items.values.where((d) => d.projectId == projectId).toList()
       ..sort((a, b) => b.reportDate.compareTo(a.reportDate));
     return list;
+  }
+
+  List<DprActivity> _prepareActivities(
+    List<DprActivity> activities, {
+    DailyProgressReport? existing,
+  }) {
+    final previousById = {
+      for (final a in existing?.activities ?? const <DprActivity>[]) a.id: a,
+    };
+    return activities.map((raw) {
+      final prev = previousById[raw.id];
+      var activity = raw;
+      if (prev != null &&
+          activity.photoRemoteUrl == null &&
+          prev.photoRemoteUrl != null &&
+          (activity.photoLocalPath == null ||
+              activity.photoLocalPath == prev.photoLocalPath)) {
+        activity = activity.copyWith(
+          photoRemoteUrl: prev.photoRemoteUrl,
+          photoLocalPath: activity.photoLocalPath ?? prev.photoLocalPath,
+          photoByteSizeBytes:
+              activity.photoByteSizeBytes ?? prev.photoByteSizeBytes,
+          hasPhoto: true,
+          pendingPhotoUpload: false,
+        );
+      }
+      final path = activity.photoLocalPath;
+      final needsUpload =
+          path != null && path.isNotEmpty && activity.photoRemoteUrl == null;
+      if (needsUpload) {
+        return activity.copyWith(pendingPhotoUpload: true, hasPhoto: true);
+      }
+      if (activity.photoRemoteUrl != null &&
+          activity.photoRemoteUrl!.isNotEmpty) {
+        return activity.copyWith(hasPhoto: true, pendingPhotoUpload: false);
+      }
+      return activity.copyWith(
+        hasPhoto: false,
+        pendingPhotoUpload: false,
+      );
+    }).toList();
+  }
+
+  bool _hasPendingUpload(String documentId, String attachmentId) {
+    return _outbox.entries.any(
+      (e) =>
+          e.operation == OutboxOperation.upload &&
+          e.documentId == documentId &&
+          e.payload['attachmentId'] == attachmentId,
+    );
+  }
+
+  void _enqueueActivityUploads(DailyProgressReport dpr) {
+    for (final activity in dpr.activities) {
+      final path = activity.photoLocalPath;
+      if (!activity.pendingPhotoUpload || path == null || path.isEmpty) {
+        continue;
+      }
+      if (_hasPendingUpload(dpr.id, activity.id)) continue;
+      final fileName = path.split('/').last;
+      _outbox.enqueue(
+        collection: FirestoreCollections.dprs,
+        documentId: dpr.id,
+        operation: OutboxOperation.upload,
+        payload: StorageUploadRequest(
+          orgId: dpr.orgId,
+          projectId: dpr.projectId,
+          parentType: 'dprs',
+          parentId: dpr.id,
+          attachmentId: activity.id,
+          fileName: fileName.isEmpty ? 'activity.jpg' : fileName,
+          contentType: 'image/jpeg',
+          localPath: path,
+        ).toPayload(),
+      );
+    }
   }
 
   void _enqueueUpsert(DailyProgressReport dpr) {
@@ -103,6 +191,10 @@ class LocalDprRepository implements DprRepository, SyncableStore {
     final day = (input.reportDate ?? DateTime.now()).toUtc();
     final existing = await todayDpr(session.activeProjectId, day);
     final now = DateTime.now().toUtc();
+    final activities = _prepareActivities(
+      input.activities,
+      existing: existing,
+    );
     if (existing != null) {
       if (existing.submitted) {
         throw DprException('Today\'s DPR is already submitted');
@@ -110,12 +202,13 @@ class LocalDprRepository implements DprRepository, SyncableStore {
       final updated = existing.copyWith(
         weather: input.weather.trim(),
         manpowerSummary: input.manpowerSummary.trim(),
-        activities: input.activities,
+        activities: activities,
         blockers: input.blockers.trim(),
         synced: false,
         updatedAt: now,
       );
       _items[existing.id] = updated;
+      _enqueueActivityUploads(updated);
       _enqueueUpsert(updated);
       await _persist();
       return updated;
@@ -128,7 +221,7 @@ class LocalDprRepository implements DprRepository, SyncableStore {
       reportDate: DateTime.utc(day.year, day.month, day.day),
       weather: input.weather.trim(),
       manpowerSummary: input.manpowerSummary.trim(),
-      activities: input.activities,
+      activities: activities,
       blockers: input.blockers.trim(),
       createdBy: session.user.id,
       createdByName: session.user.displayName,
@@ -136,6 +229,7 @@ class LocalDprRepository implements DprRepository, SyncableStore {
       updatedAt: now,
     );
     _items[dpr.id] = dpr;
+    _enqueueActivityUploads(dpr);
     _enqueueUpsert(dpr);
     await _persist();
     return dpr;
@@ -173,21 +267,90 @@ class LocalDprRepository implements DprRepository, SyncableStore {
 
   @override
   Future<void> flushOutbox({required bool isOnline}) async {
-    await _outbox.flush(
-      isOnline: isOnline,
-      sink: _remoteSink,
-      onApplied: (entry) async {
+    if (!isOnline || _outbox.entries.isEmpty) {
+      _outbox.pendingController.add(_outbox.entries.length);
+      return;
+    }
+
+    final remaining = <OutboxEntry>[];
+    final failedUploadDocs = <String>{};
+    for (final entry in List<OutboxEntry>.from(_outbox.entries)) {
+      try {
+        if (entry.operation == OutboxOperation.upload) {
+          await _flushUpload(entry);
+          continue;
+        }
+
+        if (failedUploadDocs.contains(entry.documentId) &&
+            (entry.operation == OutboxOperation.create ||
+                entry.operation == OutboxOperation.update)) {
+          remaining.add(entry);
+          continue;
+        }
+
+        final toApply = _resolvePayload(entry);
+        await _remoteSink.apply(toApply);
         final current = _items[entry.documentId];
         if (current != null) {
           _items[entry.documentId] = current.copyWith(synced: true);
         }
-      },
-    );
-    await _prefs.setStringList(
-      _key,
-      _items.values.map((e) => jsonEncode(e.toJson())).toList(),
-    );
-    _controller.add(_items.values.toList());
+      } catch (e) {
+        if (entry.operation == OutboxOperation.upload) {
+          failedUploadDocs.add(entry.documentId);
+        }
+        remaining.add(
+          OutboxEntry(
+            id: entry.id,
+            collection: entry.collection,
+            documentId: entry.documentId,
+            operation: entry.operation,
+            payload: entry.payload,
+            createdAt: entry.createdAt,
+            attempts: entry.attempts + 1,
+            lastError: e.toString(),
+          ),
+        );
+      }
+    }
+    _outbox.entries
+      ..clear()
+      ..addAll(remaining);
+    await _persist();
+  }
+
+  OutboxEntry _resolvePayload(OutboxEntry entry) {
+    final cur = _items[entry.documentId];
+    if (cur != null &&
+        (entry.operation == OutboxOperation.create ||
+            entry.operation == OutboxOperation.update)) {
+      return OutboxEntry(
+        id: entry.id,
+        collection: entry.collection,
+        documentId: entry.documentId,
+        operation: entry.operation,
+        payload: cur.toJson(),
+        createdAt: entry.createdAt,
+        attempts: entry.attempts,
+        lastError: entry.lastError,
+      );
+    }
+    return entry;
+  }
+
+  Future<void> _flushUpload(OutboxEntry entry) async {
+    final request = StorageUploadRequest.fromPayload(entry.payload);
+    final url = await _storageUploader.upload(request);
+    final cur = _items[entry.documentId];
+    if (cur == null) return;
+    final updatedActivities = cur.activities.map((activity) {
+      if (activity.id != request.attachmentId) return activity;
+      return activity.copyWith(
+        photoRemoteUrl: url,
+        pendingPhotoUpload: false,
+        hasPhoto: true,
+      );
+    }).toList();
+    _items[entry.documentId] = cur.copyWith(activities: updatedActivities);
   }
 
   @override
@@ -216,14 +379,71 @@ class LocalDprRepository implements DprRepository, SyncableStore {
         changed += 1;
       }
     }
-    if (changed > 0) {
-      await _prefs.setStringList(
-        _key,
-        _items.values.map((e) => jsonEncode(e.toJson())).toList(),
-      );
-      _controller.add(_items.values.toList());
-    }
+    if (changed > 0) await _persistReportsOnly();
     return changed;
+  }
+
+  @override
+  LocalCacheSlice estimateLocalCache() {
+    var bytes = 0;
+    var reclaimable = 0;
+    var reclaimableCount = 0;
+    var count = 0;
+    for (final dpr in _items.values) {
+      for (final activity in dpr.activities) {
+        final path = activity.photoLocalPath;
+        if (path == null || path.isEmpty) continue;
+        count += 1;
+        final size = LocalCacheEstimates.bytesFor(
+          localPath: path,
+          byteSizeBytes: activity.photoByteSizeBytes,
+        );
+        bytes += size;
+        if (LocalCacheEstimates.isReclaimableLocalStub(
+          localPath: path,
+          remoteUrl: activity.photoRemoteUrl,
+        )) {
+          reclaimable += size;
+          reclaimableCount += 1;
+        }
+      }
+    }
+    return LocalCacheSlice(
+      label: 'dpr',
+      estimatedBytes: bytes,
+      reclaimableBytes: reclaimable,
+      reclaimableItemCount: reclaimableCount,
+      itemCount: count,
+    );
+  }
+
+  @override
+  Future<int> reclaimUploadedLocalPaths() async {
+    var freed = 0;
+    var changed = false;
+    for (final dpr in _items.values.toList()) {
+      var dprChanged = false;
+      final nextActivities = dpr.activities.map((activity) {
+        if (!LocalCacheEstimates.isReclaimableLocalStub(
+          localPath: activity.photoLocalPath,
+          remoteUrl: activity.photoRemoteUrl,
+        )) {
+          return activity;
+        }
+        freed += LocalCacheEstimates.bytesFor(
+          localPath: activity.photoLocalPath,
+          byteSizeBytes: activity.photoByteSizeBytes,
+        );
+        dprChanged = true;
+        return activity.copyWith(clearPhotoLocalPath: true);
+      }).toList();
+      if (dprChanged) {
+        _items[dpr.id] = dpr.copyWith(activities: nextActivities);
+        changed = true;
+      }
+    }
+    if (changed) await _persist();
+    return freed;
   }
 }
 
