@@ -1,8 +1,8 @@
-# Device sensors (GPS / camera / biometrics)
+# Device sensors (GPS / camera / biometrics / voice)
 
-Packages `geolocator`, `image_picker`, `local_auth`, and `image` (pure-Dart
-JPEG compress) are in `pubspec.yaml`. CI and default runs use **Fake**
-implementations so tests stay green without hardware.
+Packages `geolocator`, `image_picker`, `local_auth`, `record`, and `image`
+(pure-Dart JPEG compress) are in `pubspec.yaml`. CI and default runs use
+**Fake** implementations so tests stay green without hardware.
 
 ## Enable native sensors on a device
 
@@ -18,6 +18,7 @@ On permission failure or plugin errors, Device* falls back to Fake*.
 |---------|------|--------|
 | Location | Hinjewadi demo fix; geofence always OK | `geolocator` |
 | Evidence | `local://demo/...` JPEG stub + ~150 KB size | `image_picker` camera/gallery → `FileImageCompressor` |
+| Voice | `local://demo/voice_*.m4a` stub + ~80 KB + canned transcript | `record` mic → AAC/m4a (transcript heuristic on flush) |
 | Biometric | always succeeds | `local_auth` |
 
 ## Evidence compression
@@ -28,9 +29,16 @@ soft target **~400 KB**. `DeviceEvidenceCapture` applies picker limits then
 `byteSizeBytes` without I/O. New Issue, site-ops safety/QA fail / labour muster,
 drawing pins, and DPR activities show queued size when a photo is attached.
 
+## Voice audio
+
+`VoiceAudioPolicy`: Fake stubs estimate **~80 KB**. Soft cache includes voice
+notes; Cleanup clears uploaded `local://` audio stubs. Live capture is capped
+at **60s**. Real STT remains deferred — offline notes keep `transcriptPending`
+until flush resolves a heuristic transcript.
+
 ## Android permissions and iOS usage strings
 
-Already in the platform folders.
+Already in the platform folders (`RECORD_AUDIO`, `NSMicrophoneUsageDescription`).
 
 ## Wired call sites
 
@@ -39,5 +47,6 @@ Already in the platform folders.
 - Labour muster → optional evidence photo (compressed + Storage outbox upload)
 - Drawing pins → optional evidence photo
 - Today's DPR → optional activity evidence photo
+- Voice notes on DPR / issues → Fake stub or live mic (`VoiceCapture`)
 - Biometric unlock screen
 - Labour muster geofence check

@@ -26,6 +26,7 @@ class VoiceNote {
     required this.createdByName,
     required this.createdAt,
     this.audioLocalPath,
+    this.audioByteSizeBytes,
     this.remoteAudioUrl,
     this.transcriptPending = false,
     this.synced = false,
@@ -40,8 +41,9 @@ class VoiceNote {
   final String createdBy;
   final String createdByName;
   final DateTime createdAt;
-  /// Demo path until a real recorder plugin is wired.
+  /// Local path (Fake `local://` stub or on-device file).
   final String? audioLocalPath;
+  final int? audioByteSizeBytes;
   final String? remoteAudioUrl;
   /// True when audio was captured offline and transcript awaits online pass.
   final bool transcriptPending;
@@ -50,9 +52,11 @@ class VoiceNote {
   VoiceNote copyWith({
     String? transcript,
     String? audioLocalPath,
+    int? audioByteSizeBytes,
     String? remoteAudioUrl,
     bool? transcriptPending,
     bool? synced,
+    bool clearAudioLocalPath = false,
   }) {
     return VoiceNote(
       id: id,
@@ -64,7 +68,10 @@ class VoiceNote {
       createdBy: createdBy,
       createdByName: createdByName,
       createdAt: createdAt,
-      audioLocalPath: audioLocalPath ?? this.audioLocalPath,
+      audioLocalPath: clearAudioLocalPath
+          ? null
+          : (audioLocalPath ?? this.audioLocalPath),
+      audioByteSizeBytes: audioByteSizeBytes ?? this.audioByteSizeBytes,
       remoteAudioUrl: remoteAudioUrl ?? this.remoteAudioUrl,
       transcriptPending: transcriptPending ?? this.transcriptPending,
       synced: synced ?? this.synced,
@@ -82,6 +89,7 @@ class VoiceNote {
         'createdByName': createdByName,
         'createdAt': createdAt.toIso8601String(),
         'audioLocalPath': audioLocalPath,
+        'audioByteSizeBytes': audioByteSizeBytes,
         'remoteAudioUrl': remoteAudioUrl,
         'transcriptPending': transcriptPending,
         'synced': synced,
@@ -107,6 +115,7 @@ class VoiceNote {
         createdByName: json['createdByName'] as String,
         createdAt: DateTime.parse(json['createdAt'] as String),
         audioLocalPath: json['audioLocalPath'] as String?,
+        audioByteSizeBytes: json['audioByteSizeBytes'] as int?,
         remoteAudioUrl: json['remoteAudioUrl'] as String?,
         transcriptPending: json['transcriptPending'] as bool? ?? false,
         synced: json['synced'] as bool? ?? false,

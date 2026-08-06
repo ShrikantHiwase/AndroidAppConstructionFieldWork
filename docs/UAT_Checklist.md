@@ -23,7 +23,7 @@ Run on mid/low-end Android first. Mark each item in Admin → **Pilot** (or tick
 - [ ] Status workflow Open → In Progress → Resolved → Closed with audit
 - [ ] PM can assign; engineer cannot
 - [ ] RFI + threaded comment
-- [ ] Voice note on issue detail
+- [ ] Voice note on issue detail (demo stub or live mic when native sensors on)
 
 ## Documents
 
@@ -36,7 +36,7 @@ Run on mid/low-end Android first. Mark each item in Admin → **Pilot** (or tick
 - [ ] Today's DPR draft + submit in &lt;3 minutes
 - [ ] Optional activity evidence photo uploads on flush (demo:// / Storage)
 - [ ] Share DPR PDF via system sheet; text share still works
-- [ ] Voice note on DPR after first save
+- [ ] Voice note on DPR after first save (demo stub or live mic when native sensors on)
 - [ ] Drawing pin linked to an issue; optional evidence photo uploads on flush (demo:// / Storage)
 
 ## Site ops

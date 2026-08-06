@@ -5,11 +5,14 @@ import 'device_biometric_service.dart';
 import 'device_evidence_capture.dart';
 import 'device_location_service.dart';
 import 'device_sensors_gate.dart';
+import 'device_voice_capture.dart';
 import 'evidence_capture.dart';
 import 'fake_biometric_service.dart';
 import 'fake_evidence_capture.dart';
 import 'fake_location_service.dart';
+import 'fake_voice_capture.dart';
 import 'location_service.dart';
+import 'voice_capture.dart';
 
 final locationServiceProvider = Provider<LocationService>((ref) {
   if (DeviceSensorsGate.useNative) return DeviceLocationService();
@@ -19,6 +22,11 @@ final locationServiceProvider = Provider<LocationService>((ref) {
 final evidenceCaptureProvider = Provider<EvidenceCapture>((ref) {
   if (DeviceSensorsGate.useNative) return DeviceEvidenceCapture();
   return FakeEvidenceCapture();
+});
+
+final voiceCaptureProvider = Provider<VoiceCapture>((ref) {
+  if (DeviceSensorsGate.useNative) return DeviceVoiceCapture();
+  return FakeVoiceCapture();
 });
 
 final biometricServiceProvider = Provider<BiometricService>((ref) {

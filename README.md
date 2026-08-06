@@ -74,6 +74,7 @@ docs/              Build plan and training
 | Drawing-pin evidence photos | Done |
 | Labour muster evidence photos | Done |
 | DPR activity evidence photos | Done |
+| Device voice capture (Fake + record) | Done |
 | FlutterFire configure + store release | Next (needs your Firebase project) |
 | Phase 3 Enterprise hooks | Deferred |
 

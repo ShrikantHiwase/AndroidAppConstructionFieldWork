@@ -4,6 +4,8 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/constants/app_constants.dart';
+import '../../../core/device/local_media_cache.dart';
+import '../../../core/device/voice_audio_policy.dart';
 import '../../../sync/outbox/outbox_entry.dart';
 import '../../../sync/remote/module_remote_pull.dart';
 import '../../../sync/remote/outbox_remote_sink.dart';
@@ -15,7 +17,7 @@ import '../domain/voice_note_models.dart';
 import '../domain/voice_notes_repository.dart';
 
 class LocalVoiceNotesRepository
-    implements VoiceNotesRepository, SyncableStore {
+    implements VoiceNotesRepository, SyncableStore, LocalMediaCache {
   LocalVoiceNotesRepository(
     this._prefs, {
     OutboxRemoteSink? remoteSink,
@@ -97,10 +99,13 @@ class LocalVoiceNotesRepository
   }
 
   @override
-  Future<VoiceNote> addDemoVoiceNote({
+  Future<VoiceNote> addVoiceNote({
     required AuthSession session,
     required VoiceParentType parentType,
     required String parentId,
+    required String audioLocalPath,
+    String? fileName,
+    int? audioByteSizeBytes,
     String? transcript,
     bool offline = false,
   }) async {
@@ -110,10 +115,17 @@ class LocalVoiceNotesRepository
     if (parentId.trim().isEmpty) {
       throw VoiceNotesException('Parent record is required');
     }
+    if (audioLocalPath.trim().isEmpty) {
+      throw VoiceNotesException('Audio path is required');
+    }
     final now = DateTime.now().toUtc();
     final id = 'voice_${now.microsecondsSinceEpoch}_${++_seq}';
     final pending = offline;
-    final audioPath = 'local://demo/voice_$id.m4a';
+    final path = audioLocalPath.trim();
+    final pathLeaf = path.split('/').last;
+    final resolvedName = (fileName != null && fileName.isNotEmpty)
+        ? fileName
+        : (pathLeaf.isEmpty ? 'voice_$id.m4a' : pathLeaf);
     final note = VoiceNote(
       id: id,
       orgId: session.activeProject.orgId,
@@ -130,7 +142,11 @@ class LocalVoiceNotesRepository
       createdBy: session.user.id,
       createdByName: session.user.displayName,
       createdAt: now,
-      audioLocalPath: audioPath,
+      audioLocalPath: path,
+      audioByteSizeBytes: audioByteSizeBytes ??
+          (LocalCacheEstimates.isDemoPath(path)
+              ? VoiceAudioPolicy.demoByteSize
+              : null),
       transcriptPending: pending,
       synced: false,
     );
@@ -145,9 +161,9 @@ class LocalVoiceNotesRepository
         parentType: 'voice',
         parentId: note.id,
         attachmentId: note.id,
-        fileName: 'voice_$id.m4a',
+        fileName: resolvedName,
         contentType: 'audio/mp4',
-        localPath: audioPath,
+        localPath: path,
       ).toPayload(),
     );
     _outbox.enqueue(
@@ -158,6 +174,28 @@ class LocalVoiceNotesRepository
     );
     await _persist();
     return note;
+  }
+
+  @override
+  Future<VoiceNote> addDemoVoiceNote({
+    required AuthSession session,
+    required VoiceParentType parentType,
+    required String parentId,
+    String? transcript,
+    bool offline = false,
+  }) async {
+    final now = DateTime.now().toUtc();
+    final stubId = 'voice_${now.microsecondsSinceEpoch}_${_seq + 1}';
+    return addVoiceNote(
+      session: session,
+      parentType: parentType,
+      parentId: parentId,
+      audioLocalPath: 'local://demo/voice_$stubId.m4a',
+      fileName: 'voice_$stubId.m4a',
+      audioByteSizeBytes: VoiceAudioPolicy.demoByteSize,
+      transcript: transcript,
+      offline: offline,
+    );
   }
 
   @override
@@ -274,6 +312,7 @@ class LocalVoiceNotesRepository
           createdByName: r.createdByName,
           createdAt: r.createdAt,
           audioLocalPath: r.audioLocalPath,
+          audioByteSizeBytes: r.audioByteSizeBytes,
           remoteAudioUrl: r.remoteAudioUrl,
           transcriptPending: false,
           synced: true,
@@ -283,5 +322,59 @@ class LocalVoiceNotesRepository
     }
     if (changed > 0) await _persistEntitiesOnly();
     return changed;
+  }
+
+  @override
+  LocalCacheSlice estimateLocalCache() {
+    var bytes = 0;
+    var reclaimable = 0;
+    var reclaimableCount = 0;
+    var count = 0;
+    for (final note in _items.values) {
+      final path = note.audioLocalPath;
+      if (path == null || path.isEmpty) continue;
+      count += 1;
+      final size = LocalCacheEstimates.bytesFor(
+        localPath: path,
+        byteSizeBytes: note.audioByteSizeBytes ?? VoiceAudioPolicy.demoByteSize,
+      );
+      bytes += size;
+      if (LocalCacheEstimates.isReclaimableLocalStub(
+        localPath: path,
+        remoteUrl: note.remoteAudioUrl,
+      )) {
+        reclaimable += size;
+        reclaimableCount += 1;
+      }
+    }
+    return LocalCacheSlice(
+      label: 'voice',
+      estimatedBytes: bytes,
+      reclaimableBytes: reclaimable,
+      reclaimableItemCount: reclaimableCount,
+      itemCount: count,
+    );
+  }
+
+  @override
+  Future<int> reclaimUploadedLocalPaths() async {
+    var freed = 0;
+    var changed = false;
+    for (final note in _items.values.toList()) {
+      if (!LocalCacheEstimates.isReclaimableLocalStub(
+        localPath: note.audioLocalPath,
+        remoteUrl: note.remoteAudioUrl,
+      )) {
+        continue;
+      }
+      freed += LocalCacheEstimates.bytesFor(
+        localPath: note.audioLocalPath,
+        byteSizeBytes: note.audioByteSizeBytes ?? VoiceAudioPolicy.demoByteSize,
+      );
+      _items[note.id] = note.copyWith(clearAudioLocalPath: true);
+      changed = true;
+    }
+    if (changed) await _persist();
+    return freed;
   }
 }
