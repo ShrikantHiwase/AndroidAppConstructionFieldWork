@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/share/field_pdf_export.dart';
+import '../../../core/share/share_port.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../domain/pilot_models.dart';
 import 'pilot_providers.dart';
@@ -75,6 +76,51 @@ class PilotHubPage extends ConsumerWidget {
             data: (snap) {
               if (snap == null) return const Text('No snapshot');
               final rate = snap.syncFailureRate;
+              final projectName = session.activeProject.name;
+              final shareText = snap.toShareText(projectName: projectName);
+              final subject = 'Pilot snapshot — $projectName';
+
+              Future<void> sharePdf() async {
+                final bytes = await FieldPdfExport.pilot(
+                  snapshot: snap,
+                  projectName: projectName,
+                );
+                final day =
+                    snap.generatedAt.toIso8601String().split('T').first;
+                final outcome = await ref.read(sharePortProvider).shareFile(
+                      bytes: bytes,
+                      filename: 'pilot_snapshot_$day.pdf',
+                      subject: subject,
+                      text: subject,
+                      fallbackText: shareText,
+                    );
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        shareSnackMessage(outcome, kind: 'Pilot PDF'),
+                      ),
+                    ),
+                  );
+                }
+              }
+
+              Future<void> shareAsText() async {
+                final outcome = await ref.read(sharePortProvider).shareText(
+                      text: shareText,
+                      subject: subject,
+                    );
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        shareSnackMessage(outcome, kind: 'Pilot snapshot'),
+                      ),
+                    ),
+                  );
+                }
+              }
+
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -102,25 +148,20 @@ class PilotHubPage extends ConsumerWidget {
                         ? 'n/a'
                         : '${(rate * 100).toStringAsFixed(1)}%',
                     ok: snap.syncTargetMet,
-                    hint: '${snap.syncErrorCount}/${snap.syncLogCount} · target <2%',
+                    hint:
+                        '${snap.syncErrorCount}/${snap.syncLogCount} · target <2%',
                   ),
                   const SizedBox(height: 8),
                   FilledButton.tonalIcon(
-                    onPressed: () async {
-                      final text = snap.toShareText(
-                        projectName: session.activeProject.name,
-                      );
-                      await Clipboard.setData(ClipboardData(text: text));
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Pilot snapshot copied'),
-                          ),
-                        );
-                      }
-                    },
+                    onPressed: sharePdf,
+                    icon: const Icon(Icons.picture_as_pdf_outlined),
+                    label: const Text('Share pilot PDF'),
+                  ),
+                  const SizedBox(height: 8),
+                  OutlinedButton.icon(
+                    onPressed: shareAsText,
                     icon: const Icon(Icons.ios_share),
-                    label: const Text('Copy snapshot'),
+                    label: const Text('Share as text'),
                   ),
                 ],
               );

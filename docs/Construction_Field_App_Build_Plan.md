@@ -89,6 +89,9 @@ todos:
   - id: evidence-photo-compression
     content: Evidence JPEG resize/quality pipeline + byteSize on MediaAttachment
     status: completed
+  - id: pilot-hub-pdf-export
+    content: Pilot hub hypercare snapshot PDF share via FieldPdfExport
+    status: completed
 isProject: false
 ---
 
@@ -300,7 +303,8 @@ docs/                 # plans and training
 24. ~~1-tap PDF export~~ — `package:pdf` + `SharePort.shareFile` for DPR and PM digest PDFs (text share remains available).
 25. ~~Sync diagnostics + health~~ — Sync status shows `BackgroundSyncMeta`, device vs demo network, Probe → `health` callable (NoOp in demo).
 26. ~~Evidence photo compression~~ — `EvidenceImagePolicy` + `FileImageCompressor` (max 1600px / ~400KB); gallery pick; `MediaAttachment.byteSizeBytes`.
-27. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift and scheduled 5 PM nudge Function remain follow-ups.
+27. ~~Pilot hub PDF~~ — `FieldPdfExport.pilot` + Share pilot PDF / text from Pilot hub hypercare snapshot.
+28. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift and scheduled 5 PM nudge Function remain follow-ups.
 7. ~~Pilot / UAT pack~~ — training guide, UAT checklist, hypercare metrics docs + in-app Pilot hub (checklist + live snapshot). Live-site execution and store tracks still need your Firebase project / devices.
 8. ~~Admin invites~~ — in-app create invite + demo accept via FakeAuth (scoped memberships); Cloud Functions email later.
 9. ~~Device sensors~~ — `geolocator` / `image_picker` / `local_auth` with Fake defaults; enable native via `--dart-define=USE_NATIVE_SENSORS=true`. See `docs/Device_Sensors.md`.
@@ -321,6 +325,7 @@ docs/                 # plans and training
 24. ~~1-tap PDF export~~ — `package:pdf` + `SharePort.shareFile` for DPR and PM digest PDFs (text share remains available).
 25. ~~Sync diagnostics + health~~ — Sync status shows `BackgroundSyncMeta`, device vs demo network, Probe → `health` callable (NoOp in demo).
 26. ~~Evidence photo compression~~ — `EvidenceImagePolicy` + `FileImageCompressor` (max 1600px / ~400KB); gallery pick; `MediaAttachment.byteSizeBytes`.
-27. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift remains a follow-up.
+27. ~~Pilot hub PDF~~ — `FieldPdfExport.pilot` + Share pilot PDF / text from Pilot hub hypercare snapshot.
+28. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift remains a follow-up.
 
 No native-only Android path; iOS ships from the same Flutter codebase. Enterprise BIM/Forge remains a WebView module after MVP.

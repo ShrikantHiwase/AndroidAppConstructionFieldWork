@@ -4,6 +4,7 @@ import 'package:construction_field_app/core/share/field_pdf_export.dart';
 import 'package:construction_field_app/core/share/share_port.dart';
 import 'package:construction_field_app/features/dpr/domain/dpr_models.dart';
 import 'package:construction_field_app/features/digests/domain/digest_models.dart';
+import 'package:construction_field_app/features/pilot/domain/pilot_models.dart';
 
 void main() {
   test('RecordingSharePort records text and subject', () async {
@@ -63,7 +64,7 @@ void main() {
     expect(digestText, contains('Crack'));
   });
 
-  test('FieldPdfExport builds non-empty DPR and digest PDFs', () async {
+  test('FieldPdfExport builds non-empty DPR, digest, and pilot PDFs', () async {
     final dprBytes = await FieldPdfExport.dpr(
       report: _sampleDpr(),
       projectName: 'Pune Tower',
@@ -78,6 +79,21 @@ void main() {
     );
     expect(digestBytes.length, greaterThan(200));
     expect(String.fromCharCodes(digestBytes.take(4)), '%PDF');
+
+    final pilotBytes = await FieldPdfExport.pilot(
+      snapshot: _samplePilot(),
+      projectName: 'Pune Tower',
+    );
+    expect(pilotBytes.length, greaterThan(200));
+    expect(String.fromCharCodes(pilotBytes.take(4)), '%PDF');
+
+    final port = RecordingSharePort();
+    await port.shareFile(
+      bytes: pilotBytes,
+      filename: 'pilot_snapshot_2026-08-06.pdf',
+      subject: 'Pilot',
+    );
+    expect(port.sharedFiles.single.filename, 'pilot_snapshot_2026-08-06.pdf');
   });
 }
 
@@ -114,5 +130,19 @@ PmDigestSnapshot _sampleDigest() {
     openIssueCount: 1,
     openRfiCount: 0,
     missingTodayDpr: false,
+  );
+}
+
+PilotMetricsSnapshot _samplePilot() {
+  return PilotMetricsSnapshot(
+    generatedAt: DateTime.utc(2026, 8, 6, 17),
+    projectId: 'p',
+    dprSubmittedDaysThisWeek: 3,
+    openIssueCount: 2,
+    pendingSyncCount: 0,
+    syncLogCount: 10,
+    syncErrorCount: 0,
+    checklistCompleted: 4,
+    checklistTotal: 12,
   );
 }

@@ -67,6 +67,7 @@ docs/              Build plan and training
 | 1-tap DPR / digest PDF export | Done |
 | Sync diagnostics + health probe | Done |
 | Evidence photo compression | Done |
+| Pilot hub hypercare PDF export | Done |
 | FlutterFire configure + store release | Next (needs your Firebase project) |
 | Phase 3 Enterprise hooks | Deferred |
 

@@ -15,6 +15,7 @@ Admin (and PM) → **Pilot**:
 
 - **UAT checklist** — persisted local ticks matching [UAT_Checklist.md](UAT_Checklist.md)
 - **Live snapshot** — DPR days submitted this week, open issues, pending outbox, sync error rate from local logs
+- **Share pilot PDF** — 1-tap PDF / text share of the hypercare snapshot (same `SharePort` as DPR/digest)
 - **Pass/fail strip** — green when snapshot meets targets (DPR days ≥4 for active project demo user path; sync error rate &lt;2% when enough samples)
 
 ## Hypercare cadence
