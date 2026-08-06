@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/share/share_port.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../../dpr/presentation/dpr_pages.dart';
 import '../../dpr/presentation/dpr_providers.dart';
@@ -167,19 +167,23 @@ class DigestsPage extends ConsumerWidget {
                         final text = digest.toShareText(
                           projectName: session.activeProject.name,
                         );
-                        await Clipboard.setData(ClipboardData(text: text));
+                        final outcome =
+                            await ref.read(sharePortProvider).shareText(
+                                  text: text,
+                                  subject: 'PM digest — ${session.activeProject.name}',
+                                );
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
+                            SnackBar(
                               content: Text(
-                                'Digest copied — paste into WhatsApp or email',
+                                shareSnackMessage(outcome, kind: 'Digest'),
                               ),
                             ),
                           );
                         }
                       },
                       icon: const Icon(Icons.ios_share),
-                      label: const Text('Copy digest'),
+                      label: const Text('Share digest'),
                     ),
                   ],
                 );

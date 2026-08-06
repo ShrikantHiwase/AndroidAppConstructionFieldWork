@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/share/share_port.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../../voice_notes/domain/voice_note_models.dart';
 import '../../voice_notes/presentation/voice_notes_section.dart';
@@ -319,14 +319,18 @@ class DprDetailPage extends ConsumerWidget {
         title: Text(current.reportDate.toIso8601String().split('T').first),
         actions: [
           IconButton(
-            tooltip: 'Copy PDF/WhatsApp summary',
+            tooltip: 'Share PDF/WhatsApp summary',
             onPressed: () async {
-              await Clipboard.setData(ClipboardData(text: shareText));
+              final outcome = await ref.read(sharePortProvider).shareText(
+                    text: shareText,
+                    subject:
+                        'DPR ${current.reportDate.toIso8601String().split('T').first}',
+                  );
               if (context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
+                  SnackBar(
                     content: Text(
-                      'Summary copied — paste into WhatsApp or a PDF tool',
+                      shareSnackMessage(outcome, kind: 'DPR summary'),
                     ),
                   ),
                 );
@@ -371,7 +375,8 @@ class DprDetailPage extends ConsumerWidget {
           SelectableText(shareText),
           const SizedBox(height: 8),
           Text(
-            '1-tap PDF export wires with a PDF package after Firebase Storage.',
+            'Opens the system share sheet (WhatsApp, email, etc.). '
+            '1-tap PDF export still deferred.',
             style: Theme.of(context).textTheme.bodySmall,
           ),
         ],

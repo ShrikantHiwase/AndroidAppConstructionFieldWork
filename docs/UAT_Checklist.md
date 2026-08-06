@@ -34,7 +34,7 @@ Run on mid/low-end Android first. Mark each item in Admin → **Pilot** (or tick
 ## DPR & drawings
 
 - [ ] Today's DPR draft + submit in &lt;3 minutes
-- [ ] Share/copy WhatsApp summary
+- [ ] Share WhatsApp/system summary (DPR + PM digest)
 - [ ] Voice note on DPR after first save
 - [ ] Drawing pin linked to an issue
 
