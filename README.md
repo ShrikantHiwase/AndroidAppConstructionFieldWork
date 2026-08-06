@@ -63,6 +63,7 @@ docs/              Build plan and training
 | RFI FCM assign/status parity | Done |
 | System share (DPR / digests / docs) | Done |
 | Local DPR tray nudge (5 PM prefs) | Done |
+| Notification deep links + nudge hour | Done |
 | 1-tap DPR / digest PDF export | Done |
 | FlutterFire configure + store release | Next (needs your Firebase project) |
 | Phase 3 Enterprise hooks | Deferred |

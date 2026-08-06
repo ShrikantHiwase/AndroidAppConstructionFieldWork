@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/notifications/notification_deep_link.dart';
 import '../../../core/notifications/notification_providers.dart';
 import '../../../sync/conflict/conflict_policy.dart';
 import '../../auth/presentation/auth_controller.dart';
@@ -74,9 +75,10 @@ class SyncStatusPage extends ConsumerWidget {
           const SizedBox(height: 8),
           Text(
             firebase
-                ? 'Foreground, open, and background FCM land in the inbox; '
-                    'Functions send on DPR submit / issue assign & status.'
-                : 'Demo mode logs assign/status intents locally until FlutterFire is configured.',
+                ? 'Tap an inbox row to open the related DPR / issue / RFI. '
+                    'Functions send on DPR submit / issue & RFI assign & status.'
+                : 'Demo mode logs assign/status intents locally until FlutterFire is configured. '
+                    'Tap inbox rows to open linked screens.',
             style: textTheme.bodySmall,
           ),
           if (inbox.entries.isNotEmpty) ...[
@@ -94,6 +96,16 @@ class SyncStatusPage extends ConsumerWidget {
                     subtitle:
                         Text('${e.body}\n${e.at.toLocal()} · ${e.source}'),
                     isThreeLine: true,
+                    onTap: () {
+                      final opened = openNotificationDeepLink(data: e.data);
+                      if (!opened && context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('No linked screen for this alert'),
+                          ),
+                        );
+                      }
+                    },
                   ),
                 ),
           ],

@@ -39,7 +39,7 @@ class DigestsPage extends ConsumerWidget {
           Text('Reminders', style: Theme.of(context).textTheme.titleMedium),
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
-            title: const Text('5 PM DPR nudge'),
+            title: const Text('Daily DPR nudge'),
             subtitle: Text(
               'Local tray reminder around ${prefs.nudgeHourLocal}:00 if '
               'today\'s DPR is not submitted. Cloud FCM cron still deferred.',
@@ -51,6 +51,28 @@ class DigestsPage extends ConsumerWidget {
                     .update(prefs.copyWith(dprNudgeEnabled: v))
                 : null,
           ),
+          if (canPrefs && prefs.dprNudgeEnabled) ...[
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              title: const Text('Reminder hour'),
+              trailing: DropdownButton<int>(
+                value: prefs.nudgeHourLocal.clamp(12, 21),
+                items: [
+                  for (var h = 12; h <= 21; h++)
+                    DropdownMenuItem(
+                      value: h,
+                      child: Text('$h:00'),
+                    ),
+                ],
+                onChanged: (h) {
+                  if (h == null) return;
+                  ref
+                      .read(digestPrefsProvider.notifier)
+                      .update(prefs.copyWith(nudgeHourLocal: h));
+                },
+              ),
+            ),
+          ],
           nudgeAsync.when(
             loading: () => const SizedBox.shrink(),
             error: (e, _) => Text('$e'),

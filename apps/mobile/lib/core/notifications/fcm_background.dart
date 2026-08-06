@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../firebase_options.dart';
 import 'local_notification_inbox.dart';
+import 'notification_deep_link.dart';
 import 'notification_message_mapper.dart';
 
 /// Top-level FCM background/terminated entry (separate isolate).
@@ -45,14 +46,25 @@ Future<void> recordRemoteMessage(
   );
 }
 
-/// Foreground + notification-open / cold-start handlers → local inbox.
+void _navigateFromMessage(RemoteMessage message) {
+  final data = message.data.map((k, v) => MapEntry(k, v.toString()));
+  openNotificationDeepLink(data: data);
+}
+
+/// Foreground open / cold-start handlers → inbox + deep link navigation.
 Future<void> attachMessageOpenHandlers(LocalNotificationInbox inbox) async {
-  FirebaseMessaging.onMessageOpenedApp.listen((message) {
-    recordRemoteMessage(inbox, message, source: 'fcm_open');
+  FirebaseMessaging.onMessageOpenedApp.listen((message) async {
+    await recordRemoteMessage(inbox, message, source: 'fcm_open');
+    _navigateFromMessage(message);
   });
 
   final initial = await FirebaseMessaging.instance.getInitialMessage();
   if (initial != null) {
     await recordRemoteMessage(inbox, initial, source: 'fcm_launch');
+    final data = initial.data.map((k, v) => MapEntry(k, v.toString()));
+    // Navigator may not be ready yet on cold start.
+    if (!openNotificationDeepLink(data: data)) {
+      PendingNotificationDeepLink.store(data: data);
+    }
   }
 }

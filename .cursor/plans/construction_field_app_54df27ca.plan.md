@@ -77,6 +77,9 @@ todos:
   - id: local-dpr-nudge
     content: Local tray DPR nudge via flutter_local_notifications
     status: completed
+  - id: notification-deep-links
+    content: Route notification taps to DPR/issue/RFI + nudge hour picker
+    status: completed
 isProject: false
 ---
 
@@ -296,6 +299,7 @@ docs/                 # plans and training
 20. ~~RFI FCM parity~~ — `onRfiWrite` assign/status pushes + client `assignRfi` / local notify intents (`rfi_assigned` / `rfi_status`).
 21. ~~System share~~ — `share_plus` for DPR / PM digest / document summary (clipboard fallback); see core `SharePort`.
 22. ~~Local DPR nudge~~ — `flutter_local_notifications` daily tray reminder from Digests prefs; Simulate posts tray + inbox. Cloud FCM cron still deferred.
-23. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift remains a follow-up.
+23. ~~Notification deep links~~ — tray / FCM open / Sync inbox tap → DPR / issue / RFI; Digests hour picker for nudge.
+24. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift remains a follow-up.
 
 No native-only Android path; iOS ships from the same Flutter codebase. Enterprise BIM/Forge remains a WebView module after MVP.
