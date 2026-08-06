@@ -77,6 +77,8 @@ class MediaAttachment {
     this.localPath,
     this.remoteUrl,
     this.pendingUpload = true,
+    this.byteSizeBytes,
+    this.widthPx,
   });
 
   final String id;
@@ -86,10 +88,18 @@ class MediaAttachment {
   final String? remoteUrl;
   final bool pendingUpload;
 
+  /// Compressed JPEG size when known (nullable for legacy JSON).
+  final int? byteSizeBytes;
+
+  /// Longest-edge width after resize when known.
+  final int? widthPx;
+
   MediaAttachment copyWith({
     String? localPath,
     String? remoteUrl,
     bool? pendingUpload,
+    int? byteSizeBytes,
+    int? widthPx,
   }) {
     return MediaAttachment(
       id: id,
@@ -98,6 +108,8 @@ class MediaAttachment {
       localPath: localPath ?? this.localPath,
       remoteUrl: remoteUrl ?? this.remoteUrl,
       pendingUpload: pendingUpload ?? this.pendingUpload,
+      byteSizeBytes: byteSizeBytes ?? this.byteSizeBytes,
+      widthPx: widthPx ?? this.widthPx,
     );
   }
 
@@ -108,6 +120,8 @@ class MediaAttachment {
         'localPath': localPath,
         'remoteUrl': remoteUrl,
         'pendingUpload': pendingUpload,
+        'byteSizeBytes': byteSizeBytes,
+        'widthPx': widthPx,
       };
 
   factory MediaAttachment.fromJson(Map<String, Object?> json) =>
@@ -118,6 +132,8 @@ class MediaAttachment {
         localPath: json['localPath'] as String?,
         remoteUrl: json['remoteUrl'] as String?,
         pendingUpload: json['pendingUpload'] as bool? ?? true,
+        byteSizeBytes: json['byteSizeBytes'] as int?,
+        widthPx: json['widthPx'] as int?,
       );
 }
 
