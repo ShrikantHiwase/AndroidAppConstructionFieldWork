@@ -201,4 +201,29 @@ void main() {
     expect(find.text('Hypercare snapshot'), findsOneWidget);
     expect(find.textContaining('UAT checklist'), findsOneWidget);
   });
+
+  testWidgets('admin can open invite users', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          sharedPreferencesProvider.overrideWithValue(prefs),
+        ],
+        child: const FieldApp(),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.widgetWithText(ActionChip, 'admin'));
+    await tester.pump();
+    await tester.tap(find.text('Sign in'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Invite user'));
+    await tester.pumpAndSettle();
+    expect(find.text('Invite users'), findsOneWidget);
+    expect(find.text('Send invite'), findsOneWidget);
+  });
 }

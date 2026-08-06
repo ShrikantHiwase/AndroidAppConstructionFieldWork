@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/providers/connectivity_provider.dart';
 import '../../../core/widgets/offline_badge.dart';
+import '../../admin/presentation/admin_invites_page.dart';
 import '../../digests/presentation/digests_page.dart';
 import '../../documents/presentation/documents_browser_page.dart';
 import '../../dpr/presentation/dpr_pages.dart';
@@ -152,13 +153,7 @@ class RoleHomePage extends ConsumerWidget {
             _PrimaryAction(
               Icons.person_add_outlined,
               'Invite user',
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Invite flow lands with Firebase Functions'),
-                  ),
-                );
-              },
+              onPressed: () => _open(context, const AdminInvitesPage()),
             ),
             _PrimaryAction(
               Icons.notifications_active_outlined,
