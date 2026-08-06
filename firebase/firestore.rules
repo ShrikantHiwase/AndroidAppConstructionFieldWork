@@ -99,11 +99,27 @@ service cloud.firestore {
       allow delete: if isAdmin(resource.data.orgId, resource.data.projectId);
     }
 
-    // Phase 2b — deny until implemented; collections reserved in plan.
-    match /safety_records/{id} { allow read, write: if false; }
-    match /inspections/{id} { allow read, write: if false; }
-    match /attendance_logs/{id} { allow read, write: if false; }
-    match /material_logs/{id} { allow read, write: if false; }
+    // Phase 2b site ops — same membership gate as field records.
+    match /safety_records/{id} {
+      allow read: if isProjectMember(resource.data.orgId, resource.data.projectId);
+      allow create, update: if isStaff(request.resource.data.orgId, request.resource.data.projectId);
+      allow delete: if isAdmin(resource.data.orgId, resource.data.projectId);
+    }
+    match /inspections/{id} {
+      allow read: if isProjectMember(resource.data.orgId, resource.data.projectId);
+      allow create, update: if isStaff(request.resource.data.orgId, request.resource.data.projectId);
+      allow delete: if isAdmin(resource.data.orgId, resource.data.projectId);
+    }
+    match /attendance_logs/{id} {
+      allow read: if isProjectMember(resource.data.orgId, resource.data.projectId);
+      allow create, update: if isStaff(request.resource.data.orgId, request.resource.data.projectId);
+      allow delete: if isAdmin(resource.data.orgId, resource.data.projectId);
+    }
+    match /material_logs/{id} {
+      allow read: if isProjectMember(resource.data.orgId, resource.data.projectId);
+      allow create, update: if isStaff(request.resource.data.orgId, request.resource.data.projectId);
+      allow delete: if isAdmin(resource.data.orgId, resource.data.projectId);
+    }
 
     match /{document=**} {
       allow read, write: if false;

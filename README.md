@@ -36,7 +36,8 @@ docs/              Build plan and training
 | Phase 1 documents + PDF viewer | Done |
 | Offline sync hardening (logs/cleanup/status) | Done |
 | Phase 2a DPR + drawing pins | Done |
-| Phase 2b Safety / QA / labour / etc. | Gated on pilot metrics |
+| Phase 2b Safety / QA / labour / materials | Done |
+| Firebase wiring + pilot launch | Next |
 | Phase 3 Enterprise hooks | Deferred |
 
 ## Demo login (local, no Firebase yet)

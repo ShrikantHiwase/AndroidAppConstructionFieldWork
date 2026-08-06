@@ -46,3 +46,7 @@ Browse Project → Discipline → Document Type → Files. Seeded demo PDF/TXT/C
 
 - **Today's DPR:** weather, manpower, activities (+ demo photos), blockers; submit; copy WhatsApp/PDF summary.
 - **Pin on Drawing:** seeded GA Plan sheet; select an issue and tap the page to drop a punch pin.
+
+## Phase 2b — Site ops
+
+Hub with Safety / QA/QC / Labour / Materials tabs. Photo required on safety observations/incidents and failed QA checks. Labour is supervisor-led muster (demo geofence OK). Materials support inward + consumption logs.

@@ -11,6 +11,7 @@ import '../../issues/presentation/create_issue_page.dart';
 import '../../issues/presentation/field_records_providers.dart'
     show pendingSyncCountProvider;
 import '../../issues/presentation/issues_list_page.dart';
+import '../../site_ops/presentation/site_ops_hub_page.dart';
 import '../../sync/presentation/sync_status_page.dart';
 import '../domain/auth_models.dart';
 import 'auth_controller.dart';
@@ -47,9 +48,9 @@ class RoleHomePage extends ConsumerWidget {
               onPressed: () => _open(context, const DrawingsListPage()),
             ),
             _PrimaryAction(
-              Icons.folder_open_outlined,
-              'Documents',
-              onPressed: () => _open(context, const DocumentsBrowserPage()),
+              Icons.health_and_safety_outlined,
+              'Site ops',
+              onPressed: () => _open(context, const SiteOpsHubPage()),
             ),
           ],
         ),
@@ -69,9 +70,9 @@ class RoleHomePage extends ConsumerWidget {
               onPressed: () => _open(context, const DprHomePage()),
             ),
             _PrimaryAction(
-              Icons.push_pin_outlined,
-              'Drawing pins',
-              onPressed: () => _open(context, const DrawingsListPage()),
+              Icons.health_and_safety_outlined,
+              'Site ops',
+              onPressed: () => _open(context, const SiteOpsHubPage()),
             ),
           ],
         ),
@@ -81,19 +82,20 @@ class RoleHomePage extends ConsumerWidget {
           subtitle: 'Inspections and quality issues with photo evidence.',
           actions: [
             _PrimaryAction(
+              Icons.checklist_outlined,
+              'Inspections',
+              onPressed: () =>
+                  _open(context, const SiteOpsHubPage(initialTab: 1)),
+            ),
+            _PrimaryAction(
               Icons.report_problem_outlined,
               'Quality issues',
               onPressed: () => _open(context, const IssuesListPage()),
             ),
             _PrimaryAction(
-              Icons.folder_open_outlined,
-              'Documents',
-              onPressed: () => _open(context, const DocumentsBrowserPage()),
-            ),
-            _PrimaryAction(
-              Icons.add_circle_outline,
-              'New Issue',
-              onPressed: () => _open(context, const CreateIssuePage()),
+              Icons.health_and_safety_outlined,
+              'Site ops',
+              onPressed: () => _open(context, const SiteOpsHubPage()),
             ),
           ],
         ),
