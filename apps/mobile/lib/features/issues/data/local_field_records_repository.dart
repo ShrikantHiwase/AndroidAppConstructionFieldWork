@@ -5,21 +5,29 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/constants/app_constants.dart';
 import '../../../sync/outbox/outbox_entry.dart';
+import '../../../sync/remote/field_remote_pull.dart';
+import '../../../sync/remote/outbox_remote_sink.dart';
 import '../../auth/domain/auth_models.dart';
 import '../domain/field_records_repository.dart';
 import '../domain/issue_models.dart';
 
 /// Offline-first field records store with sync outbox.
 ///
-/// Creates always succeed locally. When [flushOutbox] runs online, pending
-/// entries mark documents as synced (stand-in for Firestore until Firebase
-/// is configured).
+/// Creates always succeed locally. [flushOutbox] pushes to [OutboxRemoteSink]
+/// (Firestore when Firebase is enabled, no-op in demo) then marks docs synced.
 class LocalFieldRecordsRepository implements FieldRecordsRepository {
-  LocalFieldRecordsRepository(this._prefs) {
+  LocalFieldRecordsRepository(
+    this._prefs, {
+    OutboxRemoteSink? remoteSink,
+    FieldRemotePull? remotePull,
+  })  : _remoteSink = remoteSink ?? const NoOpOutboxRemoteSink(),
+        _remotePull = remotePull ?? const NoOpFieldRemotePull() {
     _load();
   }
 
   final SharedPreferences _prefs;
+  final OutboxRemoteSink _remoteSink;
+  final FieldRemotePull _remotePull;
 
   static const _issuesKey = 'field.issues';
   static const _rfisKey = 'field.rfis';
@@ -423,10 +431,10 @@ class LocalFieldRecordsRepository implements FieldRecordsRepository {
       return;
     }
 
-    // Simulate successful server apply: mark related docs synced, clear outbox.
     final remaining = <OutboxEntry>[];
     for (final entry in _outbox) {
       try {
+        await _remoteSink.apply(entry);
         switch (entry.collection) {
           case FirestoreCollections.issues:
             final issue = _issues[entry.documentId];
@@ -474,5 +482,32 @@ class LocalFieldRecordsRepository implements FieldRecordsRepository {
       ..clear()
       ..addAll(remaining);
     await _persist();
+  }
+
+  @override
+  Future<({int issues, int rfis})> pullRemote({required String projectId}) async {
+    final remoteIssues = await _remotePull.pullIssues(projectId);
+    final remoteRfis = await _remotePull.pullRfis(projectId);
+    var issueMerges = 0;
+    var rfiMerges = 0;
+
+    for (final remote in remoteIssues) {
+      final local = _issues[remote.id];
+      if (local == null || remote.updatedAt.isAfter(local.updatedAt)) {
+        _issues[remote.id] = remote.copyWith(synced: true);
+        issueMerges += 1;
+      }
+    }
+    for (final remote in remoteRfis) {
+      final local = _rfis[remote.id];
+      if (local == null || remote.updatedAt.isAfter(local.updatedAt)) {
+        _rfis[remote.id] = remote.copyWith(synced: true);
+        rfiMerges += 1;
+      }
+    }
+    if (issueMerges > 0 || rfiMerges > 0) {
+      await _persist();
+    }
+    return (issues: issueMerges, rfis: rfiMerges);
   }
 }

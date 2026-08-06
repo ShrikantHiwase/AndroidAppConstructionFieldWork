@@ -81,5 +81,6 @@ flutter run --dart-define=USE_NATIVE_SENSORS=true
 
 - In-app admin invites still work in **demo** FakeAuth; production invites should call
   callable `inviteMember` (see `firebase/functions/index.js`).
-- Field collections (issues/DPRs/…) remain local SharedPreferences until a follow-up
-  wires Firestore repositories behind `firebaseEnabledProvider`.
+- When Firebase is enabled, the local outbox **pushes** issues/RFIs/comments to Firestore
+  on flush and **pulls** remote issues/RFIs into the on-device cache (LWW by `updatedAt`).
+  DPR/site-ops/docs still use local stores until their remotes are wired.

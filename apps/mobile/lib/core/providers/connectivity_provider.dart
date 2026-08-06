@@ -30,7 +30,11 @@ class ConnectivityController extends StateNotifier<bool> {
   Future<void> setOffline(bool offline) async {
     state = offline;
     if (!offline) {
-      await _ref.read(syncEngineProvider).flushNow(isOnline: true);
+      final session = _ref.read(authSessionProvider);
+      await _ref.read(syncEngineProvider).flushNow(
+            isOnline: true,
+            projectId: session?.activeProjectId,
+          );
     }
   }
 

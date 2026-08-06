@@ -41,6 +41,9 @@ todos:
   - id: firebase-golive-prep
     content: Seed script, inviteMember/onDprWrite Functions, indexes, go-live checklist
     status: completed
+  - id: firestore-outbox
+    content: Outbox push to Firestore + pull issues/RFIs when Firebase enabled
+    status: completed
 isProject: false
 ---
 
@@ -248,6 +251,7 @@ docs/                 # plans and training
 8. ~~Admin invites~~ — in-app create invite + demo accept via FakeAuth (scoped memberships); Cloud Functions email later.
 9. ~~Device sensors~~ — `geolocator` / `image_picker` / `local_auth` with Fake defaults; enable native via `--dart-define=USE_NATIVE_SENSORS=true`. See `docs/Device_Sensors.md`.
 10. ~~Firebase go-live prep~~ — emulator seed (`firebase/seed`), `inviteMember` + `onDprWrite` Functions, membership indexes, rules for `invites`/`voice_notes`, [Go_Live_Checklist.md](Go_Live_Checklist.md).
-11. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Field Firestore repos (issues/DPR sync to cloud) remain a follow-up after Auth is live.
+11. ~~Firestore outbox sync~~ — when Firebase is enabled, flush pushes issues/RFIs/comments to Firestore and pulls remote issues/RFIs (LWW by `updatedAt`); demo keeps no-op sink.
+12. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. DPR/site-ops/docs remotes and Drift/Workmanager remain follow-ups.
 
 No native-only Android path; iOS ships from the same Flutter codebase. Enterprise BIM/Forge remains a WebView module after MVP.

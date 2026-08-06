@@ -46,6 +46,9 @@ abstract class FieldRecordsRepository {
     required String body,
   });
 
-  /// Flush outbox to "server" (local simulated remote when online).
+  /// Flush outbox to remote sink (Firestore when enabled) then mark local synced.
   Future<void> flushOutbox({required bool isOnline});
+
+  /// Pull remote issues/RFIs into the local cache (no-op in demo mode).
+  Future<({int issues, int rfis})> pullRemote({required String projectId});
 }
