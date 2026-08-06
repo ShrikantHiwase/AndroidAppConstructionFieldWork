@@ -28,7 +28,7 @@ Run on mid/low-end Android first. Mark each item in Admin → **Pilot** (or tick
 ## Documents
 
 - [ ] Browse Project → Discipline → Type → Files
-- [ ] Open seeded PDF/TXT/CSV viewer (zoom/search/page)
+- [ ] Open seeded PDF (pdfrx) / TXT / CSV viewer (zoom/search/page)
 - [ ] Engineer upload via Pick demo file (or native file pick); client blocked
 
 ## DPR & drawings

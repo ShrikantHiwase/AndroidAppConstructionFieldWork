@@ -19,7 +19,7 @@ class PickedDocument {
   /// Inline body for TXT/CSV demo viewing (Fake / readable Device text).
   final String? textContent;
 
-  /// Synthetic PDF pages until pdfrx is wired.
+  /// Optional text pages when no asset/file path is available for pdfrx.
   final List<String> pdfPages;
 
   DocContentType get kind =>

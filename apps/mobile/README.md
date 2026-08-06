@@ -40,9 +40,9 @@ Offline-first `LocalFieldRecordsRepository` with sync outbox. Demo GPS/photo but
 ## Documents (Phase 1)
 
 Browse Project → Discipline → Document Type → Files. Seeded demo PDF/TXT/CSV. Upload uses
-`DocumentFilePicker` (Fake `local://` stub by default; native `file_picker` with
-`USE_NATIVE_SENSORS=true`). Viewer supports search; PDF uses demo pages with zoom/page
-nav (pdfrx later).
+`DocumentFilePicker` (Fake stub by default; native `file_picker` with
+`USE_NATIVE_SENSORS=true`). Viewer uses **pdfrx** for the seeded GA Plan asset and
+on-device PDF paths; TXT/CSV keep search; synthetic text pages remain as fallback.
 
 ## Sync (Phase 1)
 

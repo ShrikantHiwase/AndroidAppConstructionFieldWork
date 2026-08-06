@@ -110,7 +110,7 @@ class ProjectDocument {
   final bool synced;
   /// Inline body for TXT/CSV demo viewing.
   final String? textContent;
-  /// Synthetic PDF pages for in-app page nav / search until pdfrx is wired.
+  /// Optional text pages when no asset/file path is available for pdfrx.
   final List<String> pdfPages;
   /// On-device path (or `local://demo/...` for Fake uploads).
   final String? localFilePath;
