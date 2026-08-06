@@ -64,6 +64,7 @@ flutter run --dart-define=USE_NATIVE_SENSORS=true
 
 - [ ] GPS / camera / biometrics prompts appear
 - [ ] Offline create → online sync still works (issues + DPR/site-ops/docs outboxes)
+- [ ] Issue with photo: flush uploads to Storage when Firebase is on; Fake `local://` paths stay demo URLs
 
 ## 6. Pilot
 
@@ -83,5 +84,7 @@ flutter run --dart-define=USE_NATIVE_SENSORS=true
   callable `inviteMember` (see `firebase/functions/index.js`).
 - When Firebase is enabled, the local outbox **pushes** issues/RFIs/comments **and**
   DPR / site-ops / document metadata / drawing pins to Firestore on flush, and
-  **pulls** those collections into the on-device cache. Document **file bytes**
-  (Storage) are not uploaded yet — metadata only.
+  **pulls** those collections into the on-device cache.
+- Issue **photo attachments** upload to Storage on flush (`StorageUploader`); Fake
+  `local://` evidence paths resolve to `demo://` URLs without network I/O.
+  Document **file bytes** are still metadata-only.
