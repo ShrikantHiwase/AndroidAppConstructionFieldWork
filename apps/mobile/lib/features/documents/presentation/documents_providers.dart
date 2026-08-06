@@ -12,6 +12,7 @@ final documentsRepositoryProvider = Provider<DocumentsRepository>((ref) {
     ref.watch(sharedPreferencesProvider),
     remoteSink: ref.watch(outboxRemoteSinkProvider),
     remotePull: ref.watch(moduleRemotePullProvider),
+    storageUploader: ref.watch(storageUploaderProvider),
   );
 });
 

@@ -18,7 +18,7 @@ class UploadDocumentPage extends ConsumerStatefulWidget {
 class _UploadDocumentPageState extends ConsumerState<UploadDocumentPage> {
   final _name = TextEditingController(text: 'site_note.txt');
   final _body = TextEditingController(
-    text: 'Uploaded from field.\nReplace with file picker after Storage wiring.',
+    text: 'Uploaded from field.\nDemo content — Storage syncs on flush.',
   );
   var _type = DocContentType.txt;
   var _saving = false;
@@ -60,9 +60,11 @@ class _UploadDocumentPageState extends ConsumerState<UploadDocumentPage> {
                   : const [],
             ),
           );
-      // Offline creates stay pending; online marks as local-only until Storage.
       if (!ref.read(isOfflineProvider)) {
-        // No remote flush yet — document.synced stays false until Firebase.
+        await ref.read(syncEngineProvider).flushNow(
+              isOnline: true,
+              projectId: session.activeProjectId,
+            );
       }
       if (mounted) Navigator.of(context).pop();
     } catch (e) {
@@ -129,7 +131,8 @@ class _UploadDocumentPageState extends ConsumerState<UploadDocumentPage> {
           ),
           const SizedBox(height: 8),
           Text(
-            'Demo upload — file picker + Firebase Storage come after flutterfire configure.',
+            'Saves offline immediately. On flush, demo paths use demo:// Storage '
+            'URLs; real file paths upload to Firebase Storage when configured.',
             style: Theme.of(context).textTheme.bodySmall,
           ),
         ],

@@ -52,6 +52,7 @@ docs/              Build plan and training
 | Firestore outbox push + issue/RFI pull | Done |
 | Firestore module sync (DPR/ops/docs/pins) | Done |
 | Storage upload for issue evidence | Done |
+| Storage upload for documents | Done |
 | FlutterFire configure + store release | Next (needs your Firebase project) |
 | Phase 3 Enterprise hooks | Deferred |
 
