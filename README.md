@@ -44,6 +44,7 @@ docs/              Build plan and training
 | Firebase packages + auth switch (demo fallback) | Done |
 | Voice notes + smart digests | Done |
 | Pilot / UAT pack (training + hub) | Done |
+| Admin invites (local / demo) | In progress |
 | FlutterFire configure + store release | Next (needs your Firebase project) |
 | Phase 3 Enterprise hooks | Deferred |
 

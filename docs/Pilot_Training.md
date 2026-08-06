@@ -10,7 +10,7 @@ Short training for 1–2 live pilot sites. Demo logins work without Firebase; pr
 | **Project Manager** | Open queue (assign / status), DPRs, Digests (PM digest + copy), Site ops |
 | **QA/QC** | Inspections (photo on fail), quality issues |
 | **Client** | Read-only Issues + Documents |
-| **Admin** | Documents, Digests, **Pilot** hub (UAT checklist + metrics) |
+| **Admin** | Documents, Digests, **Pilot** hub, **Invite user** (role + projects) |
 
 ## Demo accounts (local)
 

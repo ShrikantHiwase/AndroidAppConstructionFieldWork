@@ -32,6 +32,9 @@ todos:
   - id: pilot-launch
     content: UAT on live sites, Play Store/TestFlight, training materials, hypercare metrics
     status: completed
+  - id: admin-invites
+    content: In-app admin invites with role/project assignment (local demo; Functions later)
+    status: completed
 isProject: false
 ---
 
@@ -236,6 +239,7 @@ docs/                 # plans and training
 5. ~~Firebase wiring prep~~ — packages + bootstrap gate + `FirebaseAuthRepository`; demo mode until `flutterfire configure`. See `docs/Firebase_Setup.md`.
 6. ~~Voice + digests~~ — demo voice notes on DPR/issues; 5 PM DPR nudge prefs; PM digest of open issues/RFIs/blockers with WhatsApp copy.
 7. ~~Pilot / UAT pack~~ — training guide, UAT checklist, hypercare metrics docs + in-app Pilot hub (checklist + live snapshot). Live-site execution and store tracks still need your Firebase project / devices.
-8. **Next:** Operator FlutterFire + seed data, then live-site UAT / Play internal & TestFlight.
+8. **Admin invites (in progress):** in-app create invite + demo accept via FakeAuth; Cloud Functions email later.
+9. **Next:** Operator FlutterFire + seed data, then live-site UAT / Play internal & TestFlight.
 
 No native-only Android path; iOS ships from the same Flutter codebase. Enterprise BIM/Forge remains a WebView module after MVP.

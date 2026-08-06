@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../admin/data/local_admin_invites_repository.dart';
+import '../../admin/domain/admin_invites_repository.dart';
 import '../data/fake_auth_repository.dart';
 import '../data/firebase_auth_repository.dart';
 import '../domain/auth_models.dart';
@@ -13,12 +15,20 @@ final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {
 /// Overridden in [main] after [bootstrapFirebase]. Default keeps demo auth in tests.
 final firebaseEnabledProvider = Provider<bool>((ref) => false);
 
+/// Shared so FakeAuth and the admin UI see the same invite store.
+final adminInvitesRepositoryProvider = Provider<AdminInvitesRepository>((ref) {
+  return LocalAdminInvitesRepository(ref.watch(sharedPreferencesProvider));
+});
+
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
   final prefs = ref.watch(sharedPreferencesProvider);
   if (ref.watch(firebaseEnabledProvider)) {
     return FirebaseAuthRepository(prefs: prefs);
   }
-  return FakeAuthRepository(prefs);
+  return FakeAuthRepository(
+    prefs,
+    invites: ref.watch(adminInvitesRepositoryProvider),
+  );
 });
 
 enum AuthStatus { unknown, signedOut, locked, signedIn }

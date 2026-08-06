@@ -62,3 +62,7 @@ Hub with Safety / QA/QC / Labour / Materials tabs. Photo required on safety obse
 ## Pilot / UAT
 
 PM and Admin → **Pilot**: local UAT checklist + hypercare snapshot (DPR days this week, open issues, sync error rate). Docs: `docs/Pilot_Training.md`, `docs/UAT_Checklist.md`, `docs/Hypercare_Metrics.md`.
+
+## Admin invites
+
+Admin → **Invite user**: create pending invites (email, role, projects). Invitees sign in with that email + `demo1234` and get invite-scoped memberships. Demo accounts stay unchanged. Email delivery via Cloud Functions comes with production Firebase.

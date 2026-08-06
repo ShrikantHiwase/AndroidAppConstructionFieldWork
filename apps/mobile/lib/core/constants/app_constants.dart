@@ -19,6 +19,7 @@ abstract final class FirestoreCollections {
   static const materialLogs = 'material_logs';
   static const syncEvents = 'sync_events';
   static const voiceNotes = 'voice_notes';
+  static const invites = 'invites';
 }
 
 /// RBAC roles from the RAYNS brief.
