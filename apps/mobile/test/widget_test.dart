@@ -35,7 +35,7 @@ void main() {
     expect(find.text('Create issues'), findsOneWidget);
   });
 
-  testWidgets('client demo chip lands on read-only home', (tester) async {
+  testWidgets('engineer can open New Issue from home', (tester) async {
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();
 
@@ -48,13 +48,22 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
-
-    await tester.tap(find.widgetWithText(ActionChip, 'client'));
-    await tester.pump();
     await tester.tap(find.text('Sign in'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Client view'), findsOneWidget);
-    expect(find.text('Read-only'), findsOneWidget);
+    expect(find.text('Site capture'), findsOneWidget);
+    await tester.tap(find.text('New Issue'));
+    await tester.pumpAndSettle();
+    expect(find.text('Save issue'), findsOneWidget);
+
+    await tester.enterText(find.byType(TextFormField).first, 'Scaffold gap');
+    await tester.tap(find.text('Add demo GPS'));
+    await tester.tap(find.text('Save issue'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Site capture'), findsOneWidget);
+    await tester.tap(find.text('Issues'));
+    await tester.pumpAndSettle();
+    expect(find.text('Scaffold gap'), findsOneWidget);
   });
 }
