@@ -26,7 +26,7 @@ void main() {
         weather: 'Clear',
         manpowerSummary: '40 total',
         activities: [
-          DprActivity(id: 'a1', description: 'Slab pour Bay 2', photoCount: 2),
+          DprActivity(id: 'a1', description: 'Slab pour Bay 2', hasPhoto: true),
         ],
         blockers: 'Waiting on rebar delivery',
       ),

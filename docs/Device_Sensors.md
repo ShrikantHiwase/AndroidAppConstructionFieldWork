@@ -26,7 +26,7 @@ On permission failure or plugin errors, Device* falls back to Fake*.
 soft target **~400 KB**. `DeviceEvidenceCapture` applies picker limits then
 `FileImageCompressor` (resize + quality ladder). Demo Fake paths get
 `byteSizeBytes` without I/O. New Issue, site-ops safety/QA fail / labour muster,
-and drawing pins show queued size when a photo is attached.
+drawing pins, and DPR activities show queued size when a photo is attached.
 
 ## Android permissions and iOS usage strings
 
@@ -36,5 +36,8 @@ Already in the platform folders.
 
 - New Issue → Add GPS / Add photo / From gallery
 - Site ops → Safety observation/incident photo; QA WIR fail photo (compressed + Storage outbox upload)
+- Labour muster → optional evidence photo (compressed + Storage outbox upload)
+- Drawing pins → optional evidence photo
+- Today's DPR → optional activity evidence photo
 - Biometric unlock screen
 - Labour muster geofence check

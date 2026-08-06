@@ -5,27 +5,76 @@ class DprActivity {
     required this.id,
     required this.description,
     this.location,
-    this.photoCount = 0,
+    this.hasPhoto = false,
+    this.photoLocalPath,
+    this.photoByteSizeBytes,
+    this.photoRemoteUrl,
+    this.pendingPhotoUpload = false,
   });
 
   final String id;
   final String description;
   final String? location;
-  final int photoCount;
+  final bool hasPhoto;
+  final String? photoLocalPath;
+  final int? photoByteSizeBytes;
+  final String? photoRemoteUrl;
+  final bool pendingPhotoUpload;
+
+  /// Derived from [hasPhoto] (at most one evidence photo per activity).
+  int get photoCount => hasPhoto ? 1 : 0;
+
+  DprActivity copyWith({
+    String? description,
+    String? location,
+    bool? hasPhoto,
+    String? photoLocalPath,
+    int? photoByteSizeBytes,
+    String? photoRemoteUrl,
+    bool? pendingPhotoUpload,
+    bool clearPhotoLocalPath = false,
+  }) {
+    return DprActivity(
+      id: id,
+      description: description ?? this.description,
+      location: location ?? this.location,
+      hasPhoto: hasPhoto ?? this.hasPhoto,
+      photoLocalPath:
+          clearPhotoLocalPath ? null : (photoLocalPath ?? this.photoLocalPath),
+      photoByteSizeBytes: photoByteSizeBytes ?? this.photoByteSizeBytes,
+      photoRemoteUrl: photoRemoteUrl ?? this.photoRemoteUrl,
+      pendingPhotoUpload: pendingPhotoUpload ?? this.pendingPhotoUpload,
+    );
+  }
 
   Map<String, Object?> toJson() => {
         'id': id,
         'description': description,
         'location': location,
         'photoCount': photoCount,
+        'hasPhoto': hasPhoto,
+        'photoLocalPath': photoLocalPath,
+        'photoByteSizeBytes': photoByteSizeBytes,
+        'photoRemoteUrl': photoRemoteUrl,
+        'pendingPhotoUpload': pendingPhotoUpload,
       };
 
-  factory DprActivity.fromJson(Map<String, Object?> json) => DprActivity(
-        id: json['id'] as String,
-        description: json['description'] as String,
-        location: json['location'] as String?,
-        photoCount: json['photoCount'] as int? ?? 0,
-      );
+  factory DprActivity.fromJson(Map<String, Object?> json) {
+    final path = json['photoLocalPath'] as String?;
+    final remote = json['photoRemoteUrl'] as String?;
+    final hasPhoto = json['hasPhoto'] as bool? ??
+        ((path?.isNotEmpty ?? false) || (remote?.isNotEmpty ?? false));
+    return DprActivity(
+      id: json['id'] as String,
+      description: json['description'] as String,
+      location: json['location'] as String?,
+      hasPhoto: hasPhoto,
+      photoLocalPath: path,
+      photoByteSizeBytes: json['photoByteSizeBytes'] as int?,
+      photoRemoteUrl: remote,
+      pendingPhotoUpload: json['pendingPhotoUpload'] as bool? ?? false,
+    );
+  }
 }
 
 class DailyProgressReport {

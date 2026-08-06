@@ -80,7 +80,7 @@ void main() {
         weather: 'Clear',
         manpowerSummary: '12',
         activities: [
-          DprActivity(id: 'a1', description: 'Formwork', photoCount: 1),
+          DprActivity(id: 'a1', description: 'Formwork', hasPhoto: true),
         ],
         blockers: '',
       ),
