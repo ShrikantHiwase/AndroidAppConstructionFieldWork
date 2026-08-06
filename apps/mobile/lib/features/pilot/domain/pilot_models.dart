@@ -2,74 +2,100 @@ import '../../../core/constants/app_constants.dart';
 
 /// Canonical UAT item ids — keep in sync with docs/UAT_Checklist.md.
 abstract final class UatItemIds {
+  /// Checkbox count must match docs/UAT_Checklist.md (excluding sign-off table).
+  static const expectedDocCount = 35;
+
   static const all = <String>[
+    // Environment
     'env_install',
     'env_warm_start',
     'env_offline_badge',
     'env_banner',
+    // Auth & roles
     'auth_roles',
     'auth_project_switch',
     'auth_biometric',
     'auth_client_readonly',
+    // Issues & RFIs
     'issues_create',
     'issues_offline_sync',
     'issues_status',
     'issues_assign',
     'issues_rfi',
     'issues_voice',
+    // Documents
     'docs_browse',
     'docs_viewer',
     'docs_upload_gate',
+    // DPR & drawings
     'dpr_submit',
+    'dpr_activity_evidence',
     'dpr_share',
     'dpr_voice',
     'dpr_pin',
+    // Site ops
     'ops_safety',
     'ops_qa',
     'ops_labour_material',
     'ops_client_block',
+    // Digests & sync
     'digest_nudge',
     'digest_pm',
     'sync_status',
     'sync_conflict',
+    'pilot_share_pdf',
+    'client_weekly_pdf',
+    // Firebase (when configured)
     'firebase_gate',
     'firebase_membership',
     'firebase_rules',
   ];
 
   static String label(String id) => switch (id) {
-        'env_install' => 'App installs on pilot device',
-        'env_warm_start' => 'Warm start acceptable on low-end Android',
-        'env_offline_badge' => 'Offline badge visible',
+        'env_install' => 'App installs / launches on pilot device (API 24+)',
+        'env_warm_start' => 'Warm start feels <2s on pilot hardware',
+        'env_offline_badge' => 'Offline badge visible on home',
         'env_banner' => 'DEMO / FIREBASE banner correct',
-        'auth_roles' => 'All roles can sign in',
-        'auth_project_switch' => 'Project switcher works',
+        'auth_roles' => 'All roles can sign in (demo or Firebase)',
+        'auth_project_switch' => 'Project switcher changes active project',
         'auth_biometric' => 'Biometric unlock stub works',
-        'auth_client_readonly' => 'Client is read-only',
-        'issues_create' => 'Create issue with GPS/photo',
-        'issues_offline_sync' => 'Offline create then sync',
-        'issues_status' => 'Status workflow + audit',
-        'issues_assign' => 'PM assign / engineer blocked',
-        'issues_rfi' => 'RFI + comment',
-        'issues_voice' => 'Voice note on issue',
-        'docs_browse' => 'Document hierarchy browse',
-        'docs_viewer' => 'PDF/TXT/CSV viewer',
-        'docs_upload_gate' => 'Upload role gate',
-        'dpr_submit' => "Today's DPR submit <3 min",
-        'dpr_share' => 'DPR WhatsApp/PDF copy',
-        'dpr_voice' => 'Voice note on DPR',
-        'dpr_pin' => 'Drawing pin to issue',
-        'ops_safety' => 'Safety photo rules',
-        'ops_qa' => 'QA photo-on-fail',
-        'ops_labour_material' => 'Labour + materials',
-        'ops_client_block' => 'Client blocked on site ops',
-        'digest_nudge' => '5 PM DPR nudge',
-        'digest_pm' => 'PM digest + copy',
-        'sync_status' => 'Sync status + cleanup',
-        'sync_conflict' => 'Conflict policy labels',
-        'firebase_gate' => 'Firebase configured (when ready)',
-        'firebase_membership' => 'Membership sign-in',
-        'firebase_rules' => 'Rules deny cross-project',
+        'auth_client_readonly' =>
+          'Client cannot create issues, edit DPR, or mutate site ops',
+        'issues_create' =>
+          'Create issue with GPS + compressed photo; Pilot median updates',
+        'issues_offline_sync' => 'Offline create then sync online',
+        'issues_status' => 'Status workflow + audit trail',
+        'issues_assign' => 'PM can assign; engineer cannot',
+        'issues_rfi' => 'RFI + threaded comment',
+        'issues_voice' => 'Voice note on issue detail',
+        'docs_browse' => 'Browse Project → Discipline → Type → Files',
+        'docs_viewer' => 'Open seeded PDF (pdfrx) / TXT / CSV viewer',
+        'docs_upload_gate' => 'Engineer upload; client blocked',
+        'dpr_submit' =>
+          "Today's DPR submit <3 min; Pilot median updates after Submit",
+        'dpr_activity_evidence' =>
+          'Optional DPR activity evidence photo uploads on flush',
+        'dpr_share' => 'Share DPR PDF via system sheet; text share works',
+        'dpr_voice' => 'Voice note on DPR after first save',
+        'dpr_pin' =>
+          'Drawing pin linked to issue; optional evidence photo on flush',
+        'ops_safety' =>
+          'Safety toolbox / observation photo rules (flush to Storage)',
+        'ops_qa' => 'QA fail requires photo; pass allowed',
+        'ops_labour_material' =>
+          'Labour muster + material logs (optional evidence photos)',
+        'ops_client_block' => 'Client blocked from site ops mutations',
+        'digest_nudge' => '5 PM DPR nudge prefs + Simulate (local tray)',
+        'digest_pm' => 'PM digest + Share digest PDF',
+        'sync_status' =>
+          'Sync status logs, cache meter, telemetry, cleanup',
+        'sync_conflict' => 'Conflict policy labels on flush',
+        'pilot_share_pdf' => 'Pilot hub Share pilot PDF (PM/Admin)',
+        'client_weekly_pdf' =>
+          'Client Weekly progress → Share weekly PDF',
+        'firebase_gate' => 'Firebase configured + FIREBASE banner',
+        'firebase_membership' => 'Membership Auth sign-in',
+        'firebase_rules' => 'Rules deny cross-project reads',
         _ => id,
       };
 }

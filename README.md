@@ -82,6 +82,7 @@ docs/              Build plan and training
 | In-app PDF viewer (pdfrx) | Done |
 | Pilot issue-create timing | Done |
 | Pilot DPR submit timing | Done |
+| Pilot UAT checklist parity | Done |
 | FlutterFire configure + store release | Next (needs your Firebase project) |
 | Phase 3 Enterprise hooks | Deferred |
 

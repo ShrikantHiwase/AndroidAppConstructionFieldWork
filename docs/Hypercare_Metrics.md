@@ -14,7 +14,7 @@ Targets from the build plan. Measure during the first 2 weeks on each pilot site
 
 Admin (and PM) → **Pilot**:
 
-- **UAT checklist** — persisted local ticks matching [UAT_Checklist.md](UAT_Checklist.md)
+- **UAT checklist** — persisted local ticks matching [UAT_Checklist.md](UAT_Checklist.md) (35 items)
 - **Live snapshot** — DPR days submitted this week, **DPR submit median**, **issue create median**, open issues, pending outbox, sync error rate from local logs
 - **Share pilot PDF** — 1-tap PDF / text share of the hypercare snapshot (same `SharePort` as DPR/digest)
 - **Pass/fail strip** — green when snapshot meets targets (DPR days ≥4; DPR submit median &lt;3m with ≥3 samples; issue create median &lt;90s with ≥3 samples; sync error rate &lt;2% when enough samples)

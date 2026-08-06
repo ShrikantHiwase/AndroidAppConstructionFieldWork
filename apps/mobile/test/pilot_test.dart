@@ -17,11 +17,22 @@ void main() {
     final prefs = await SharedPreferences.getInstance();
     final repo = LocalPilotRepository(prefs);
     expect(repo.getChecklist().completedCount, 0);
+    expect(UatItemIds.all, hasLength(UatItemIds.expectedDocCount));
+    expect(UatItemIds.all.toSet(), hasLength(UatItemIds.all.length));
+    expect(UatItemIds.all, contains('dpr_activity_evidence'));
+    expect(UatItemIds.all, contains('pilot_share_pdf'));
+    expect(UatItemIds.all, contains('client_weekly_pdf'));
+    expect(
+      UatItemIds.label('client_weekly_pdf'),
+      contains('Weekly progress'),
+    );
+    expect(UatItemIds.label('docs_viewer'), contains('pdfrx'));
 
     final next = repo.getChecklist().toggle('dpr_submit');
     await repo.saveChecklist(next);
     expect(repo.getChecklist().isChecked('dpr_submit'), isTrue);
     expect(repo.getChecklist().completedCount, 1);
+    expect(repo.getChecklist().totalCount, UatItemIds.expectedDocCount);
   });
 
   test('DPR days this week counts unique submitted days', () {

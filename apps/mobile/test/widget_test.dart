@@ -208,6 +208,19 @@ void main() {
       scrollable: find.byType(Scrollable).first,
     );
     expect(find.textContaining('UAT checklist'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.textContaining('Client Weekly progress'),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(
+      find.textContaining('Client Weekly progress'),
+      findsOneWidget,
+    );
+    expect(
+      find.textContaining('Pilot hub Share pilot PDF'),
+      findsOneWidget,
+    );
   });
 
   testWidgets('admin can open invite users', (tester) async {
