@@ -58,3 +58,7 @@ Hub with Safety / QA/QC / Labour / Materials tabs. Photo required on safety obse
 
 - **Voice notes:** demo capture on DPR (after first draft save) and issue detail. Stores stub audio path + transcript; offline marks transcript pending.
 - **Digests:** engineer **Reminders** / PM **Digests** — 5 PM DPR nudge prefs, simulate evening check, PM digest of open issues/RFIs/blockers with copy-to-clipboard share.
+
+## Pilot / UAT
+
+PM and Admin → **Pilot**: local UAT checklist + hypercare snapshot (DPR days this week, open issues, sync error rate). Docs: `docs/Pilot_Training.md`, `docs/UAT_Checklist.md`, `docs/Hypercare_Metrics.md`.

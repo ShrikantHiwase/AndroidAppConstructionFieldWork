@@ -12,6 +12,7 @@ import '../../issues/presentation/create_issue_page.dart';
 import '../../issues/presentation/field_records_providers.dart'
     show pendingSyncCountProvider;
 import '../../issues/presentation/issues_list_page.dart';
+import '../../pilot/presentation/pilot_hub_page.dart';
 import '../../site_ops/presentation/site_ops_hub_page.dart';
 import '../../sync/presentation/sync_status_page.dart';
 import '../domain/auth_models.dart';
@@ -84,6 +85,11 @@ class RoleHomePage extends ConsumerWidget {
               Icons.health_and_safety_outlined,
               'Site ops',
               onPressed: () => _open(context, const SiteOpsHubPage()),
+            ),
+            _PrimaryAction(
+              Icons.flag_outlined,
+              'Pilot',
+              onPressed: () => _open(context, const PilotHubPage()),
             ),
           ],
         ),
@@ -158,6 +164,11 @@ class RoleHomePage extends ConsumerWidget {
               Icons.notifications_active_outlined,
               'Digests',
               onPressed: () => _open(context, const DigestsPage()),
+            ),
+            _PrimaryAction(
+              Icons.flag_outlined,
+              'Pilot',
+              onPressed: () => _open(context, const PilotHubPage()),
             ),
           ],
         ),

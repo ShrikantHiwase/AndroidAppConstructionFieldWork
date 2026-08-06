@@ -31,7 +31,7 @@ todos:
     status: completed
   - id: pilot-launch
     content: UAT on live sites, Play Store/TestFlight, training materials, hypercare metrics
-    status: pending
+    status: in_progress
 isProject: false
 ---
 
@@ -235,6 +235,7 @@ docs/                 # plans and training
 4. ~~Phase 2b site ops~~ — done: safety/toolbox + observations/incidents (photo rules), QA WIR checklists (photo-on-fail), supervisor labour muster, material inward/consumption lite.
 5. ~~Firebase wiring prep~~ — packages + bootstrap gate + `FirebaseAuthRepository`; demo mode until `flutterfire configure`. See `docs/Firebase_Setup.md`.
 6. ~~Voice + digests~~ — demo voice notes on DPR/issues; 5 PM DPR nudge prefs; PM digest of open issues/RFIs/blockers with WhatsApp copy.
-7. **Next:** Operator FlutterFire + seed data, then pilot launch / UAT (training pack + hypercare metrics).
+7. **Pilot / UAT pack (in progress):** training guide, UAT checklist, hypercare metrics docs + in-app Pilot hub (checklist + live snapshot).
+8. **Next:** Operator FlutterFire + seed data, then live-site UAT / store tracks.
 
 No native-only Android path; iOS ships from the same Flutter codebase. Enterprise BIM/Forge remains a WebView module after MVP.
