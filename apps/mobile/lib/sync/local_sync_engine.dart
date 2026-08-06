@@ -6,23 +6,24 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../features/issues/domain/field_records_repository.dart';
 import 'conflict/conflict_policy.dart';
 import 'outbox/outbox_entry.dart';
+import 'remote/syncable_store.dart';
 import 'sync_models.dart';
 
-/// Coordinates outbox flush, sync logging, and local cleanup.
-///
-/// Stands in for Drift + Workmanager until Firebase is configured; field
-/// records still own the concrete outbox storage.
+/// Coordinates outbox flush, sync logging, and local cleanup across modules.
 class LocalSyncEngine implements SyncCoordinator {
   LocalSyncEngine({
     required SharedPreferences prefs,
     required FieldRecordsRepository fieldRecords,
+    List<SyncableStore> moduleStores = const [],
   })  : _prefs = prefs,
-        _fieldRecords = fieldRecords {
+        _fieldRecords = fieldRecords,
+        _moduleStores = List.unmodifiable(moduleStores) {
     _loadLogs();
   }
 
   final SharedPreferences _prefs;
   final FieldRecordsRepository _fieldRecords;
+  final List<SyncableStore> _moduleStores;
 
   static const _logsKey = 'sync.logs';
   static const _lastSyncKey = 'sync.last_success_at';
@@ -74,12 +75,51 @@ class LocalSyncEngine implements SyncCoordinator {
     yield* _logsController.stream;
   }
 
+  Future<int> totalPending() async {
+    var n = await _fieldRecords.watchPendingSyncCount().first;
+    for (final store in _moduleStores) {
+      n += await store.watchPendingSyncCount().first;
+    }
+    return n;
+  }
+
   @override
-  Stream<int> get pendingCount => _fieldRecords.watchPendingSyncCount();
+  Stream<int> get pendingCount => watchPendingTotal();
+
+  /// Live total pending across field + module stores.
+  Stream<int> watchPendingTotal() {
+    late StreamController<int> controller;
+    final subs = <StreamSubscription<int>>[];
+
+    Future<void> pump() async {
+      if (!controller.isClosed) {
+        controller.add(await totalPending());
+      }
+    }
+
+    controller = StreamController<int>.broadcast(
+      onListen: () {
+        unawaited(pump());
+        subs.addAll([
+          _fieldRecords.watchPendingSyncCount().listen((_) => pump()),
+          ..._moduleStores.map(
+            (s) => s.watchPendingSyncCount().listen((_) => pump()),
+          ),
+          _pendingController.stream.listen(controller.add),
+        ]);
+      },
+      onCancel: () async {
+        for (final sub in subs) {
+          await sub.cancel();
+        }
+        subs.clear();
+      },
+    );
+    return controller.stream;
+  }
 
   @override
   Future<void> enqueue(OutboxEntry entry) async {
-    // Field records enqueue directly today; this hook exists for Drift migration.
     await _appendLog(
       SyncLogEntry(
         id: _id('log'),
@@ -98,7 +138,7 @@ class LocalSyncEngine implements SyncCoordinator {
   }
 
   Future<int> flushNow({required bool isOnline, String? projectId}) async {
-    final before = await _fieldRecords.watchPendingSyncCount().first;
+    final before = await totalPending();
     if (!isOnline) {
       await _appendLog(
         SyncLogEntry(
@@ -115,16 +155,32 @@ class LocalSyncEngine implements SyncCoordinator {
 
     try {
       await _fieldRecords.flushOutbox(isOnline: true);
-      final after = await _fieldRecords.watchPendingSyncCount().first;
+      for (final store in _moduleStores) {
+        await store.flushOutbox(isOnline: true);
+      }
+      final after = await totalPending();
       final flushed = (before - after).clamp(0, before);
       lastSuccessAt = DateTime.now().toUtc();
       lastFailure = null;
       var pullNote = '';
       if (projectId != null) {
-        final pulled = await _fieldRecords.pullRemote(projectId: projectId);
-        if (pulled.issues > 0 || pulled.rfis > 0) {
-          pullNote =
-              '; pulled ${pulled.issues} issue(s), ${pulled.rfis} RFI(s)';
+        final fieldPull =
+            await _fieldRecords.pullRemote(projectId: projectId);
+        var modulePulled = 0;
+        for (final store in _moduleStores) {
+          modulePulled += await store.pullRemote(projectId: projectId);
+        }
+        final parts = <String>[];
+        if (fieldPull.issues > 0 || fieldPull.rfis > 0) {
+          parts.add(
+            '${fieldPull.issues} issue(s), ${fieldPull.rfis} RFI(s)',
+          );
+        }
+        if (modulePulled > 0) {
+          parts.add('$modulePulled module row(s)');
+        }
+        if (parts.isNotEmpty) {
+          pullNote = '; pulled ${parts.join('; ')}';
         }
       }
       await _appendLog(

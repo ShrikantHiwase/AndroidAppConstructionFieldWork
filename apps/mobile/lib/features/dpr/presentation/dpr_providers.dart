@@ -1,16 +1,34 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../sync/remote/firestore_module_pull.dart';
+import '../../../sync/remote/module_remote_pull.dart';
 import '../../auth/presentation/auth_controller.dart';
+import '../../issues/presentation/field_records_providers.dart';
 import '../data/local_dpr_repository.dart';
 import '../domain/dpr_models.dart';
 import '../domain/dpr_repository.dart';
 
+final moduleRemotePullProvider = Provider<ModuleRemotePull>((ref) {
+  if (ref.watch(firebaseEnabledProvider)) {
+    return FirestoreModulePull();
+  }
+  return const NoOpModuleRemotePull();
+});
+
 final dprRepositoryProvider = Provider<DprRepository>((ref) {
-  return LocalDprRepository(ref.watch(sharedPreferencesProvider));
+  return LocalDprRepository(
+    ref.watch(sharedPreferencesProvider),
+    remoteSink: ref.watch(outboxRemoteSinkProvider),
+    remotePull: ref.watch(moduleRemotePullProvider),
+  );
 });
 
 final drawingPinsRepositoryProvider = Provider<DrawingPinsRepository>((ref) {
-  return LocalDrawingPinsRepository(ref.watch(sharedPreferencesProvider));
+  return LocalDrawingPinsRepository(
+    ref.watch(sharedPreferencesProvider),
+    remoteSink: ref.watch(outboxRemoteSinkProvider),
+    remotePull: ref.watch(moduleRemotePullProvider),
+  );
 });
 
 final dprsProvider = StreamProvider<List<DailyProgressReport>>((ref) {

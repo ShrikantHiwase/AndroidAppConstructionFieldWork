@@ -47,10 +47,6 @@ final rfisProvider = StreamProvider<List<Rfi>>((ref) {
       .watchRfis(session.activeProjectId);
 });
 
-final pendingSyncCountProvider = StreamProvider<int>((ref) {
-  return ref.watch(fieldRecordsRepositoryProvider).watchPendingSyncCount();
-});
-
 final commentsProvider = StreamProvider.family<List<FieldComment>, ({String type, String id})>((ref, key) {
   return ref.watch(fieldRecordsRepositoryProvider).watchComments(
         parentType: key.type,

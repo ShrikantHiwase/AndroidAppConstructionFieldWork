@@ -1,12 +1,18 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../auth/presentation/auth_controller.dart';
+import '../../dpr/presentation/dpr_providers.dart';
+import '../../issues/presentation/field_records_providers.dart';
 import '../data/local_documents_repository.dart';
 import '../domain/document_models.dart';
 import '../domain/documents_repository.dart';
 
 final documentsRepositoryProvider = Provider<DocumentsRepository>((ref) {
-  return LocalDocumentsRepository(ref.watch(sharedPreferencesProvider));
+  return LocalDocumentsRepository(
+    ref.watch(sharedPreferencesProvider),
+    remoteSink: ref.watch(outboxRemoteSinkProvider),
+    remotePull: ref.watch(moduleRemotePullProvider),
+  );
 });
 
 final documentsSeedProvider = FutureProvider<void>((ref) async {

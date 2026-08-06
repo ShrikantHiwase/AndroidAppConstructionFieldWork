@@ -3,17 +3,34 @@ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../core/constants/app_constants.dart';
+import '../../../sync/outbox/outbox_entry.dart';
+import '../../../sync/remote/module_remote_pull.dart';
+import '../../../sync/remote/outbox_remote_sink.dart';
+import '../../../sync/remote/prefs_outbox_queue.dart';
+import '../../../sync/remote/syncable_store.dart';
 import '../../auth/domain/auth_models.dart';
 import '../domain/dpr_models.dart';
 import '../domain/dpr_repository.dart';
 
-class LocalDprRepository implements DprRepository {
-  LocalDprRepository(this._prefs) {
+class LocalDprRepository implements DprRepository, SyncableStore {
+  LocalDprRepository(
+    this._prefs, {
+    OutboxRemoteSink? remoteSink,
+    ModuleRemotePull? remotePull,
+  })  : _remoteSink = remoteSink ?? const NoOpOutboxRemoteSink(),
+        _remotePull = remotePull ?? const NoOpModuleRemotePull(),
+        _outbox = PrefsOutboxQueue(_prefs, _outboxKey) {
     _load();
   }
 
   final SharedPreferences _prefs;
+  final OutboxRemoteSink _remoteSink;
+  final ModuleRemotePull _remotePull;
+  final PrefsOutboxQueue _outbox;
+
   static const _key = 'dpr.reports';
+  static const _outboxKey = 'dpr.outbox';
 
   final _items = <String, DailyProgressReport>{};
   final _controller = StreamController<List<DailyProgressReport>>.broadcast();
@@ -26,6 +43,7 @@ class LocalDprRepository implements DprRepository {
       );
       _items[dpr.id] = dpr;
     }
+    _outbox.load();
   }
 
   Future<void> _persist() async {
@@ -33,6 +51,7 @@ class LocalDprRepository implements DprRepository {
       _key,
       _items.values.map((e) => jsonEncode(e.toJson())).toList(),
     );
+    await _outbox.persist();
     _controller.add(_items.values.toList());
   }
 
@@ -43,6 +62,15 @@ class LocalDprRepository implements DprRepository {
     final list = _items.values.where((d) => d.projectId == projectId).toList()
       ..sort((a, b) => b.reportDate.compareTo(a.reportDate));
     return list;
+  }
+
+  void _enqueueUpsert(DailyProgressReport dpr) {
+    _outbox.enqueue(
+      collection: FirestoreCollections.dprs,
+      documentId: dpr.id,
+      operation: OutboxOperation.create,
+      payload: dpr.toJson(),
+    );
   }
 
   @override
@@ -86,6 +114,7 @@ class LocalDprRepository implements DprRepository {
         updatedAt: now,
       );
       _items[existing.id] = updated;
+      _enqueueUpsert(updated);
       await _persist();
       return updated;
     }
@@ -105,6 +134,7 @@ class LocalDprRepository implements DprRepository {
       updatedAt: now,
     );
     _items[dpr.id] = dpr;
+    _enqueueUpsert(dpr);
     await _persist();
     return dpr;
   }
@@ -131,20 +161,91 @@ class LocalDprRepository implements DprRepository {
       updatedAt: DateTime.now().toUtc(),
     );
     _items[dprId] = updated;
+    _enqueueUpsert(updated);
     await _persist();
     return updated;
   }
+
+  @override
+  Stream<int> watchPendingSyncCount() => _outbox.watchPending();
+
+  @override
+  Future<void> flushOutbox({required bool isOnline}) async {
+    await _outbox.flush(
+      isOnline: isOnline,
+      sink: _remoteSink,
+      onApplied: (entry) async {
+        final current = _items[entry.documentId];
+        if (current != null) {
+          _items[entry.documentId] = current.copyWith(synced: true);
+        }
+      },
+    );
+    await _prefs.setStringList(
+      _key,
+      _items.values.map((e) => jsonEncode(e.toJson())).toList(),
+    );
+    _controller.add(_items.values.toList());
+  }
+
+  @override
+  Future<int> pullRemote({required String projectId}) async {
+    final remote = await _remotePull.pullDprs(projectId);
+    var changed = 0;
+    for (final r in remote) {
+      final local = _items[r.id];
+      if (local == null || r.updatedAt.isAfter(local.updatedAt)) {
+        _items[r.id] = DailyProgressReport(
+          id: r.id,
+          orgId: r.orgId,
+          projectId: r.projectId,
+          reportDate: r.reportDate,
+          weather: r.weather,
+          manpowerSummary: r.manpowerSummary,
+          activities: r.activities,
+          blockers: r.blockers,
+          createdBy: r.createdBy,
+          createdByName: r.createdByName,
+          createdAt: r.createdAt,
+          updatedAt: r.updatedAt,
+          submitted: r.submitted,
+          synced: true,
+        );
+        changed += 1;
+      }
+    }
+    if (changed > 0) {
+      await _prefs.setStringList(
+        _key,
+        _items.values.map((e) => jsonEncode(e.toJson())).toList(),
+      );
+      _controller.add(_items.values.toList());
+    }
+    return changed;
+  }
 }
 
-class LocalDrawingPinsRepository implements DrawingPinsRepository {
-  LocalDrawingPinsRepository(this._prefs) {
+class LocalDrawingPinsRepository
+    implements DrawingPinsRepository, SyncableStore {
+  LocalDrawingPinsRepository(
+    this._prefs, {
+    OutboxRemoteSink? remoteSink,
+    ModuleRemotePull? remotePull,
+  })  : _remoteSink = remoteSink ?? const NoOpOutboxRemoteSink(),
+        _remotePull = remotePull ?? const NoOpModuleRemotePull(),
+        _outbox = PrefsOutboxQueue(_prefs, _outboxKey) {
     _load();
   }
 
   final SharedPreferences _prefs;
+  final OutboxRemoteSink _remoteSink;
+  final ModuleRemotePull _remotePull;
+  final PrefsOutboxQueue _outbox;
+
   static const _drawingsKey = 'drawings.sheets';
   static const _pinsKey = 'drawings.pins';
   static const _seededKey = 'drawings.seeded';
+  static const _outboxKey = 'drawings.outbox';
 
   final _drawings = <String, DrawingSheet>{};
   final _pins = <String, DrawingPin>{};
@@ -165,6 +266,7 @@ class LocalDrawingPinsRepository implements DrawingPinsRepository {
       );
       _pins[pin.id] = pin;
     }
+    _outbox.load();
   }
 
   Future<void> _persist() async {
@@ -176,6 +278,7 @@ class LocalDrawingPinsRepository implements DrawingPinsRepository {
       _pinsKey,
       _pins.values.map((e) => jsonEncode(e.toJson())).toList(),
     );
+    await _outbox.persist();
     _drawingsController.add(_drawings.values.toList());
     _pinsController.add(_pins.values.toList());
   }
@@ -250,7 +353,70 @@ class LocalDrawingPinsRepository implements DrawingPinsRepository {
       note: input.note,
     );
     _pins[pin.id] = pin;
+    _outbox.enqueue(
+      collection: FirestoreCollections.drawingPins,
+      documentId: pin.id,
+      operation: OutboxOperation.create,
+      payload: pin.toJson(),
+    );
     await _persist();
     return pin;
+  }
+
+  @override
+  Stream<int> watchPendingSyncCount() => _outbox.watchPending();
+
+  @override
+  Future<void> flushOutbox({required bool isOnline}) async {
+    await _outbox.flush(
+      isOnline: isOnline,
+      sink: _remoteSink,
+      onApplied: (entry) async {
+        final current = _pins[entry.documentId];
+        if (current != null) {
+          _pins[entry.documentId] = current.copyWith(synced: true);
+        }
+      },
+    );
+    await _prefs.setStringList(
+      _pinsKey,
+      _pins.values.map((e) => jsonEncode(e.toJson())).toList(),
+    );
+    _pinsController.add(_pins.values.toList());
+  }
+
+  @override
+  Future<int> pullRemote({required String projectId}) async {
+    final remote = await _remotePull.pullPins(projectId);
+    var changed = 0;
+    for (final r in remote) {
+      if (!_pins.containsKey(r.id)) {
+        _pins[r.id] = DrawingPin(
+          id: r.id,
+          orgId: r.orgId,
+          projectId: r.projectId,
+          drawingId: r.drawingId,
+          page: r.page,
+          x: r.x,
+          y: r.y,
+          issueId: r.issueId,
+          issueTitle: r.issueTitle,
+          createdBy: r.createdBy,
+          createdByName: r.createdByName,
+          createdAt: r.createdAt,
+          note: r.note,
+          synced: true,
+        );
+        changed += 1;
+      }
+    }
+    if (changed > 0) {
+      await _prefs.setStringList(
+        _pinsKey,
+        _pins.values.map((e) => jsonEncode(e.toJson())).toList(),
+      );
+      _pinsController.add(_pins.values.toList());
+    }
+    return changed;
   }
 }

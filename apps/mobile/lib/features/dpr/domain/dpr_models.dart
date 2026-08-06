@@ -242,6 +242,25 @@ class DrawingPin {
   final String? note;
   final bool synced;
 
+  DrawingPin copyWith({bool? synced}) {
+    return DrawingPin(
+      id: id,
+      orgId: orgId,
+      projectId: projectId,
+      drawingId: drawingId,
+      page: page,
+      x: x,
+      y: y,
+      issueId: issueId,
+      issueTitle: issueTitle,
+      createdBy: createdBy,
+      createdByName: createdByName,
+      createdAt: createdAt,
+      note: note,
+      synced: synced ?? this.synced,
+    );
+  }
+
   Map<String, Object?> toJson() => {
         'id': id,
         'orgId': orgId,
