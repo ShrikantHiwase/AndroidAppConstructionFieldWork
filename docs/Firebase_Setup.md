@@ -75,8 +75,12 @@ Seed writes `organizations`, `projects`, Auth users, and `memberships/{uid}_{pro
 | Callable / trigger | Purpose |
 |--------------------|---------|
 | `health` | Connectivity check |
-| `inviteMember` | Admin creates Auth user + memberships + `invites` audit doc |
-| `onDprWrite` | Logs DPR submit (hook for FCM digest later) |
+| `inviteMember` | Admin creates Auth user + memberships + `invites` audit doc (app calls via `cloud_functions` when Firebase is on) |
+| `onDprWrite` | FCM notify creator on DPR submit |
+| `onIssueWrite` | FCM on issue assign / status change |
+
+When `firebaseEnabledProvider` is true, **Invite users** calls `inviteMember`
+(`FirebaseAdminInvitesRepository`). Demo mode keeps local FakeAuth invites.
 
 ## Emulators
 

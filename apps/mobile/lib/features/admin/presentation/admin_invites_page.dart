@@ -52,10 +52,13 @@ class _AdminInvitesPageState extends ConsumerState<AdminInvitesPage> {
           );
       if (mounted) {
         _email.clear();
+        final firebase = ref.read(firebaseEnabledProvider);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'Invite created for ${invite.email}. Password: demo1234',
+              firebase
+                  ? 'Invite created for ${invite.email}. Temp password: demo1234'
+                  : 'Invite created for ${invite.email}. Password: demo1234',
             ),
           ),
         );
@@ -95,8 +98,12 @@ class _AdminInvitesPageState extends ConsumerState<AdminInvitesPage> {
           ),
           const SizedBox(height: 4),
           Text(
-            'Invitees sign in with the email + password demo1234 (local demo). '
-            'Firebase Functions will send email when production Auth is live.',
+            ref.watch(firebaseEnabledProvider)
+                ? 'Creates a Firebase Auth user + memberships via the '
+                    'inviteMember callable (temporary password demo1234 until '
+                    'email delivery is wired).'
+                : 'Invitees sign in with the email + password demo1234 (local demo). '
+                    'When Firebase is on, the same form calls Cloud Functions.',
             style: Theme.of(context).textTheme.bodySmall,
           ),
           const SizedBox(height: 16),
