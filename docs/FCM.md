@@ -21,8 +21,12 @@ Demo-safe client + Cloud Functions delivery. Real device pushes need
 ## Local DPR nudge (not FCM)
 
 Digests prefs schedule a **device-local** daily tray reminder via
-`flutter_local_notifications` (`DprNudgeScheduler`). Cloud cron / FCM fan-out
-for 5 PM remains deferred (needs Blaze + live Messaging).
+`flutter_local_notifications` (`DprNudgeScheduler`). Reminder hour is
+configurable (12:00–21:00). Cloud cron / FCM fan-out for 5 PM remains deferred.
+
+**Deep links:** tapping the tray notification, an FCM open/launch message, or a
+Sync status inbox row routes to Today's DPR / issue / RFI via
+`NotificationDeepLink` (`payload` / `data.type`).
 
 `sendToUser` soft-skips when: `FCM_SEND_ENABLED=false`, no uid, no token doc, or demo token prefix. Send errors are logged, never thrown.
 

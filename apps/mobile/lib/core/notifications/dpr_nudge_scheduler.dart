@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:timezone/data/latest_all.dart' as tzdata;
 import 'package:timezone/timezone.dart' as tz;
 
+import 'notification_deep_link.dart';
+
 /// Schedules / shows the daily DPR reminder (demo-safe local notifications).
 abstract class DprNudgeScheduler {
   Future<bool> initialize();
@@ -77,6 +79,10 @@ class LocalNotificationsDprNudgeScheduler implements DprNudgeScheduler {
   static const _channelId = 'field_alerts';
   var _ready = false;
 
+  void _onTap(NotificationResponse response) {
+    openNotificationDeepLink(payload: response.payload);
+  }
+
   @override
   Future<bool> initialize() async {
     try {
@@ -92,7 +98,10 @@ class LocalNotificationsDprNudgeScheduler implements DprNudgeScheduler {
         iOS: darwin,
         macOS: darwin,
       );
-      final ok = await _plugin.initialize(settings: settings);
+      final ok = await _plugin.initialize(
+        settings: settings,
+        onDidReceiveNotificationResponse: _onTap,
+      );
       _ready = ok ?? true;
 
       await _plugin
@@ -111,6 +120,13 @@ class LocalNotificationsDprNudgeScheduler implements DprNudgeScheduler {
           .resolvePlatformSpecificImplementation<
               AndroidFlutterLocalNotificationsPlugin>()
           ?.requestNotificationsPermission();
+
+      final launch = await _plugin.getNotificationAppLaunchDetails();
+      if (launch?.didNotificationLaunchApp ?? false) {
+        PendingNotificationDeepLink.store(
+          payload: launch!.notificationResponse?.payload,
+        );
+      }
 
       return _ready;
     } catch (e, st) {

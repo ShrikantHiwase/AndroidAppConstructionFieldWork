@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/constants/app_constants.dart';
+import '../../../core/notifications/notification_deep_link.dart';
 import '../../../core/notifications/notification_providers.dart';
 import '../../../core/providers/connectivity_provider.dart';
 import '../../../core/widgets/offline_badge.dart';
@@ -18,11 +19,24 @@ import '../../sync/presentation/sync_status_page.dart';
 import '../domain/auth_models.dart';
 import 'auth_controller.dart';
 
-class RoleHomePage extends ConsumerWidget {
+class RoleHomePage extends ConsumerStatefulWidget {
   const RoleHomePage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<RoleHomePage> createState() => _RoleHomePageState();
+}
+
+class _RoleHomePageState extends ConsumerState<RoleHomePage> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      consumePendingNotificationDeepLink();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final session = ref.watch(authSessionProvider);
     // Keep FCM / demo push token registration warm while home is open.
     ref.watch(pushRegistrationProvider);
