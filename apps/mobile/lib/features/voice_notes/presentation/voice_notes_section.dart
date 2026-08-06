@@ -34,7 +34,7 @@ class VoiceNotesSection extends ConsumerWidget {
         Text('Voice notes', style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 4),
         Text(
-          'Demo capture stores audio path + transcript. Real mic arrives with device plugins.',
+          'Demo capture stores audio path + transcript; flush syncs to Firestore/Storage.',
           style: Theme.of(context).textTheme.bodySmall,
         ),
         const SizedBox(height: 8),
@@ -62,7 +62,8 @@ class VoiceNotesSection extends ConsumerWidget {
                       subtitle: Text(
                         '${n.createdByName}'
                         '${n.transcriptPending ? ' · transcript pending' : ''}'
-                        '${n.audioLocalPath == null ? '' : ' · ${n.audioLocalPath}'}',
+                        '${n.synced ? ' · synced' : ' · pending sync'}'
+                        '${n.remoteAudioUrl == null ? '' : ' · audio ready'}',
                       ),
                     ),
                   )
@@ -111,6 +112,12 @@ class _AddVoiceButton extends ConsumerWidget {
                   parentId: parentId,
                   offline: offline,
                 );
+            if (!offline) {
+              await ref.read(syncEngineProvider).flushNow(
+                    isOnline: true,
+                    projectId: active.activeProjectId,
+                  );
+            }
           } catch (e) {
             if (context.mounted) {
               ScaffoldMessenger.of(context).showSnackBar(

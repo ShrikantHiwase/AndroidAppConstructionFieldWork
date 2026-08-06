@@ -26,6 +26,7 @@ abstract final class ConflictPolicy {
       case 'folders':
       case 'documents':
       case 'drawing_pins':
+      case 'voice_notes':
         return ConflictStrategy.lastWriteWins;
       default:
         return ConflictStrategy.lastWriteWins;

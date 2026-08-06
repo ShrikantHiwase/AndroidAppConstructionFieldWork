@@ -4,6 +4,7 @@ import '../../core/constants/app_constants.dart';
 import '../../features/documents/domain/document_models.dart';
 import '../../features/dpr/domain/dpr_models.dart';
 import '../../features/site_ops/domain/site_ops_models.dart';
+import '../../features/voice_notes/domain/voice_note_models.dart';
 import 'module_remote_pull.dart';
 
 class FirestoreModulePull implements ModuleRemotePull {
@@ -85,6 +86,15 @@ class FirestoreModulePull implements ModuleRemotePull {
       FirestoreCollections.drawingPins,
       projectId,
       DrawingPin.fromJson,
+    );
+  }
+
+  @override
+  Future<List<VoiceNote>> pullVoiceNotes(String projectId) async {
+    return _pull(
+      FirestoreCollections.voiceNotes,
+      projectId,
+      VoiceNote.fromJson,
     );
   }
 

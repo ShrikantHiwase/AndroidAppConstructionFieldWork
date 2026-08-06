@@ -85,6 +85,7 @@ flutter run --dart-define=USE_NATIVE_SENSORS=true
 - When Firebase is enabled, the local outbox **pushes** issues/RFIs/comments **and**
   DPR / site-ops / document metadata / drawing pins to Firestore on flush, and
   **pulls** those collections into the on-device cache.
-- Issue **photo attachments** and **document uploads** go through `StorageUploader`
-  on flush; Fake `local://` paths resolve to `demo://` URLs without network I/O.
+- Issue **photo attachments**, **document uploads**, and **voice note audio** go
+  through `StorageUploader` on flush; Fake `local://` paths resolve to `demo://`
+  URLs without network I/O. Voice notes also push Firestore metadata (`voice_notes`).
   Firestore still stores document metadata without inline demo bodies.

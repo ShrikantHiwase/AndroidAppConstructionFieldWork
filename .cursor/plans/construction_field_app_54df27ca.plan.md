@@ -50,6 +50,12 @@ todos:
   - id: storage-upload
     content: Storage upload for issue evidence via outbox (demo-safe NoOp)
     status: completed
+  - id: document-storage
+    content: Storage upload for document files via outbox (demo-safe NoOp)
+    status: completed
+  - id: voice-sync
+    content: Voice notes outbox push/pull + Storage audio path (demo-safe)
+    status: completed
 isProject: false
 ---
 
@@ -261,6 +267,7 @@ docs/                 # plans and training
 12. ~~Module Firestore sync~~ — DPR, site ops, documents (metadata), and drawing pins enqueue to the same outbox sink; `LocalSyncEngine` flushes/pulls all `SyncableStore`s. Storage blob upload still deferred.
 13. ~~Storage media upload~~ — issue photo attachments enqueue `OutboxOperation.upload`; `StorageUploader` / `FirebaseStorageUploader` behind `firebaseEnabledProvider` (Fake `local://` paths get `demo://` URLs). Document file bytes still deferred.
 14. ~~Document Storage upload~~ — document uploads enqueue Storage then Firestore create (demo `local://` paths → `demo://` URLs); metadata still omits inline bodies.
-15. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift/Workmanager / FCM / voice sync remain follow-ups.
+15. ~~Voice notes sync~~ — voice notes enqueue Storage + Firestore create; offline transcript pending resolves on flush; `audio/*` allowed in Storage rules.
+16. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift/Workmanager / FCM remain follow-ups.
 
 No native-only Android path; iOS ships from the same Flutter codebase. Enterprise BIM/Forge remains a WebView module after MVP.

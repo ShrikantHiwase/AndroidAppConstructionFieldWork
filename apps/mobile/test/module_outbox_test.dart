@@ -9,6 +9,7 @@ import 'package:construction_field_app/features/dpr/domain/dpr_models.dart';
 import 'package:construction_field_app/features/issues/data/local_field_records_repository.dart';
 import 'package:construction_field_app/features/site_ops/data/local_site_ops_repository.dart';
 import 'package:construction_field_app/features/site_ops/domain/site_ops_models.dart';
+import 'package:construction_field_app/features/voice_notes/domain/voice_note_models.dart';
 import 'package:construction_field_app/sync/local_sync_engine.dart';
 import 'package:construction_field_app/sync/outbox/outbox_entry.dart';
 import 'package:construction_field_app/sync/remote/module_remote_pull.dart';
@@ -54,6 +55,9 @@ class _StubModulePull implements ModuleRemotePull {
 
   @override
   Future<List<DrawingPin>> pullPins(String projectId) async => const [];
+
+  @override
+  Future<List<VoiceNote>> pullVoiceNotes(String projectId) async => const [];
 }
 
 void main() {
