@@ -41,3 +41,8 @@ Browse Project → Discipline → Document Type → Files. Seeded demo PDF/TXT/C
 ## Sync (Phase 1)
 
 `LocalSyncEngine` logs flushes, applies conflict-policy labels, and supports log cleanup. Open **Sync** from the home app bar. Going online auto-flushes the outbox. Drift/Workmanager come after Firebase.
+
+## Phase 2a — DPR & drawing pins
+
+- **Today's DPR:** weather, manpower, activities (+ demo photos), blockers; submit; copy WhatsApp/PDF summary.
+- **Pin on Drawing:** seeded GA Plan sheet; select an issue and tap the page to drop a punch pin.

@@ -19,7 +19,7 @@ todos:
     status: completed
   - id: diff-2a-dpr-drawings
     content: "Phase 2a: DPR templates + PDF/WhatsApp share, drawing-linked punch pins"
-    status: pending
+    status: completed
   - id: diff-2b-safety-qa-labour
     content: "Phase 2b (after pilot metrics): safety/toolbox, QA checklists, labour muster, material lite, voice, digests"
     status: pending
@@ -225,10 +225,11 @@ docs/                 # plans and training
 
 1. ~~Plan + README~~ — done.
 2. ~~Phase 0 scaffold~~ — done (merged).
-3. ~~Phase 1 auth / RBAC~~ — done (demo `FakeAuthRepository`).
-4. ~~Phase 1 issues / RFIs~~ — done (local offline-first store + outbox).
+3. ~~Phase 1 auth / RBAC~~ — done.
+4. ~~Phase 1 issues / RFIs~~ — done.
 5. ~~Phase 1 documents~~ — done.
-6. ~~Phase 1 offline sync hardening~~ — done: `LocalSyncEngine` (flush + logs), conflict policy helpers, cleanup retention, Sync status screen. Drift/Workmanager/connectivity_plus auto-detect remain after Firebase configure.
-7. **Next:** Phase 2a (DPR templates + PDF share, drawing-linked punch pins) after MVP freeze — or wire Firebase when project credentials are available.
+6. ~~Phase 1 offline sync hardening~~ — done.
+7. ~~Phase 2a DPR + drawing pins~~ — done: today's DPR template (weather/manpower/activities/blockers), submit + WhatsApp/PDF summary copy, versioned drawing sheets with tap-to-pin issues.
+8. **Next:** Phase 2b (gated on pilot metrics) or Firebase wiring for production sync/FCM/Storage.
 
 No native-only Android path; iOS ships from the same Flutter codebase. Enterprise BIM/Forge remains a WebView module after MVP.
