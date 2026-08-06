@@ -26,8 +26,9 @@ On permission failure or plugin errors, Device* falls back to Fake*.
 `EvidenceImagePolicy`: max width **1600px**, JPEG quality **70** (floor 40),
 soft target **~400 KB**. `DeviceEvidenceCapture` applies picker limits then
 `FileImageCompressor` (resize + quality ladder). Demo Fake paths get
-`byteSizeBytes` without I/O. New Issue, site-ops safety/QA fail / labour muster,
-drawing pins, and DPR activities show queued size when a photo is attached.
+`byteSizeBytes` without I/O. New Issue, site-ops safety/QA fail / labour muster /
+material GRN, drawing pins, and DPR activities show queued size when a photo is
+attached.
 
 ## Voice audio
 
@@ -45,6 +46,7 @@ Already in the platform folders (`RECORD_AUDIO`, `NSMicrophoneUsageDescription`)
 - New Issue → Add GPS / Add photo / From gallery
 - Site ops → Safety observation/incident photo; QA WIR fail photo (compressed + Storage outbox upload)
 - Labour muster → optional evidence photo (compressed + Storage outbox upload)
+- Materials → optional GRN / consumption evidence photo
 - Drawing pins → optional evidence photo
 - Today's DPR → optional activity evidence photo
 - Voice notes on DPR / issues → Fake stub or live mic (`VoiceCapture`)

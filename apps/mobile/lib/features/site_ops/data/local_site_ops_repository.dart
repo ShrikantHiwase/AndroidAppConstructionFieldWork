@@ -53,6 +53,8 @@ abstract class SiteOpsRepository {
     required double quantity,
     required String unit,
     String? activityRef,
+    String? photoLocalPath,
+    int? photoByteSizeBytes,
   });
 }
 
@@ -412,10 +414,14 @@ class LocalSiteOpsRepository
     required double quantity,
     required String unit,
     String? activityRef,
+    String? photoLocalPath,
+    int? photoByteSizeBytes,
   }) async {
     _ensure(session);
     if (material.trim().isEmpty) throw SiteOpsException('Material required');
     if (quantity <= 0) throw SiteOpsException('Quantity must be > 0');
+    final path = photoLocalPath;
+    final pendingUpload = path != null && path.isNotEmpty;
     final log = MaterialLog(
       id: _id('mat'),
       orgId: session.activeProject.orgId,
@@ -428,8 +434,32 @@ class LocalSiteOpsRepository
       createdByName: session.user.displayName,
       createdAt: DateTime.now().toUtc(),
       activityRef: activityRef?.trim(),
+      photoOptional: true,
+      hasPhoto: pendingUpload,
+      photoLocalPath: pendingUpload ? path : null,
+      photoByteSizeBytes: photoByteSizeBytes,
+      pendingPhotoUpload: pendingUpload,
     );
     _materials[log.id] = log;
+    if (pendingUpload) {
+      final localPath = path;
+      final fileName = localPath.split('/').last;
+      _outbox.enqueue(
+        collection: FirestoreCollections.materialLogs,
+        documentId: log.id,
+        operation: OutboxOperation.upload,
+        payload: StorageUploadRequest(
+          orgId: log.orgId,
+          projectId: log.projectId,
+          parentType: 'material_logs',
+          parentId: log.id,
+          attachmentId: 'photo',
+          fileName: fileName.isEmpty ? 'material.jpg' : fileName,
+          contentType: 'image/jpeg',
+          localPath: localPath,
+        ).toPayload(),
+      );
+    }
     _outbox.enqueue(
       collection: FirestoreCollections.materialLogs,
       documentId: log.id,
@@ -566,6 +596,23 @@ class LocalSiteOpsRepository
         );
       }
     }
+    if (entry.collection == FirestoreCollections.materialLogs) {
+      final cur = _materials[entry.documentId];
+      if (cur != null &&
+          (entry.operation == OutboxOperation.create ||
+              entry.operation == OutboxOperation.update)) {
+        return OutboxEntry(
+          id: entry.id,
+          collection: entry.collection,
+          documentId: entry.documentId,
+          operation: entry.operation,
+          payload: cur.toJson(),
+          createdAt: entry.createdAt,
+          attempts: entry.attempts,
+          lastError: entry.lastError,
+        );
+      }
+    }
     return entry;
   }
 
@@ -613,6 +660,17 @@ class LocalSiteOpsRepository
       final cur = _muster[entry.documentId];
       if (cur == null) return;
       _muster[entry.documentId] = cur.copyWith(
+        photoRemoteUrl: url,
+        pendingPhotoUpload: false,
+        hasPhoto: true,
+      );
+      return;
+    }
+
+    if (entry.collection == FirestoreCollections.materialLogs) {
+      final cur = _materials[entry.documentId];
+      if (cur == null) return;
+      _materials[entry.documentId] = cur.copyWith(
         photoRemoteUrl: url,
         pendingPhotoUpload: false,
         hasPhoto: true,
@@ -702,6 +760,12 @@ class LocalSiteOpsRepository
           createdByName: r.createdByName,
           createdAt: r.createdAt,
           activityRef: r.activityRef,
+          photoOptional: r.photoOptional,
+          hasPhoto: r.hasPhoto,
+          photoLocalPath: r.photoLocalPath,
+          photoByteSizeBytes: r.photoByteSizeBytes,
+          photoRemoteUrl: r.photoRemoteUrl,
+          pendingPhotoUpload: r.pendingPhotoUpload,
           synced: true,
         );
         changed += 1;
@@ -755,6 +819,23 @@ class LocalSiteOpsRepository
       }
     }
     for (final r in _muster.values) {
+      final path = r.photoLocalPath;
+      if (path == null || path.isEmpty) continue;
+      count += 1;
+      final size = LocalCacheEstimates.bytesFor(
+        localPath: path,
+        byteSizeBytes: r.photoByteSizeBytes,
+      );
+      bytes += size;
+      if (LocalCacheEstimates.isReclaimableLocalStub(
+        localPath: path,
+        remoteUrl: r.photoRemoteUrl,
+      )) {
+        reclaimable += size;
+        reclaimableCount += 1;
+      }
+    }
+    for (final r in _materials.values) {
       final path = r.photoLocalPath;
       if (path == null || path.isEmpty) continue;
       count += 1;
@@ -844,6 +925,21 @@ class LocalSiteOpsRepository
         byteSizeBytes: r.photoByteSizeBytes,
       );
       _muster[r.id] = r.copyWith(clearPhotoLocalPath: true);
+      changed = true;
+    }
+
+    for (final r in _materials.values.toList()) {
+      if (!LocalCacheEstimates.isReclaimableLocalStub(
+        localPath: r.photoLocalPath,
+        remoteUrl: r.photoRemoteUrl,
+      )) {
+        continue;
+      }
+      freed += LocalCacheEstimates.bytesFor(
+        localPath: r.photoLocalPath,
+        byteSizeBytes: r.photoByteSizeBytes,
+      );
+      _materials[r.id] = r.copyWith(clearPhotoLocalPath: true);
       changed = true;
     }
 
