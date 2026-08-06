@@ -320,10 +320,11 @@ docs/                 # plans and training
 35. ~~DPR activity evidence photos~~ — optional activity photo via EvidenceCapture; nested outbox Storage upload then create; soft cache includes DPR stubs.
 36. ~~Device voice capture~~ — `VoiceCapture` Fake + `record` Device behind sensors gate; voice notes soft cache / Cleanup; STT still heuristic.
 37. ~~Material log evidence photos~~ — optional GRN/consumption photo via EvidenceCapture; outbox Storage upload then create; soft cache includes material stubs.
-38. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift and scheduled 5 PM nudge Function remain follow-ups.
+38. ~~Document file picker~~ — `DocumentFilePicker` Fake + `file_picker` Device behind sensors gate; soft cache includes document stubs.
+39. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift and scheduled 5 PM nudge Function remain follow-ups.
 7. ~~Pilot / UAT pack~~ — training guide, UAT checklist, hypercare metrics docs + in-app Pilot hub (checklist + live snapshot). Live-site execution and store tracks still need your Firebase project / devices.
 8. ~~Admin invites~~ — in-app create invite + demo accept via FakeAuth (scoped memberships); Cloud Functions email later.
-9. ~~Device sensors~~ — `geolocator` / `image_picker` / `local_auth` / `record` with Fake defaults; enable native via `--dart-define=USE_NATIVE_SENSORS=true`. See `docs/Device_Sensors.md`.
+9. ~~Device sensors~~ — `geolocator` / `image_picker` / `local_auth` / `record` / `file_picker` with Fake defaults; enable native via `--dart-define=USE_NATIVE_SENSORS=true`. See `docs/Device_Sensors.md`.
 10. ~~Firebase go-live prep~~ — emulator seed (`firebase/seed`), `inviteMember` + `onDprWrite` Functions, membership indexes, rules for `invites`/`voice_notes`, [Go_Live_Checklist.md](Go_Live_Checklist.md).
 11. ~~Firestore outbox sync~~ — when Firebase is enabled, flush pushes issues/RFIs/comments to Firestore and pulls remote issues/RFIs (LWW by `updatedAt`); demo keeps no-op sink.
 12. ~~Module Firestore sync~~ — DPR, site ops, documents (metadata), and drawing pins enqueue to the same outbox sink; `LocalSyncEngine` flushes/pulls all `SyncableStore`s. Storage blob upload still deferred.
@@ -352,6 +353,7 @@ docs/                 # plans and training
 35. ~~DPR activity evidence photos~~ — optional activity photo via EvidenceCapture; nested outbox Storage upload then create; soft cache includes DPR stubs.
 36. ~~Device voice capture~~ — `VoiceCapture` Fake + `record` Device behind sensors gate; voice notes soft cache / Cleanup; STT still heuristic.
 37. ~~Material log evidence photos~~ — optional GRN/consumption photo via EvidenceCapture; outbox Storage upload then create; soft cache includes material stubs.
-38. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift and scheduled 5 PM nudge Function remain follow-ups.
+38. ~~Document file picker~~ — `DocumentFilePicker` Fake + `file_picker` Device behind sensors gate; soft cache includes document stubs.
+39. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift and scheduled 5 PM nudge Function remain follow-ups.
 
 No native-only Android path; iOS ships from the same Flutter codebase. Enterprise BIM/Forge remains a WebView module after MVP.

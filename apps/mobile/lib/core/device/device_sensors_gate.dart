@@ -1,4 +1,4 @@
-/// Gate for native device sensors (GPS / camera / mic / biometrics).
+/// Gate for native device sensors (GPS / camera / mic / files / biometrics).
 ///
 /// Default is off so CI and `flutter test` stay on Fake* implementations.
 /// Enable on device builds:

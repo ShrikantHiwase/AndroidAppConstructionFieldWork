@@ -29,11 +29,13 @@ final syncEngineProvider = Provider<LocalSyncEngine>((ref) {
   final dpr = ref.watch(dprRepositoryProvider) as LocalDprRepository;
   final voices =
       ref.watch(voiceNotesRepositoryProvider) as LocalVoiceNotesRepository;
+  final docs =
+      ref.watch(documentsRepositoryProvider) as LocalDocumentsRepository;
   final stores = <SyncableStore>[
     dpr,
     pins,
     siteOps,
-    ref.watch(documentsRepositoryProvider) as LocalDocumentsRepository,
+    docs,
     voices,
   ];
   return LocalSyncEngine(
@@ -46,6 +48,7 @@ final syncEngineProvider = Provider<LocalSyncEngine>((ref) {
       pins,
       dpr,
       voices,
+      docs,
     ],
   );
 });

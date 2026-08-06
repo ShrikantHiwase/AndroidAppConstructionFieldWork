@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/constants/app_constants.dart';
+import '../../../core/device/local_media_cache.dart';
 import '../../../sync/outbox/outbox_entry.dart';
 import '../../../sync/remote/module_remote_pull.dart';
 import '../../../sync/remote/outbox_remote_sink.dart';
@@ -14,7 +15,8 @@ import '../../auth/domain/auth_models.dart';
 import '../domain/document_models.dart';
 import '../domain/documents_repository.dart';
 
-class LocalDocumentsRepository implements DocumentsRepository, SyncableStore {
+class LocalDocumentsRepository
+    implements DocumentsRepository, SyncableStore, LocalMediaCache {
   LocalDocumentsRepository(
     this._prefs, {
     OutboxRemoteSink? remoteSink,
@@ -265,6 +267,8 @@ class LocalDocumentsRepository implements DocumentsRepository, SyncableStore {
     final localPath = (input.localFilePath == null || input.localFilePath!.isEmpty)
         ? 'local://demo/documents/${input.name.trim()}'
         : input.localFilePath!;
+    final inferredSize = input.sizeBytes ??
+        (input.textContent?.length ?? input.pdfPages.join().length);
     final doc = ProjectDocument(
       id: _id('doc'),
       orgId: session.activeProject.orgId,
@@ -277,7 +281,7 @@ class LocalDocumentsRepository implements DocumentsRepository, SyncableStore {
       createdByName: session.user.displayName,
       createdAt: now,
       updatedAt: now,
-      sizeBytes: (input.textContent?.length ?? input.pdfPages.join().length),
+      sizeBytes: inferredSize,
       downloaded: true,
       synced: false,
       textContent: input.textContent,
@@ -504,5 +508,59 @@ class LocalDocumentsRepository implements DocumentsRepository, SyncableStore {
     }
     if (changed > 0) await _persistEntitiesOnly();
     return changed;
+  }
+
+  @override
+  LocalCacheSlice estimateLocalCache() {
+    var bytes = 0;
+    var reclaimable = 0;
+    var reclaimableCount = 0;
+    var count = 0;
+    for (final doc in _documents.values) {
+      final path = doc.localFilePath;
+      if (path == null || path.isEmpty) continue;
+      count += 1;
+      final size = LocalCacheEstimates.bytesFor(
+        localPath: path,
+        byteSizeBytes: doc.sizeBytes > 0 ? doc.sizeBytes : null,
+      );
+      bytes += size;
+      if (LocalCacheEstimates.isReclaimableLocalStub(
+        localPath: path,
+        remoteUrl: doc.remoteUrl,
+      )) {
+        reclaimable += size;
+        reclaimableCount += 1;
+      }
+    }
+    return LocalCacheSlice(
+      label: 'docs',
+      estimatedBytes: bytes,
+      reclaimableBytes: reclaimable,
+      reclaimableItemCount: reclaimableCount,
+      itemCount: count,
+    );
+  }
+
+  @override
+  Future<int> reclaimUploadedLocalPaths() async {
+    var freed = 0;
+    var changed = false;
+    for (final doc in _documents.values.toList()) {
+      if (!LocalCacheEstimates.isReclaimableLocalStub(
+        localPath: doc.localFilePath,
+        remoteUrl: doc.remoteUrl,
+      )) {
+        continue;
+      }
+      freed += LocalCacheEstimates.bytesFor(
+        localPath: doc.localFilePath,
+        byteSizeBytes: doc.sizeBytes > 0 ? doc.sizeBytes : null,
+      );
+      _documents[doc.id] = doc.copyWith(clearLocalFilePath: true);
+      changed = true;
+    }
+    if (changed) await _persist();
+    return freed;
   }
 }

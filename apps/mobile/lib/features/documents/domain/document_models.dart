@@ -124,6 +124,8 @@ class ProjectDocument {
     String? localFilePath,
     String? remoteUrl,
     bool? pendingUpload,
+    int? sizeBytes,
+    bool clearLocalFilePath = false,
   }) {
     return ProjectDocument(
       id: id,
@@ -137,12 +139,14 @@ class ProjectDocument {
       createdByName: createdByName,
       createdAt: createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
-      sizeBytes: sizeBytes,
+      sizeBytes: sizeBytes ?? this.sizeBytes,
       downloaded: downloaded ?? this.downloaded,
       synced: synced ?? this.synced,
       textContent: textContent,
       pdfPages: pdfPages,
-      localFilePath: localFilePath ?? this.localFilePath,
+      localFilePath: clearLocalFilePath
+          ? null
+          : (localFilePath ?? this.localFilePath),
       remoteUrl: remoteUrl ?? this.remoteUrl,
       pendingUpload: pendingUpload ?? this.pendingUpload,
     );
@@ -202,6 +206,7 @@ class UploadDocumentInput {
     this.textContent,
     this.pdfPages = const [],
     this.localFilePath,
+    this.sizeBytes,
   });
 
   final String folderId;
@@ -211,6 +216,7 @@ class UploadDocumentInput {
   final List<String> pdfPages;
   /// Real path or omit — repo assigns a demo `local://` path when null.
   final String? localFilePath;
+  final int? sizeBytes;
 }
 
 class DocumentsException implements Exception {
