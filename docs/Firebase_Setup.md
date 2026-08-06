@@ -74,7 +74,7 @@ Seed writes `organizations`, `projects`, Auth users, and `memberships/{uid}_{pro
 
 | Callable / trigger | Purpose |
 |--------------------|---------|
-| `health` | Connectivity check |
+| `health` | Connectivity check — Sync status **Probe health** (NoOp in demo; Functions when Firebase on) |
 | `inviteMember` | Admin creates Auth user + memberships + `invites` audit doc (app calls via `cloud_functions` when Firebase is on) |
 | `onDprWrite` | FCM notify creator on DPR submit |
 | `onIssueWrite` | FCM on issue assign / status change |

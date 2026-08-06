@@ -32,5 +32,7 @@ Manifest permissions: `RECEIVE_BOOT_COMPLETED`, `WAKE_LOCK` (plus existing netwo
 ## Verify
 
 1. Create an issue offline → leave app → wait for periodic (or force one-off via going online)
-2. Sync status / prefs: `sync.background_last_at`, `sync.background_last_flushed`
-3. Unit: `flutter test test/background_sync_test.dart`
+2. **Sync status** shows last background flush time / count (from `sync.background_last_at` / `sync.background_last_flushed`)
+3. Tap **Enqueue background flush** (Workmanager one-off; may no-op on desktop tests)
+4. Tap **Probe health** — demo returns local OK; Firebase calls Functions `health`
+5. Unit: `flutter test test/background_sync_test.dart test/health_check_port_test.dart`

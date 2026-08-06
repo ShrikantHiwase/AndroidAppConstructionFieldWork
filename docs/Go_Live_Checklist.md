@@ -32,7 +32,7 @@ firebase deploy --only firestore:rules,firestore:indexes,storage,functions
 ```
 
 - [ ] Deploy succeeds
-- [ ] `health` callable returns `{ ok: true }`
+- [ ] `health` callable returns `{ ok: true }` (also: Sync status → **Probe health** after FlutterFire)
 
 ## 4. Seed demo org (staging / emulator)
 
