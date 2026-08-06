@@ -7,6 +7,10 @@ Flutter + Firebase field evidence OS for mid-market construction contractors (In
 - [Requirements (PDF)](Construction%20Management%20Field%20App.pdf)
 - [Requirements (PPTX)](Construction%20Management%20Field%20App.pptx)
 - [Holistic build plan (canonical)](docs/Construction_Field_App_Build_Plan.md)
+- [Firebase setup](docs/Firebase_Setup.md)
+- [Pilot training](docs/Pilot_Training.md)
+- [UAT checklist](docs/UAT_Checklist.md)
+- [Hypercare metrics](docs/Hypercare_Metrics.md)
 
 ## Repo layout
 
@@ -39,7 +43,8 @@ docs/              Build plan and training
 | Phase 2b Safety / QA / labour / materials | Done |
 | Firebase packages + auth switch (demo fallback) | Done |
 | Voice notes + smart digests | Done |
-| FlutterFire configure + pilot launch | Next (needs your Firebase project) |
+| Pilot / UAT pack (training + hub) | Done |
+| FlutterFire configure + store release | Next (needs your Firebase project) |
 | Phase 3 Enterprise hooks | Deferred |
 
 ## Demo login (local demo mode)

@@ -175,4 +175,30 @@ void main() {
     expect(find.text('5 PM DPR nudge'), findsOneWidget);
     expect(find.text('PM digest'), findsOneWidget);
   });
+
+  testWidgets('pm can open pilot hub', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          sharedPreferencesProvider.overrideWithValue(prefs),
+        ],
+        child: const FieldApp(),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.widgetWithText(ActionChip, 'pm'));
+    await tester.pump();
+    await tester.tap(find.text('Sign in'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Pilot'));
+    await tester.pumpAndSettle();
+    expect(find.text('Pilot / UAT'), findsOneWidget);
+    expect(find.text('Hypercare snapshot'), findsOneWidget);
+    expect(find.textContaining('UAT checklist'), findsOneWidget);
+  });
 }
