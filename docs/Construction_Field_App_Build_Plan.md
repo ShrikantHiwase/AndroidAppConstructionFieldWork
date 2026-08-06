@@ -83,6 +83,9 @@ todos:
   - id: dpr-digest-pdf-export
     content: "1-tap PDF export for DPR and PM digests via package:pdf + SharePort"
     status: completed
+  - id: sync-health-diagnostics
+    content: Sync status BackgroundSyncMeta + in-app health callable probe
+    status: completed
 isProject: false
 ---
 
@@ -292,7 +295,8 @@ docs/                 # plans and training
 22. ~~Local DPR nudge~~ — `flutter_local_notifications` daily tray reminder from Digests prefs; Simulate posts tray + inbox. Cloud FCM cron still deferred.
 23. ~~Notification deep links~~ — tray / FCM open / Sync inbox tap → DPR / issue / RFI; Digests hour picker for nudge.
 24. ~~1-tap PDF export~~ — `package:pdf` + `SharePort.shareFile` for DPR and PM digest PDFs (text share remains available).
-25. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift and scheduled 5 PM nudge Function remain follow-ups.
+25. ~~Sync diagnostics + health~~ — Sync status shows `BackgroundSyncMeta`, device vs demo network, Probe → `health` callable (NoOp in demo).
+26. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift and scheduled 5 PM nudge Function remain follow-ups.
 7. ~~Pilot / UAT pack~~ — training guide, UAT checklist, hypercare metrics docs + in-app Pilot hub (checklist + live snapshot). Live-site execution and store tracks still need your Firebase project / devices.
 8. ~~Admin invites~~ — in-app create invite + demo accept via FakeAuth (scoped memberships); Cloud Functions email later.
 9. ~~Device sensors~~ — `geolocator` / `image_picker` / `local_auth` with Fake defaults; enable native via `--dart-define=USE_NATIVE_SENSORS=true`. See `docs/Device_Sensors.md`.
@@ -311,6 +315,7 @@ docs/                 # plans and training
 22. ~~Local DPR nudge~~ — `flutter_local_notifications` daily tray reminder from Digests prefs; Simulate posts tray + inbox. Cloud FCM cron still deferred.
 23. ~~Notification deep links~~ — tray / FCM open / Sync inbox tap → DPR / issue / RFI; Digests hour picker for nudge.
 24. ~~1-tap PDF export~~ — `package:pdf` + `SharePort.shareFile` for DPR and PM digest PDFs (text share remains available).
-25. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift remains a follow-up.
+25. ~~Sync diagnostics + health~~ — Sync status shows `BackgroundSyncMeta`, device vs demo network, Probe → `health` callable (NoOp in demo).
+26. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift remains a follow-up.
 
 No native-only Android path; iOS ships from the same Flutter codebase. Enterprise BIM/Forge remains a WebView module after MVP.

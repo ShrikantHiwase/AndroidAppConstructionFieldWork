@@ -55,7 +55,8 @@ class BackgroundSyncScheduler {
   }
 
   /// Queues a one-off flush soon (e.g. after going online).
-  Future<void> enqueueOneOffFlush({Duration delay = Duration.zero}) async {
+  /// Returns false if Workmanager registration failed (tests / unsupported hosts).
+  Future<bool> enqueueOneOffFlush({Duration delay = Duration.zero}) async {
     try {
       await Workmanager().registerOneOffTask(
         _uniqueOneOff,
@@ -64,8 +65,10 @@ class BackgroundSyncScheduler {
         existingWorkPolicy: ExistingWorkPolicy.replace,
         constraints: Constraints(networkType: NetworkType.connected),
       );
+      return true;
     } catch (e) {
       debugPrint('enqueueOneOffFlush failed: $e');
+      return false;
     }
   }
 }

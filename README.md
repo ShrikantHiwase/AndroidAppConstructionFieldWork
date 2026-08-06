@@ -65,6 +65,7 @@ docs/              Build plan and training
 | Local DPR tray nudge (5 PM prefs) | Done |
 | Notification deep links + nudge hour | Done |
 | 1-tap DPR / digest PDF export | Done |
+| Sync diagnostics + health probe | Done |
 | FlutterFire configure + store release | Next (needs your Firebase project) |
 | Phase 3 Enterprise hooks | Deferred |
 

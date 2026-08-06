@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/health/health_check_port.dart';
 import '../../../core/notifications/notification_deep_link.dart';
 import '../../../core/notifications/notification_providers.dart';
 import '../../../sync/conflict/conflict_policy.dart';
@@ -13,6 +14,7 @@ class SyncStatusPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final offline = ref.watch(isOfflineProvider);
+    final deviceOffline = ref.watch(deviceOfflineProvider);
     final pending = ref.watch(pendingSyncCountProvider).valueOrNull ?? 0;
     final logsAsync = ref.watch(syncLogsProvider);
     final engine = ref.watch(syncEngineProvider);
@@ -20,6 +22,8 @@ class SyncStatusPage extends ConsumerWidget {
     final firebase = ref.watch(firebaseEnabledProvider);
     final pushToken = ref.watch(pushRegistrationProvider);
     final inbox = ref.watch(notificationInboxProvider);
+    final bgMeta = ref.watch(backgroundSyncMetaProvider);
+    final lastHealth = ref.watch(lastHealthCheckProvider);
     final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
@@ -41,6 +45,11 @@ class SyncStatusPage extends ConsumerWidget {
                 : 'Remote: local demo sink (no cloud write)',
             style: textTheme.bodySmall,
           ),
+          Text(
+            'Demo cloud toggle: ${offline ? 'offline' : 'online'} · '
+            'Device network: ${deviceOffline ? 'offline' : 'online'}',
+            style: textTheme.bodySmall,
+          ),
           if (engine.lastSuccessAt != null) ...[
             const SizedBox(height: 4),
             Text(
@@ -57,6 +66,68 @@ class SyncStatusPage extends ConsumerWidget {
               ),
             ),
           ],
+          const SizedBox(height: 16),
+          Text('Background sync', style: textTheme.titleMedium),
+          const SizedBox(height: 4),
+          Text(
+            bgMeta.lastAt == null
+                ? 'Last background flush: never'
+                : 'Last background flush: ${bgMeta.lastAt!.toLocal()} '
+                    '(${bgMeta.lastFlushed} item(s))',
+            style: textTheme.bodySmall,
+          ),
+          const SizedBox(height: 8),
+          OutlinedButton.icon(
+            onPressed: () async {
+              final ok = await ref
+                  .read(backgroundSyncSchedulerProvider)
+                  .enqueueOneOffFlush();
+              ref.invalidate(backgroundSyncMetaProvider);
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      ok
+                          ? 'One-off background flush enqueued'
+                          : 'Could not enqueue (Workmanager unavailable here)',
+                    ),
+                  ),
+                );
+              }
+            },
+            icon: const Icon(Icons.schedule_send_outlined),
+            label: const Text('Enqueue background flush'),
+          ),
+          const SizedBox(height: 16),
+          Text('Backend health', style: textTheme.titleMedium),
+          const SizedBox(height: 4),
+          Text(
+            lastHealth?.summary ??
+                (firebase
+                    ? 'Not probed yet — call Cloud Functions health.'
+                    : 'Demo mode uses a local NoOp health probe.'),
+            style: textTheme.bodySmall?.copyWith(
+              color: lastHealth == null
+                  ? null
+                  : (lastHealth.ok
+                      ? null
+                      : Theme.of(context).colorScheme.error),
+            ),
+          ),
+          const SizedBox(height: 8),
+          FilledButton.tonalIcon(
+            onPressed: () async {
+              final result = await ref.read(healthCheckPortProvider).ping();
+              ref.read(lastHealthCheckProvider.notifier).state = result;
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(result.summary)),
+                );
+              }
+            },
+            icon: const Icon(Icons.monitor_heart_outlined),
+            label: const Text('Probe health'),
+          ),
           const SizedBox(height: 16),
           Text('Push (FCM)', style: textTheme.titleMedium),
           const SizedBox(height: 4),
@@ -122,6 +193,7 @@ class SyncStatusPage extends ConsumerWidget {
                               isOnline: true,
                               projectId: session?.activeProjectId,
                             );
+                        ref.invalidate(backgroundSyncMetaProvider);
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text('Flushed $n item(s)')),

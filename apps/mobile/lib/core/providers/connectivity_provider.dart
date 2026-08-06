@@ -13,6 +13,7 @@ import '../../features/site_ops/data/local_site_ops_repository.dart';
 import '../../features/site_ops/presentation/site_ops_providers.dart';
 import '../../features/voice_notes/data/local_voice_notes_repository.dart';
 import '../../features/voice_notes/presentation/voice_notes_providers.dart';
+import '../../sync/background/background_outbox_flush.dart';
 import '../../sync/background/background_sync_scheduler.dart';
 import '../../sync/local_sync_engine.dart';
 import '../../sync/remote/syncable_store.dart';
@@ -43,6 +44,11 @@ final pendingSyncCountProvider = StreamProvider<int>((ref) {
 
 final backgroundSyncSchedulerProvider = Provider<BackgroundSyncScheduler>((ref) {
   return const BackgroundSyncScheduler();
+});
+
+/// Last Workmanager / headless flush metadata from SharedPreferences.
+final backgroundSyncMetaProvider = Provider<BackgroundSyncMeta>((ref) {
+  return BackgroundSyncMeta.fromPrefs(ref.watch(sharedPreferencesProvider));
 });
 
 /// True when the OS reports no usable network (independent of demo override).
