@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../core/notifications/notification_deep_link.dart';
 import '../core/providers/connectivity_provider.dart';
 import '../core/theme/app_theme.dart';
 import '../core/widgets/offline_badge.dart';
@@ -19,6 +20,7 @@ class FieldApp extends ConsumerWidget {
 
     return MaterialApp(
       title: 'Field Evidence',
+      navigatorKey: rootNavigatorKey,
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light(),
       home: switch (auth.status) {

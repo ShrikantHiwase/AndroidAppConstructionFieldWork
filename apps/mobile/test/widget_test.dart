@@ -172,7 +172,7 @@ void main() {
     await tester.tap(find.text('Digests'));
     await tester.pumpAndSettle();
     expect(find.text('Digests & reminders'), findsOneWidget);
-    expect(find.text('5 PM DPR nudge'), findsOneWidget);
+      expect(find.text('Daily DPR nudge'), findsOneWidget);
     expect(find.text('PM digest'), findsOneWidget);
   });
 
