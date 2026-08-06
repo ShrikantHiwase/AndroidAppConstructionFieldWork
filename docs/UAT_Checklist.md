@@ -51,6 +51,7 @@ Run on mid/low-end Android first. Mark each item in Admin → **Pilot** (or tick
 - [ ] PM digest lists open issues/RFIs/blockers; Share digest PDF works
 - [ ] Sync status shows logs, background flush meta, Probe health; cleanup does not crash
 - [ ] Conflict policy labels visible on flush (LWW / append / audited)
+- [ ] Pilot hub Share pilot PDF works (PM/Admin)
 
 ## Firebase (when configured)
 

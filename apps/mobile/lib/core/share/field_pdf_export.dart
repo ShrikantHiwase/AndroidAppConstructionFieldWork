@@ -5,6 +5,7 @@ import 'package:pdf/widgets.dart' as pw;
 
 import '../../features/digests/domain/digest_models.dart';
 import '../../features/dpr/domain/dpr_models.dart';
+import '../../features/pilot/domain/pilot_models.dart';
 
 /// Builds printable field PDFs for WhatsApp / email share (no Firebase).
 class FieldPdfExport {
@@ -176,6 +177,76 @@ class FieldPdfExport {
                 ),
               ),
             ),
+        ],
+      ),
+    );
+
+    return doc.save();
+  }
+
+  static Future<Uint8List> pilot({
+    required PilotMetricsSnapshot snapshot,
+    required String projectName,
+  }) async {
+    final generated = snapshot.generatedAt.toIso8601String();
+    final rate = snapshot.syncFailureRate;
+    final rateLabel = rate == null
+        ? 'n/a'
+        : '${(rate * 100).toStringAsFixed(1)}%';
+    final doc = pw.Document(
+      title: 'Pilot snapshot — $projectName',
+      author: 'Construction Field App',
+    );
+
+    doc.addPage(
+      pw.MultiPage(
+        pageFormat: PdfPageFormat.a4,
+        margin: const pw.EdgeInsets.all(40),
+        header: (context) => pw.Column(
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
+          children: [
+            pw.Text(
+              'PILOT / HYPERCARE',
+              style: pw.TextStyle(
+                fontSize: 18,
+                fontWeight: pw.FontWeight.bold,
+              ),
+            ),
+            pw.SizedBox(height: 4),
+            pw.Text(
+              projectName,
+              style: const pw.TextStyle(fontSize: 12, color: PdfColors.grey700),
+            ),
+            pw.Divider(thickness: 1),
+            pw.SizedBox(height: 8),
+          ],
+        ),
+        footer: (context) => pw.Align(
+          alignment: pw.Alignment.centerRight,
+          child: pw.Text(
+            'Page ${context.pageNumber} of ${context.pagesCount}',
+            style: const pw.TextStyle(fontSize: 9, color: PdfColors.grey600),
+          ),
+        ),
+        build: (context) => [
+          _kv('Generated', generated),
+          _kv(
+            'DPR days',
+            '${snapshot.dprSubmittedDaysThisWeek} (target >=4) '
+            '${snapshot.dprTargetMet ? 'OK' : 'BELOW'}',
+          ),
+          _kv('Open issues', '${snapshot.openIssueCount}'),
+          _kv('Pending sync', '${snapshot.pendingSyncCount}'),
+          _kv(
+            'Sync errors',
+            '${snapshot.syncErrorCount} / ${snapshot.syncLogCount} '
+            '($rateLabel, target <2%) '
+            '${snapshot.syncTargetMet ? 'OK' : 'WATCH'}',
+          ),
+          _kv(
+            'UAT checklist',
+            '${snapshot.checklistCompleted} / ${snapshot.checklistTotal}',
+          ),
         ],
       ),
     );
