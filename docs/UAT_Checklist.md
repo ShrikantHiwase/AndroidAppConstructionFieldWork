@@ -34,7 +34,7 @@ Run on mid/low-end Android first. Mark each item in Admin → **Pilot** (or tick
 ## DPR & drawings
 
 - [ ] Today's DPR draft + submit in &lt;3 minutes
-- [ ] Share WhatsApp/system summary (DPR + PM digest)
+- [ ] Share DPR PDF via system sheet; text share still works
 - [ ] Voice note on DPR after first save
 - [ ] Drawing pin linked to an issue
 
@@ -48,7 +48,7 @@ Run on mid/low-end Android first. Mark each item in Admin → **Pilot** (or tick
 ## Digests & sync
 
 - [ ] 5 PM nudge prefs + Simulate 5 PM check
-- [ ] PM digest lists open issues/RFIs/blockers; copy works
+- [ ] PM digest lists open issues/RFIs/blockers; Share digest PDF works
 - [ ] Sync status shows logs; cleanup does not crash
 - [ ] Conflict policy labels visible on flush (LWW / append / audited)
 

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/notifications/dpr_nudge_scheduler.dart';
 import '../../../core/notifications/notification_providers.dart';
+import '../../../core/share/field_pdf_export.dart';
 import '../../../core/share/share_port.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../../dpr/presentation/dpr_pages.dart';
@@ -179,13 +180,51 @@ class DigestsPage extends ConsumerWidget {
                     const SizedBox(height: 12),
                     FilledButton.tonalIcon(
                       onPressed: () async {
+                        final projectName = session.activeProject.name;
+                        final text = digest.toShareText(
+                          projectName: projectName,
+                        );
+                        final subject = 'PM digest — $projectName';
+                        final bytes = await FieldPdfExport.digest(
+                          digest: digest,
+                          projectName: projectName,
+                        );
+                        final day = digest.generatedAt
+                            .toIso8601String()
+                            .split('T')
+                            .first;
+                        final outcome =
+                            await ref.read(sharePortProvider).shareFile(
+                                  bytes: bytes,
+                                  filename: 'pm_digest_$day.pdf',
+                                  subject: subject,
+                                  text: subject,
+                                  fallbackText: text,
+                                );
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                shareSnackMessage(outcome, kind: 'Digest PDF'),
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                      icon: const Icon(Icons.picture_as_pdf_outlined),
+                      label: const Text('Share digest PDF'),
+                    ),
+                    const SizedBox(height: 8),
+                    OutlinedButton.icon(
+                      onPressed: () async {
                         final text = digest.toShareText(
                           projectName: session.activeProject.name,
                         );
                         final outcome =
                             await ref.read(sharePortProvider).shareText(
                                   text: text,
-                                  subject: 'PM digest — ${session.activeProject.name}',
+                                  subject:
+                                      'PM digest — ${session.activeProject.name}',
                                 );
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -198,7 +237,7 @@ class DigestsPage extends ConsumerWidget {
                         }
                       },
                       icon: const Icon(Icons.ios_share),
-                      label: const Text('Share digest'),
+                      label: const Text('Share as text'),
                     ),
                   ],
                 );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/share/field_pdf_export.dart';
 import '../../../core/share/share_port.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../../voice_notes/domain/voice_note_models.dart';
@@ -310,32 +311,60 @@ class DprDetailPage extends ConsumerWidget {
       );
     }
     final current = dpr;
-    final shareText = current.toShareText(
-      projectName: session.activeProject.name,
-    );
+    final projectName = session.activeProject.name;
+    final dateLabel = current.reportDate.toIso8601String().split('T').first;
+    final shareText = current.toShareText(projectName: projectName);
+    final subject = 'DPR $dateLabel — $projectName';
+
+    Future<void> sharePdf() async {
+      final bytes = await FieldPdfExport.dpr(
+        report: current,
+        projectName: projectName,
+      );
+      final outcome = await ref.read(sharePortProvider).shareFile(
+            bytes: bytes,
+            filename: 'dpr_$dateLabel.pdf',
+            subject: subject,
+            text: subject,
+            fallbackText: shareText,
+          );
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(shareSnackMessage(outcome, kind: 'DPR PDF')),
+          ),
+        );
+      }
+    }
+
+    Future<void> shareAsText() async {
+      final outcome = await ref.read(sharePortProvider).shareText(
+            text: shareText,
+            subject: subject,
+          );
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              shareSnackMessage(outcome, kind: 'DPR summary'),
+            ),
+          ),
+        );
+      }
+    }
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(current.reportDate.toIso8601String().split('T').first),
+        title: Text(dateLabel),
         actions: [
           IconButton(
-            tooltip: 'Share PDF/WhatsApp summary',
-            onPressed: () async {
-              final outcome = await ref.read(sharePortProvider).shareText(
-                    text: shareText,
-                    subject:
-                        'DPR ${current.reportDate.toIso8601String().split('T').first}',
-                  );
-              if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      shareSnackMessage(outcome, kind: 'DPR summary'),
-                    ),
-                  ),
-                );
-              }
-            },
+            tooltip: 'Share PDF',
+            onPressed: sharePdf,
+            icon: const Icon(Icons.picture_as_pdf_outlined),
+          ),
+          IconButton(
+            tooltip: 'Share text summary',
+            onPressed: shareAsText,
             icon: const Icon(Icons.ios_share),
           ),
         ],
@@ -370,13 +399,24 @@ class DprDetailPage extends ConsumerWidget {
             canAdd: !current.submitted && canEditDpr(session.activeRole),
           ),
           const SizedBox(height: 24),
-          Text('Share preview', style: Theme.of(context).textTheme.titleMedium),
+          FilledButton.tonalIcon(
+            onPressed: sharePdf,
+            icon: const Icon(Icons.picture_as_pdf_outlined),
+            label: const Text('Share PDF'),
+          ),
+          const SizedBox(height: 8),
+          OutlinedButton.icon(
+            onPressed: shareAsText,
+            icon: const Icon(Icons.ios_share),
+            label: const Text('Share as text'),
+          ),
+          const SizedBox(height: 16),
+          Text('Text preview', style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 8),
           SelectableText(shareText),
           const SizedBox(height: 8),
           Text(
-            'Opens the system share sheet (WhatsApp, email, etc.). '
-            '1-tap PDF export still deferred.',
+            'PDF and text open the system share sheet (WhatsApp, email, etc.).',
             style: Theme.of(context).textTheme.bodySmall,
           ),
         ],
