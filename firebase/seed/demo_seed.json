@@ -1,0 +1,61 @@
+{
+  "organizations": {
+    "org_demo": {
+      "name": "RAYNS Demo Contractors"
+    }
+  },
+  "projects": {
+    "proj_pune_tower": {
+      "orgId": "org_demo",
+      "name": "Pune Tower A",
+      "siteName": "Hinjewadi Phase 1"
+    },
+    "proj_mumbai_metro": {
+      "orgId": "org_demo",
+      "name": "Mumbai Metro Yard",
+      "siteName": "Bandra Kurla"
+    }
+  },
+  "authUsers": [
+    {
+      "email": "engineer@demo.rayns",
+      "password": "demo1234",
+      "displayName": "Asha Patil",
+      "uidHint": "u_engineer",
+      "role": "site_engineer",
+      "projectIds": ["proj_pune_tower", "proj_mumbai_metro"]
+    },
+    {
+      "email": "pm@demo.rayns",
+      "password": "demo1234",
+      "displayName": "Rohit Sharma",
+      "uidHint": "u_pm",
+      "role": "project_manager",
+      "projectIds": ["proj_pune_tower", "proj_mumbai_metro"]
+    },
+    {
+      "email": "qa@demo.rayns",
+      "password": "demo1234",
+      "displayName": "Neha Kulkarni",
+      "uidHint": "u_qa",
+      "role": "qa_qc",
+      "projectIds": ["proj_pune_tower", "proj_mumbai_metro"]
+    },
+    {
+      "email": "client@demo.rayns",
+      "password": "demo1234",
+      "displayName": "Client Viewer",
+      "uidHint": "u_client",
+      "role": "client",
+      "projectIds": ["proj_pune_tower", "proj_mumbai_metro"]
+    },
+    {
+      "email": "admin@demo.rayns",
+      "password": "demo1234",
+      "displayName": "Site Admin",
+      "uidHint": "u_admin",
+      "role": "admin",
+      "projectIds": ["proj_pune_tower", "proj_mumbai_metro"]
+    }
+  ]
+}

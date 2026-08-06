@@ -121,6 +121,22 @@ service cloud.firestore {
       allow delete: if isAdmin(resource.data.orgId, resource.data.projectId);
     }
 
+    match /voice_notes/{id} {
+      allow read: if isProjectMember(resource.data.orgId, resource.data.projectId);
+      allow create, update: if isStaff(request.resource.data.orgId, request.resource.data.projectId);
+      allow delete: if isAdmin(resource.data.orgId, resource.data.projectId);
+    }
+
+    // Invite audit trail — admins / inviter read; writes via Admin SDK / Functions only.
+    match /invites/{inviteId} {
+      allow read: if signedIn()
+        && resource.data.keys().hasAll(['orgId', 'projectIds'])
+        && resource.data.projectIds.size() > 0
+        && (resource.data.invitedByUserId == request.auth.uid
+          || isAdmin(resource.data.orgId, resource.data.projectIds[0]));
+      allow write: if false;
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }

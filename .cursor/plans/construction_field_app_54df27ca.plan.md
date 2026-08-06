@@ -38,6 +38,9 @@ todos:
   - id: device-sensors
     content: GPS/camera/biometrics via Fake defaults + USE_NATIVE_SENSORS device path
     status: completed
+  - id: firebase-golive-prep
+    content: Seed script, inviteMember/onDprWrite Functions, indexes, go-live checklist
+    status: completed
 isProject: false
 ---
 
@@ -244,6 +247,7 @@ docs/                 # plans and training
 7. ~~Pilot / UAT pack~~ — training guide, UAT checklist, hypercare metrics docs + in-app Pilot hub (checklist + live snapshot). Live-site execution and store tracks still need your Firebase project / devices.
 8. ~~Admin invites~~ — in-app create invite + demo accept via FakeAuth (scoped memberships); Cloud Functions email later.
 9. ~~Device sensors~~ — `geolocator` / `image_picker` / `local_auth` with Fake defaults; enable native via `--dart-define=USE_NATIVE_SENSORS=true`. See `docs/Device_Sensors.md`.
-10. **Next:** Operator FlutterFire + seed data, then live-site UAT / Play internal & TestFlight.
+10. ~~Firebase go-live prep~~ — emulator seed (`firebase/seed`), `inviteMember` + `onDprWrite` Functions, membership indexes, rules for `invites`/`voice_notes`, [Go_Live_Checklist.md](Go_Live_Checklist.md).
+11. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Field Firestore repos (issues/DPR sync to cloud) remain a follow-up after Auth is live.
 
 No native-only Android path; iOS ships from the same Flutter codebase. Enterprise BIM/Forge remains a WebView module after MVP.

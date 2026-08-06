@@ -4,6 +4,8 @@ The Flutter app ships in **demo mode** until Firebase options are configured.
 With `FirebaseOptionsGate.isConfigured == false`, auth uses `FakeAuthRepository`
 and field data stays on device via SharedPreferences.
 
+**Full go-live order:** [Go_Live_Checklist.md](Go_Live_Checklist.md)
+
 ## One-time project setup
 
 1. Create a Firebase project in the [console](https://console.firebase.google.com/).
@@ -32,37 +34,58 @@ static const bool isConfigured = true;
    - `android/app/google-services.json`
    - `ios/Runner/GoogleService-Info.plist`
 
-5. Deploy rules / indexes when ready:
+5. Deploy rules / indexes / functions when ready:
 
 ```bash
-cd firebase
-firebase deploy --only firestore:rules,firestore:indexes,storage
+cd firebase/functions && npm install && cd ..
+firebase deploy --only firestore:rules,firestore:indexes,storage,functions
 ```
 
 6. Restart the app. The corner banner should read **FIREBASE** and login uses
    real Auth + membership docs.
 
-## Seed data (minimum)
+## Seed data
 
-After creating Auth users in the console (or Admin SDK), write matching docs:
+Use the demo seed (same emails/password as the FakeAuth catalog):
 
-| Collection | Doc shape |
-|------------|-----------|
-| `organizations/{orgId}` | `{ name }` |
-| `projects/{projectId}` | `{ orgId, name, siteName? }` |
-| `memberships/{uid}_{projectId}` | `{ userId, orgId, projectId, role, active }` |
+```bash
+cd firebase
+firebase emulators:start
+# other terminal:
+./seed/run_seed_emulators.sh
+```
+
+Or against staging with a service account:
+
+```bash
+export GOOGLE_APPLICATION_CREDENTIALS=/path/to/sa.json
+cd firebase/functions && npm install
+cd .. && node seed/seed_demo.js
+```
+
+Seed writes `organizations`, `projects`, Auth users, and `memberships/{uid}_{projectId}`.
 
 `role` values: `site_engineer`, `project_manager`, `qa_qc`, `client`, `admin`.
 
 `FirebaseAuthRepository` loads memberships by `userId == Auth.uid` and
 `active == true`, then hydrates projects/orgs.
 
-## Emulators (optional)
+## Cloud Functions
+
+| Callable / trigger | Purpose |
+|--------------------|---------|
+| `health` | Connectivity check |
+| `inviteMember` | Admin creates Auth user + memberships + `invites` audit doc |
+| `onDprWrite` | Logs DPR submit (hook for FCM digest later) |
+
+## Emulators
 
 ```bash
 cd firebase
 firebase emulators:start
 ```
+
+UI: http://127.0.0.1:4000 — Auth `9099`, Firestore `8080`, Functions `5001`, Storage `9199`.
 
 Point the app at emulators only after options are configured (see FlutterFire
 emulator docs). Demo mode does not need emulators.

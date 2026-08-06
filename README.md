@@ -12,6 +12,7 @@ Flutter + Firebase field evidence OS for mid-market construction contractors (In
 - [UAT checklist](docs/UAT_Checklist.md)
 - [Hypercare metrics](docs/Hypercare_Metrics.md)
 - [Device sensors](docs/Device_Sensors.md)
+- [Go-live checklist](docs/Go_Live_Checklist.md)
 
 ## Repo layout
 
@@ -47,6 +48,7 @@ docs/              Build plan and training
 | Pilot / UAT pack (training + hub) | Done |
 | Admin invites (local / demo) | Done |
 | Device sensors (GPS/camera/biometrics) | Done |
+| Firebase go-live prep (seed + Functions) | Done |
 | FlutterFire configure + store release | Next (needs your Firebase project) |
 | Phase 3 Enterprise hooks | Deferred |
 
