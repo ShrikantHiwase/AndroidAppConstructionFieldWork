@@ -1,13 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
+import 'fcm_background.dart';
 import 'local_notification_inbox.dart';
 import 'push_notification_service.dart';
 
-/// FCM registration + foreground message → local inbox.
+/// FCM registration + foreground / open handlers → local inbox.
 ///
-/// Background/terminated handlers need a top-level `@pragma('vm:entry-point')`
-/// after FlutterFire configure; this scaffolding covers foreground + token.
+/// Background/terminated delivery uses [firebaseMessagingBackgroundHandler]
+/// registered from `main.dart` when Firebase is enabled.
 class FirebasePushNotificationService implements PushNotificationService {
   FirebasePushNotificationService({
     required LocalNotificationInbox inbox,
@@ -34,6 +35,12 @@ class FirebasePushNotificationService implements PushNotificationService {
       return null;
     }
 
+    await _messaging.setForegroundNotificationPresentationOptions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+
     final token = await _messaging.getToken();
     _token = token;
     if (token != null) {
@@ -49,19 +56,9 @@ class FirebasePushNotificationService implements PushNotificationService {
     if (!_listening) {
       _listening = true;
       FirebaseMessaging.onMessage.listen((message) async {
-        final title = message.notification?.title ??
-            message.data['title'] ??
-            'Field update';
-        final body = message.notification?.body ??
-            message.data['body'] ??
-            message.data.toString();
-        await _inbox.add(
-          title: title,
-          body: body,
-          data: message.data.map((k, v) => MapEntry(k, v.toString())),
-          source: 'fcm',
-        );
+        await recordRemoteMessage(_inbox, message, source: 'fcm');
       });
+      await attachMessageOpenHandlers(_inbox);
       _messaging.onTokenRefresh.listen((t) async {
         _token = t;
         await _inbox.saveToken(t);

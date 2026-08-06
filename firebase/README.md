@@ -21,6 +21,6 @@ firebase.json
 firestore.rules
 firestore.indexes.json
 storage.rules
-functions/          # health, inviteMember, onDprWrite
+functions/          # health, inviteMember, onDprWrite, onIssueWrite (+ fcm.js)
 seed/               # demo_seed.json + seed_demo.js
 ```

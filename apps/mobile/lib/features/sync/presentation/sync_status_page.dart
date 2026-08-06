@@ -74,7 +74,8 @@ class SyncStatusPage extends ConsumerWidget {
           const SizedBox(height: 8),
           Text(
             firebase
-                ? 'Foreground messages land in the inbox below; server sends via Functions.'
+                ? 'Foreground, open, and background FCM land in the inbox; '
+                    'Functions send on DPR submit / issue assign & status.'
                 : 'Demo mode logs assign/status intents locally until FlutterFire is configured.',
             style: textTheme.bodySmall,
           ),
@@ -85,7 +86,7 @@ class SyncStatusPage extends ConsumerWidget {
                     contentPadding: EdgeInsets.zero,
                     dense: true,
                     leading: Icon(
-                      e.source == 'fcm'
+                      e.source.startsWith('fcm')
                           ? Icons.notifications_active_outlined
                           : Icons.notifications_outlined,
                     ),
