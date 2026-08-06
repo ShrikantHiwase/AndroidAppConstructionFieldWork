@@ -566,7 +566,8 @@ class _MaterialsTab extends ConsumerWidget {
                 title: Text('${r.material} · ${r.quantity} ${r.unit}'),
                 subtitle: Text(
                   '${r.kind.name}'
-                  '${r.activityRef == null ? '' : ' · ${r.activityRef}'}',
+                  '${r.activityRef == null ? '' : ' · ${r.activityRef}'}'
+                  '${r.hasPhoto ? (r.pendingPhotoUpload ? ' · photo queued' : ' · photo') : ''}',
                 ),
               );
             },
@@ -579,24 +580,199 @@ class _MaterialsTab extends ConsumerWidget {
   Future<void> _addMaterial(BuildContext context, WidgetRef ref) async {
     final session = ref.read(authSessionProvider);
     if (session == null) return;
+
+    var kind = MaterialLogKind.inward;
+    final materialCtrl = TextEditingController(text: 'OPC Cement');
+    final qtyCtrl = TextEditingController(text: '200');
+    final unitCtrl = TextEditingController(text: 'bags');
+    final activityCtrl = TextEditingController(text: 'Slab Bay 3');
+    String? photoLocalPath;
+    int? photoByteSizeBytes;
+    String? photoLabel;
+
+    final proceed = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setLocal) {
+            return AlertDialog(
+              title: const Text('Material log'),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'GRN inward or consumption lite. Photo is optional.',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    const SizedBox(height: 12),
+                    SegmentedButton<MaterialLogKind>(
+                      segments: const [
+                        ButtonSegment(
+                          value: MaterialLogKind.inward,
+                          label: Text('Inward'),
+                        ),
+                        ButtonSegment(
+                          value: MaterialLogKind.consumption,
+                          label: Text('Use'),
+                        ),
+                      ],
+                      selected: {kind},
+                      onSelectionChanged: (s) => setLocal(() => kind = s.first),
+                    ),
+                    const SizedBox(height: 12),
+                    TextField(
+                      controller: materialCtrl,
+                      decoration: const InputDecoration(
+                        labelText: 'Material',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: qtyCtrl,
+                            keyboardType: TextInputType.number,
+                            decoration: const InputDecoration(
+                              labelText: 'Qty',
+                              border: OutlineInputBorder(),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: TextField(
+                            controller: unitCtrl,
+                            decoration: const InputDecoration(
+                              labelText: 'Unit',
+                              border: OutlineInputBorder(),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    TextField(
+                      controller: activityCtrl,
+                      decoration: const InputDecoration(
+                        labelText: 'Activity ref (optional)',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        OutlinedButton.icon(
+                          onPressed: () async {
+                            final shot = await ref
+                                .read(evidenceCaptureProvider)
+                                .capturePhoto(
+                                  source: EvidencePhotoSource.camera,
+                                );
+                            if (shot == null) return;
+                            setLocal(() {
+                              photoLocalPath = shot.localPath;
+                              photoByteSizeBytes = shot.byteSizeBytes;
+                              photoLabel = shot.fileName;
+                            });
+                          },
+                          icon: const Icon(Icons.photo_camera_outlined),
+                          label: const Text('Add photo'),
+                        ),
+                        OutlinedButton.icon(
+                          onPressed: () async {
+                            final shot = await ref
+                                .read(evidenceCaptureProvider)
+                                .capturePhoto(
+                                  source: EvidencePhotoSource.gallery,
+                                );
+                            if (shot == null) return;
+                            setLocal(() {
+                              photoLocalPath = shot.localPath;
+                              photoByteSizeBytes = shot.byteSizeBytes;
+                              photoLabel = shot.fileName;
+                            });
+                          },
+                          icon: const Icon(Icons.photo_library_outlined),
+                          label: const Text('Gallery'),
+                        ),
+                        if (photoLocalPath != null)
+                          Text(
+                            '${photoLabel ?? 'photo'} · '
+                            '${EvidenceImagePolicy.formatBytes(photoByteSizeBytes ?? 0)}',
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context, false),
+                  child: const Text('Cancel'),
+                ),
+                FilledButton(
+                  onPressed: () => Navigator.pop(context, true),
+                  child: const Text('Save'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+
+    if (proceed != true) {
+      materialCtrl.dispose();
+      qtyCtrl.dispose();
+      unitCtrl.dispose();
+      activityCtrl.dispose();
+      return;
+    }
+
     try {
+      final qty = double.tryParse(qtyCtrl.text.trim()) ?? 0;
       await ref.read(siteOpsRepositoryProvider).addMaterial(
             session: session,
-            kind: MaterialLogKind.inward,
-            material: 'OPC Cement',
-            quantity: 200,
-            unit: 'bags',
-            activityRef: 'Slab Bay 3',
+            kind: kind,
+            material: materialCtrl.text,
+            quantity: qty,
+            unit: unitCtrl.text,
+            activityRef: activityCtrl.text.trim().isEmpty
+                ? null
+                : activityCtrl.text.trim(),
+            photoLocalPath: photoLocalPath,
+            photoByteSizeBytes: photoByteSizeBytes,
           );
       if (context.mounted) {
+        final photoNote =
+            photoLocalPath != null ? ' + evidence photo' : '';
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Material inward logged')),
+          SnackBar(
+            content: Text(
+              kind == MaterialLogKind.inward
+                  ? 'Material inward logged$photoNote'
+                  : 'Material consumption logged$photoNote',
+            ),
+          ),
         );
       }
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$e')));
       }
+    } finally {
+      materialCtrl.dispose();
+      qtyCtrl.dispose();
+      unitCtrl.dispose();
+      activityCtrl.dispose();
     }
   }
 }

@@ -384,6 +384,12 @@ class MaterialLog {
     required this.createdByName,
     required this.createdAt,
     this.activityRef,
+    this.photoOptional = true,
+    this.hasPhoto = false,
+    this.photoLocalPath,
+    this.photoByteSizeBytes,
+    this.photoRemoteUrl,
+    this.pendingPhotoUpload = false,
     this.synced = false,
   });
 
@@ -398,9 +404,25 @@ class MaterialLog {
   final String createdByName;
   final DateTime createdAt;
   final String? activityRef;
+
+  /// GRN / consumption evidence photo is optional.
+  final bool photoOptional;
+  final bool hasPhoto;
+  final String? photoLocalPath;
+  final int? photoByteSizeBytes;
+  final String? photoRemoteUrl;
+  final bool pendingPhotoUpload;
   final bool synced;
 
-  MaterialLog copyWith({bool? synced}) {
+  MaterialLog copyWith({
+    bool? synced,
+    bool? hasPhoto,
+    String? photoLocalPath,
+    int? photoByteSizeBytes,
+    String? photoRemoteUrl,
+    bool? pendingPhotoUpload,
+    bool clearPhotoLocalPath = false,
+  }) {
     return MaterialLog(
       id: id,
       orgId: orgId,
@@ -413,6 +435,13 @@ class MaterialLog {
       createdByName: createdByName,
       createdAt: createdAt,
       activityRef: activityRef,
+      photoOptional: photoOptional,
+      hasPhoto: hasPhoto ?? this.hasPhoto,
+      photoLocalPath:
+          clearPhotoLocalPath ? null : (photoLocalPath ?? this.photoLocalPath),
+      photoByteSizeBytes: photoByteSizeBytes ?? this.photoByteSizeBytes,
+      photoRemoteUrl: photoRemoteUrl ?? this.photoRemoteUrl,
+      pendingPhotoUpload: pendingPhotoUpload ?? this.pendingPhotoUpload,
       synced: synced ?? this.synced,
     );
   }
@@ -429,6 +458,12 @@ class MaterialLog {
         'createdByName': createdByName,
         'createdAt': createdAt.toIso8601String(),
         'activityRef': activityRef,
+        'photoOptional': photoOptional,
+        'hasPhoto': hasPhoto,
+        'photoLocalPath': photoLocalPath,
+        'photoByteSizeBytes': photoByteSizeBytes,
+        'photoRemoteUrl': photoRemoteUrl,
+        'pendingPhotoUpload': pendingPhotoUpload,
         'synced': synced,
       };
 
@@ -444,6 +479,13 @@ class MaterialLog {
         createdByName: json['createdByName'] as String,
         createdAt: DateTime.parse(json['createdAt'] as String),
         activityRef: json['activityRef'] as String?,
+        photoOptional: json['photoOptional'] as bool? ?? true,
+        hasPhoto: json['hasPhoto'] as bool? ??
+            ((json['photoLocalPath'] as String?)?.isNotEmpty ?? false),
+        photoLocalPath: json['photoLocalPath'] as String?,
+        photoByteSizeBytes: json['photoByteSizeBytes'] as int?,
+        photoRemoteUrl: json['photoRemoteUrl'] as String?,
+        pendingPhotoUpload: json['pendingPhotoUpload'] as bool? ?? false,
         synced: json['synced'] as bool? ?? false,
       );
 }
