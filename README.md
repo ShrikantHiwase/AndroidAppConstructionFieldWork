@@ -34,8 +34,8 @@ docs/              Build plan and training
 | Phase 1 auth / RBAC (demo accounts) | Done |
 | Phase 1 issues/RFIs + offline outbox | Done |
 | Phase 1 documents + PDF viewer | Done |
-| Offline sync hardening (Drift/Workmanager) | Next (with Firebase) |
-| Phase 2a DPR + drawing pins | Pending (after MVP freeze) |
+| Offline sync hardening (logs/cleanup/status) | Done |
+| Phase 2a DPR + drawing pins | Next |
 | Phase 2b Safety / QA / labour / etc. | Gated on pilot metrics |
 | Phase 3 Enterprise hooks | Deferred |
 
