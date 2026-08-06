@@ -42,7 +42,7 @@ Run on mid/low-end Android first. Mark each item in Admin → **Pilot** (or tick
 
 - [ ] Safety toolbox without photo; observation/incident requires compressed photo (flushes to demo:// / Storage)
 - [ ] QA fail rejected without photo; pass allowed; demo WIR captures fail photo and uploads on flush
-- [ ] Labour muster + material inward/consumption
+- [ ] Labour muster (optional evidence photo uploads on flush) + material inward/consumption
 - [ ] Client blocked from site ops mutations
 
 ## Digests & sync
