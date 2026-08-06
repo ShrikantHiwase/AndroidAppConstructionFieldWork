@@ -80,6 +80,7 @@ docs/              Build plan and training
 | Cloud 5 PM DPR nudge Function | Done (Blaze to deploy) |
 | Client weekly progress PDF/share | Done |
 | In-app PDF viewer (pdfrx) | Done |
+| Pilot issue-create timing | Done |
 | FlutterFire configure + store release | Next (needs your Firebase project) |
 | Phase 3 Enterprise hooks | Deferred |
 

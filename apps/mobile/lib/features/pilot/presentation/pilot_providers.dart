@@ -38,6 +38,32 @@ class PilotChecklistController extends StateNotifier<PilotChecklistState> {
   }
 }
 
+final issueCreateTimingProvider = StateNotifierProvider<
+    IssueCreateTimingController, List<IssueCreateTimingSample>>((ref) {
+  return IssueCreateTimingController(ref.watch(pilotRepositoryProvider));
+});
+
+class IssueCreateTimingController
+    extends StateNotifier<List<IssueCreateTimingSample>> {
+  IssueCreateTimingController(this._repo) : super(_repo.getIssueCreateTimings());
+
+  final PilotRepository _repo;
+
+  Future<void> record({
+    required int durationMs,
+    required String projectId,
+    DateTime? recordedAt,
+  }) async {
+    final sample = IssueCreateTimingSample(
+      durationMs: durationMs,
+      projectId: projectId,
+      recordedAt: recordedAt ?? DateTime.now().toUtc(),
+    );
+    await _repo.recordIssueCreateTiming(sample);
+    state = _repo.getIssueCreateTimings();
+  }
+}
+
 /// Counts unique calendar days with a submitted DPR in the current ISO week.
 int countSubmittedDprDaysThisWeek(
   List<DailyProgressReport> dprs, {
@@ -74,6 +100,7 @@ PilotMetricsSnapshot buildPilotSnapshot({
   required int pendingSyncCount,
   required List<SyncLogEntry> syncLogs,
   required PilotChecklistState checklist,
+  List<IssueCreateTimingSample> issueCreateTimings = const [],
   DateTime? now,
 }) {
   final clock = now ?? DateTime.now();
@@ -87,6 +114,14 @@ PilotMetricsSnapshot buildPilotSnapshot({
       .length;
   final errors =
       syncLogs.where((l) => l.level == SyncLogLevel.error).length;
+  final createCount = issueCreateSampleCountForProject(
+    issueCreateTimings,
+    projectId: projectId,
+  );
+  final createMedian = issueCreateMedianMsForProject(
+    issueCreateTimings,
+    projectId: projectId,
+  );
 
   return PilotMetricsSnapshot(
     generatedAt: clock.toUtc(),
@@ -102,6 +137,8 @@ PilotMetricsSnapshot buildPilotSnapshot({
     syncErrorCount: errors,
     checklistCompleted: checklist.completedCount,
     checklistTotal: checklist.totalCount,
+    issueCreateSampleCount: createCount,
+    issueCreateMedianMs: createMedian,
   );
 }
 
@@ -111,6 +148,7 @@ final pilotSnapshotProvider = FutureProvider<PilotMetricsSnapshot?>((ref) async 
     return null;
   }
   final checklist = ref.watch(pilotChecklistProvider);
+  final timings = ref.watch(issueCreateTimingProvider);
   final dprs = await ref.watch(dprsProvider.future);
   final issues = await ref.watch(issuesProvider.future);
   final pending = await ref.watch(pendingSyncCountProvider.future);
@@ -123,5 +161,6 @@ final pilotSnapshotProvider = FutureProvider<PilotMetricsSnapshot?>((ref) async 
     pendingSyncCount: pending,
     syncLogs: logs,
     checklist: checklist,
+    issueCreateTimings: timings,
   );
 });

@@ -130,6 +130,23 @@ void main() {
         ),
       ],
       checklist: const PilotChecklistState(checkedIds: {'dpr_submit'}),
+      issueCreateTimings: [
+        IssueCreateTimingSample(
+          durationMs: 45000,
+          projectId: 'proj_pune_tower',
+          recordedAt: DateTime.utc(2026, 8, 5),
+        ),
+        IssueCreateTimingSample(
+          durationMs: 60000,
+          projectId: 'proj_pune_tower',
+          recordedAt: DateTime.utc(2026, 8, 5),
+        ),
+        IssueCreateTimingSample(
+          durationMs: 50000,
+          projectId: 'proj_pune_tower',
+          recordedAt: DateTime.utc(2026, 8, 6),
+        ),
+      ],
       now: DateTime(2026, 8, 6),
     );
 
@@ -137,11 +154,68 @@ void main() {
     expect(snap.syncFailureRate, closeTo(0.5, 0.001));
     expect(snap.syncTargetMet, isFalse);
     expect(snap.dprTargetMet, isFalse);
+    expect(snap.issueCreateSampleCount, 3);
+    expect(snap.issueCreateMedianMs, 50000);
+    expect(snap.issueCreateTargetMet, isTrue);
     expect(canAccessPilotHub(AppRole.admin), isTrue);
     expect(canAccessPilotHub(AppRole.siteEngineer), isFalse);
-    expect(
-      snap.toShareText(projectName: 'Pune Tower A'),
-      contains('PILOT SNAPSHOT'),
+    final text = snap.toShareText(projectName: 'Pune Tower A');
+    expect(text, contains('PILOT SNAPSHOT'));
+    expect(text, contains('Issue create median'));
+    expect(text, contains('50s'));
+  });
+
+  test('medianDurationMs handles even and odd lists', () {
+    expect(medianDurationMs(const []), isNull);
+    expect(medianDurationMs(const [10]), 10);
+    expect(medianDurationMs(const [10, 30, 20]), 20);
+    expect(medianDurationMs(const [10, 40]), 25);
+  });
+
+  test('issue create timings persist and drive project median', () async {
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+    final repo = LocalPilotRepository(prefs);
+    await repo.recordIssueCreateTiming(
+      IssueCreateTimingSample(
+        durationMs: 120000,
+        projectId: 'p1',
+        recordedAt: DateTime.utc(2026, 8, 6),
+      ),
     );
+    await repo.recordIssueCreateTiming(
+      IssueCreateTimingSample(
+        durationMs: 80000,
+        projectId: 'p1',
+        recordedAt: DateTime.utc(2026, 8, 6),
+      ),
+    );
+    await repo.recordIssueCreateTiming(
+      IssueCreateTimingSample(
+        durationMs: 90000,
+        projectId: 'other',
+        recordedAt: DateTime.utc(2026, 8, 6),
+      ),
+    );
+    final samples = repo.getIssueCreateTimings();
+    expect(samples, hasLength(3));
+    expect(
+      issueCreateMedianMsForProject(samples, projectId: 'p1'),
+      100000,
+    );
+    expect(
+      issueCreateSampleCountForProject(samples, projectId: 'p1'),
+      2,
+    );
+    final snap = buildPilotSnapshot(
+      projectId: 'p1',
+      dprs: const [],
+      issues: const [],
+      pendingSyncCount: 0,
+      syncLogs: const [],
+      checklist: const PilotChecklistState(),
+      issueCreateTimings: samples,
+    );
+    expect(snap.issueCreateTargetMet, isNull); // need 3 samples
   });
 }

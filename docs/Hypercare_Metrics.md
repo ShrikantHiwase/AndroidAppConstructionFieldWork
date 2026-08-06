@@ -5,7 +5,7 @@ Targets from the build plan. Measure during the first 2 weeks on each pilot site
 | Metric | Target | How to measure (demo / local) | Production later |
 |--------|--------|-------------------------------|------------------|
 | Engineer DPR adherence | ≥70% of engineers submit DPR ≥4 days/week | Pilot hub: submitted DPR days this ISO week / expected | Firestore query + FCM nudge analytics |
-| Issue create speed | Median &lt;90s | Manual stopwatch on UAT; optional note in Pilot hub | Instrumentation events |
+| Issue create speed | Median &lt;90s | Pilot hub: median from New Issue open → save (need ≥3 samples) | Instrumentation events (`issue_create`) |
 | Sync failure rate | &lt;2% of flush attempts | Pilot hub: error logs / total sync logs | Crashlytics + sync_events |
 | Client self-serve | Client opens weekly share/PDF without PM compile | Client → Weekly progress → Share weekly PDF | Storage download metrics |
 
@@ -14,9 +14,9 @@ Targets from the build plan. Measure during the first 2 weeks on each pilot site
 Admin (and PM) → **Pilot**:
 
 - **UAT checklist** — persisted local ticks matching [UAT_Checklist.md](UAT_Checklist.md)
-- **Live snapshot** — DPR days submitted this week, open issues, pending outbox, sync error rate from local logs
+- **Live snapshot** — DPR days submitted this week, **issue create median**, open issues, pending outbox, sync error rate from local logs
 - **Share pilot PDF** — 1-tap PDF / text share of the hypercare snapshot (same `SharePort` as DPR/digest)
-- **Pass/fail strip** — green when snapshot meets targets (DPR days ≥4 for active project demo user path; sync error rate &lt;2% when enough samples)
+- **Pass/fail strip** — green when snapshot meets targets (DPR days ≥4; issue create median &lt;90s with ≥3 samples; sync error rate &lt;2% when enough samples)
 
 ## Hypercare cadence
 

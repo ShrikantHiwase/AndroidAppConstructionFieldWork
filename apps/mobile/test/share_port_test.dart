@@ -157,6 +157,8 @@ PilotMetricsSnapshot _samplePilot() {
     syncErrorCount: 0,
     checklistCompleted: 4,
     checklistTotal: 12,
+    issueCreateSampleCount: 3,
+    issueCreateMedianMs: 55000,
   );
 }
 
