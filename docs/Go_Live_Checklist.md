@@ -67,6 +67,7 @@ flutter run --dart-define=USE_NATIVE_SENSORS=true
 - [ ] Issue with photo: flush uploads to Storage when Firebase is on; Fake `local://` paths stay demo URLs
 
 - [ ] Enable **Cloud Messaging** and confirm Sync status shows an FCM token after sign-in
+- [ ] Background: create offline → leave app → confirm `sync.background_last_at` updates (or reconnect flushes)
 
 ## 6. Pilot
 

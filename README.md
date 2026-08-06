@@ -14,6 +14,7 @@ Flutter + Firebase field evidence OS for mid-market construction contractors (In
 - [Device sensors](docs/Device_Sensors.md)
 - [Go-live checklist](docs/Go_Live_Checklist.md)
 - [FCM / push scaffolding](docs/FCM.md)
+- [Background sync](docs/Background_Sync.md)
 
 ## Repo layout
 
@@ -56,6 +57,7 @@ docs/              Build plan and training
 | Storage upload for documents | Done |
 | Voice notes Firestore/Storage sync | Done |
 | FCM push scaffolding | Done |
+| Workmanager + connectivity background sync | Done |
 | FlutterFire configure + store release | Next (needs your Firebase project) |
 | Phase 3 Enterprise hooks | Deferred |
 

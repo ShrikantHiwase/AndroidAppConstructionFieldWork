@@ -59,6 +59,9 @@ todos:
   - id: fcm-scaffolding
     content: FCM push scaffolding with NoOp demo + token registration
     status: completed
+  - id: background-sync
+    content: Workmanager + connectivity_plus background outbox flush
+    status: completed
 isProject: false
 ---
 
@@ -272,6 +275,7 @@ docs/                 # plans and training
 14. ~~Document Storage upload~~ — document uploads enqueue Storage then Firestore create (demo `local://` paths → `demo://` URLs); metadata still omits inline bodies.
 15. ~~Voice notes sync~~ — voice notes enqueue Storage + Firestore create; offline transcript pending resolves on flush; `audio/*` allowed in Storage rules.
 16. ~~FCM scaffolding~~ — `PushNotificationService` (NoOp + Firebase), local notification inbox, token → `fcm_tokens/{uid}`, assign/status intents logged; see [FCM.md](FCM.md).
-17. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift/Workmanager / real Admin.messaging send remain follow-ups.
+17. ~~Background sync~~ — Workmanager periodic/one-off outbox flush + `connectivity_plus` reconnect auto-flush; see [Background_Sync.md](Background_Sync.md).
+18. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift / real Admin.messaging send remain follow-ups.
 
 No native-only Android path; iOS ships from the same Flutter codebase. Enterprise BIM/Forge remains a WebView module after MVP.
