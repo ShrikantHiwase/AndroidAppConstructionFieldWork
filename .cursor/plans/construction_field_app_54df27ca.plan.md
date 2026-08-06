@@ -13,7 +13,7 @@ todos:
     status: completed
   - id: mvp-documents
     content: Document hierarchy, upload/download, PDF viewer, storage rules
-    status: pending
+    status: completed
   - id: offline-sync
     content: Offline-first cache, conflict policy, sync logs, cleanup, low-end device hardening
     status: pending

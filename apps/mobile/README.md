@@ -33,3 +33,7 @@ See root README for demo emails. Biometric unlock is a preference + unlock scree
 ## Issues / RFIs (Phase 1)
 
 Offline-first `LocalFieldRecordsRepository` with sync outbox. Demo GPS/photo buttons stand in for geolocator/image_picker until Firebase + device plugins are wired. Toggle offline from the cloud icon on home/issues.
+
+## Documents (Phase 1)
+
+Browse Project → Discipline → Document Type → Files. Seeded demo PDF/TXT/CSV. Upload is a content stub until Firebase Storage + file picker. Viewer supports search; PDF uses demo pages with zoom/page nav (pdfrx later).

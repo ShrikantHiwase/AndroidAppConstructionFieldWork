@@ -66,4 +66,40 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Scaffold gap'), findsOneWidget);
   });
+
+  testWidgets('documents browser shows seeded hierarchy', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          sharedPreferencesProvider.overrideWithValue(prefs),
+        ],
+        child: const FieldApp(),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Sign in'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Documents'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Structural'), findsOneWidget);
+    expect(find.text('MEP'), findsOneWidget);
+
+    await tester.tap(find.text('Structural'));
+    await tester.pumpAndSettle();
+    expect(find.text('Drawings'), findsOneWidget);
+
+    await tester.tap(find.text('Drawings'));
+    await tester.pumpAndSettle();
+    expect(find.text('GA Plan Level 02.pdf'), findsOneWidget);
+
+    await tester.tap(find.text('GA Plan Level 02.pdf'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('Page 1'), findsOneWidget);
+    expect(find.text('Search'), findsOneWidget);
+  });
 }
