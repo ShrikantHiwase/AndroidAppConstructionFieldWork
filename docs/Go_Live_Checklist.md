@@ -80,7 +80,7 @@ flutter run --dart-define=USE_NATIVE_SENSORS=true
 ## 7. Store tracks
 
 - [ ] Play internal testing / TestFlight build
-- [ ] Crashlytics + Analytics packages (still deferred — add when Firebase is live)
+- [ ] Crashlytics + Analytics packages (scaffolding ships as NoOp — add packages when Firebase is live; see [Telemetry.md](Telemetry.md))
 - [ ] Privacy policy / data safety forms for location + camera
 
 ## Notes
