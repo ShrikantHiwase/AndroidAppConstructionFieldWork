@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../secure/secure_store.dart';
+
 class NotificationLogEntry {
   const NotificationLogEntry({
     required this.id,
@@ -42,17 +44,23 @@ class NotificationLogEntry {
 
 /// On-device inbox for demo nudges + FCM (foreground / background / open).
 class LocalNotificationInbox {
-  LocalNotificationInbox(this._prefs) {
+  LocalNotificationInbox(
+    this._prefs, {
+    SecureStore? secure,
+  }) : _secure = secure ?? FakeSecureStore(_prefs) {
     _load();
   }
 
   final SharedPreferences _prefs;
+  final SecureStore _secure;
   static const _key = 'fcm.inbox';
-  static const _tokenKey = 'fcm.token';
+  static const _tokenKey = SecureKeys.fcmToken;
   static const _max = 40;
 
   final _entries = <NotificationLogEntry>[];
   int _seq = 0;
+  String? _token;
+  var _tokenReady = false;
 
   void _load() {
     for (final raw in _prefs.getStringList(_key) ?? const []) {
@@ -62,6 +70,13 @@ class LocalNotificationInbox {
         ),
       );
     }
+  }
+
+  Future<void> _ensureToken() async {
+    if (_tokenReady) return;
+    await _secure.migrateFromPrefs(_prefs);
+    _token = await _secure.read(_tokenKey);
+    _tokenReady = true;
   }
 
   Future<void> _persist() async {
@@ -97,7 +112,14 @@ class LocalNotificationInbox {
     await _persist();
   }
 
-  Future<void> saveToken(String token) => _prefs.setString(_tokenKey, token);
+  Future<void> saveToken(String token) async {
+    await _ensureToken();
+    _token = token;
+    await _secure.write(_tokenKey, token);
+  }
 
-  String? readToken() => _prefs.getString(_tokenKey);
+  Future<String?> readToken() async {
+    await _ensureToken();
+    return _token;
+  }
 }

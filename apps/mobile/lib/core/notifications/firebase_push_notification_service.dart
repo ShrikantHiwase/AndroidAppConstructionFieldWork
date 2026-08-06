@@ -74,7 +74,7 @@ class FirebasePushNotificationService implements PushNotificationService {
 
   @override
   Future<String?> currentToken() async =>
-      _token ?? _inbox.readToken() ?? await _messaging.getToken();
+      _token ?? await _inbox.readToken() ?? await _messaging.getToken();
 
   @override
   Future<void> notifyLocal({

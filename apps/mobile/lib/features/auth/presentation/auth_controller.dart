@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../admin/data/firebase_admin_invites_repository.dart';
 import '../../admin/data/local_admin_invites_repository.dart';
 import '../../admin/domain/admin_invites_repository.dart';
+import '../../../core/secure/secure_store.dart';
 import '../data/fake_auth_repository.dart';
 import '../data/firebase_auth_repository.dart';
 import '../domain/auth_models.dart';
@@ -11,6 +12,11 @@ import '../domain/auth_repository.dart';
 
 final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {
   throw UnimplementedError('Override sharedPreferencesProvider in main()');
+});
+
+/// Fake by default (CI-safe). [main] overrides with [createSecureStore].
+final secureStoreProvider = Provider<SecureStore>((ref) {
+  return FakeSecureStore(ref.watch(sharedPreferencesProvider));
 });
 
 /// Overridden in [main] after [bootstrapFirebase]. Default keeps demo auth in tests.
@@ -26,12 +32,14 @@ final adminInvitesRepositoryProvider = Provider<AdminInvitesRepository>((ref) {
 
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
   final prefs = ref.watch(sharedPreferencesProvider);
+  final secure = ref.watch(secureStoreProvider);
   if (ref.watch(firebaseEnabledProvider)) {
-    return FirebaseAuthRepository(prefs: prefs);
+    return FirebaseAuthRepository(prefs: prefs, secure: secure);
   }
   return FakeAuthRepository(
     prefs,
     invites: ref.watch(adminInvitesRepositoryProvider),
+    secure: secure,
   );
 });
 
