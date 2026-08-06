@@ -47,9 +47,12 @@ void main() {
       kind: SafetyKind.observation,
       title: 'Open edge',
       notes: 'Missing rail',
-      hasPhoto: true,
+      photoLocalPath: 'local://demo/safety_obs.jpg',
+      photoByteSizeBytes: 150 * 1024,
     );
     expect(obs.hasPhoto, isTrue);
+    expect(obs.photoLocalPath, startsWith('local://'));
+    expect(obs.photoByteSizeBytes, 150 * 1024);
   });
 
   test('QA fail without photo is rejected', () async {
@@ -84,10 +87,13 @@ void main() {
           label: 'Cover',
           result: InspectionResult.fail,
           hasPhoto: true,
+          photoLocalPath: 'local://demo/qa_fail.jpg',
+          photoByteSizeBytes: 120 * 1024,
         ),
       ],
     );
     expect(ok.hasFailures, isTrue);
+    expect(ok.items.single.photoByteSizeBytes, 120 * 1024);
   });
 
   test('labour muster and material inward', () async {

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/device/device_providers.dart';
+import '../../../core/device/evidence_capture.dart';
+import '../../../core/device/evidence_image_policy.dart';
 import '../../../core/device/fake_location_service.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../domain/site_ops_models.dart';
@@ -78,7 +80,8 @@ class _SafetyTab extends ConsumerWidget {
                 title: Text(r.title),
                 subtitle: Text(
                   '${r.kind.name} · ${r.createdByName}'
-                  '${r.hasPhoto ? ' · photo' : ''}',
+                  '${r.hasPhoto ? ' · photo' : ''}'
+                  '${r.photoByteSizeBytes == null ? '' : ' · ~${EvidenceImagePolicy.formatBytes(r.photoByteSizeBytes!)}'}',
                 ),
               );
             },
@@ -92,12 +95,15 @@ class _SafetyTab extends ConsumerWidget {
     final title = TextEditingController();
     final notes = TextEditingController();
     var kind = SafetyKind.toolboxTalk;
-    var hasPhoto = false;
+    String? photoLocalPath;
+    int? photoByteSizeBytes;
+    String? photoLabel;
     final ok = await showDialog<bool>(
       context: context,
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setLocal) {
+            final needsPhoto = kind != SafetyKind.toolboxTalk;
             return AlertDialog(
               title: const Text('Safety record'),
               content: SingleChildScrollView(
@@ -137,16 +143,68 @@ class _SafetyTab extends ConsumerWidget {
                         border: OutlineInputBorder(),
                       ),
                     ),
-                    CheckboxListTile(
-                      contentPadding: EdgeInsets.zero,
-                      title: const Text('Photo attached'),
-                      subtitle: const Text(
-                        'Use evidence capture on issues for real photos; checkbox is the demo gate here.',
-                      ),
-                      value: hasPhoto,
-                      onChanged: (v) =>
-                          setLocal(() => hasPhoto = v ?? false),
+                    const SizedBox(height: 8),
+                    Text(
+                      needsPhoto
+                          ? 'Photo evidence required for observations / incidents.'
+                          : 'Photo optional for toolbox talks.',
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
+                    const SizedBox(height: 8),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        OutlinedButton.icon(
+                          onPressed: () async {
+                            final shot = await ref
+                                .read(evidenceCaptureProvider)
+                                .capturePhoto(
+                                  source: EvidencePhotoSource.camera,
+                                );
+                            if (shot == null) return;
+                            setLocal(() {
+                              photoLocalPath = shot.localPath;
+                              photoByteSizeBytes = shot.byteSizeBytes;
+                              photoLabel = shot.fileName;
+                            });
+                          },
+                          icon: const Icon(Icons.photo_camera_outlined),
+                          label: const Text('Add photo'),
+                        ),
+                        OutlinedButton.icon(
+                          onPressed: () async {
+                            final shot = await ref
+                                .read(evidenceCaptureProvider)
+                                .capturePhoto(
+                                  source: EvidencePhotoSource.gallery,
+                                );
+                            if (shot == null) return;
+                            setLocal(() {
+                              photoLocalPath = shot.localPath;
+                              photoByteSizeBytes = shot.byteSizeBytes;
+                              photoLabel = shot.fileName;
+                            });
+                          },
+                          icon: const Icon(Icons.photo_library_outlined),
+                          label: const Text('Gallery'),
+                        ),
+                      ],
+                    ),
+                    if (photoLabel != null) ...[
+                      const SizedBox(height: 8),
+                      ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        dense: true,
+                        leading: const Icon(Icons.image_outlined),
+                        title: Text(photoLabel!),
+                        subtitle: Text(
+                          photoByteSizeBytes == null
+                              ? 'Queued'
+                              : 'Queued · ~${EvidenceImagePolicy.formatBytes(photoByteSizeBytes!)}',
+                        ),
+                      ),
+                    ],
                   ],
                 ),
               ),
@@ -174,7 +232,9 @@ class _SafetyTab extends ConsumerWidget {
             kind: kind,
             title: title.text,
             notes: notes.text,
-            hasPhoto: hasPhoto,
+            hasPhoto: photoLocalPath != null,
+            photoLocalPath: photoLocalPath,
+            photoByteSizeBytes: photoByteSizeBytes,
           );
     } catch (e) {
       if (context.mounted) {
@@ -233,11 +293,23 @@ class _QaTab extends ConsumerWidget {
     final session = ref.read(authSessionProvider);
     if (session == null) return;
     try {
+      // Demo WIR includes one fail — capture compressed evidence for photoOnFail.
+      final shot = await ref.read(evidenceCaptureProvider).capturePhoto();
+      if (shot == null) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Photo required for failed checklist items'),
+            ),
+          );
+        }
+        return;
+      }
       await ref.read(siteOpsRepositoryProvider).addInspection(
             session: session,
             title: 'WIR — Slab Bay 3',
-            items: const [
-              InspectionItem(
+            items: [
+              const InspectionItem(
                 id: 'i1',
                 label: 'Formwork alignment',
                 result: InspectionResult.pass,
@@ -247,8 +319,10 @@ class _QaTab extends ConsumerWidget {
                 label: 'Rebar cover',
                 result: InspectionResult.fail,
                 hasPhoto: true,
+                photoLocalPath: shot.localPath,
+                photoByteSizeBytes: shot.byteSizeBytes,
               ),
-              InspectionItem(
+              const InspectionItem(
                 id: 'i3',
                 label: 'Embeds / openings',
                 result: InspectionResult.pass,
@@ -256,8 +330,13 @@ class _QaTab extends ConsumerWidget {
             ],
           );
       if (context.mounted) {
+        final size = shot.byteSizeBytes == null
+            ? ''
+            : ' · ~${EvidenceImagePolicy.formatBytes(shot.byteSizeBytes!)}';
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Inspection saved (demo WIR)')),
+          SnackBar(
+            content: Text('Inspection saved with fail photo$size'),
+          ),
         );
       }
     } catch (e) {

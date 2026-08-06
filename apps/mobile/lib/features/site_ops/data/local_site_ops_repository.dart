@@ -24,6 +24,8 @@ abstract class SiteOpsRepository {
     required String title,
     required String notes,
     bool hasPhoto = false,
+    String? photoLocalPath,
+    int? photoByteSizeBytes,
   });
 
   Future<QaInspection> addInspection({
@@ -206,11 +208,15 @@ class LocalSiteOpsRepository implements SiteOpsRepository, SyncableStore {
     required String title,
     required String notes,
     bool hasPhoto = false,
+    String? photoLocalPath,
+    int? photoByteSizeBytes,
   }) async {
     _ensure(session);
     if (title.trim().isEmpty) throw SiteOpsException('Title required');
     final photoRequired = kind != SafetyKind.toolboxTalk;
-    if (photoRequired && !hasPhoto) {
+    final attached = hasPhoto ||
+        (photoLocalPath != null && photoLocalPath.isNotEmpty);
+    if (photoRequired && !attached) {
       throw SiteOpsException('Photo evidence required for ${kind.name}');
     }
     final now = DateTime.now().toUtc();
@@ -225,7 +231,9 @@ class LocalSiteOpsRepository implements SiteOpsRepository, SyncableStore {
       createdByName: session.user.displayName,
       createdAt: now,
       photoRequired: photoRequired,
-      hasPhoto: hasPhoto,
+      hasPhoto: attached,
+      photoLocalPath: photoLocalPath,
+      photoByteSizeBytes: photoByteSizeBytes,
     );
     _safety[record.id] = record;
     _outbox.enqueue(
@@ -399,6 +407,8 @@ class LocalSiteOpsRepository implements SiteOpsRepository, SyncableStore {
           createdAt: r.createdAt,
           photoRequired: r.photoRequired,
           hasPhoto: r.hasPhoto,
+          photoLocalPath: r.photoLocalPath,
+          photoByteSizeBytes: r.photoByteSizeBytes,
           synced: true,
         );
         changed += 1;
