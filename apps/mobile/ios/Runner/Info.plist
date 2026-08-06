@@ -45,5 +45,11 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Capture site photo evidence for issues, safety, and QA.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Attach GPS to field records and check labour muster geofence.</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Unlock Field Evidence after app resume.</string>
 </dict>
 </plist>

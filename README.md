@@ -46,6 +46,7 @@ docs/              Build plan and training
 | Voice notes + smart digests | Done |
 | Pilot / UAT pack (training + hub) | Done |
 | Admin invites (local / demo) | Done |
+| Device sensors (GPS/camera/biometrics) | Done |
 | FlutterFire configure + store release | Next (needs your Firebase project) |
 | Phase 3 Enterprise hooks | Deferred |
 
