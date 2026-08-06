@@ -7,10 +7,10 @@ Short training for 1–2 live pilot sites. Demo logins work without Firebase; pr
 | Role | Daily job in the app |
 |------|----------------------|
 | **Site Engineer** | New Issue (photo + GPS), Today's DPR (~3 min), Pin on Drawing, Site ops as needed, Reminders |
-| **Project Manager** | Open queue (assign / status), DPRs, Digests (PM digest + copy), Site ops |
+| **Project Manager** | Open queue (assign / status), DPRs, Digests (PM digest + copy), Weekly pack, Site ops |
 | **QA/QC** | Inspections (photo on fail), quality issues |
-| **Client** | Read-only Issues + Documents |
-| **Admin** | Documents, Digests, **Pilot** hub, **Invite user** (role + projects) |
+| **Client** | Read-only **Weekly progress** (PDF/text share) + Issues + Documents |
+| **Admin** | Documents, Digests, Weekly pack, **Pilot** hub, **Invite user** (role + projects) |
 
 ## Demo accounts (local)
 
@@ -30,7 +30,7 @@ Password for all: `demo1234`
 
 1. **Open queue** → assign an issue, move status.
 2. **Digests** → review open issues/RFIs/blockers → **Share digest**.
-3. Confirm client can open Documents without help.
+3. Confirm client can open **Weekly progress** → Share weekly PDF without help.
 
 ## Offline rules to teach
 

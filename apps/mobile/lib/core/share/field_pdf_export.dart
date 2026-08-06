@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
+import '../../features/client_progress/domain/weekly_progress_models.dart';
 import '../../features/digests/domain/digest_models.dart';
 import '../../features/dpr/domain/dpr_models.dart';
 import '../../features/pilot/domain/pilot_models.dart';
@@ -177,6 +178,108 @@ class FieldPdfExport {
                 ),
               ),
             ),
+        ],
+      ),
+    );
+
+    return doc.save();
+  }
+
+  static Future<Uint8List> weekly({
+    required WeeklyProgressSnapshot pack,
+    required String projectName,
+  }) async {
+    final generated = pack.generatedAt.toIso8601String();
+    final doc = pw.Document(
+      title: 'Weekly progress — $projectName',
+      author: 'Construction Field App',
+    );
+
+    doc.addPage(
+      pw.MultiPage(
+        pageFormat: PdfPageFormat.a4,
+        margin: const pw.EdgeInsets.all(40),
+        header: (context) => pw.Column(
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
+          children: [
+            pw.Text(
+              'WEEKLY PROGRESS',
+              style: pw.TextStyle(
+                fontSize: 18,
+                fontWeight: pw.FontWeight.bold,
+              ),
+            ),
+            pw.SizedBox(height: 4),
+            pw.Text(
+              projectName,
+              style: const pw.TextStyle(fontSize: 12, color: PdfColors.grey700),
+            ),
+            pw.Divider(thickness: 1),
+            pw.SizedBox(height: 8),
+          ],
+        ),
+        footer: (context) => pw.Align(
+          alignment: pw.Alignment.centerRight,
+          child: pw.Text(
+            'Page ${context.pageNumber} of ${context.pagesCount}',
+            style: const pw.TextStyle(fontSize: 9, color: PdfColors.grey600),
+          ),
+        ),
+        build: (context) => [
+          _kv('Week', pack.weekRangeLabel),
+          _kv('Generated', generated),
+          _kv('Submitted DPR days', '${pack.submittedDprDays} / 7'),
+          _kv('Open issues', '${pack.openIssueCount}'),
+          pw.SizedBox(height: 16),
+          pw.Text(
+            'Daily highlights',
+            style: pw.TextStyle(fontSize: 13, fontWeight: pw.FontWeight.bold),
+          ),
+          pw.SizedBox(height: 6),
+          if (pack.days.isEmpty)
+            pw.Text('No submitted DPRs in this ISO week yet.'),
+          if (pack.days.isNotEmpty)
+            ...pack.days.map(
+              (day) => pw.Padding(
+                padding: const pw.EdgeInsets.only(bottom: 10),
+                child: pw.Column(
+                  crossAxisAlignment: pw.CrossAxisAlignment.start,
+                  children: [
+                    pw.Text(
+                      day.dateLabel,
+                      style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                    ),
+                    pw.Text(
+                      'Weather: ${day.weather} · Manpower: ${day.manpowerSummary}',
+                      style: const pw.TextStyle(
+                        fontSize: 11,
+                        color: PdfColors.grey700,
+                      ),
+                    ),
+                    ...day.activitySummaries.map(
+                      (a) => pw.Text('- $a'),
+                    ),
+                    if (day.blockers != null)
+                      pw.Text(
+                        'Blockers: ${day.blockers}',
+                        style: const pw.TextStyle(
+                          fontSize: 11,
+                          color: PdfColors.red700,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          if (pack.openIssueTitles.isNotEmpty) ...[
+            pw.SizedBox(height: 12),
+            pw.Text(
+              'Open issues',
+              style: pw.TextStyle(fontSize: 13, fontWeight: pw.FontWeight.bold),
+            ),
+            pw.SizedBox(height: 6),
+            ...pack.openIssueTitles.map((t) => pw.Text('- $t')),
+          ],
         ],
       ),
     );

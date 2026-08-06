@@ -8,6 +8,7 @@ import '../../../core/providers/connectivity_provider.dart';
 import '../../../core/telemetry/telemetry_providers.dart';
 import '../../../core/widgets/offline_badge.dart';
 import '../../admin/presentation/admin_invites_page.dart';
+import '../../client_progress/presentation/weekly_progress_page.dart';
 import '../../digests/presentation/digests_page.dart';
 import '../../documents/presentation/documents_browser_page.dart';
 import '../../dpr/presentation/dpr_pages.dart';
@@ -101,6 +102,11 @@ class _RoleHomePageState extends ConsumerState<RoleHomePage> {
               onPressed: () => _open(context, const DigestsPage()),
             ),
             _PrimaryAction(
+              Icons.calendar_view_week_outlined,
+              'Weekly pack',
+              onPressed: () => _open(context, const WeeklyProgressPage()),
+            ),
+            _PrimaryAction(
               Icons.health_and_safety_outlined,
               'Site ops',
               onPressed: () => _open(context, const SiteOpsHubPage()),
@@ -141,6 +147,11 @@ class _RoleHomePageState extends ConsumerState<RoleHomePage> {
           subtitle: 'Read-only progress and project documents.',
           actions: [
             _PrimaryAction(
+              Icons.calendar_view_week_outlined,
+              'Weekly progress',
+              onPressed: () => _open(context, const WeeklyProgressPage()),
+            ),
+            _PrimaryAction(
               Icons.list_alt_outlined,
               'Issues',
               onPressed: () => _open(context, const IssuesListPage()),
@@ -167,6 +178,11 @@ class _RoleHomePageState extends ConsumerState<RoleHomePage> {
               Icons.list_alt_outlined,
               'Issues',
               onPressed: () => _open(context, const IssuesListPage()),
+            ),
+            _PrimaryAction(
+              Icons.calendar_view_week_outlined,
+              'Weekly pack',
+              onPressed: () => _open(context, const WeeklyProgressPage()),
             ),
             _PrimaryAction(
               Icons.person_add_outlined,

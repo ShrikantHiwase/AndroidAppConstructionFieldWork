@@ -322,7 +322,8 @@ docs/                 # plans and training
 37. ~~Material log evidence photos~~ — optional GRN/consumption photo via EvidenceCapture; outbox Storage upload then create; soft cache includes material stubs.
 38. ~~Document file picker~~ — `DocumentFilePicker` Fake + `file_picker` Device behind sensors gate; soft cache includes document stubs.
 39. ~~Cloud 5 PM DPR nudge Function~~ — `dailyDprNudge` scheduled fan-out (`dpr_nudge.js`); soft-skip envs; local tray remains demo path. Blaze required to deploy.
-40. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift remains a follow-up.
+40. ~~Client weekly progress share~~ — ISO-week pack from submitted DPRs + open issues; `FieldPdfExport.weekly` + Client/PM/Admin home CTA; closes Hypercare client self-serve PDF.
+41. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift remains a follow-up.
 7. ~~Pilot / UAT pack~~ — training guide, UAT checklist, hypercare metrics docs + in-app Pilot hub (checklist + live snapshot). Live-site execution and store tracks still need your Firebase project / devices.
 8. ~~Admin invites~~ — in-app create invite + demo accept via FakeAuth (scoped memberships); Cloud Functions email later.
 9. ~~Device sensors~~ — `geolocator` / `image_picker` / `local_auth` / `record` / `file_picker` with Fake defaults; enable native via `--dart-define=USE_NATIVE_SENSORS=true`. See `docs/Device_Sensors.md`.
@@ -356,6 +357,7 @@ docs/                 # plans and training
 37. ~~Material log evidence photos~~ — optional GRN/consumption photo via EvidenceCapture; outbox Storage upload then create; soft cache includes material stubs.
 38. ~~Document file picker~~ — `DocumentFilePicker` Fake + `file_picker` Device behind sensors gate; soft cache includes document stubs.
 39. ~~Cloud 5 PM DPR nudge Function~~ — `dailyDprNudge` scheduled fan-out (`dpr_nudge.js`); soft-skip envs; local tray remains demo path. Blaze required to deploy.
-40. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift remains a follow-up.
+40. ~~Client weekly progress share~~ — ISO-week pack from submitted DPRs + open issues; `FieldPdfExport.weekly` + Client/PM/Admin home CTA; closes Hypercare client self-serve PDF.
+41. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift remains a follow-up.
 
 No native-only Android path; iOS ships from the same Flutter codebase. Enterprise BIM/Forge remains a WebView module after MVP.

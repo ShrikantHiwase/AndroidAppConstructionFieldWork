@@ -53,6 +53,7 @@ Run on mid/low-end Android first. Mark each item in Admin → **Pilot** (or tick
 - [ ] Sync status shows logs, background flush meta, Probe health, local cache meter, telemetry events, secure store backend; cleanup reclaims uploaded stubs without crash
 - [ ] Conflict policy labels visible on flush (LWW / append / audited)
 - [ ] Pilot hub Share pilot PDF works (PM/Admin)
+- [ ] Client → Weekly progress → Share weekly PDF (empty week OK; no PM compile)
 
 ## Firebase (when configured)
 
