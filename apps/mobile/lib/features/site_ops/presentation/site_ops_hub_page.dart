@@ -81,7 +81,9 @@ class _SafetyTab extends ConsumerWidget {
                 subtitle: Text(
                   '${r.kind.name} · ${r.createdByName}'
                   '${r.hasPhoto ? ' · photo' : ''}'
-                  '${r.photoByteSizeBytes == null ? '' : ' · ~${EvidenceImagePolicy.formatBytes(r.photoByteSizeBytes!)}'}',
+                  '${r.photoByteSizeBytes == null ? '' : ' · ~${EvidenceImagePolicy.formatBytes(r.photoByteSizeBytes!)}'}'
+                  '${r.pendingPhotoUpload ? ' · queued upload' : ''}'
+                  '${r.photoRemoteUrl == null ? '' : ' · uploaded'}',
                 ),
               );
             },
@@ -279,7 +281,9 @@ class _QaTab extends ConsumerWidget {
                 title: Text(r.title),
                 subtitle: Text(
                   '${r.items.length} checks · '
-                  '${r.hasFailures ? 'HAS FAILS' : 'PASS'}',
+                  '${r.hasFailures ? 'HAS FAILS' : 'PASS'}'
+                  '${r.items.any((i) => i.pendingPhotoUpload) ? ' · photo queued' : ''}'
+                  '${r.items.any((i) => i.photoRemoteUrl != null) ? ' · photo uploaded' : ''}',
                 ),
               );
             },

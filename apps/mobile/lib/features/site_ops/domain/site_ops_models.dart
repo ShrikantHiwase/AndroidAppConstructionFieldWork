@@ -17,6 +17,8 @@ class SafetyRecord {
     this.hasPhoto = false,
     this.photoLocalPath,
     this.photoByteSizeBytes,
+    this.photoRemoteUrl,
+    this.pendingPhotoUpload = false,
     this.synced = false,
   });
 
@@ -33,6 +35,8 @@ class SafetyRecord {
   final bool hasPhoto;
   final String? photoLocalPath;
   final int? photoByteSizeBytes;
+  final String? photoRemoteUrl;
+  final bool pendingPhotoUpload;
   final bool synced;
 
   SafetyRecord copyWith({
@@ -40,6 +44,8 @@ class SafetyRecord {
     bool? hasPhoto,
     String? photoLocalPath,
     int? photoByteSizeBytes,
+    String? photoRemoteUrl,
+    bool? pendingPhotoUpload,
   }) {
     return SafetyRecord(
       id: id,
@@ -55,6 +61,8 @@ class SafetyRecord {
       hasPhoto: hasPhoto ?? this.hasPhoto,
       photoLocalPath: photoLocalPath ?? this.photoLocalPath,
       photoByteSizeBytes: photoByteSizeBytes ?? this.photoByteSizeBytes,
+      photoRemoteUrl: photoRemoteUrl ?? this.photoRemoteUrl,
+      pendingPhotoUpload: pendingPhotoUpload ?? this.pendingPhotoUpload,
       synced: synced ?? this.synced,
     );
   }
@@ -73,6 +81,8 @@ class SafetyRecord {
         'hasPhoto': hasPhoto,
         'photoLocalPath': photoLocalPath,
         'photoByteSizeBytes': photoByteSizeBytes,
+        'photoRemoteUrl': photoRemoteUrl,
+        'pendingPhotoUpload': pendingPhotoUpload,
         'synced': synced,
       };
 
@@ -91,6 +101,8 @@ class SafetyRecord {
             ((json['photoLocalPath'] as String?)?.isNotEmpty ?? false),
         photoLocalPath: json['photoLocalPath'] as String?,
         photoByteSizeBytes: json['photoByteSizeBytes'] as int?,
+        photoRemoteUrl: json['photoRemoteUrl'] as String?,
+        pendingPhotoUpload: json['pendingPhotoUpload'] as bool? ?? false,
         synced: json['synced'] as bool? ?? false,
       );
 }
@@ -106,6 +118,8 @@ class InspectionItem {
     this.hasPhoto = false,
     this.photoLocalPath,
     this.photoByteSizeBytes,
+    this.photoRemoteUrl,
+    this.pendingPhotoUpload = false,
   });
 
   final String id;
@@ -115,12 +129,16 @@ class InspectionItem {
   final bool hasPhoto;
   final String? photoLocalPath;
   final int? photoByteSizeBytes;
+  final String? photoRemoteUrl;
+  final bool pendingPhotoUpload;
 
   InspectionItem copyWith({
     InspectionResult? result,
     bool? hasPhoto,
     String? photoLocalPath,
     int? photoByteSizeBytes,
+    String? photoRemoteUrl,
+    bool? pendingPhotoUpload,
   }) {
     return InspectionItem(
       id: id,
@@ -130,6 +148,8 @@ class InspectionItem {
       hasPhoto: hasPhoto ?? this.hasPhoto,
       photoLocalPath: photoLocalPath ?? this.photoLocalPath,
       photoByteSizeBytes: photoByteSizeBytes ?? this.photoByteSizeBytes,
+      photoRemoteUrl: photoRemoteUrl ?? this.photoRemoteUrl,
+      pendingPhotoUpload: pendingPhotoUpload ?? this.pendingPhotoUpload,
     );
   }
 
@@ -141,6 +161,8 @@ class InspectionItem {
         'hasPhoto': hasPhoto,
         'photoLocalPath': photoLocalPath,
         'photoByteSizeBytes': photoByteSizeBytes,
+        'photoRemoteUrl': photoRemoteUrl,
+        'pendingPhotoUpload': pendingPhotoUpload,
       };
 
   factory InspectionItem.fromJson(Map<String, Object?> json) => InspectionItem(
@@ -152,6 +174,8 @@ class InspectionItem {
             ((json['photoLocalPath'] as String?)?.isNotEmpty ?? false),
         photoLocalPath: json['photoLocalPath'] as String?,
         photoByteSizeBytes: json['photoByteSizeBytes'] as int?,
+        photoRemoteUrl: json['photoRemoteUrl'] as String?,
+        pendingPhotoUpload: json['pendingPhotoUpload'] as bool? ?? false,
       );
 }
 

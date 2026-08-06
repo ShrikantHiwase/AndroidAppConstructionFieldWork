@@ -7,11 +7,13 @@ import '../../features/issues/data/local_field_records_repository.dart';
 import '../../features/site_ops/data/local_site_ops_repository.dart';
 import '../../features/voice_notes/data/local_voice_notes_repository.dart';
 import '../local_sync_engine.dart';
+import '../remote/firebase_storage_uploader.dart';
 import '../remote/firestore_field_remote_pull.dart';
 import '../remote/firestore_module_pull.dart';
 import '../remote/firestore_outbox_remote_sink.dart';
 import '../remote/module_remote_pull.dart';
 import '../remote/outbox_remote_sink.dart';
+import '../remote/storage_uploader.dart';
 import '../remote/syncable_store.dart';
 
 /// Result of a headless outbox flush (used by Workmanager + tests).
@@ -51,11 +53,21 @@ Future<BackgroundFlushResult> runBackgroundOutboxFlush({
       remotePull: firebase.enabled
           ? FirestoreFieldRemotePull()
           : null,
+      storageUploader: firebase.enabled
+          ? FirebaseStorageUploader()
+          : const NoOpStorageUploader(),
     );
     final stores = <SyncableStore>[
       LocalDprRepository(shared, remoteSink: sink, remotePull: pull),
       LocalDrawingPinsRepository(shared, remoteSink: sink, remotePull: pull),
-      LocalSiteOpsRepository(shared, remoteSink: sink, remotePull: pull),
+      LocalSiteOpsRepository(
+        shared,
+        remoteSink: sink,
+        remotePull: pull,
+        storageUploader: firebase.enabled
+            ? FirebaseStorageUploader()
+            : const NoOpStorageUploader(),
+      ),
       LocalDocumentsRepository(shared, remoteSink: sink, remotePull: pull),
       LocalVoiceNotesRepository(shared, remoteSink: sink, remotePull: pull),
     ];

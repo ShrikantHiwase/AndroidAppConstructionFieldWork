@@ -34,6 +34,6 @@ Already in the platform folders.
 ## Wired call sites
 
 - New Issue → Add GPS / Add photo / From gallery
-- Site ops → Safety observation/incident photo; QA WIR fail photo (compressed)
+- Site ops → Safety observation/incident photo; QA WIR fail photo (compressed + Storage outbox upload)
 - Biometric unlock screen
 - Labour muster geofence check

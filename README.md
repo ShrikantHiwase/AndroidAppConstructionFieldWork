@@ -69,6 +69,7 @@ docs/              Build plan and training
 | Evidence photo compression | Done |
 | Pilot hub hypercare PDF export | Done |
 | Site-ops evidence photo capture | Done |
+| Site-ops evidence Storage upload | Done |
 | FlutterFire configure + store release | Next (needs your Firebase project) |
 | Phase 3 Enterprise hooks | Deferred |
 

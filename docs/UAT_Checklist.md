@@ -40,8 +40,8 @@ Run on mid/low-end Android first. Mark each item in Admin → **Pilot** (or tick
 
 ## Site ops
 
-- [ ] Safety toolbox without photo; observation/incident requires compressed photo
-- [ ] QA fail rejected without photo; pass allowed; demo WIR captures fail photo
+- [ ] Safety toolbox without photo; observation/incident requires compressed photo (flushes to demo:// / Storage)
+- [ ] QA fail rejected without photo; pass allowed; demo WIR captures fail photo and uploads on flush
 - [ ] Labour muster + material inward/consumption
 - [ ] Client blocked from site ops mutations
 
