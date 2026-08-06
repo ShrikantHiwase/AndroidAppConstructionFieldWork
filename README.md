@@ -61,6 +61,7 @@ docs/              Build plan and training
 | FCM Admin.messaging + background handlers | Done |
 | Firebase inviteMember callable (admin UI) | Done |
 | RFI FCM assign/status parity | Done |
+| System share (DPR / digests / docs) | Done |
 | FlutterFire configure + store release | Next (needs your Firebase project) |
 | Phase 3 Enterprise hooks | Deferred |
 

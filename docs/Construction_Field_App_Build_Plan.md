@@ -71,6 +71,9 @@ todos:
   - id: rfi-fcm-parity
     content: onRfiWrite FCM + assignRfi client parity with issues
     status: completed
+  - id: system-share
+    content: share_plus for DPR/digest/document summaries with clipboard fallback
+    status: completed
 isProject: false
 ---
 
@@ -274,6 +277,10 @@ docs/                 # plans and training
 4. ~~Phase 2b site ops~~ — done: safety/toolbox + observations/incidents (photo rules), QA WIR checklists (photo-on-fail), supervisor labour muster, material inward/consumption lite.
 5. ~~Firebase wiring prep~~ — packages + bootstrap gate + `FirebaseAuthRepository`; demo mode until `flutterfire configure`. See `docs/Firebase_Setup.md`.
 6. ~~Voice + digests~~ — demo voice notes on DPR/issues; 5 PM DPR nudge prefs; PM digest of open issues/RFIs/blockers with WhatsApp copy.
+...
+20. ~~RFI FCM parity~~ — `onRfiWrite` assign/status pushes + client `assignRfi` / local notify intents (`rfi_assigned` / `rfi_status`).
+21. ~~System share~~ — `share_plus` for DPR / PM digest / document summary (clipboard fallback); see core `SharePort`.
+22. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift and scheduled 5 PM nudge Function remain follow-ups.
 7. ~~Pilot / UAT pack~~ — training guide, UAT checklist, hypercare metrics docs + in-app Pilot hub (checklist + live snapshot). Live-site execution and store tracks still need your Firebase project / devices.
 8. ~~Admin invites~~ — in-app create invite + demo accept via FakeAuth (scoped memberships); Cloud Functions email later.
 9. ~~Device sensors~~ — `geolocator` / `image_picker` / `local_auth` with Fake defaults; enable native via `--dart-define=USE_NATIVE_SENSORS=true`. See `docs/Device_Sensors.md`.
@@ -288,6 +295,7 @@ docs/                 # plans and training
 18. ~~FCM delivery~~ — Functions `admin.messaging().send` on DPR submit + issue assign/status; client background / open / cold-start handlers → inbox; see [FCM.md](FCM.md).
 19. ~~Firebase invite callable~~ — Admin UI calls `inviteMember` via `cloud_functions` when Firebase is enabled; demo keeps local FakeAuth invites.
 20. ~~RFI FCM parity~~ — `onRfiWrite` assign/status pushes + client `assignRfi` / local notify intents (`rfi_assigned` / `rfi_status`).
-21. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift and scheduled 5 PM nudge Function remain follow-ups.
+21. ~~System share~~ — `share_plus` for DPR / PM digest / document summary (clipboard fallback); see core `SharePort`.
+22. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift and scheduled 5 PM nudge Function remain follow-ups.
 
 No native-only Android path; iOS ships from the same Flutter codebase. Enterprise BIM/Forge remains a WebView module after MVP.

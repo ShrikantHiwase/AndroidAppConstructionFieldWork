@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/share/share_port.dart';
 import '../domain/document_models.dart';
 import 'documents_providers.dart';
 
@@ -79,15 +80,31 @@ class _DocumentViewerPageState extends ConsumerState<DocumentViewerPage> {
               icon: const Icon(Icons.download_outlined),
             ),
           IconButton(
-            tooltip: 'System share / print',
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text(
-                    'System share/print wires with platform channels next',
+            tooltip: 'Share document summary',
+            onPressed: () async {
+              final doc = _doc;
+              if (doc == null) return;
+              final text = StringBuffer()
+                ..writeln(doc.name)
+                ..writeln('Type: ${doc.contentType}')
+                ..writeln(
+                  doc.remoteUrl == null
+                      ? (doc.localFilePath ?? 'On device / demo local path')
+                      : 'URL: ${doc.remoteUrl}',
+                );
+              final outcome = await ref.read(sharePortProvider).shareText(
+                    text: text.toString(),
+                    subject: doc.name,
+                  );
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      shareSnackMessage(outcome, kind: 'Document summary'),
+                    ),
                   ),
-                ),
-              );
+                );
+              }
             },
             icon: const Icon(Icons.share_outlined),
           ),

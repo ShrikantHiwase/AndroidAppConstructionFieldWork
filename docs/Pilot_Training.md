@@ -22,14 +22,14 @@ Password for all: `demo1234`
 
 1. Sign in → confirm active project (switcher at top).
 2. **New Issue** → title, Add demo GPS, Add demo photo → Save. Toggle cloud icon offline, create another issue, go online (auto-sync).
-3. **Today's DPR** → weather, manpower, ≥1 activity, blockers if any → Save draft → add demo voice note → Submit → Copy share text for WhatsApp.
+3. **Today's DPR** → weather, manpower, ≥1 activity, blockers if any → Save draft → add demo voice note → Submit → **Share** summary to WhatsApp.
 4. **Pin on Drawing** → pick issue → tap sheet to drop pin.
 5. **Reminders** → leave 5 PM DPR nudge on; use Simulate 5 PM if testing after hours.
 
 ## PM — day-one script (10 minutes)
 
 1. **Open queue** → assign an issue, move status.
-2. **Digests** → review open issues/RFIs/blockers → **Copy digest**.
+2. **Digests** → review open issues/RFIs/blockers → **Share digest**.
 3. Confirm client can open Documents without help.
 
 ## Offline rules to teach
