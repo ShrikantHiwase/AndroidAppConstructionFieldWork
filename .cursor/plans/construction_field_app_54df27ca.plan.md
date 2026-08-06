@@ -309,6 +309,7 @@ docs/                 # plans and training
 30. ~~Drawing-pin evidence photos~~ — optional pin photo + Storage upload (demo NoOp); pins in soft cache.
 31. ~~Telemetry NoOp scaffolding~~ — `TelemetryPort` + Sync status event ring; Crashlytics/Analytics packages still deferred.
 32. ~~Encrypted local prefs~~ — `SecureStore` for session email / biometrics / FCM token (Fake CI default).
-33. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift remains a follow-up.
+33. ~~Labour muster evidence photos~~ — optional muster photo + Storage upload (demo NoOp).
+34. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift remains a follow-up.
 
 No native-only Android path; iOS ships from the same Flutter codebase. Enterprise BIM/Forge remains a WebView module after MVP.

@@ -42,6 +42,8 @@ abstract class SiteOpsRepository {
     required String subcontractor,
     required int headcount,
     bool geofenceOk = true,
+    String? photoLocalPath,
+    int? photoByteSizeBytes,
   });
 
   Future<MaterialLog> addMaterial({
@@ -347,9 +349,13 @@ class LocalSiteOpsRepository
     required String subcontractor,
     required int headcount,
     bool geofenceOk = true,
+    String? photoLocalPath,
+    int? photoByteSizeBytes,
   }) async {
     _ensure(session);
     if (headcount <= 0) throw SiteOpsException('Headcount must be > 0');
+    final path = photoLocalPath;
+    final pendingUpload = path != null && path.isNotEmpty;
     final muster = LabourMuster(
       id: _id('muster'),
       orgId: session.activeProject.orgId,
@@ -362,8 +368,32 @@ class LocalSiteOpsRepository
       createdByName: session.user.displayName,
       createdAt: DateTime.now().toUtc(),
       geofenceOk: geofenceOk,
+      photoOptional: true,
+      hasPhoto: pendingUpload,
+      photoLocalPath: pendingUpload ? path : null,
+      photoByteSizeBytes: photoByteSizeBytes,
+      pendingPhotoUpload: pendingUpload,
     );
     _muster[muster.id] = muster;
+    if (pendingUpload) {
+      final localPath = path;
+      final fileName = localPath.split('/').last;
+      _outbox.enqueue(
+        collection: FirestoreCollections.attendanceLogs,
+        documentId: muster.id,
+        operation: OutboxOperation.upload,
+        payload: StorageUploadRequest(
+          orgId: muster.orgId,
+          projectId: muster.projectId,
+          parentType: 'attendance_logs',
+          parentId: muster.id,
+          attachmentId: 'photo',
+          fileName: fileName.isEmpty ? 'muster.jpg' : fileName,
+          contentType: 'image/jpeg',
+          localPath: localPath,
+        ).toPayload(),
+      );
+    }
     _outbox.enqueue(
       collection: FirestoreCollections.attendanceLogs,
       documentId: muster.id,
@@ -519,6 +549,23 @@ class LocalSiteOpsRepository
         );
       }
     }
+    if (entry.collection == FirestoreCollections.attendanceLogs) {
+      final cur = _muster[entry.documentId];
+      if (cur != null &&
+          (entry.operation == OutboxOperation.create ||
+              entry.operation == OutboxOperation.update)) {
+        return OutboxEntry(
+          id: entry.id,
+          collection: entry.collection,
+          documentId: entry.documentId,
+          operation: entry.operation,
+          payload: cur.toJson(),
+          createdAt: entry.createdAt,
+          attempts: entry.attempts,
+          lastError: entry.lastError,
+        );
+      }
+    }
     return entry;
   }
 
@@ -558,6 +605,17 @@ class LocalSiteOpsRepository
         createdByName: cur.createdByName,
         createdAt: cur.createdAt,
         synced: cur.synced,
+      );
+      return;
+    }
+
+    if (entry.collection == FirestoreCollections.attendanceLogs) {
+      final cur = _muster[entry.documentId];
+      if (cur == null) return;
+      _muster[entry.documentId] = cur.copyWith(
+        photoRemoteUrl: url,
+        pendingPhotoUpload: false,
+        hasPhoto: true,
       );
     }
   }
@@ -620,6 +678,11 @@ class LocalSiteOpsRepository
           createdAt: r.createdAt,
           geofenceOk: r.geofenceOk,
           photoOptional: r.photoOptional,
+          hasPhoto: r.hasPhoto,
+          photoLocalPath: r.photoLocalPath,
+          photoByteSizeBytes: r.photoByteSizeBytes,
+          photoRemoteUrl: r.photoRemoteUrl,
+          pendingPhotoUpload: r.pendingPhotoUpload,
           synced: true,
         );
         changed += 1;
@@ -691,6 +754,23 @@ class LocalSiteOpsRepository
         }
       }
     }
+    for (final r in _muster.values) {
+      final path = r.photoLocalPath;
+      if (path == null || path.isEmpty) continue;
+      count += 1;
+      final size = LocalCacheEstimates.bytesFor(
+        localPath: path,
+        byteSizeBytes: r.photoByteSizeBytes,
+      );
+      bytes += size;
+      if (LocalCacheEstimates.isReclaimableLocalStub(
+        localPath: path,
+        remoteUrl: r.photoRemoteUrl,
+      )) {
+        reclaimable += size;
+        reclaimableCount += 1;
+      }
+    }
     return LocalCacheSlice(
       label: 'site-ops',
       estimatedBytes: bytes,
@@ -750,6 +830,21 @@ class LocalSiteOpsRepository
         );
         changed = true;
       }
+    }
+
+    for (final r in _muster.values.toList()) {
+      if (!LocalCacheEstimates.isReclaimableLocalStub(
+        localPath: r.photoLocalPath,
+        remoteUrl: r.photoRemoteUrl,
+      )) {
+        continue;
+      }
+      freed += LocalCacheEstimates.bytesFor(
+        localPath: r.photoLocalPath,
+        byteSizeBytes: r.photoByteSizeBytes,
+      );
+      _muster[r.id] = r.copyWith(clearPhotoLocalPath: true);
+      changed = true;
     }
 
     if (changed) await _persist();

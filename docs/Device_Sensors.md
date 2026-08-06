@@ -25,8 +25,8 @@ On permission failure or plugin errors, Device* falls back to Fake*.
 `EvidenceImagePolicy`: max width **1600px**, JPEG quality **70** (floor 40),
 soft target **~400 KB**. `DeviceEvidenceCapture` applies picker limits then
 `FileImageCompressor` (resize + quality ladder). Demo Fake paths get
-`byteSizeBytes` without I/O. New Issue, site-ops safety/QA fail, and drawing pins
-show queued size when a photo is attached.
+`byteSizeBytes` without I/O. New Issue, site-ops safety/QA fail / labour muster,
+and drawing pins show queued size when a photo is attached.
 
 ## Android permissions and iOS usage strings
 

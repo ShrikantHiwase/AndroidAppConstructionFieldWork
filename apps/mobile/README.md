@@ -52,7 +52,7 @@ Browse Project → Discipline → Document Type → Files. Seeded demo PDF/TXT/C
 
 ## Phase 2b — Site ops
 
-Hub with Safety / QA/QC / Labour / Materials tabs. Photo required on safety observations/incidents and failed QA checks. Labour is supervisor-led muster (demo geofence OK). Materials support inward + consumption logs.
+Hub with Safety / QA/QC / Labour / Materials tabs. Photo required on safety observations/incidents and failed QA checks. Labour is supervisor-led muster (demo geofence OK) with **optional** evidence photo. Materials support inward + consumption logs.
 
 ## Voice notes & digests
 

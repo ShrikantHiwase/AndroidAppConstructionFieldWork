@@ -385,10 +385,16 @@ class _LabourTab extends ConsumerWidget {
               final r = rows[i];
               return ListTile(
                 shape: _tileShape(context),
+                leading: Icon(
+                  r.hasPhoto
+                      ? Icons.add_a_photo_outlined
+                      : Icons.groups_outlined,
+                ),
                 title: Text('${r.trade} · ${r.headcount}'),
                 subtitle: Text(
                   '${r.subcontractor} · geofence '
-                  '${r.geofenceOk ? 'OK' : 'MISS'}',
+                  '${r.geofenceOk ? 'OK' : 'MISS'}'
+                  '${r.hasPhoto ? ' · photo' : ''}',
                 ),
               );
             },
@@ -401,6 +407,95 @@ class _LabourTab extends ConsumerWidget {
   Future<void> _addMuster(BuildContext context, WidgetRef ref) async {
     final session = ref.read(authSessionProvider);
     if (session == null) return;
+
+    String? photoLocalPath;
+    int? photoByteSizeBytes;
+    String? photoLabel;
+    final proceed = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setLocal) {
+            return AlertDialog(
+              title: const Text('Labour muster'),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Logs Civil · Shree Contractors · 18 with geofence check. '
+                      'Photo is optional.',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    const SizedBox(height: 12),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        OutlinedButton.icon(
+                          onPressed: () async {
+                            final shot = await ref
+                                .read(evidenceCaptureProvider)
+                                .capturePhoto(
+                                  source: EvidencePhotoSource.camera,
+                                );
+                            if (shot == null) return;
+                            setLocal(() {
+                              photoLocalPath = shot.localPath;
+                              photoByteSizeBytes = shot.byteSizeBytes;
+                              photoLabel = shot.fileName;
+                            });
+                          },
+                          icon: const Icon(Icons.photo_camera_outlined),
+                          label: const Text('Add photo'),
+                        ),
+                        OutlinedButton.icon(
+                          onPressed: () async {
+                            final shot = await ref
+                                .read(evidenceCaptureProvider)
+                                .capturePhoto(
+                                  source: EvidencePhotoSource.gallery,
+                                );
+                            if (shot == null) return;
+                            setLocal(() {
+                              photoLocalPath = shot.localPath;
+                              photoByteSizeBytes = shot.byteSizeBytes;
+                              photoLabel = shot.fileName;
+                            });
+                          },
+                          icon: const Icon(Icons.photo_library_outlined),
+                          label: const Text('Gallery'),
+                        ),
+                        if (photoLocalPath != null)
+                          Text(
+                            '${photoLabel ?? 'photo'} · '
+                            '${EvidenceImagePolicy.formatBytes(photoByteSizeBytes ?? 0)}',
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context, false),
+                  child: const Text('Cancel'),
+                ),
+                FilledButton(
+                  onPressed: () => Navigator.pop(context, true),
+                  child: const Text('Log muster'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+    if (proceed != true || !context.mounted) return;
+
     try {
       final geofenceOk = await ref.read(locationServiceProvider).isWithinGeofence(
             site: FakeLocationService.demoSite,
@@ -412,14 +507,18 @@ class _LabourTab extends ConsumerWidget {
             subcontractor: 'Shree Contractors',
             headcount: 18,
             geofenceOk: geofenceOk,
+            photoLocalPath: photoLocalPath,
+            photoByteSizeBytes: photoByteSizeBytes,
           );
       if (context.mounted) {
+        final photoNote =
+            photoLocalPath != null ? ' + evidence photo' : '';
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
               geofenceOk
-                  ? 'Muster logged (geofence OK)'
-                  : 'Muster logged (geofence MISS)',
+                  ? 'Muster logged (geofence OK)$photoNote'
+                  : 'Muster logged (geofence MISS)$photoNote',
             ),
           ),
         );

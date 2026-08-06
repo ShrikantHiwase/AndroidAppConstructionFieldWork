@@ -263,7 +263,12 @@ class LabourMuster {
     required this.createdByName,
     required this.createdAt,
     this.geofenceOk = true,
-    this.photoOptional = false,
+    this.photoOptional = true,
+    this.hasPhoto = false,
+    this.photoLocalPath,
+    this.photoByteSizeBytes,
+    this.photoRemoteUrl,
+    this.pendingPhotoUpload = false,
     this.synced = false,
   });
 
@@ -278,10 +283,25 @@ class LabourMuster {
   final String createdByName;
   final DateTime createdAt;
   final bool geofenceOk;
+
+  /// Muster evidence photo is optional (India supervisor-led muster).
   final bool photoOptional;
+  final bool hasPhoto;
+  final String? photoLocalPath;
+  final int? photoByteSizeBytes;
+  final String? photoRemoteUrl;
+  final bool pendingPhotoUpload;
   final bool synced;
 
-  LabourMuster copyWith({bool? synced}) {
+  LabourMuster copyWith({
+    bool? synced,
+    bool? hasPhoto,
+    String? photoLocalPath,
+    int? photoByteSizeBytes,
+    String? photoRemoteUrl,
+    bool? pendingPhotoUpload,
+    bool clearPhotoLocalPath = false,
+  }) {
     return LabourMuster(
       id: id,
       orgId: orgId,
@@ -295,6 +315,12 @@ class LabourMuster {
       createdAt: createdAt,
       geofenceOk: geofenceOk,
       photoOptional: photoOptional,
+      hasPhoto: hasPhoto ?? this.hasPhoto,
+      photoLocalPath:
+          clearPhotoLocalPath ? null : (photoLocalPath ?? this.photoLocalPath),
+      photoByteSizeBytes: photoByteSizeBytes ?? this.photoByteSizeBytes,
+      photoRemoteUrl: photoRemoteUrl ?? this.photoRemoteUrl,
+      pendingPhotoUpload: pendingPhotoUpload ?? this.pendingPhotoUpload,
       synced: synced ?? this.synced,
     );
   }
@@ -312,6 +338,11 @@ class LabourMuster {
         'createdAt': createdAt.toIso8601String(),
         'geofenceOk': geofenceOk,
         'photoOptional': photoOptional,
+        'hasPhoto': hasPhoto,
+        'photoLocalPath': photoLocalPath,
+        'photoByteSizeBytes': photoByteSizeBytes,
+        'photoRemoteUrl': photoRemoteUrl,
+        'pendingPhotoUpload': pendingPhotoUpload,
         'synced': synced,
       };
 
@@ -327,7 +358,13 @@ class LabourMuster {
         createdByName: json['createdByName'] as String,
         createdAt: DateTime.parse(json['createdAt'] as String),
         geofenceOk: json['geofenceOk'] as bool? ?? true,
-        photoOptional: json['photoOptional'] as bool? ?? false,
+        photoOptional: json['photoOptional'] as bool? ?? true,
+        hasPhoto: json['hasPhoto'] as bool? ??
+            ((json['photoLocalPath'] as String?)?.isNotEmpty ?? false),
+        photoLocalPath: json['photoLocalPath'] as String?,
+        photoByteSizeBytes: json['photoByteSizeBytes'] as int?,
+        photoRemoteUrl: json['photoRemoteUrl'] as String?,
+        pendingPhotoUpload: json['pendingPhotoUpload'] as bool? ?? false,
         synced: json['synced'] as bool? ?? false,
       );
 }
