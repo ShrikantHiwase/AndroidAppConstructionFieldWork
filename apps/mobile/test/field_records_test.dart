@@ -69,6 +69,8 @@ void main() {
     final issues = await repo.watchIssues(engineer.activeProjectId).first;
     expect(issues.single.synced, isTrue);
     expect(issues.single.attachments, hasLength(1));
+    expect(issues.single.attachments.single.pendingUpload, isFalse);
+    expect(issues.single.attachments.single.remoteUrl, startsWith('demo://'));
     expect(issues.single.location, isNotNull);
   });
 

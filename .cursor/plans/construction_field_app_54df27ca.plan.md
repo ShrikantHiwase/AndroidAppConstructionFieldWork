@@ -47,6 +47,9 @@ todos:
   - id: firestore-modules
     content: Outbox push/pull for DPR, site ops, documents, drawing pins
     status: completed
+  - id: storage-upload
+    content: Storage upload for issue evidence via outbox (demo-safe NoOp)
+    status: completed
 isProject: false
 ---
 
@@ -256,6 +259,7 @@ docs/                 # plans and training
 10. ~~Firebase go-live prep~~ — emulator seed (`firebase/seed`), `inviteMember` + `onDprWrite` Functions, membership indexes, rules for `invites`/`voice_notes`, [Go_Live_Checklist.md](Go_Live_Checklist.md).
 11. ~~Firestore outbox sync~~ — when Firebase is enabled, flush pushes issues/RFIs/comments to Firestore and pulls remote issues/RFIs (LWW by `updatedAt`); demo keeps no-op sink.
 12. ~~Module Firestore sync~~ — DPR, site ops, documents (metadata), and drawing pins enqueue to the same outbox sink; `LocalSyncEngine` flushes/pulls all `SyncableStore`s. Storage blob upload still deferred.
-13. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift/Workmanager remain follow-ups.
+13. ~~Storage media upload~~ — issue photo attachments enqueue `OutboxOperation.upload`; `StorageUploader` / `FirebaseStorageUploader` behind `firebaseEnabledProvider` (Fake `local://` paths get `demo://` URLs). Document file bytes still deferred.
+14. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift/Workmanager / FCM remain follow-ups.
 
 No native-only Android path; iOS ships from the same Flutter codebase. Enterprise BIM/Forge remains a WebView module after MVP.

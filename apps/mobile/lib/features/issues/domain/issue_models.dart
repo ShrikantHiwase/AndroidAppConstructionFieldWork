@@ -86,6 +86,21 @@ class MediaAttachment {
   final String? remoteUrl;
   final bool pendingUpload;
 
+  MediaAttachment copyWith({
+    String? localPath,
+    String? remoteUrl,
+    bool? pendingUpload,
+  }) {
+    return MediaAttachment(
+      id: id,
+      fileName: fileName,
+      contentType: contentType,
+      localPath: localPath ?? this.localPath,
+      remoteUrl: remoteUrl ?? this.remoteUrl,
+      pendingUpload: pendingUpload ?? this.pendingUpload,
+    );
+  }
+
   Map<String, Object?> toJson() => {
         'id': id,
         'fileName': fileName,

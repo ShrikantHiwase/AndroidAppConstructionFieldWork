@@ -7,6 +7,7 @@ import '../../../core/constants/app_constants.dart';
 import '../../../sync/outbox/outbox_entry.dart';
 import '../../../sync/remote/field_remote_pull.dart';
 import '../../../sync/remote/outbox_remote_sink.dart';
+import '../../../sync/remote/storage_uploader.dart';
 import '../../auth/domain/auth_models.dart';
 import '../domain/field_records_repository.dart';
 import '../domain/issue_models.dart';
@@ -15,19 +16,23 @@ import '../domain/issue_models.dart';
 ///
 /// Creates always succeed locally. [flushOutbox] pushes to [OutboxRemoteSink]
 /// (Firestore when Firebase is enabled, no-op in demo) then marks docs synced.
+/// Attachment bytes go through [StorageUploader] via [OutboxOperation.upload].
 class LocalFieldRecordsRepository implements FieldRecordsRepository {
   LocalFieldRecordsRepository(
     this._prefs, {
     OutboxRemoteSink? remoteSink,
     FieldRemotePull? remotePull,
+    StorageUploader? storageUploader,
   })  : _remoteSink = remoteSink ?? const NoOpOutboxRemoteSink(),
-        _remotePull = remotePull ?? const NoOpFieldRemotePull() {
+        _remotePull = remotePull ?? const NoOpFieldRemotePull(),
+        _storageUploader = storageUploader ?? const NoOpStorageUploader() {
     _load();
   }
 
   final SharedPreferences _prefs;
   final OutboxRemoteSink _remoteSink;
   final FieldRemotePull _remotePull;
+  final StorageUploader _storageUploader;
 
   static const _issuesKey = 'field.issues';
   static const _rfisKey = 'field.rfis';
@@ -234,6 +239,25 @@ class LocalFieldRecordsRepository implements FieldRecordsRepository {
       synced: false,
     );
     _issues[issue.id] = issue;
+    for (final attachment in issue.attachments) {
+      final path = attachment.localPath;
+      if (path == null || path.isEmpty || !attachment.pendingUpload) continue;
+      await _enqueue(
+        collection: FirestoreCollections.issues,
+        documentId: issue.id,
+        operation: OutboxOperation.upload,
+        payload: StorageUploadRequest(
+          orgId: issue.orgId,
+          projectId: issue.projectId,
+          parentType: 'issues',
+          parentId: issue.id,
+          attachmentId: attachment.id,
+          fileName: attachment.fileName,
+          contentType: attachment.contentType,
+          localPath: path,
+        ).toPayload(),
+      );
+    }
     await _enqueue(
       collection: FirestoreCollections.issues,
       documentId: issue.id,
@@ -432,9 +456,23 @@ class LocalFieldRecordsRepository implements FieldRecordsRepository {
     }
 
     final remaining = <OutboxEntry>[];
-    for (final entry in _outbox) {
+    final failedUploadDocs = <String>{};
+    for (final entry in List<OutboxEntry>.from(_outbox)) {
       try {
-        await _remoteSink.apply(entry);
+        if (entry.operation == OutboxOperation.upload) {
+          await _flushUpload(entry);
+          continue;
+        }
+
+        if (failedUploadDocs.contains(entry.documentId) &&
+            (entry.operation == OutboxOperation.create ||
+                entry.operation == OutboxOperation.update)) {
+          remaining.add(entry);
+          continue;
+        }
+
+        final toApply = _resolvePayload(entry);
+        await _remoteSink.apply(toApply);
         switch (entry.collection) {
           case FirestoreCollections.issues:
             final issue = _issues[entry.documentId];
@@ -464,6 +502,9 @@ class LocalFieldRecordsRepository implements FieldRecordsRepository {
             }
         }
       } catch (e) {
+        if (entry.operation == OutboxOperation.upload) {
+          failedUploadDocs.add(entry.documentId);
+        }
         remaining.add(
           OutboxEntry(
             id: entry.id,
@@ -482,6 +523,61 @@ class LocalFieldRecordsRepository implements FieldRecordsRepository {
       ..clear()
       ..addAll(remaining);
     await _persist();
+  }
+
+  /// Prefer live local entity JSON so attachment URLs set by prior upload
+  /// entries are included in the Firestore create/update payload.
+  OutboxEntry _resolvePayload(OutboxEntry entry) {
+    if (entry.collection == FirestoreCollections.issues) {
+      final issue = _issues[entry.documentId];
+      if (issue != null &&
+          (entry.operation == OutboxOperation.create ||
+              entry.operation == OutboxOperation.update)) {
+        return OutboxEntry(
+          id: entry.id,
+          collection: entry.collection,
+          documentId: entry.documentId,
+          operation: entry.operation,
+          payload: issue.toJson(),
+          createdAt: entry.createdAt,
+          attempts: entry.attempts,
+          lastError: entry.lastError,
+        );
+      }
+    }
+    if (entry.collection == FirestoreCollections.rfis) {
+      final rfi = _rfis[entry.documentId];
+      if (rfi != null &&
+          (entry.operation == OutboxOperation.create ||
+              entry.operation == OutboxOperation.update)) {
+        return OutboxEntry(
+          id: entry.id,
+          collection: entry.collection,
+          documentId: entry.documentId,
+          operation: entry.operation,
+          payload: rfi.toJson(),
+          createdAt: entry.createdAt,
+          attempts: entry.attempts,
+          lastError: entry.lastError,
+        );
+      }
+    }
+    return entry;
+  }
+
+  Future<void> _flushUpload(OutboxEntry entry) async {
+    final request = StorageUploadRequest.fromPayload(entry.payload);
+    final url = await _storageUploader.upload(request);
+    final issue = _issues[entry.documentId];
+    if (issue == null) return;
+    final updatedAttachments = issue.attachments.map((a) {
+      if (a.id != request.attachmentId) return a;
+      return a.copyWith(remoteUrl: url, pendingUpload: false);
+    }).toList();
+    _issues[entry.documentId] = issue.copyWith(
+      attachments: updatedAttachments,
+      synced: false,
+    );
   }
 
   @override
