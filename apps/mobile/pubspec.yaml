@@ -38,6 +38,7 @@ dependencies:
   path_provider: ^2.1.5
   image: ^4.5.4
   flutter_secure_storage: ^10.3.1
+  record: ^6.2.1
 
   # Still deferred (see docs/Telemetry.md for NoOp scaffolding):
   # firebase_crashlytics, firebase_analytics, drift, pdfrx

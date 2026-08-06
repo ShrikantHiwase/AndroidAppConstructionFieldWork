@@ -47,6 +47,8 @@
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>Capture site photo evidence for issues, safety, and QA.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Record voice notes on DPR and issues for one-handed site capture.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Attach GPS to field records and check labour muster geofence.</string>
 	<key>NSFaceIDUsageDescription</key>

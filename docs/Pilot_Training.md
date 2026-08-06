@@ -22,7 +22,7 @@ Password for all: `demo1234`
 
 1. Sign in → confirm active project (switcher at top).
 2. **New Issue** → title, Add demo GPS, Add demo photo → Save. Toggle cloud icon offline, create another issue, go online (auto-sync).
-3. **Today's DPR** → weather, manpower, ≥1 activity (optional evidence photo), blockers if any → Save draft → add demo voice note → Submit → **Share PDF** (or text) to WhatsApp.
+3. **Today's DPR** → weather, manpower, ≥1 activity (optional evidence photo), blockers if any → Save draft → add voice note (demo stub, or live mic with `USE_NATIVE_SENSORS=true`) → Submit → **Share PDF** (or text) to WhatsApp.
 4. **Pin on Drawing** → pick issue → tap sheet to drop pin.
 5. **Reminders** → leave 5 PM DPR nudge on (schedules a local tray reminder); use **Simulate 5 PM** to fire tray + inbox.
 

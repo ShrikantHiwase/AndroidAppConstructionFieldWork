@@ -12,7 +12,19 @@ abstract class VoiceNotesRepository {
     required String parentId,
   });
 
-  /// Demo capture: stores a stub audio path + transcript (or pending flag).
+  /// Stores a captured clip (Fake stub or on-device path) + transcript.
+  Future<VoiceNote> addVoiceNote({
+    required AuthSession session,
+    required VoiceParentType parentType,
+    required String parentId,
+    required String audioLocalPath,
+    String? fileName,
+    int? audioByteSizeBytes,
+    String? transcript,
+    bool offline = false,
+  });
+
+  /// Convenience Fake stub capture (tests / callers without VoiceCapture).
   Future<VoiceNote> addDemoVoiceNote({
     required AuthSession session,
     required VoiceParentType parentType,
