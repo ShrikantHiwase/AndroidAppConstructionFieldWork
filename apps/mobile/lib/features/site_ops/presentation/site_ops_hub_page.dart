@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/device/device_providers.dart';
+import '../../../core/device/fake_location_service.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../domain/site_ops_models.dart';
 import 'site_ops_providers.dart';
@@ -137,7 +139,10 @@ class _SafetyTab extends ConsumerWidget {
                     ),
                     CheckboxListTile(
                       contentPadding: EdgeInsets.zero,
-                      title: const Text('Attach demo photo'),
+                      title: const Text('Photo attached'),
+                      subtitle: const Text(
+                        'Use evidence capture on issues for real photos; checkbox is the demo gate here.',
+                      ),
                       value: hasPhoto,
                       onChanged: (v) =>
                           setLocal(() => hasPhoto = v ?? false),
@@ -314,15 +319,26 @@ class _LabourTab extends ConsumerWidget {
     final session = ref.read(authSessionProvider);
     if (session == null) return;
     try {
+      final geofenceOk = await ref.read(locationServiceProvider).isWithinGeofence(
+            site: FakeLocationService.demoSite,
+            radiusMeters: 250,
+          );
       await ref.read(siteOpsRepositoryProvider).addMuster(
             session: session,
             trade: 'Civil',
             subcontractor: 'Shree Contractors',
             headcount: 18,
+            geofenceOk: geofenceOk,
           );
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Muster logged (demo geofence OK)')),
+          SnackBar(
+            content: Text(
+              geofenceOk
+                  ? 'Muster logged (geofence OK)'
+                  : 'Muster logged (geofence MISS)',
+            ),
+          ),
         );
       }
     } catch (e) {

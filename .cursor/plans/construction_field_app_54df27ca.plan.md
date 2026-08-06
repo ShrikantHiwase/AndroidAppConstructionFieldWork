@@ -35,6 +35,9 @@ todos:
   - id: admin-invites
     content: In-app admin invites with role/project assignment (local demo; Functions later)
     status: completed
+  - id: device-sensors
+    content: GPS/camera/biometrics via Fake defaults + USE_NATIVE_SENSORS device path
+    status: completed
 isProject: false
 ---
 
@@ -240,6 +243,7 @@ docs/                 # plans and training
 6. ~~Voice + digests~~ — demo voice notes on DPR/issues; 5 PM DPR nudge prefs; PM digest of open issues/RFIs/blockers with WhatsApp copy.
 7. ~~Pilot / UAT pack~~ — training guide, UAT checklist, hypercare metrics docs + in-app Pilot hub (checklist + live snapshot). Live-site execution and store tracks still need your Firebase project / devices.
 8. ~~Admin invites~~ — in-app create invite + demo accept via FakeAuth (scoped memberships); Cloud Functions email later.
-9. **Next:** Operator FlutterFire + seed data, then live-site UAT / Play internal & TestFlight.
+9. ~~Device sensors~~ — `geolocator` / `image_picker` / `local_auth` with Fake defaults; enable native via `--dart-define=USE_NATIVE_SENSORS=true`. See `docs/Device_Sensors.md`.
+10. **Next:** Operator FlutterFire + seed data, then live-site UAT / Play internal & TestFlight.
 
 No native-only Android path; iOS ships from the same Flutter codebase. Enterprise BIM/Forge remains a WebView module after MVP.

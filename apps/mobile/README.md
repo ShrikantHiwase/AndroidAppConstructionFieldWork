@@ -66,3 +66,9 @@ PM and Admin → **Pilot**: local UAT checklist + hypercare snapshot (DPR days t
 ## Admin invites
 
 Admin → **Invite user**: create pending invites (email, role, projects). Invitees sign in with that email + `demo1234` and get invite-scoped memberships. Demo accounts stay unchanged. Email delivery via Cloud Functions comes with production Firebase.
+
+## Device sensors
+
+`geolocator` / `image_picker` / `local_auth` are wired behind Fake defaults.
+Enable on device: `flutter run --dart-define=USE_NATIVE_SENSORS=true`.
+See [docs/Device_Sensors.md](../../docs/Device_Sensors.md).

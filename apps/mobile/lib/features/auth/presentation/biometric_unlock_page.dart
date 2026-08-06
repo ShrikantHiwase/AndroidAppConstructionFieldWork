@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/device/device_providers.dart';
 import 'auth_controller.dart';
 
-/// Local unlock gate shown when biometrics preference is on (demo stub).
+/// Local unlock gate when biometrics preference is on.
 class BiometricUnlockPage extends ConsumerWidget {
   const BiometricUnlockPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final session = ref.watch(authSessionProvider);
+    final native = ref.watch(usingNativeSensorsProvider);
     final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
@@ -32,13 +34,25 @@ class BiometricUnlockPage extends ConsumerWidget {
                 session == null
                     ? 'Confirm it is you to continue.'
                     : 'Welcome back, ${session.user.displayName}. '
-                        'Biometric unlock is simulated until local_auth is wired.',
+                        '${native ? 'Use device biometrics or PIN.' : 'Demo unlock (FakeBiometricService) until USE_NATIVE_SENSORS=true.'}',
                 style: textTheme.bodyLarge,
               ),
               const Spacer(),
               FilledButton.icon(
-                onPressed: () =>
-                    ref.read(authControllerProvider.notifier).unlock(),
+                onPressed: () async {
+                  final ok = await ref
+                      .read(biometricServiceProvider)
+                      .authenticate(reason: 'Unlock Field Evidence');
+                  if (!ok) {
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Unlock failed')),
+                      );
+                    }
+                    return;
+                  }
+                  await ref.read(authControllerProvider.notifier).unlock();
+                },
                 icon: const Icon(Icons.lock_open),
                 label: const Text('Unlock'),
               ),

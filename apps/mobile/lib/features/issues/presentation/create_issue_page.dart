@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/device/device_providers.dart';
 import '../../../core/providers/connectivity_provider.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../domain/issue_models.dart';
@@ -94,23 +95,26 @@ class _CreateIssuePageState extends ConsumerState<CreateIssuePage> {
           const SizedBox(height: 16),
           Text('Evidence', style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 8),
+          Text(
+            ref.watch(usingNativeSensorsProvider)
+                ? 'Using device GPS / camera (USE_NATIVE_SENSORS).'
+                : 'Demo sensors — enable with --dart-define=USE_NATIVE_SENSORS=true',
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+          const SizedBox(height: 8),
           Wrap(
             spacing: 8,
             runSpacing: 8,
             children: [
               OutlinedButton.icon(
-                onPressed: () {
-                  setState(() {
-                    _location = const GeoLocation(
-                      latitude: 18.5912,
-                      longitude: 73.7389,
-                      accuracyMeters: 8,
-                      label: 'Demo GPS · Hinjewadi',
-                    );
-                  });
+                onPressed: () async {
+                  final loc =
+                      await ref.read(locationServiceProvider).currentPosition();
+                  if (!mounted) return;
+                  setState(() => _location = loc);
                 },
                 icon: const Icon(Icons.my_location),
-                label: Text(_location == null ? 'Add demo GPS' : 'Refresh GPS'),
+                label: Text(_location == null ? 'Add GPS' : 'Refresh GPS'),
               ),
               if (_location != null)
                 TextButton(
@@ -118,22 +122,14 @@ class _CreateIssuePageState extends ConsumerState<CreateIssuePage> {
                   child: const Text('Clear GPS'),
                 ),
               OutlinedButton.icon(
-                onPressed: () {
-                  setState(() {
-                    _attachments.add(
-                      MediaAttachment(
-                        id: 'media_${_attachments.length + 1}',
-                        fileName:
-                            'site_photo_${_attachments.length + 1}.jpg',
-                        contentType: 'image/jpeg',
-                        localPath:
-                            'local://demo/site_photo_${_attachments.length + 1}.jpg',
-                      ),
-                    );
-                  });
+                onPressed: () async {
+                  final shot =
+                      await ref.read(evidenceCaptureProvider).capturePhoto();
+                  if (!mounted || shot == null) return;
+                  setState(() => _attachments.add(shot));
                 },
                 icon: const Icon(Icons.photo_camera_outlined),
-                label: const Text('Add demo photo'),
+                label: const Text('Add photo'),
               ),
             ],
           ),

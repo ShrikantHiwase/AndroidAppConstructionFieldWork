@@ -31,6 +31,7 @@ abstract class SiteOpsRepository {
     required String trade,
     required String subcontractor,
     required int headcount,
+    bool geofenceOk = true,
   });
 
   Future<MaterialLog> addMaterial({
@@ -225,6 +226,7 @@ class LocalSiteOpsRepository implements SiteOpsRepository {
     required String trade,
     required String subcontractor,
     required int headcount,
+    bool geofenceOk = true,
   }) async {
     _ensure(session);
     if (headcount <= 0) throw SiteOpsException('Headcount must be > 0');
@@ -239,7 +241,7 @@ class LocalSiteOpsRepository implements SiteOpsRepository {
       createdBy: session.user.id,
       createdByName: session.user.displayName,
       createdAt: DateTime.now().toUtc(),
-      geofenceOk: true,
+      geofenceOk: geofenceOk,
     );
     _muster[muster.id] = muster;
     await _persist();

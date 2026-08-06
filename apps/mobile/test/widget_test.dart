@@ -58,7 +58,7 @@ void main() {
     expect(find.text('Save issue'), findsOneWidget);
 
     await tester.enterText(find.byType(TextFormField).first, 'Scaffold gap');
-    await tester.tap(find.text('Add demo GPS'));
+    await tester.tap(find.text('Add GPS'));
     await tester.tap(find.text('Save issue'));
     await tester.pumpAndSettle();
 
