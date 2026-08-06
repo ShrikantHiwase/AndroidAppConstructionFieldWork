@@ -159,6 +159,8 @@ PilotMetricsSnapshot _samplePilot() {
     checklistTotal: 12,
     issueCreateSampleCount: 3,
     issueCreateMedianMs: 55000,
+    dprSubmitSampleCount: 3,
+    dprSubmitMedianMs: 100000,
   );
 }
 

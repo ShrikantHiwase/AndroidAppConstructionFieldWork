@@ -6,7 +6,9 @@ import '../../../core/device/evidence_capture.dart';
 import '../../../core/device/evidence_image_policy.dart';
 import '../../../core/share/field_pdf_export.dart';
 import '../../../core/share/share_port.dart';
+import '../../../core/telemetry/telemetry_providers.dart';
 import '../../auth/presentation/auth_controller.dart';
+import '../../pilot/presentation/pilot_providers.dart';
 import '../../voice_notes/domain/voice_note_models.dart';
 import '../../voice_notes/presentation/voice_notes_section.dart';
 import '../domain/dpr_models.dart';
@@ -96,6 +98,7 @@ class _TodaysDprPageState extends ConsumerState<TodaysDprPage> {
   final _blockers = TextEditingController();
   final _activity = TextEditingController();
   final _activities = <DprActivity>[];
+  final _openedAt = Stopwatch()..start();
   var _saving = false;
   String? _error;
   DailyProgressReport? _existing;
@@ -157,6 +160,19 @@ class _TodaysDprPageState extends ConsumerState<TodaysDprPage> {
         dpr = await ref
             .read(dprRepositoryProvider)
             .submit(session: session, dprId: dpr.id);
+        final elapsedMs = _openedAt.elapsedMilliseconds;
+        await ref.read(dprSubmitTimingProvider.notifier).record(
+              durationMs: elapsedMs,
+              projectId: session.activeProjectId,
+            );
+        await logTelemetryEvent(
+          ref,
+          name: 'dpr_submit',
+          params: {
+            'duration_ms': elapsedMs,
+            'project_id': session.activeProjectId,
+          },
+        );
       }
       if (mounted) {
         Navigator.of(context).pushReplacement(

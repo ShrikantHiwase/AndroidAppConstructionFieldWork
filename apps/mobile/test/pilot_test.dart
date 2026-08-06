@@ -131,18 +131,35 @@ void main() {
       ],
       checklist: const PilotChecklistState(checkedIds: {'dpr_submit'}),
       issueCreateTimings: [
-        IssueCreateTimingSample(
+        PilotDurationSample(
           durationMs: 45000,
           projectId: 'proj_pune_tower',
           recordedAt: DateTime.utc(2026, 8, 5),
         ),
-        IssueCreateTimingSample(
+        PilotDurationSample(
           durationMs: 60000,
           projectId: 'proj_pune_tower',
           recordedAt: DateTime.utc(2026, 8, 5),
         ),
-        IssueCreateTimingSample(
+        PilotDurationSample(
           durationMs: 50000,
+          projectId: 'proj_pune_tower',
+          recordedAt: DateTime.utc(2026, 8, 6),
+        ),
+      ],
+      dprSubmitTimings: [
+        PilotDurationSample(
+          durationMs: 90000,
+          projectId: 'proj_pune_tower',
+          recordedAt: DateTime.utc(2026, 8, 5),
+        ),
+        PilotDurationSample(
+          durationMs: 120000,
+          projectId: 'proj_pune_tower',
+          recordedAt: DateTime.utc(2026, 8, 5),
+        ),
+        PilotDurationSample(
+          durationMs: 100000,
           projectId: 'proj_pune_tower',
           recordedAt: DateTime.utc(2026, 8, 6),
         ),
@@ -157,12 +174,17 @@ void main() {
     expect(snap.issueCreateSampleCount, 3);
     expect(snap.issueCreateMedianMs, 50000);
     expect(snap.issueCreateTargetMet, isTrue);
+    expect(snap.dprSubmitSampleCount, 3);
+    expect(snap.dprSubmitMedianMs, 100000);
+    expect(snap.dprSubmitTargetMet, isTrue);
     expect(canAccessPilotHub(AppRole.admin), isTrue);
     expect(canAccessPilotHub(AppRole.siteEngineer), isFalse);
     final text = snap.toShareText(projectName: 'Pune Tower A');
     expect(text, contains('PILOT SNAPSHOT'));
     expect(text, contains('Issue create median'));
+    expect(text, contains('DPR submit median'));
     expect(text, contains('50s'));
+    expect(text, contains('1.7m'));
   });
 
   test('medianDurationMs handles even and odd lists', () {
@@ -177,21 +199,21 @@ void main() {
     final prefs = await SharedPreferences.getInstance();
     final repo = LocalPilotRepository(prefs);
     await repo.recordIssueCreateTiming(
-      IssueCreateTimingSample(
+      PilotDurationSample(
         durationMs: 120000,
         projectId: 'p1',
         recordedAt: DateTime.utc(2026, 8, 6),
       ),
     );
     await repo.recordIssueCreateTiming(
-      IssueCreateTimingSample(
+      PilotDurationSample(
         durationMs: 80000,
         projectId: 'p1',
         recordedAt: DateTime.utc(2026, 8, 6),
       ),
     );
     await repo.recordIssueCreateTiming(
-      IssueCreateTimingSample(
+      PilotDurationSample(
         durationMs: 90000,
         projectId: 'other',
         recordedAt: DateTime.utc(2026, 8, 6),
@@ -217,5 +239,45 @@ void main() {
       issueCreateTimings: samples,
     );
     expect(snap.issueCreateTargetMet, isNull); // need 3 samples
+  });
+
+  test('dpr submit timings persist and drive project median', () async {
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+    final repo = LocalPilotRepository(prefs);
+    await repo.recordDprSubmitTiming(
+      PilotDurationSample(
+        durationMs: 240000,
+        projectId: 'p1',
+        recordedAt: DateTime.utc(2026, 8, 6),
+      ),
+    );
+    await repo.recordDprSubmitTiming(
+      PilotDurationSample(
+        durationMs: 150000,
+        projectId: 'p1',
+        recordedAt: DateTime.utc(2026, 8, 6),
+      ),
+    );
+    await repo.recordDprSubmitTiming(
+      PilotDurationSample(
+        durationMs: 160000,
+        projectId: 'p1',
+        recordedAt: DateTime.utc(2026, 8, 6),
+      ),
+    );
+    final samples = repo.getDprSubmitTimings();
+    expect(dprSubmitMedianMsForProject(samples, projectId: 'p1'), 160000);
+    final snap = buildPilotSnapshot(
+      projectId: 'p1',
+      dprs: const [],
+      issues: const [],
+      pendingSyncCount: 0,
+      syncLogs: const [],
+      checklist: const PilotChecklistState(),
+      dprSubmitTimings: samples,
+    );
+    expect(snap.dprSubmitTargetMet, isTrue); // 160s < 180s
+    expect(snap.dprSubmitMedianLabel, '2.7m');
   });
 }

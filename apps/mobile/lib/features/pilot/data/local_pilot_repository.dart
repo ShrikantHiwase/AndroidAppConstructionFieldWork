@@ -10,7 +10,8 @@ class LocalPilotRepository implements PilotRepository {
 
   final SharedPreferences _prefs;
   static const _checklistKey = 'pilot.uat_checklist';
-  static const _timingsKey = 'pilot.issue_create_timings';
+  static const _issueTimingsKey = 'pilot.issue_create_timings';
+  static const _dprTimingsKey = 'pilot.dpr_submit_timings';
   static const _maxTimingSamples = 50;
 
   @override
@@ -28,27 +29,41 @@ class LocalPilotRepository implements PilotRepository {
   }
 
   @override
-  List<IssueCreateTimingSample> getIssueCreateTimings() {
-    final raw = _prefs.getString(_timingsKey);
+  List<PilotDurationSample> getIssueCreateTimings() =>
+      _readTimings(_issueTimingsKey);
+
+  @override
+  Future<void> recordIssueCreateTiming(PilotDurationSample sample) =>
+      _appendTiming(_issueTimingsKey, sample);
+
+  @override
+  List<PilotDurationSample> getDprSubmitTimings() =>
+      _readTimings(_dprTimingsKey);
+
+  @override
+  Future<void> recordDprSubmitTiming(PilotDurationSample sample) =>
+      _appendTiming(_dprTimingsKey, sample);
+
+  List<PilotDurationSample> _readTimings(String key) {
+    final raw = _prefs.getString(key);
     if (raw == null) return const [];
     final list = jsonDecode(raw) as List? ?? const [];
     return list
         .map(
-          (e) => IssueCreateTimingSample.fromJson(
+          (e) => PilotDurationSample.fromJson(
             Map<String, Object?>.from(e as Map),
           ),
         )
         .toList();
   }
 
-  @override
-  Future<void> recordIssueCreateTiming(IssueCreateTimingSample sample) async {
-    final next = [...getIssueCreateTimings(), sample];
+  Future<void> _appendTiming(String key, PilotDurationSample sample) async {
+    final next = [..._readTimings(key), sample];
     while (next.length > _maxTimingSamples) {
       next.removeAt(0);
     }
     await _prefs.setString(
-      _timingsKey,
+      key,
       jsonEncode(next.map((s) => s.toJson()).toList()),
     );
   }

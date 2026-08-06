@@ -81,6 +81,7 @@ docs/              Build plan and training
 | Client weekly progress PDF/share | Done |
 | In-app PDF viewer (pdfrx) | Done |
 | Pilot issue-create timing | Done |
+| Pilot DPR submit timing | Done |
 | FlutterFire configure + store release | Next (needs your Firebase project) |
 | Phase 3 Enterprise hooks | Deferred |
 

@@ -39,12 +39,12 @@ class PilotChecklistController extends StateNotifier<PilotChecklistState> {
 }
 
 final issueCreateTimingProvider = StateNotifierProvider<
-    IssueCreateTimingController, List<IssueCreateTimingSample>>((ref) {
+    IssueCreateTimingController, List<PilotDurationSample>>((ref) {
   return IssueCreateTimingController(ref.watch(pilotRepositoryProvider));
 });
 
 class IssueCreateTimingController
-    extends StateNotifier<List<IssueCreateTimingSample>> {
+    extends StateNotifier<List<PilotDurationSample>> {
   IssueCreateTimingController(this._repo) : super(_repo.getIssueCreateTimings());
 
   final PilotRepository _repo;
@@ -54,13 +54,39 @@ class IssueCreateTimingController
     required String projectId,
     DateTime? recordedAt,
   }) async {
-    final sample = IssueCreateTimingSample(
+    final sample = PilotDurationSample(
       durationMs: durationMs,
       projectId: projectId,
       recordedAt: recordedAt ?? DateTime.now().toUtc(),
     );
     await _repo.recordIssueCreateTiming(sample);
     state = _repo.getIssueCreateTimings();
+  }
+}
+
+final dprSubmitTimingProvider = StateNotifierProvider<DprSubmitTimingController,
+    List<PilotDurationSample>>((ref) {
+  return DprSubmitTimingController(ref.watch(pilotRepositoryProvider));
+});
+
+class DprSubmitTimingController
+    extends StateNotifier<List<PilotDurationSample>> {
+  DprSubmitTimingController(this._repo) : super(_repo.getDprSubmitTimings());
+
+  final PilotRepository _repo;
+
+  Future<void> record({
+    required int durationMs,
+    required String projectId,
+    DateTime? recordedAt,
+  }) async {
+    final sample = PilotDurationSample(
+      durationMs: durationMs,
+      projectId: projectId,
+      recordedAt: recordedAt ?? DateTime.now().toUtc(),
+    );
+    await _repo.recordDprSubmitTiming(sample);
+    state = _repo.getDprSubmitTimings();
   }
 }
 
@@ -100,7 +126,8 @@ PilotMetricsSnapshot buildPilotSnapshot({
   required int pendingSyncCount,
   required List<SyncLogEntry> syncLogs,
   required PilotChecklistState checklist,
-  List<IssueCreateTimingSample> issueCreateTimings = const [],
+  List<PilotDurationSample> issueCreateTimings = const [],
+  List<PilotDurationSample> dprSubmitTimings = const [],
   DateTime? now,
 }) {
   final clock = now ?? DateTime.now();
@@ -122,6 +149,14 @@ PilotMetricsSnapshot buildPilotSnapshot({
     issueCreateTimings,
     projectId: projectId,
   );
+  final dprSubmitCount = dprSubmitSampleCountForProject(
+    dprSubmitTimings,
+    projectId: projectId,
+  );
+  final dprSubmitMedian = dprSubmitMedianMsForProject(
+    dprSubmitTimings,
+    projectId: projectId,
+  );
 
   return PilotMetricsSnapshot(
     generatedAt: clock.toUtc(),
@@ -139,6 +174,8 @@ PilotMetricsSnapshot buildPilotSnapshot({
     checklistTotal: checklist.totalCount,
     issueCreateSampleCount: createCount,
     issueCreateMedianMs: createMedian,
+    dprSubmitSampleCount: dprSubmitCount,
+    dprSubmitMedianMs: dprSubmitMedian,
   );
 }
 
@@ -148,7 +185,8 @@ final pilotSnapshotProvider = FutureProvider<PilotMetricsSnapshot?>((ref) async 
     return null;
   }
   final checklist = ref.watch(pilotChecklistProvider);
-  final timings = ref.watch(issueCreateTimingProvider);
+  final issueTimings = ref.watch(issueCreateTimingProvider);
+  final dprTimings = ref.watch(dprSubmitTimingProvider);
   final dprs = await ref.watch(dprsProvider.future);
   final issues = await ref.watch(issuesProvider.future);
   final pending = await ref.watch(pendingSyncCountProvider.future);
@@ -161,6 +199,7 @@ final pilotSnapshotProvider = FutureProvider<PilotMetricsSnapshot?>((ref) async 
     pendingSyncCount: pending,
     syncLogs: logs,
     checklist: checklist,
-    issueCreateTimings: timings,
+    issueCreateTimings: issueTimings,
+    dprSubmitTimings: dprTimings,
   );
 });

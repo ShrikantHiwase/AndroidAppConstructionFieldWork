@@ -201,6 +201,7 @@ void main() {
     expect(find.text('Pilot / UAT'), findsOneWidget);
     expect(find.text('Hypercare snapshot'), findsOneWidget);
     expect(find.text('Issue create median'), findsOneWidget);
+    expect(find.text('DPR submit median'), findsOneWidget);
     await tester.scrollUntilVisible(
       find.textContaining('UAT checklist'),
       200,
