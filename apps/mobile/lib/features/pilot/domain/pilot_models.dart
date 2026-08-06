@@ -121,6 +121,8 @@ class PilotMetricsSnapshot {
     required this.syncErrorCount,
     required this.checklistCompleted,
     required this.checklistTotal,
+    this.issueCreateSampleCount = 0,
+    this.issueCreateMedianMs,
   });
 
   final DateTime generatedAt;
@@ -132,6 +134,14 @@ class PilotMetricsSnapshot {
   final int syncErrorCount;
   final int checklistCompleted;
   final int checklistTotal;
+  final int issueCreateSampleCount;
+  final int? issueCreateMedianMs;
+
+  /// Minimum successful creates before median counts toward Hypercare.
+  static const int issueCreateMinSamples = 3;
+
+  /// Hypercare target: median create duration under 90 seconds.
+  static const int issueCreateTargetMs = 90 * 1000;
 
   /// Error rate 0..1; null when no sync samples yet.
   double? get syncFailureRate =>
@@ -145,14 +155,39 @@ class PilotMetricsSnapshot {
     return rate < 0.02;
   }
 
+  /// Null when fewer than [issueCreateMinSamples] samples for this project.
+  bool? get issueCreateTargetMet {
+    if (issueCreateSampleCount < issueCreateMinSamples) return null;
+    final median = issueCreateMedianMs;
+    if (median == null) return null;
+    return median < issueCreateTargetMs;
+  }
+
+  String get issueCreateMedianLabel {
+    final median = issueCreateMedianMs;
+    if (median == null || issueCreateSampleCount == 0) return 'n/a';
+    if (median < 1000) return '${median}ms';
+    final seconds = median / 1000;
+    return '${seconds.toStringAsFixed(seconds < 10 ? 1 : 0)}s';
+  }
+
   String toShareText({required String projectName}) {
     final rate = syncFailureRate;
+    final createStatus = switch (issueCreateTargetMet) {
+      true => 'OK',
+      false => 'BELOW',
+      null => 'NEED $issueCreateMinSamples+',
+    };
     final buf = StringBuffer()
       ..writeln('PILOT SNAPSHOT — $projectName')
       ..writeln('Generated: ${generatedAt.toIso8601String()}')
       ..writeln(
         'DPR days submitted (ISO week): $dprSubmittedDaysThisWeek '
-        '(target ≥4) ${dprTargetMet ? 'OK' : 'BELOW'}',
+        '(target >=4) ${dprTargetMet ? 'OK' : 'BELOW'}',
+      )
+      ..writeln(
+        'Issue create median: $issueCreateMedianLabel '
+        '(n=$issueCreateSampleCount, target <90s) $createStatus',
       )
       ..writeln('Open issues: $openIssueCount')
       ..writeln('Pending sync: $pendingSyncCount')
@@ -166,6 +201,64 @@ class PilotMetricsSnapshot {
       );
     return buf.toString();
   }
+}
+
+/// One successful New Issue flow duration (page open → create returned).
+class IssueCreateTimingSample {
+  const IssueCreateTimingSample({
+    required this.durationMs,
+    required this.projectId,
+    required this.recordedAt,
+  });
+
+  final int durationMs;
+  final String projectId;
+  final DateTime recordedAt;
+
+  Map<String, Object?> toJson() => {
+        'durationMs': durationMs,
+        'projectId': projectId,
+        'recordedAt': recordedAt.toIso8601String(),
+      };
+
+  factory IssueCreateTimingSample.fromJson(Map<String, Object?> json) =>
+      IssueCreateTimingSample(
+        durationMs: json['durationMs'] as int? ?? 0,
+        projectId: json['projectId'] as String? ?? '',
+        recordedAt: DateTime.parse(
+          json['recordedAt'] as String? ?? DateTime.now().toUtc().toIso8601String(),
+        ),
+      );
+}
+
+/// Median of [values] (ms). Empty → null.
+int? medianDurationMs(List<int> values) {
+  if (values.isEmpty) return null;
+  final sorted = List<int>.from(values)..sort();
+  final mid = sorted.length ~/ 2;
+  if (sorted.length.isOdd) return sorted[mid];
+  return ((sorted[mid - 1] + sorted[mid]) / 2).round();
+}
+
+/// Median create duration for [projectId] from persisted samples.
+int? issueCreateMedianMsForProject(
+  List<IssueCreateTimingSample> samples, {
+  required String projectId,
+}) {
+  final durations = samples
+      .where((s) => s.projectId == projectId && s.durationMs > 0)
+      .map((s) => s.durationMs)
+      .toList();
+  return medianDurationMs(durations);
+}
+
+int issueCreateSampleCountForProject(
+  List<IssueCreateTimingSample> samples, {
+  required String projectId,
+}) {
+  return samples
+      .where((s) => s.projectId == projectId && s.durationMs > 0)
+      .length;
 }
 
 bool canAccessPilotHub(AppRole role) => switch (role) {

@@ -5,7 +5,9 @@ import '../../../core/device/device_providers.dart';
 import '../../../core/device/evidence_capture.dart';
 import '../../../core/device/evidence_image_policy.dart';
 import '../../../core/providers/connectivity_provider.dart';
+import '../../../core/telemetry/telemetry_providers.dart';
 import '../../auth/presentation/auth_controller.dart';
+import '../../pilot/presentation/pilot_providers.dart';
 import '../domain/issue_models.dart';
 import 'field_records_providers.dart';
 
@@ -20,6 +22,7 @@ class _CreateIssuePageState extends ConsumerState<CreateIssuePage> {
   final _title = TextEditingController();
   final _description = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  final _openedAt = Stopwatch()..start();
   GeoLocation? _location;
   final _attachments = <MediaAttachment>[];
   var _saving = false;
@@ -50,6 +53,19 @@ class _CreateIssuePageState extends ConsumerState<CreateIssuePage> {
               attachments: List.of(_attachments),
             ),
           );
+      final elapsedMs = _openedAt.elapsedMilliseconds;
+      await ref.read(issueCreateTimingProvider.notifier).record(
+            durationMs: elapsedMs,
+            projectId: session.activeProjectId,
+          );
+      await logTelemetryEvent(
+        ref,
+        name: 'issue_create',
+        params: {
+          'duration_ms': elapsedMs,
+          'project_id': session.activeProjectId,
+        },
+      );
       final offline = ref.read(isOfflineProvider);
       if (!offline) {
         await ref.read(syncEngineProvider).flushNow(isOnline: true);

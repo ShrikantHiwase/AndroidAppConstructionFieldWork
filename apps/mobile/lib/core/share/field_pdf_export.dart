@@ -338,6 +338,16 @@ class FieldPdfExport {
             '${snapshot.dprSubmittedDaysThisWeek} (target >=4) '
             '${snapshot.dprTargetMet ? 'OK' : 'BELOW'}',
           ),
+          _kv(
+            'Issue create',
+            '${snapshot.issueCreateMedianLabel} '
+            '(n=${snapshot.issueCreateSampleCount}, target <90s) '
+            '${switch (snapshot.issueCreateTargetMet) {
+              true => 'OK',
+              false => 'BELOW',
+              null => 'NEED ${PilotMetricsSnapshot.issueCreateMinSamples}+',
+            }}',
+          ),
           _kv('Open issues', '${snapshot.openIssueCount}'),
           _kv('Pending sync', '${snapshot.pendingSyncCount}'),
           _kv(

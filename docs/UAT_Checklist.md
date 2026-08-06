@@ -18,7 +18,7 @@ Run on mid/low-end Android first. Mark each item in Admin → **Pilot** (or tick
 
 ## Issues & RFIs
 
-- [ ] Create issue with demo GPS + compressed photo (size shown on attachment)
+- [ ] Create issue with demo GPS + compressed photo (size shown on attachment); Pilot median updates after save
 - [ ] Create issue offline → appears pending sync → flushes online
 - [ ] Status workflow Open → In Progress → Resolved → Closed with audit
 - [ ] PM can assign; engineer cannot

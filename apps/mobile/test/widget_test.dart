@@ -200,6 +200,12 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Pilot / UAT'), findsOneWidget);
     expect(find.text('Hypercare snapshot'), findsOneWidget);
+    expect(find.text('Issue create median'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.textContaining('UAT checklist'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(find.textContaining('UAT checklist'), findsOneWidget);
   });
 
