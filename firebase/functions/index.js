@@ -58,6 +58,7 @@ exports.inviteMember = onCall(async (request) => {
     orgId,
     projectIds,
     temporaryPassword = "demo1234",
+    invitedByName,
   } = request.data || {};
 
   if (!email || !role || !orgId || !Array.isArray(projectIds) || !projectIds.length) {
@@ -114,16 +115,19 @@ exports.inviteMember = onCall(async (request) => {
   }
 
   const inviteRef = db.collection("invites").doc();
+  const nowIso = new Date().toISOString();
   batch.set(inviteRef, {
+    id: inviteRef.id,
     email: normalized,
     role,
     orgId,
     projectIds,
     status: "accepted",
     invitedByUserId: request.auth.uid,
+    invitedByName: invitedByName || "",
     acceptedUserId: userRecord.uid,
-    createdAt: new Date().toISOString(),
-    acceptedAt: new Date().toISOString(),
+    createdAt: nowIso,
+    acceptedAt: nowIso,
     channel: "callable",
   });
 

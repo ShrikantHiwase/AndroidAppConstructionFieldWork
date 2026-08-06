@@ -65,6 +65,9 @@ todos:
   - id: fcm-delivery
     content: Admin.messaging send + FCM background/open handlers
     status: completed
+  - id: firebase-invite-callable
+    content: Wire inviteMember callable behind firebaseEnabledProvider
+    status: completed
 isProject: false
 ---
 
@@ -280,6 +283,7 @@ docs/                 # plans and training
 16. ~~FCM scaffolding~~ — `PushNotificationService` (NoOp + Firebase), local notification inbox, token → `fcm_tokens/{uid}`, assign/status intents logged; see [FCM.md](FCM.md).
 17. ~~Background sync~~ — Workmanager periodic/one-off outbox flush + `connectivity_plus` reconnect auto-flush; see [Background_Sync.md](Background_Sync.md).
 18. ~~FCM delivery~~ — Functions `admin.messaging().send` on DPR submit + issue assign/status; client background / open / cold-start handlers → inbox; see [FCM.md](FCM.md).
-19. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift and scheduled 5 PM nudge Function remain follow-ups.
+19. ~~Firebase invite callable~~ — Admin UI calls `inviteMember` via `cloud_functions` when Firebase is enabled; demo keeps local FakeAuth invites.
+20. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift and scheduled 5 PM nudge Function remain follow-ups.
 
 No native-only Android path; iOS ships from the same Flutter codebase. Enterprise BIM/Forge remains a WebView module after MVP.

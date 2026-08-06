@@ -59,6 +59,7 @@ docs/              Build plan and training
 | FCM push scaffolding | Done |
 | Workmanager + connectivity background sync | Done |
 | FCM Admin.messaging + background handlers | Done |
+| Firebase inviteMember callable (admin UI) | Done |
 | FlutterFire configure + store release | Next (needs your Firebase project) |
 | Phase 3 Enterprise hooks | Deferred |
 

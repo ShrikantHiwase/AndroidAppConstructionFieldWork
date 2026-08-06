@@ -85,8 +85,9 @@ flutter run --dart-define=USE_NATIVE_SENSORS=true
 
 ## Notes
 
-- In-app admin invites still work in **demo** FakeAuth; production invites should call
-  callable `inviteMember` (see `firebase/functions/index.js`).
+- In-app admin invites: **demo** uses FakeAuth + local prefs; **Firebase on**
+  calls callable `inviteMember` (`FirebaseAdminInvitesRepository`). Temp password
+  remains `demo1234` until transactional email is wired.
 - When Firebase is enabled, the local outbox **pushes** issues/RFIs/comments **and**
   DPR / site-ops / document metadata / drawing pins to Firestore on flush, and
   **pulls** those collections into the on-device cache.
