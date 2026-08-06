@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../auth/presentation/auth_controller.dart';
 import '../../../sync/conflict/conflict_policy.dart';
 import 'sync_providers.dart';
 
@@ -13,6 +14,8 @@ class SyncStatusPage extends ConsumerWidget {
     final pending = ref.watch(pendingSyncCountProvider).valueOrNull ?? 0;
     final logsAsync = ref.watch(syncLogsProvider);
     final engine = ref.watch(syncEngineProvider);
+    final session = ref.watch(authSessionProvider);
+    final firebase = ref.watch(firebaseEnabledProvider);
     final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
@@ -27,6 +30,12 @@ class SyncStatusPage extends ConsumerWidget {
                 ? 'Outbox empty'
                 : '$pending item(s) waiting to sync',
             style: textTheme.bodyLarge,
+          ),
+          Text(
+            firebase
+                ? 'Remote: Cloud Firestore (outbox push + pull)'
+                : 'Remote: local demo sink (no cloud write)',
+            style: textTheme.bodySmall,
           ),
           if (engine.lastSuccessAt != null) ...[
             const SizedBox(height: 4),
@@ -53,9 +62,10 @@ class SyncStatusPage extends ConsumerWidget {
                 onPressed: offline
                     ? null
                     : () async {
-                        final n = await ref
-                            .read(syncEngineProvider)
-                            .flushNow(isOnline: true);
+                        final n = await ref.read(syncEngineProvider).flushNow(
+                              isOnline: true,
+                              projectId: session?.activeProjectId,
+                            );
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text('Flushed $n item(s)')),

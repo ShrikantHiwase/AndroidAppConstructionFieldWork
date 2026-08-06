@@ -97,7 +97,7 @@ class LocalSyncEngine implements SyncCoordinator {
     await flushNow(isOnline: true);
   }
 
-  Future<int> flushNow({required bool isOnline}) async {
+  Future<int> flushNow({required bool isOnline, String? projectId}) async {
     final before = await _fieldRecords.watchPendingSyncCount().first;
     if (!isOnline) {
       await _appendLog(
@@ -119,13 +119,21 @@ class LocalSyncEngine implements SyncCoordinator {
       final flushed = (before - after).clamp(0, before);
       lastSuccessAt = DateTime.now().toUtc();
       lastFailure = null;
+      var pullNote = '';
+      if (projectId != null) {
+        final pulled = await _fieldRecords.pullRemote(projectId: projectId);
+        if (pulled.issues > 0 || pulled.rfis > 0) {
+          pullNote =
+              '; pulled ${pulled.issues} issue(s), ${pulled.rfis} RFI(s)';
+        }
+      }
       await _appendLog(
         SyncLogEntry(
           id: _id('log'),
           at: lastSuccessAt!,
           message: flushed == 0
-              ? 'Flush complete — nothing pending'
-              : 'Flushed $flushed outbox item(s)',
+              ? 'Flush complete — nothing pending$pullNote'
+              : 'Flushed $flushed outbox item(s)$pullNote',
           level: SyncLogLevel.info,
           pendingAfter: after,
           flushedCount: flushed,

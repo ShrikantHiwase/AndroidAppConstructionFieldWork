@@ -43,7 +43,7 @@ Browse Project → Discipline → Document Type → Files. Seeded demo PDF/TXT/C
 
 ## Sync (Phase 1)
 
-`LocalSyncEngine` logs flushes, applies conflict-policy labels, and supports log cleanup. Open **Sync** from the home app bar. Going online auto-flushes the outbox. Drift/Workmanager come after Firebase.
+`LocalSyncEngine` logs flushes, applies conflict-policy labels, and supports log cleanup. Open **Sync** from the home app bar. Going online auto-flushes the outbox. When Firebase is enabled, flush writes issues/RFIs/comments to Firestore and pulls remote issues/RFIs (demo mode uses a no-op sink).
 
 ## Phase 2a — DPR & drawing pins
 
