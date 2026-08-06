@@ -6,9 +6,11 @@ import '../../../core/providers/connectivity_provider.dart';
 import '../../../core/widgets/offline_badge.dart';
 import '../../documents/presentation/documents_browser_page.dart';
 import '../../issues/presentation/create_issue_page.dart';
-import '../../issues/presentation/field_records_providers.dart';
+import '../../issues/presentation/field_records_providers.dart'
+    show pendingSyncCountProvider;
 import '../../issues/presentation/issues_list_page.dart';
 import '../../rfis/presentation/rfis_pages.dart';
+import '../../sync/presentation/sync_status_page.dart';
 import '../domain/auth_models.dart';
 import 'auth_controller.dart';
 
@@ -205,16 +207,19 @@ class _RoleScaffold extends ConsumerWidget {
           ),
           IconButton(
             tooltip: offline ? 'Go online & sync' : 'Simulate offline',
-            onPressed: () async {
-              final next = !offline;
-              ref.read(isOfflineProvider.notifier).state = next;
-              if (!next) {
-                await ref
-                    .read(fieldRecordsRepositoryProvider)
-                    .flushOutbox(isOnline: true);
-              }
-            },
+            onPressed: () => ref.read(isOfflineProvider.notifier).toggle(),
             icon: Icon(offline ? Icons.cloud_off : Icons.cloud_outlined),
+          ),
+          IconButton(
+            tooltip: 'Sync status',
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => const SyncStatusPage(),
+                ),
+              );
+            },
+            icon: const Icon(Icons.sync),
           ),
           IconButton(
             tooltip: 'Sign out',

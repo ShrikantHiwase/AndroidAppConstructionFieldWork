@@ -37,3 +37,7 @@ Offline-first `LocalFieldRecordsRepository` with sync outbox. Demo GPS/photo but
 ## Documents (Phase 1)
 
 Browse Project → Discipline → Document Type → Files. Seeded demo PDF/TXT/CSV. Upload is a content stub until Firebase Storage + file picker. Viewer supports search; PDF uses demo pages with zoom/page nav (pdfrx later).
+
+## Sync (Phase 1)
+
+`LocalSyncEngine` logs flushes, applies conflict-policy labels, and supports log cleanup. Open **Sync** from the home app bar. Going online auto-flushes the outbox. Drift/Workmanager come after Firebase.

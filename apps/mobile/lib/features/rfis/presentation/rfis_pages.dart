@@ -24,15 +24,7 @@ class RfisListPage extends ConsumerWidget {
         actions: [
           IconButton(
             tooltip: offline ? 'Go online & sync' : 'Go offline',
-            onPressed: () async {
-              final next = !offline;
-              ref.read(isOfflineProvider.notifier).state = next;
-              if (!next) {
-                await ref
-                    .read(fieldRecordsRepositoryProvider)
-                    .flushOutbox(isOnline: true);
-              }
-            },
+            onPressed: () => ref.read(isOfflineProvider.notifier).toggle(),
             icon: Icon(offline ? Icons.cloud_off : Icons.cloud_done_outlined),
           ),
         ],
@@ -129,9 +121,7 @@ class _CreateRfiPageState extends ConsumerState<CreateRfiPage> {
             ),
           );
       if (!ref.read(isOfflineProvider)) {
-        await ref
-            .read(fieldRecordsRepositoryProvider)
-            .flushOutbox(isOnline: true);
+        await ref.read(syncEngineProvider).flushNow(isOnline: true);
       }
       if (mounted) Navigator.of(context).pop();
     } catch (e) {
@@ -279,8 +269,8 @@ class _RfiDetailPageState extends ConsumerState<RfiDetailPage> {
                                     );
                                 if (!ref.read(isOfflineProvider)) {
                                   await ref
-                                      .read(fieldRecordsRepositoryProvider)
-                                      .flushOutbox(isOnline: true);
+                                      .read(syncEngineProvider)
+                                      .flushNow(isOnline: true);
                                 }
                               } finally {
                                 if (mounted) setState(() => _busy = false);
@@ -334,8 +324,8 @@ class _RfiDetailPageState extends ConsumerState<RfiDetailPage> {
                         _comment.clear();
                         if (!ref.read(isOfflineProvider)) {
                           await ref
-                              .read(fieldRecordsRepositoryProvider)
-                              .flushOutbox(isOnline: true);
+                              .read(syncEngineProvider)
+                              .flushNow(isOnline: true);
                         }
                       } finally {
                         if (mounted) setState(() => _busy = false);

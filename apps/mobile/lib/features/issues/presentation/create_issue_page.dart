@@ -49,9 +49,7 @@ class _CreateIssuePageState extends ConsumerState<CreateIssuePage> {
           );
       final offline = ref.read(isOfflineProvider);
       if (!offline) {
-        await ref
-            .read(fieldRecordsRepositoryProvider)
-            .flushOutbox(isOnline: true);
+        await ref.read(syncEngineProvider).flushNow(isOnline: true);
       }
       if (mounted) Navigator.of(context).pop();
     } catch (e) {

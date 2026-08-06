@@ -87,18 +87,16 @@ class _UploadDocumentPageState extends ConsumerState<UploadDocumentPage> {
             ),
           ),
           const SizedBox(height: 16),
-          DropdownButtonFormField<DocContentType>(
-            value: _type,
-            decoration: const InputDecoration(
-              labelText: 'Type',
-              border: OutlineInputBorder(),
-            ),
-            items: const [
-              DropdownMenuItem(value: DocContentType.txt, child: Text('TXT')),
-              DropdownMenuItem(value: DocContentType.csv, child: Text('CSV')),
-              DropdownMenuItem(value: DocContentType.pdf, child: Text('PDF')),
+          DropdownMenu<DocContentType>(
+            initialSelection: _type,
+            label: const Text('Type'),
+            expandedInsets: EdgeInsets.zero,
+            dropdownMenuEntries: const [
+              DropdownMenuEntry(value: DocContentType.txt, label: 'TXT'),
+              DropdownMenuEntry(value: DocContentType.csv, label: 'CSV'),
+              DropdownMenuEntry(value: DocContentType.pdf, label: 'PDF'),
             ],
-            onChanged: (v) {
+            onSelected: (v) {
               if (v != null) setState(() => _type = v);
             },
           ),

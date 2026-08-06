@@ -37,15 +37,7 @@ class IssuesListPage extends ConsumerWidget {
             ),
           IconButton(
             tooltip: offline ? 'Go online & sync' : 'Go offline',
-            onPressed: () async {
-              final next = !offline;
-              ref.read(isOfflineProvider.notifier).state = next;
-              if (!next) {
-                await ref
-                    .read(fieldRecordsRepositoryProvider)
-                    .flushOutbox(isOnline: true);
-              }
-            },
+            onPressed: () => ref.read(isOfflineProvider.notifier).toggle(),
             icon: Icon(offline ? Icons.cloud_off : Icons.cloud_done_outlined),
           ),
         ],

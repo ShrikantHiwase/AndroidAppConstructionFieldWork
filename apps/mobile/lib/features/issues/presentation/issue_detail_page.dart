@@ -35,7 +35,7 @@ class _IssueDetailPageState extends ConsumerState<IssueDetailPage> {
 
   Future<void> _afterMutate() async {
     if (!ref.read(isOfflineProvider)) {
-      await ref.read(fieldRecordsRepositoryProvider).flushOutbox(isOnline: true);
+      await ref.read(syncEngineProvider).flushNow(isOnline: true);
     }
   }
 

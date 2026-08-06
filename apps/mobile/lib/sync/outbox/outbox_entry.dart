@@ -4,6 +4,8 @@
 /// - scalar fields → last-write-wins
 /// - comments / photos → append-only
 /// - status changes → audited
+///
+/// See [ConflictPolicy] in `sync/conflict/conflict_policy.dart`.
 class OutboxEntry {
   const OutboxEntry({
     required this.id,
@@ -28,7 +30,8 @@ class OutboxEntry {
 
 enum OutboxOperation { create, update, delete, upload }
 
-/// Placeholder sync coordinator — replaced with Drift + Workmanager in Phase 1.
+/// Sync coordinator contract. [LocalSyncEngine] implements logging + flush;
+/// Drift + Workmanager replace the persistence layer after Firebase configure.
 abstract class SyncCoordinator {
   Future<void> enqueue(OutboxEntry entry);
   Future<void> flush();

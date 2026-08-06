@@ -16,7 +16,7 @@ todos:
     status: completed
   - id: offline-sync
     content: Offline-first cache, conflict policy, sync logs, cleanup, low-end device hardening
-    status: pending
+    status: completed
   - id: diff-2a-dpr-drawings
     content: "Phase 2a: DPR templates + PDF/WhatsApp share, drawing-linked punch pins"
     status: pending
@@ -224,9 +224,11 @@ docs/                 # plans and training
 ## Execution status
 
 1. ~~Plan + README~~ — done.
-2. ~~Phase 0 scaffold~~ — done (merged): Flutter app, Firebase folder, CI, rules skeleton, feature-first layout.
+2. ~~Phase 0 scaffold~~ — done (merged).
 3. ~~Phase 1 auth / RBAC~~ — done (demo `FakeAuthRepository`).
-4. ~~Phase 1 issues / RFIs~~ — done (local offline-first store + outbox): create/list/detail, status workflow + audit, comments, demo GPS/photo attachments, role gates. FCM deferred until Firebase is live.
-5. **Next:** Phase 1 documents (hierarchy, upload/download, PDF viewer) and deepen offline sync (Drift / Workmanager) when Firebase is configured.
+4. ~~Phase 1 issues / RFIs~~ — done (local offline-first store + outbox).
+5. ~~Phase 1 documents~~ — done.
+6. ~~Phase 1 offline sync hardening~~ — done: `LocalSyncEngine` (flush + logs), conflict policy helpers, cleanup retention, Sync status screen. Drift/Workmanager/connectivity_plus auto-detect remain after Firebase configure.
+7. **Next:** Phase 2a (DPR templates + PDF share, drawing-linked punch pins) after MVP freeze — or wire Firebase when project credentials are available.
 
 No native-only Android path; iOS ships from the same Flutter codebase. Enterprise BIM/Forge remains a WebView module after MVP.
