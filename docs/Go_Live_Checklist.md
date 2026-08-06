@@ -66,6 +66,8 @@ flutter run --dart-define=USE_NATIVE_SENSORS=true
 - [ ] Offline create → online sync still works (issues + DPR/site-ops/docs outboxes)
 - [ ] Issue with photo: flush uploads to Storage when Firebase is on; Fake `local://` paths stay demo URLs
 
+- [ ] Enable **Cloud Messaging** and confirm Sync status shows an FCM token after sign-in
+
 ## 6. Pilot
 
 - [ ] Run [UAT_Checklist.md](UAT_Checklist.md) on pilot devices

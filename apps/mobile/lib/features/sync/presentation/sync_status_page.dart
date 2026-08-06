@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../auth/presentation/auth_controller.dart';
+import '../../../core/notifications/notification_providers.dart';
 import '../../../sync/conflict/conflict_policy.dart';
+import '../../auth/presentation/auth_controller.dart';
 import 'sync_providers.dart';
 
 class SyncStatusPage extends ConsumerWidget {
@@ -16,6 +17,8 @@ class SyncStatusPage extends ConsumerWidget {
     final engine = ref.watch(syncEngineProvider);
     final session = ref.watch(authSessionProvider);
     final firebase = ref.watch(firebaseEnabledProvider);
+    final pushToken = ref.watch(pushRegistrationProvider);
+    final inbox = ref.watch(notificationInboxProvider);
     final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
@@ -52,6 +55,46 @@ class SyncStatusPage extends ConsumerWidget {
                 color: Theme.of(context).colorScheme.error,
               ),
             ),
+          ],
+          const SizedBox(height: 16),
+          Text('Push (FCM)', style: textTheme.titleMedium),
+          const SizedBox(height: 4),
+          pushToken.when(
+            loading: () => const Text('Registering device token…'),
+            error: (e, _) => Text('Token error: $e'),
+            data: (token) => Text(
+              token == null
+                  ? 'No token (sign in required)'
+                  : (firebase
+                      ? 'Token: ${token.length > 24 ? '${token.substring(0, 24)}…' : token}'
+                      : 'Demo token: $token'),
+              style: textTheme.bodySmall,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            firebase
+                ? 'Foreground messages land in the inbox below; server sends via Functions.'
+                : 'Demo mode logs assign/status intents locally until FlutterFire is configured.',
+            style: textTheme.bodySmall,
+          ),
+          if (inbox.entries.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            ...inbox.entries.take(8).map(
+                  (e) => ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    dense: true,
+                    leading: Icon(
+                      e.source == 'fcm'
+                          ? Icons.notifications_active_outlined
+                          : Icons.notifications_outlined,
+                    ),
+                    title: Text(e.title),
+                    subtitle:
+                        Text('${e.body}\n${e.at.toLocal()} · ${e.source}'),
+                    isThreeLine: true,
+                  ),
+                ),
           ],
           const SizedBox(height: 16),
           Wrap(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/notifications/notification_providers.dart';
 import '../../../core/providers/connectivity_provider.dart';
 import '../../auth/domain/auth_models.dart';
 import '../../auth/presentation/auth_controller.dart';
@@ -39,6 +40,18 @@ class _IssueDetailPageState extends ConsumerState<IssueDetailPage> {
     if (!ref.read(isOfflineProvider)) {
       await ref.read(syncEngineProvider).flushNow(isOnline: true);
     }
+  }
+
+  Future<void> _notify({
+    required String title,
+    required String body,
+    Map<String, String> data = const {},
+  }) async {
+    await ref.read(pushNotificationServiceProvider).notifyLocal(
+          title: title,
+          body: body,
+          data: data,
+        );
   }
 
   @override
@@ -130,6 +143,16 @@ class _IssueDetailPageState extends ConsumerState<IssueDetailPage> {
                                       issueId: issue.id,
                                       status: s,
                                     );
+                                await _notify(
+                                  title: 'Issue status updated',
+                                  body:
+                                      '${issue.title} → ${s.label}',
+                                  data: {
+                                    'type': 'issue_status',
+                                    'issueId': issue.id,
+                                    'status': s.firestoreValue,
+                                  },
+                                );
                                 await _afterMutate();
                               } catch (e) {
                                 if (context.mounted) {
@@ -161,6 +184,15 @@ class _IssueDetailPageState extends ConsumerState<IssueDetailPage> {
                               assigneeId: 'u_engineer',
                               assigneeName: 'Asha Patil',
                             );
+                        await _notify(
+                          title: 'Issue assigned',
+                          body: '${issue.title} → Asha Patil',
+                          data: {
+                            'type': 'issue_assigned',
+                            'issueId': issue.id,
+                            'assigneeId': 'u_engineer',
+                          },
+                        );
                         await _afterMutate();
                       } catch (e) {
                         if (context.mounted) {
