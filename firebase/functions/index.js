@@ -6,17 +6,25 @@
  * - onDprWrite: FCM notify creator on DPR submit
  * - onIssueWrite: FCM on assign / status change
  * - onRfiWrite: FCM on RFI assign / status change
+ * - dailyDprNudge: scheduled Cloud 5 PM DPR reminder (Blaze); local tray remains demo path
  *
  * Emulators: firebase emulators:start
  * Deploy: firebase deploy --only functions (after flutterfire + Blaze if needed)
  * Dry-run FCM: FCM_SEND_ENABLED=false
+ * Disable schedule fan-out: DPR_NUDGE_SCHEDULE_ENABLED=false
  */
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const { onDocumentWritten } = require("firebase-functions/v2/firestore");
+const { onSchedule } = require("firebase-functions/v2/scheduler");
 const { initializeApp } = require("firebase-admin/app");
 const { getAuth } = require("firebase-admin/auth");
 const { getFirestore } = require("firebase-admin/firestore");
 const { sendToUser } = require("./fcm");
+const {
+  DEFAULT_TZ,
+  localDayKey,
+  runDailyDprNudge,
+} = require("./dpr_nudge");
 
 initializeApp();
 
@@ -319,3 +327,54 @@ exports.onRfiWrite = onDocumentWritten("rfis/{rfiId}", async (event) => {
   }
   return null;
 });
+
+/**
+ * Daily Cloud DPR nudge (~17:00 Asia/Kolkata by default).
+ * Soft-skips when DPR_NUDGE_SCHEDULE_ENABLED=false or sendToUser guards fire.
+ * Local tray nudge still covers demo without Blaze / FlutterFire.
+ */
+exports.dailyDprNudge = onSchedule(
+  {
+    schedule: process.env.DPR_NUDGE_CRON || "0 17 * * *",
+    timeZone: process.env.DPR_NUDGE_TZ || DEFAULT_TZ,
+  },
+  async () => {
+    const enabled = process.env.DPR_NUDGE_SCHEDULE_ENABLED !== "false";
+    const timeZone = process.env.DPR_NUDGE_TZ || DEFAULT_TZ;
+    const now = new Date();
+    const dayKey = localDayKey(now, timeZone);
+
+    const membershipsSnap = await db
+      .collection("memberships")
+      .where("active", "==", true)
+      .get();
+    const memberships = membershipsSnap.docs.map((d) => d.data());
+
+    // Prefer exact UTC-midnight reportDate used by the Flutter client.
+    const reportDate = `${dayKey}T00:00:00.000Z`;
+    const dprsSnap = await db
+      .collection("dprs")
+      .where("reportDate", "==", reportDate)
+      .get();
+    const dprs = dprsSnap.docs
+      .map((d) => ({ id: d.id, ...d.data() }))
+      .filter((d) => d.submitted === true);
+
+    const summary = await runDailyDprNudge({
+      memberships,
+      dprs,
+      send: sendToUser,
+      now,
+      timeZone,
+      enabled,
+    });
+
+    console.log(
+      JSON.stringify({
+        type: "daily_dpr_nudge",
+        ...summary,
+      })
+    );
+    return null;
+  }
+);

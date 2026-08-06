@@ -79,9 +79,11 @@ Seed writes `organizations`, `projects`, Auth users, and `memberships/{uid}_{pro
 | `onDprWrite` | FCM notify creator on DPR submit |
 | `onIssueWrite` | FCM on issue assign / status change |
 | `onRfiWrite` | FCM on RFI assign / status change |
+| `dailyDprNudge` | Scheduled ~17:00 `Asia/Kolkata` FCM reminder for site engineers missing today's DPR (Blaze; disable with `DPR_NUDGE_SCHEDULE_ENABLED=false`) |
 
 When `firebaseEnabledProvider` is true, **Invite users** calls `inviteMember`
 (`FirebaseAdminInvitesRepository`). Demo mode keeps local FakeAuth invites.
+Local tray DPR nudge still covers demos without Blaze — see [FCM.md](FCM.md).
 
 ## Emulators
 

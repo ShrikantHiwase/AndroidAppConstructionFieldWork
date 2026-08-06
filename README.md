@@ -77,6 +77,7 @@ docs/              Build plan and training
 | Device voice capture (Fake + record) | Done |
 | Material log evidence photos | Done |
 | Document file picker (Fake + file_picker) | Done |
+| Cloud 5 PM DPR nudge Function | Done (Blaze to deploy) |
 | FlutterFire configure + store release | Next (needs your Firebase project) |
 | Phase 3 Enterprise hooks | Deferred |
 
