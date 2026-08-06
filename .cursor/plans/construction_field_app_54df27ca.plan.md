@@ -35,6 +35,9 @@ todos:
   - id: admin-invites
     content: In-app admin invites with role/project assignment (local demo; Functions later)
     status: completed
+  - id: device-sensors
+    content: GPS/camera/biometrics via Fake defaults + USE_NATIVE_SENSORS device path
+    status: completed
 isProject: false
 ---
 

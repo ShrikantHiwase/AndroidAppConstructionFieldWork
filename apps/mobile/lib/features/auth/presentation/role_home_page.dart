@@ -309,7 +309,7 @@ class _RoleScaffold extends ConsumerWidget {
             contentPadding: EdgeInsets.zero,
             title: const Text('Biometric unlock'),
             subtitle: const Text(
-              'Require unlock after app resume (demo stub until local_auth)',
+              'Require unlock after app resume (local_auth when USE_NATIVE_SENSORS=true)',
             ),
             value: session.biometricsEnabled,
             onChanged: (v) => ref

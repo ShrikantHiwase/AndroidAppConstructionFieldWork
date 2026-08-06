@@ -11,6 +11,7 @@ Flutter + Firebase field evidence OS for mid-market construction contractors (In
 - [Pilot training](docs/Pilot_Training.md)
 - [UAT checklist](docs/UAT_Checklist.md)
 - [Hypercare metrics](docs/Hypercare_Metrics.md)
+- [Device sensors](docs/Device_Sensors.md)
 
 ## Repo layout
 
