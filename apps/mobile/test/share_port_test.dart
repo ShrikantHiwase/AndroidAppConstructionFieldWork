@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:construction_field_app/core/share/field_pdf_export.dart';
 import 'package:construction_field_app/core/share/share_port.dart';
+import 'package:construction_field_app/features/client_progress/domain/weekly_progress_models.dart';
 import 'package:construction_field_app/features/dpr/domain/dpr_models.dart';
 import 'package:construction_field_app/features/digests/domain/digest_models.dart';
 import 'package:construction_field_app/features/pilot/domain/pilot_models.dart';
@@ -54,7 +55,7 @@ void main() {
     );
   });
 
-  test('DPR and digest share text stay WhatsApp-friendly', () {
+  test('DPR, digest, and weekly share text stay WhatsApp-friendly', () {
     final dprText = _sampleDpr().toShareText(projectName: 'Pune Tower');
     expect(dprText, contains('DAILY PROGRESS REPORT'));
     expect(dprText, contains('Pune Tower'));
@@ -62,9 +63,14 @@ void main() {
     final digestText = _sampleDigest().toShareText(projectName: 'Pune Tower');
     expect(digestText, contains('PM DIGEST'));
     expect(digestText, contains('Crack'));
+
+    final weeklyText = _sampleWeekly().toShareText(projectName: 'Pune Tower');
+    expect(weeklyText, contains('WEEKLY PROGRESS'));
+    expect(weeklyText, contains('Slab pour'));
   });
 
-  test('FieldPdfExport builds non-empty DPR, digest, and pilot PDFs', () async {
+  test('FieldPdfExport builds non-empty DPR, digest, pilot, weekly PDFs',
+      () async {
     final dprBytes = await FieldPdfExport.dpr(
       report: _sampleDpr(),
       projectName: 'Pune Tower',
@@ -87,13 +93,20 @@ void main() {
     expect(pilotBytes.length, greaterThan(200));
     expect(String.fromCharCodes(pilotBytes.take(4)), '%PDF');
 
+    final weeklyBytes = await FieldPdfExport.weekly(
+      pack: _sampleWeekly(),
+      projectName: 'Pune Tower',
+    );
+    expect(weeklyBytes.length, greaterThan(200));
+    expect(String.fromCharCodes(weeklyBytes.take(4)), '%PDF');
+
     final port = RecordingSharePort();
     await port.shareFile(
-      bytes: pilotBytes,
-      filename: 'pilot_snapshot_2026-08-06.pdf',
-      subject: 'Pilot',
+      bytes: weeklyBytes,
+      filename: 'weekly_progress_2026-08-03.pdf',
+      subject: 'Weekly',
     );
-    expect(port.sharedFiles.single.filename, 'pilot_snapshot_2026-08-06.pdf');
+    expect(port.sharedFiles.single.filename, 'weekly_progress_2026-08-03.pdf');
   });
 }
 
@@ -144,5 +157,26 @@ PilotMetricsSnapshot _samplePilot() {
     syncErrorCount: 0,
     checklistCompleted: 4,
     checklistTotal: 12,
+  );
+}
+
+WeeklyProgressSnapshot _sampleWeekly() {
+  return WeeklyProgressSnapshot(
+    generatedAt: DateTime.utc(2026, 8, 6, 17),
+    weekStart: DateTime(2026, 8, 3),
+    weekEndExclusive: DateTime(2026, 8, 10),
+    submittedDprDays: 1,
+    days: [
+      WeeklyProgressDayLine(
+        reportDate: DateTime(2026, 8, 4),
+        weather: 'Clear',
+        manpowerSummary: '40',
+        activitySummaries: const ['Slab pour @ L3'],
+        blockers: 'Crane delay',
+      ),
+    ],
+    openIssueCount: 1,
+    openIssueTitles: const ['Crack (Open)'],
+    weekBlockers: const ['2026-08-04: Crane delay'],
   );
 }
