@@ -15,6 +15,8 @@ class SafetyRecord {
     required this.createdAt,
     this.photoRequired = false,
     this.hasPhoto = false,
+    this.photoLocalPath,
+    this.photoByteSizeBytes,
     this.synced = false,
   });
 
@@ -29,9 +31,16 @@ class SafetyRecord {
   final DateTime createdAt;
   final bool photoRequired;
   final bool hasPhoto;
+  final String? photoLocalPath;
+  final int? photoByteSizeBytes;
   final bool synced;
 
-  SafetyRecord copyWith({bool? synced}) {
+  SafetyRecord copyWith({
+    bool? synced,
+    bool? hasPhoto,
+    String? photoLocalPath,
+    int? photoByteSizeBytes,
+  }) {
     return SafetyRecord(
       id: id,
       orgId: orgId,
@@ -43,7 +52,9 @@ class SafetyRecord {
       createdByName: createdByName,
       createdAt: createdAt,
       photoRequired: photoRequired,
-      hasPhoto: hasPhoto,
+      hasPhoto: hasPhoto ?? this.hasPhoto,
+      photoLocalPath: photoLocalPath ?? this.photoLocalPath,
+      photoByteSizeBytes: photoByteSizeBytes ?? this.photoByteSizeBytes,
       synced: synced ?? this.synced,
     );
   }
@@ -60,6 +71,8 @@ class SafetyRecord {
         'createdAt': createdAt.toIso8601String(),
         'photoRequired': photoRequired,
         'hasPhoto': hasPhoto,
+        'photoLocalPath': photoLocalPath,
+        'photoByteSizeBytes': photoByteSizeBytes,
         'synced': synced,
       };
 
@@ -74,7 +87,10 @@ class SafetyRecord {
         createdByName: json['createdByName'] as String,
         createdAt: DateTime.parse(json['createdAt'] as String),
         photoRequired: json['photoRequired'] as bool? ?? false,
-        hasPhoto: json['hasPhoto'] as bool? ?? false,
+        hasPhoto: json['hasPhoto'] as bool? ??
+            ((json['photoLocalPath'] as String?)?.isNotEmpty ?? false),
+        photoLocalPath: json['photoLocalPath'] as String?,
+        photoByteSizeBytes: json['photoByteSizeBytes'] as int?,
         synced: json['synced'] as bool? ?? false,
       );
 }
@@ -88,6 +104,8 @@ class InspectionItem {
     required this.result,
     this.photoOnFail = true,
     this.hasPhoto = false,
+    this.photoLocalPath,
+    this.photoByteSizeBytes,
   });
 
   final String id;
@@ -95,6 +113,25 @@ class InspectionItem {
   final InspectionResult result;
   final bool photoOnFail;
   final bool hasPhoto;
+  final String? photoLocalPath;
+  final int? photoByteSizeBytes;
+
+  InspectionItem copyWith({
+    InspectionResult? result,
+    bool? hasPhoto,
+    String? photoLocalPath,
+    int? photoByteSizeBytes,
+  }) {
+    return InspectionItem(
+      id: id,
+      label: label,
+      result: result ?? this.result,
+      photoOnFail: photoOnFail,
+      hasPhoto: hasPhoto ?? this.hasPhoto,
+      photoLocalPath: photoLocalPath ?? this.photoLocalPath,
+      photoByteSizeBytes: photoByteSizeBytes ?? this.photoByteSizeBytes,
+    );
+  }
 
   Map<String, Object?> toJson() => {
         'id': id,
@@ -102,6 +139,8 @@ class InspectionItem {
         'result': result.name,
         'photoOnFail': photoOnFail,
         'hasPhoto': hasPhoto,
+        'photoLocalPath': photoLocalPath,
+        'photoByteSizeBytes': photoByteSizeBytes,
       };
 
   factory InspectionItem.fromJson(Map<String, Object?> json) => InspectionItem(
@@ -109,7 +148,10 @@ class InspectionItem {
         label: json['label'] as String,
         result: InspectionResult.values.byName(json['result'] as String),
         photoOnFail: json['photoOnFail'] as bool? ?? true,
-        hasPhoto: json['hasPhoto'] as bool? ?? false,
+        hasPhoto: json['hasPhoto'] as bool? ??
+            ((json['photoLocalPath'] as String?)?.isNotEmpty ?? false),
+        photoLocalPath: json['photoLocalPath'] as String?,
+        photoByteSizeBytes: json['photoByteSizeBytes'] as int?,
       );
 }
 
