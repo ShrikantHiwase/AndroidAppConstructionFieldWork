@@ -100,12 +100,13 @@ class MediaAttachment {
     bool? pendingUpload,
     int? byteSizeBytes,
     int? widthPx,
+    bool clearLocalPath = false,
   }) {
     return MediaAttachment(
       id: id,
       fileName: fileName,
       contentType: contentType,
-      localPath: localPath ?? this.localPath,
+      localPath: clearLocalPath ? null : (localPath ?? this.localPath),
       remoteUrl: remoteUrl ?? this.remoteUrl,
       pendingUpload: pendingUpload ?? this.pendingUpload,
       byteSizeBytes: byteSizeBytes ?? this.byteSizeBytes,

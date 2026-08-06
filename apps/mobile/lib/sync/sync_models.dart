@@ -40,10 +40,16 @@ class SyncCleanupResult {
   const SyncCleanupResult({
     required this.removedLogEntries,
     required this.bytesFreedEstimate,
+    this.reclaimedMediaPaths = 0,
+    this.cacheBytesBefore = 0,
+    this.cacheBytesAfter = 0,
   });
 
   final int removedLogEntries;
   final int bytesFreedEstimate;
+  final int reclaimedMediaPaths;
+  final int cacheBytesBefore;
+  final int cacheBytesAfter;
 }
 
 /// Tunables for low-end device hardening.
@@ -54,6 +60,6 @@ abstract final class SyncCleanupPolicy {
   /// Drop log rows older than this.
   static const logRetention = Duration(days: 14);
 
-  /// Soft cap for estimated local JSON payload retention messaging.
+  /// Soft cap for estimated local media + log retention messaging.
   static const softLocalBytesCap = 8 * 1024 * 1024;
 }

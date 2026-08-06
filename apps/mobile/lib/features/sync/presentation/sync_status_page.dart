@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/device/evidence_image_policy.dart';
 import '../../../core/health/health_check_port.dart';
 import '../../../core/notifications/notification_deep_link.dart';
 import '../../../core/notifications/notification_providers.dart';
@@ -24,7 +25,10 @@ class SyncStatusPage extends ConsumerWidget {
     final inbox = ref.watch(notificationInboxProvider);
     final bgMeta = ref.watch(backgroundSyncMetaProvider);
     final lastHealth = ref.watch(lastHealthCheckProvider);
+    final cache = ref.watch(localCacheSnapshotProvider);
     final textTheme = Theme.of(context).textTheme;
+    final scheme = Theme.of(context).colorScheme;
+    final overBudget = cache.estimatedBytes > cache.capBytes;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Sync status')),
@@ -62,8 +66,42 @@ class SyncStatusPage extends ConsumerWidget {
             Text(
               'Last failure: ${engine.lastFailure}',
               style: textTheme.bodySmall?.copyWith(
-                color: Theme.of(context).colorScheme.error,
+                color: scheme.error,
               ),
+            ),
+          ],
+          const SizedBox(height: 16),
+          Text('Local cache', style: textTheme.titleMedium),
+          const SizedBox(height: 8),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: LinearProgressIndicator(
+              value: cache.usageRatio.clamp(0.0, 1.0),
+              minHeight: 8,
+              color: overBudget ? scheme.error : null,
+              backgroundColor: scheme.surfaceContainerHighest,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            '${EvidenceImagePolicy.formatBytes(cache.estimatedBytes)} / '
+            '${EvidenceImagePolicy.formatBytes(cache.capBytes)} soft budget'
+            '${overBudget ? ' (over)' : ''}',
+            style: textTheme.bodySmall?.copyWith(
+              color: overBudget ? scheme.error : null,
+            ),
+          ),
+          if (cache.breakdownLabel.isNotEmpty) ...[
+            const SizedBox(height: 4),
+            Text(cache.breakdownLabel, style: textTheme.bodySmall),
+          ],
+          if (cache.reclaimableBytes > 0) ...[
+            const SizedBox(height: 4),
+            Text(
+              'Cleanup can reclaim '
+              '${EvidenceImagePolicy.formatBytes(cache.reclaimableBytes)} '
+              '(uploaded local stubs)',
+              style: textTheme.bodySmall,
             ),
           ],
           const SizedBox(height: 16),
@@ -109,9 +147,7 @@ class SyncStatusPage extends ConsumerWidget {
             style: textTheme.bodySmall?.copyWith(
               color: lastHealth == null
                   ? null
-                  : (lastHealth.ok
-                      ? null
-                      : Theme.of(context).colorScheme.error),
+                  : (lastHealth.ok ? null : scheme.error),
             ),
           ),
           const SizedBox(height: 8),
@@ -214,11 +250,20 @@ class SyncStatusPage extends ConsumerWidget {
                   final result = await ref
                       .read(syncEngineProvider)
                       .runStorageCleanup();
+                  ref.invalidate(localCacheSnapshotProvider);
                   if (context.mounted) {
+                    final freed = EvidenceImagePolicy.formatBytes(
+                      result.bytesFreedEstimate,
+                    );
+                    final mediaNote = result.reclaimedMediaPaths > 0
+                        ? ', reclaimed ${result.reclaimedMediaPaths} media '
+                            'path(s)'
+                        : '';
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(
-                          'Removed ${result.removedLogEntries} log(s)',
+                          'Removed ${result.removedLogEntries} log(s)$mediaNote '
+                          '(~$freed)',
                         ),
                       ),
                     );
@@ -269,8 +314,7 @@ class SyncStatusPage extends ConsumerWidget {
           Text(
             'Periodic Workmanager flush (~15 min, network required) + '
             'connectivity_plus auto-flush when the device reconnects. '
-            'Soft local cache budget: '
-            '${SyncCleanupPolicy.softLocalBytesCap ~/ (1024 * 1024)}MB. '
+            'Cleanup clears sync logs and uploaded local:// media stubs. '
             'Drift still deferred.',
             style: textTheme.bodySmall,
           ),

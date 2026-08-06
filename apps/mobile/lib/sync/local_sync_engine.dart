@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../features/issues/domain/field_records_repository.dart';
+import '../core/device/local_media_cache.dart';
 import 'conflict/conflict_policy.dart';
 import 'outbox/outbox_entry.dart';
 import 'remote/syncable_store.dart';
@@ -15,15 +16,18 @@ class LocalSyncEngine implements SyncCoordinator {
     required SharedPreferences prefs,
     required FieldRecordsRepository fieldRecords,
     List<SyncableStore> moduleStores = const [],
+    List<LocalMediaCache> mediaCaches = const [],
   })  : _prefs = prefs,
         _fieldRecords = fieldRecords,
-        _moduleStores = List.unmodifiable(moduleStores) {
+        _moduleStores = List.unmodifiable(moduleStores),
+        _mediaCaches = List.unmodifiable(mediaCaches) {
     _loadLogs();
   }
 
   final SharedPreferences _prefs;
   final FieldRecordsRepository _fieldRecords;
   final List<SyncableStore> _moduleStores;
+  final List<LocalMediaCache> _mediaCaches;
 
   static const _logsKey = 'sync.logs';
   static const _lastSyncKey = 'sync.last_success_at';
@@ -227,16 +231,43 @@ class LocalSyncEngine implements SyncCoordinator {
     );
   }
 
+  LocalCacheSnapshot estimateLocalCache() {
+    final slices = _mediaCaches.map((c) => c.estimateLocalCache()).toList();
+    return LocalCacheSnapshot(
+      slices: slices,
+      capBytes: SyncCleanupPolicy.softLocalBytesCap,
+    );
+  }
+
   /// Manual + auto cleanup entry point for low-end devices.
   Future<SyncCleanupResult> runStorageCleanup() async {
-    final result = await cleanupLogs();
+    final before = estimateLocalCache();
+    final reclaimablePathCount = before.slices.fold<int>(
+      0,
+      (sum, s) => sum + s.reclaimableItemCount,
+    );
+    final logResult = await cleanupLogs(persist: false);
+    var reclaimedBytes = 0;
+    for (final cache in _mediaCaches) {
+      reclaimedBytes += await cache.reclaimUploadedLocalPaths();
+    }
+    final after = estimateLocalCache();
+    final result = SyncCleanupResult(
+      removedLogEntries: logResult.removedLogEntries,
+      bytesFreedEstimate: logResult.bytesFreedEstimate + reclaimedBytes,
+      reclaimedMediaPaths: reclaimablePathCount,
+      cacheBytesBefore: before.estimatedBytes,
+      cacheBytesAfter: after.estimatedBytes,
+    );
     await _appendLog(
       SyncLogEntry(
         id: _id('log'),
         at: DateTime.now().toUtc(),
         message:
-            'Cleanup removed ${result.removedLogEntries} log(s); '
-            '~${result.bytesFreedEstimate}B freed (estimate)',
+            'Cleanup removed ${result.removedLogEntries} log(s), '
+            'reclaimed ${result.reclaimedMediaPaths} media path(s); '
+            '~${result.bytesFreedEstimate}B freed '
+            '(cache ${result.cacheBytesBefore}→${result.cacheBytesAfter})',
         level: SyncLogLevel.info,
       ),
     );

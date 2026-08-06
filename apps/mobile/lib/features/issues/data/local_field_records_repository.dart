@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/constants/app_constants.dart';
+import '../../../core/device/local_media_cache.dart';
 import '../../../sync/outbox/outbox_entry.dart';
 import '../../../sync/remote/field_remote_pull.dart';
 import '../../../sync/remote/outbox_remote_sink.dart';
@@ -17,7 +18,8 @@ import '../domain/issue_models.dart';
 /// Creates always succeed locally. [flushOutbox] pushes to [OutboxRemoteSink]
 /// (Firestore when Firebase is enabled, no-op in demo) then marks docs synced.
 /// Attachment bytes go through [StorageUploader] via [OutboxOperation.upload].
-class LocalFieldRecordsRepository implements FieldRecordsRepository {
+class LocalFieldRecordsRepository
+    implements FieldRecordsRepository, LocalMediaCache {
   LocalFieldRecordsRepository(
     this._prefs, {
     OutboxRemoteSink? remoteSink,
@@ -637,5 +639,68 @@ class LocalFieldRecordsRepository implements FieldRecordsRepository {
       await _persist();
     }
     return (issues: issueMerges, rfis: rfiMerges);
+  }
+
+  @override
+  LocalCacheSlice estimateLocalCache() {
+    var bytes = 0;
+    var reclaimable = 0;
+    var reclaimableCount = 0;
+    var count = 0;
+    for (final issue in _issues.values) {
+      for (final a in issue.attachments) {
+        final path = a.localPath;
+        if (path == null || path.isEmpty) continue;
+        count += 1;
+        final size = LocalCacheEstimates.bytesFor(
+          localPath: path,
+          byteSizeBytes: a.byteSizeBytes,
+        );
+        bytes += size;
+        if (LocalCacheEstimates.isReclaimableLocalStub(
+          localPath: path,
+          remoteUrl: a.remoteUrl,
+        )) {
+          reclaimable += size;
+          reclaimableCount += 1;
+        }
+      }
+    }
+    return LocalCacheSlice(
+      label: 'issues',
+      estimatedBytes: bytes,
+      reclaimableBytes: reclaimable,
+      reclaimableItemCount: reclaimableCount,
+      itemCount: count,
+    );
+  }
+
+  @override
+  Future<int> reclaimUploadedLocalPaths() async {
+    var freed = 0;
+    var changed = false;
+    for (final issue in _issues.values.toList()) {
+      var issueChanged = false;
+      final next = issue.attachments.map((a) {
+        if (!LocalCacheEstimates.isReclaimableLocalStub(
+          localPath: a.localPath,
+          remoteUrl: a.remoteUrl,
+        )) {
+          return a;
+        }
+        freed += LocalCacheEstimates.bytesFor(
+          localPath: a.localPath,
+          byteSizeBytes: a.byteSizeBytes,
+        );
+        issueChanged = true;
+        return a.copyWith(clearLocalPath: true);
+      }).toList();
+      if (issueChanged) {
+        _issues[issue.id] = issue.copyWith(attachments: next);
+        changed = true;
+      }
+    }
+    if (changed) await _persist();
+    return freed;
   }
 }

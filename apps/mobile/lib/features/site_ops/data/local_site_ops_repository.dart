@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/constants/app_constants.dart';
+import '../../../core/device/local_media_cache.dart';
 import '../../../sync/outbox/outbox_entry.dart';
 import '../../../sync/remote/module_remote_pull.dart';
 import '../../../sync/remote/outbox_remote_sink.dart';
@@ -53,7 +54,8 @@ abstract class SiteOpsRepository {
   });
 }
 
-class LocalSiteOpsRepository implements SiteOpsRepository, SyncableStore {
+class LocalSiteOpsRepository
+    implements SiteOpsRepository, SyncableStore, LocalMediaCache {
   LocalSiteOpsRepository(
     this._prefs, {
     OutboxRemoteSink? remoteSink,
@@ -645,5 +647,112 @@ class LocalSiteOpsRepository implements SiteOpsRepository, SyncableStore {
 
     if (changed > 0) await _persistEntitiesOnly();
     return changed;
+  }
+
+  @override
+  LocalCacheSlice estimateLocalCache() {
+    var bytes = 0;
+    var reclaimable = 0;
+    var reclaimableCount = 0;
+    var count = 0;
+    for (final r in _safety.values) {
+      final path = r.photoLocalPath;
+      if (path == null || path.isEmpty) continue;
+      count += 1;
+      final size = LocalCacheEstimates.bytesFor(
+        localPath: path,
+        byteSizeBytes: r.photoByteSizeBytes,
+      );
+      bytes += size;
+      if (LocalCacheEstimates.isReclaimableLocalStub(
+        localPath: path,
+        remoteUrl: r.photoRemoteUrl,
+      )) {
+        reclaimable += size;
+        reclaimableCount += 1;
+      }
+    }
+    for (final insp in _inspections.values) {
+      for (final item in insp.items) {
+        final path = item.photoLocalPath;
+        if (path == null || path.isEmpty) continue;
+        count += 1;
+        final size = LocalCacheEstimates.bytesFor(
+          localPath: path,
+          byteSizeBytes: item.photoByteSizeBytes,
+        );
+        bytes += size;
+        if (LocalCacheEstimates.isReclaimableLocalStub(
+          localPath: path,
+          remoteUrl: item.photoRemoteUrl,
+        )) {
+          reclaimable += size;
+          reclaimableCount += 1;
+        }
+      }
+    }
+    return LocalCacheSlice(
+      label: 'site-ops',
+      estimatedBytes: bytes,
+      reclaimableBytes: reclaimable,
+      reclaimableItemCount: reclaimableCount,
+      itemCount: count,
+    );
+  }
+
+  @override
+  Future<int> reclaimUploadedLocalPaths() async {
+    var freed = 0;
+    var changed = false;
+
+    for (final r in _safety.values.toList()) {
+      if (!LocalCacheEstimates.isReclaimableLocalStub(
+        localPath: r.photoLocalPath,
+        remoteUrl: r.photoRemoteUrl,
+      )) {
+        continue;
+      }
+      freed += LocalCacheEstimates.bytesFor(
+        localPath: r.photoLocalPath,
+        byteSizeBytes: r.photoByteSizeBytes,
+      );
+      _safety[r.id] = r.copyWith(clearPhotoLocalPath: true);
+      changed = true;
+    }
+
+    for (final insp in _inspections.values.toList()) {
+      var inspChanged = false;
+      final nextItems = insp.items.map((item) {
+        if (!LocalCacheEstimates.isReclaimableLocalStub(
+          localPath: item.photoLocalPath,
+          remoteUrl: item.photoRemoteUrl,
+        )) {
+          return item;
+        }
+        freed += LocalCacheEstimates.bytesFor(
+          localPath: item.photoLocalPath,
+          byteSizeBytes: item.photoByteSizeBytes,
+        );
+        inspChanged = true;
+        return item.copyWith(clearPhotoLocalPath: true);
+      }).toList();
+      if (inspChanged) {
+        _inspections[insp.id] = QaInspection(
+          id: insp.id,
+          orgId: insp.orgId,
+          projectId: insp.projectId,
+          title: insp.title,
+          items: nextItems,
+          createdBy: insp.createdBy,
+          createdByName: insp.createdByName,
+          createdAt: insp.createdAt,
+          synced: insp.synced,
+        );
+        changed = true;
+      }
+    }
+
+    if (changed) await _persist();
+    return freed;
   }
 }
