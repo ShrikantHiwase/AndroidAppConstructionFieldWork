@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 /// Result of a share attempt (system sheet or clipboard fallback).
@@ -27,6 +30,17 @@ abstract class SharePort {
   Future<ShareOutcome> shareText({
     required String text,
     String? subject,
+  });
+
+  /// Writes [bytes] to a temp file and opens the system share sheet.
+  /// On failure, copies [fallbackText] (if provided) to the clipboard.
+  Future<ShareOutcome> shareFile({
+    required Uint8List bytes,
+    required String filename,
+    String? subject,
+    String? text,
+    String? fallbackText,
+    String mimeType = 'application/pdf',
   });
 }
 
@@ -60,6 +74,56 @@ class SystemSharePort implements SharePort {
       return const ShareOutcome(delivery: ShareDelivery.clipboard);
     }
   }
+
+  @override
+  Future<ShareOutcome> shareFile({
+    required Uint8List bytes,
+    required String filename,
+    String? subject,
+    String? text,
+    String? fallbackText,
+    String mimeType = 'application/pdf',
+  }) async {
+    try {
+      final dir = await getTemporaryDirectory();
+      final safeName = filename.replaceAll(RegExp(r'[^\w.\-]+'), '_');
+      final file = File('${dir.path}/$safeName');
+      await file.writeAsBytes(bytes, flush: true);
+      final result = await SharePlus.instance.share(
+        ShareParams(
+          files: [
+            XFile(file.path, mimeType: mimeType, name: safeName),
+          ],
+          subject: subject,
+          text: text,
+        ),
+      );
+      if (result.status == ShareResultStatus.unavailable) {
+        return _fileClipboardFallback(fallbackText);
+      }
+      return ShareOutcome(
+        delivery: ShareDelivery.system,
+        statusLabel: result.status.name,
+      );
+    } catch (e, st) {
+      debugPrint('Share file failed: $e\n$st');
+      return _fileClipboardFallback(fallbackText);
+    }
+  }
+
+  Future<ShareOutcome> _fileClipboardFallback(String? fallbackText) async {
+    if (fallbackText != null && fallbackText.isNotEmpty) {
+      await Clipboard.setData(ClipboardData(text: fallbackText));
+      return const ShareOutcome(
+        delivery: ShareDelivery.clipboard,
+        statusLabel: 'unavailable',
+      );
+    }
+    return const ShareOutcome(
+      delivery: ShareDelivery.clipboard,
+      statusLabel: 'unavailable',
+    );
+  }
 }
 
 /// Test / headless: records shares and optionally copies.
@@ -68,6 +132,8 @@ class RecordingSharePort implements SharePort {
 
   final bool copyToClipboard;
   final shared = <({String text, String? subject})>[];
+  final sharedFiles =
+      <({String filename, int byteLength, String? subject, String? text})>[];
 
   @override
   Future<ShareOutcome> shareText({
@@ -77,6 +143,30 @@ class RecordingSharePort implements SharePort {
     shared.add((text: text, subject: subject));
     if (copyToClipboard) {
       await Clipboard.setData(ClipboardData(text: text));
+      return const ShareOutcome(delivery: ShareDelivery.clipboard);
+    }
+    return const ShareOutcome(delivery: ShareDelivery.system);
+  }
+
+  @override
+  Future<ShareOutcome> shareFile({
+    required Uint8List bytes,
+    required String filename,
+    String? subject,
+    String? text,
+    String? fallbackText,
+    String mimeType = 'application/pdf',
+  }) async {
+    sharedFiles.add((
+      filename: filename,
+      byteLength: bytes.length,
+      subject: subject,
+      text: text,
+    ));
+    if (copyToClipboard &&
+        fallbackText != null &&
+        fallbackText.isNotEmpty) {
+      await Clipboard.setData(ClipboardData(text: fallbackText));
       return const ShareOutcome(delivery: ShareDelivery.clipboard);
     }
     return const ShareOutcome(delivery: ShareDelivery.system);

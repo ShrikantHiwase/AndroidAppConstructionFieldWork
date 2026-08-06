@@ -34,9 +34,11 @@ dependencies:
   share_plus: ^12.0.2
   flutter_local_notifications: ^20.1.0
   timezone: ^0.10.1
+  pdf: ^3.11.3
+  path_provider: ^2.1.5
 
   # Still deferred:
-  # firebase_crashlytics, firebase_analytics, drift, path_provider, pdfrx
+  # firebase_crashlytics, firebase_analytics, drift, pdfrx
 
 dev_dependencies:
   flutter_test:
