@@ -85,6 +85,7 @@ docs/              Build plan and training
 | Pilot UAT checklist parity | Done |
 | Hinglish home chrome (ARB) | Done |
 | Emulator seed enrichment (field docs) | Done |
+| Hinglish Sync + Digests chrome (ARB) | Done |
 | FlutterFire configure + store release | Next (needs your Firebase project) |
 | Phase 3 Enterprise hooks | Deferred |
 

@@ -329,7 +329,8 @@ docs/                 # plans and training
 44. ~~Pilot UAT checklist parity~~ — `UatItemIds` matches docs/UAT_Checklist.md (35 items: activity evidence, pilot PDF, client weekly PDF + refreshed labels).
 45. ~~Hinglish ARB home chrome~~ — MaterialApp locale + Offline badge + login EN/Hinglish toggle + role-home CTAs/titles; translate icon cycles locale.
 46. ~~Emulator seed enrichment~~ — field sample docs (issues/RFIs/DPR/docs/pins/site-ops/voice) in `firebase/seed`; Node shape tests + Firebase CI.
-47. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift remains a follow-up.
+47. ~~Hinglish ARB Sync + Digests~~ — Sync status / Digests / login leftovers / role-home Permissions + biometrics + unlock chrome via ARB.
+48. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift remains a follow-up.
 7. ~~Pilot / UAT pack~~ — training guide, UAT checklist, hypercare metrics docs + in-app Pilot hub (checklist + live snapshot). Live-site execution and store tracks still need your Firebase project / devices.
 8. ~~Admin invites~~ — in-app create invite + demo accept via FakeAuth (scoped memberships); Cloud Functions email later.
 9. ~~Device sensors~~ — `geolocator` / `image_picker` / `local_auth` / `record` / `file_picker` with Fake defaults; enable native via `--dart-define=USE_NATIVE_SENSORS=true`. See `docs/Device_Sensors.md`.
@@ -370,6 +371,7 @@ docs/                 # plans and training
 44. ~~Pilot UAT checklist parity~~ — `UatItemIds` matches docs/UAT_Checklist.md (35 items: activity evidence, pilot PDF, client weekly PDF + refreshed labels).
 45. ~~Hinglish ARB home chrome~~ — MaterialApp locale + Offline badge + login EN/Hinglish toggle + role-home CTAs/titles; translate icon cycles locale.
 46. ~~Emulator seed enrichment~~ — field sample docs (issues/RFIs/DPR/docs/pins/site-ops/voice) in `firebase/seed`; Node shape tests + Firebase CI.
-47. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift remains a follow-up.
+47. ~~Hinglish ARB Sync + Digests~~ — Sync status / Digests / login leftovers / role-home Permissions + biometrics + unlock chrome via ARB.
+48. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift remains a follow-up.
 
 No native-only Android path; iOS ships from the same Flutter codebase. Enterprise BIM/Forge remains a WebView module after MVP.

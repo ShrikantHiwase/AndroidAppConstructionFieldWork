@@ -8,6 +8,7 @@
   "@offlineBadge": {
     "description": "Shown when the device has no network"
   },
+  "onlineBadge": "Online",
   "syncPendingCount": "{count} sync",
   "@syncPendingCount": {
     "description": "Pending outbox count in the home app bar",
@@ -47,5 +48,260 @@
   "roleAdminTitle": "Admin",
   "roleAdminSubtitle": "Invite users, assign roles and projects, org settings.",
   "primaryActions": "Primary actions",
-  "signIn": "Sign in"
+  "signIn": "Sign in",
+  "signOut": "Sign out",
+  "emailLabel": "Email",
+  "passwordLabel": "Password",
+  "emailRequired": "Email required",
+  "passwordRequired": "Password required",
+  "demoRoles": "Demo roles",
+  "demoModeHint": "Demo mode — password for all accounts: demo1234",
+  "firebaseSignInHint": "Sign in with your org email (Firebase Auth).",
+  "backendFirebase": "Backend: Firebase",
+  "backendLocalDemo": "Backend: local demo",
+  "permissions": "Permissions",
+  "permCreateIssues": "Create issues",
+  "permAssignWork": "Assign work",
+  "permChangeStatus": "Change status",
+  "permApprove": "Approve",
+  "permManageUsers": "Manage users",
+  "permReadOnly": "Read-only",
+  "clientReadOnlyNote": "Client accounts cannot create or edit field records.",
+  "biometricUnlock": "Biometric unlock",
+  "biometricUnlockSubtitle": "Require unlock after app resume (local_auth when USE_NATIVE_SENSORS=true)",
+  "simulateAppResumeLock": "Simulate app resume lock",
+  "activeProject": "Active project",
+  "tooltipGoOnlineSync": "Go online & sync",
+  "tooltipSimulateOffline": "Simulate offline",
+  "tooltipSyncStatus": "Sync status",
+  "syncStatusTitle": "Sync status",
+  "outboxEmpty": "Outbox empty",
+  "outboxPendingCount": "{count} item(s) waiting to sync",
+  "@outboxPendingCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "remoteFirestore": "Remote: Cloud Firestore (outbox push + pull)",
+  "remoteDemo": "Remote: local demo sink (no cloud write)",
+  "demoCloudToggleLine": "Demo cloud toggle: {demoState} · Device network: {deviceState}",
+  "@demoCloudToggleLine": {
+    "placeholders": {
+      "demoState": {
+        "type": "String"
+      },
+      "deviceState": {
+        "type": "String"
+      }
+    }
+  },
+  "stateOffline": "offline",
+  "stateOnline": "online",
+  "lastSuccessPrefix": "Last success:",
+  "lastFailurePrefix": "Last failure:",
+  "localCache": "Local cache",
+  "softBudgetLine": "{used} / {cap} soft budget{over}",
+  "@softBudgetLine": {
+    "placeholders": {
+      "used": {
+        "type": "String"
+      },
+      "cap": {
+        "type": "String"
+      },
+      "over": {
+        "type": "String"
+      }
+    }
+  },
+  "softBudgetOverSuffix": " (over)",
+  "cleanupCanReclaim": "Cleanup can reclaim {bytes} (uploaded local stubs)",
+  "@cleanupCanReclaim": {
+    "placeholders": {
+      "bytes": {
+        "type": "String"
+      }
+    }
+  },
+  "backgroundSync": "Background sync",
+  "lastBackgroundFlushNever": "Last background flush: never",
+  "lastBackgroundFlushAt": "Last background flush: {when} ({count} item(s))",
+  "@lastBackgroundFlushAt": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "enqueueBackgroundFlush": "Enqueue background flush",
+  "oneOffFlushEnqueued": "One-off background flush enqueued",
+  "oneOffFlushFailed": "Could not enqueue (Workmanager unavailable here)",
+  "backendHealth": "Backend health",
+  "healthNotProbedFirebase": "Not probed yet — call Cloud Functions health.",
+  "healthDemoNoop": "Demo mode uses a local NoOp health probe.",
+  "probeHealth": "Probe health",
+  "telemetry": "Telemetry",
+  "telemetryBackendLine": "Backend: {label}{userPart}",
+  "@telemetryBackendLine": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "userPart": {
+        "type": "String"
+      }
+    }
+  },
+  "telemetryUserPart": " · user {userId}",
+  "@telemetryUserPart": {
+    "placeholders": {
+      "userId": {
+        "type": "String"
+      }
+    }
+  },
+  "secureStoreLine": "Secure store: {label} (session email, biometrics flag, FCM token)",
+  "@secureStoreLine": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "telemetryFirebaseDeferred": "Crashlytics/Analytics packages still deferred — events stay local until FlutterFire go-live.",
+  "telemetryDemoNoop": "Demo NoOp recorder — no network. Events listed below.",
+  "pushFcm": "Push (FCM)",
+  "registeringToken": "Registering device token…",
+  "tokenError": "Token error: {error}",
+  "@tokenError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "noTokenSignIn": "No token (sign in required)",
+  "demoTokenLine": "Demo token: {token}",
+  "@demoTokenLine": {
+    "placeholders": {
+      "token": {
+        "type": "String"
+      }
+    }
+  },
+  "tokenLine": "Token: {token}",
+  "@tokenLine": {
+    "placeholders": {
+      "token": {
+        "type": "String"
+      }
+    }
+  },
+  "pushHelpFirebase": "Tap an inbox row to open the related DPR / issue / RFI. Functions send on DPR submit / issue & RFI assign & status.",
+  "pushHelpDemo": "Demo mode logs assign/status intents locally until FlutterFire is configured. Tap inbox rows to open linked screens.",
+  "noLinkedScreen": "No linked screen for this alert",
+  "flushNow": "Flush now",
+  "flushedItems": "Flushed {count} item(s)",
+  "@flushedItems": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "goOnline": "Go online",
+  "goOffline": "Go offline",
+  "cleanup": "Cleanup",
+  "cleanupRemovedLogs": "Removed {logs} log(s){mediaNote} (~{freed})",
+  "@cleanupRemovedLogs": {
+    "placeholders": {
+      "logs": {
+        "type": "int"
+      },
+      "mediaNote": {
+        "type": "String"
+      },
+      "freed": {
+        "type": "String"
+      }
+    }
+  },
+  "cleanupMediaNote": ", reclaimed {count} media path(s)",
+  "@cleanupMediaNote": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "conflictPolicy": "Conflict policy",
+  "syncLog": "Sync log",
+  "noSyncEventsYet": "No sync events yet.",
+  "syncFooterNote": "Periodic Workmanager flush (~15 min, network required) + connectivity_plus auto-flush when the device reconnects. Cleanup clears sync logs and uploaded local:// media stubs. Drift still deferred.",
+  "digestsTitle": "Digests",
+  "digestsAndReminders": "Digests & reminders",
+  "signInRequired": "Sign in required",
+  "dailyDprNudge": "Daily DPR nudge",
+  "dailyDprNudgeSubtitle": "Local tray reminder around {hour}:00 if today's DPR is not submitted. Cloud FCM cron still deferred.",
+  "@dailyDprNudgeSubtitle": {
+    "placeholders": {
+      "hour": {
+        "type": "int"
+      }
+    }
+  },
+  "reminderHour": "Reminder hour",
+  "noDprNudgeNow": "No DPR nudge right now.",
+  "openDpr": "Open DPR",
+  "simulate5PmCheck": "Simulate 5 PM check",
+  "noNudgeAlreadySubmitted": "No nudge (DPR already submitted or prefs off).",
+  "dprReminderTitle": "DPR reminder",
+  "pmDigests": "PM digests",
+  "pmDigestsSubtitle": "Aggregate open issues, RFIs, and DPR blockers for the active project.",
+  "pmDigest": "PM digest",
+  "digestUnavailableRole": "Digest unavailable for this role.",
+  "pmDigestsOff": "PM digests are turned off.",
+  "digestSummaryLine": "Open issues: {issues} · Open RFIs: {rfis} · Today DPR: {dpr}",
+  "@digestSummaryLine": {
+    "placeholders": {
+      "issues": {
+        "type": "int"
+      },
+      "rfis": {
+        "type": "int"
+      },
+      "dpr": {
+        "type": "String"
+      }
+    }
+  },
+  "todayDprIncomplete": "incomplete",
+  "todayDprOk": "ok",
+  "queueIsClear": "Queue is clear.",
+  "shareDigestPdf": "Share digest PDF",
+  "shareAsText": "Share as text",
+  "pmDigestsStaffOnly": "PM digests are available to project managers and admins.",
+  "unlockTitle": "Unlock Field Evidence",
+  "unlockConfirm": "Confirm it is you to continue.",
+  "unlockWelcomeBack": "Welcome back, {name}. {hint}",
+  "@unlockWelcomeBack": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "hint": {
+        "type": "String"
+      }
+    }
+  },
+  "unlockHintNative": "Use device biometrics or PIN.",
+  "unlockHintDemo": "Demo unlock (FakeBiometricService) until USE_NATIVE_SENSORS=true.",
+  "unlockAction": "Unlock",
+  "unlockFailed": "Unlock failed",
+  "unlockReason": "Unlock Field Evidence"
 }

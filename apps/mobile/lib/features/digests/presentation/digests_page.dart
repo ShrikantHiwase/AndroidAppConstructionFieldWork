@@ -5,6 +5,7 @@ import '../../../core/notifications/dpr_nudge_scheduler.dart';
 import '../../../core/notifications/notification_providers.dart';
 import '../../../core/share/field_pdf_export.dart';
 import '../../../core/share/share_port.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../../dpr/presentation/dpr_pages.dart';
 import '../../dpr/presentation/dpr_providers.dart';
@@ -16,6 +17,7 @@ class DigestsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final session = ref.watch(authSessionProvider);
     final prefs = ref.watch(digestPrefsProvider);
     final digestAsync = ref.watch(pmDigestProvider);
@@ -23,8 +25,8 @@ class DigestsPage extends ConsumerWidget {
 
     if (session == null) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Digests')),
-        body: const Center(child: Text('Sign in required')),
+        appBar: AppBar(title: Text(l10n.digestsTitle)),
+        body: Center(child: Text(l10n.signInRequired)),
       );
     }
 
@@ -32,18 +34,15 @@ class DigestsPage extends ConsumerWidget {
     final canPm = canViewPmDigest(session.activeRole);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Digests & reminders')),
+      appBar: AppBar(title: Text(l10n.digestsAndReminders)),
       body: ListView(
         padding: const EdgeInsets.all(24),
         children: [
-          Text('Reminders', style: Theme.of(context).textTheme.titleMedium),
+          Text(l10n.reminders, style: Theme.of(context).textTheme.titleMedium),
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
-            title: const Text('Daily DPR nudge'),
-            subtitle: Text(
-              'Local tray reminder around ${prefs.nudgeHourLocal}:00 if '
-              'today\'s DPR is not submitted. Cloud FCM cron still deferred.',
-            ),
+            title: Text(l10n.dailyDprNudge),
+            subtitle: Text(l10n.dailyDprNudgeSubtitle(prefs.nudgeHourLocal)),
             value: prefs.dprNudgeEnabled,
             onChanged: canPrefs
                 ? (v) => ref
@@ -54,7 +53,7 @@ class DigestsPage extends ConsumerWidget {
           if (canPrefs && prefs.dprNudgeEnabled) ...[
             ListTile(
               contentPadding: EdgeInsets.zero,
-              title: const Text('Reminder hour'),
+              title: Text(l10n.reminderHour),
               trailing: DropdownButton<int>(
                 value: prefs.nudgeHourLocal.clamp(12, 21),
                 items: [
@@ -79,7 +78,7 @@ class DigestsPage extends ConsumerWidget {
             data: (nudge) {
               if (nudge == null) {
                 return Text(
-                  'No DPR nudge right now.',
+                  l10n.noDprNudgeNow,
                   style: Theme.of(context).textTheme.bodyMedium,
                 );
               }
@@ -95,7 +94,7 @@ class DigestsPage extends ConsumerWidget {
                       ),
                     );
                   },
-                  child: const Text("Open DPR"),
+                  child: Text(l10n.openDpr),
                 ),
               );
             },
@@ -121,11 +120,11 @@ class DigestsPage extends ConsumerWidget {
                     );
                     if (simulated != null) {
                       await ref.read(dprNudgeSchedulerProvider).showNow(
-                            title: 'DPR reminder',
+                            title: l10n.dprReminderTitle,
                             body: simulated.message,
                           );
                       await ref.read(notificationInboxProvider).add(
-                            title: 'DPR reminder',
+                            title: l10n.dprReminderTitle,
                             body: simulated.message,
                             data: const {'type': 'dpr_nudge'},
                             source: 'local_nudge',
@@ -135,22 +134,19 @@ class DigestsPage extends ConsumerWidget {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(
-                          simulated?.message ??
-                              'No nudge (DPR already submitted or prefs off).',
+                          simulated?.message ?? l10n.noNudgeAlreadySubmitted,
                         ),
                       ),
                     );
                   },
-            child: const Text('Simulate 5 PM check'),
+            child: Text(l10n.simulate5PmCheck),
           ),
           const SizedBox(height: 24),
           if (canPm) ...[
             SwitchListTile(
               contentPadding: EdgeInsets.zero,
-              title: const Text('PM digests'),
-              subtitle: const Text(
-                'Aggregate open issues, RFIs, and DPR blockers for the active project.',
-              ),
+              title: Text(l10n.pmDigests),
+              subtitle: Text(l10n.pmDigestsSubtitle),
               value: prefs.pmDigestEnabled,
               onChanged: canPrefs
                   ? (v) => ref
@@ -159,29 +155,33 @@ class DigestsPage extends ConsumerWidget {
                   : null,
             ),
             const SizedBox(height: 8),
-            Text('PM digest', style: Theme.of(context).textTheme.titleMedium),
+            Text(l10n.pmDigest, style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 8),
             digestAsync.when(
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (e, _) => Text('$e'),
               data: (digest) {
                 if (digest == null) {
-                  return const Text('Digest unavailable for this role.');
+                  return Text(l10n.digestUnavailableRole);
                 }
                 if (!prefs.pmDigestEnabled) {
-                  return const Text('PM digests are turned off.');
+                  return Text(l10n.pmDigestsOff);
                 }
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text(
-                      'Open issues: ${digest.openIssueCount} · '
-                      'Open RFIs: ${digest.openRfiCount} · '
-                      'Today DPR: ${digest.missingTodayDpr ? 'incomplete' : 'ok'}',
+                      l10n.digestSummaryLine(
+                        digest.openIssueCount,
+                        digest.openRfiCount,
+                        digest.missingTodayDpr
+                            ? l10n.todayDprIncomplete
+                            : l10n.todayDprOk,
+                      ),
                     ),
                     const SizedBox(height: 8),
                     if (digest.items.isEmpty)
-                      const Text('Queue is clear.')
+                      Text(l10n.queueIsClear)
                     else
                       ...digest.items.map(
                         (item) => ListTile(
@@ -234,7 +234,7 @@ class DigestsPage extends ConsumerWidget {
                         }
                       },
                       icon: const Icon(Icons.picture_as_pdf_outlined),
-                      label: const Text('Share digest PDF'),
+                      label: Text(l10n.shareDigestPdf),
                     ),
                     const SizedBox(height: 8),
                     OutlinedButton.icon(
@@ -259,7 +259,7 @@ class DigestsPage extends ConsumerWidget {
                         }
                       },
                       icon: const Icon(Icons.ios_share),
-                      label: const Text('Share as text'),
+                      label: Text(l10n.shareAsText),
                     ),
                   ],
                 );
@@ -267,7 +267,7 @@ class DigestsPage extends ConsumerWidget {
             ),
           ] else ...[
             Text(
-              'PM digests are available to project managers and admins.',
+              l10n.pmDigestsStaffOnly,
               style: Theme.of(context).textTheme.bodyMedium,
             ),
           ],
