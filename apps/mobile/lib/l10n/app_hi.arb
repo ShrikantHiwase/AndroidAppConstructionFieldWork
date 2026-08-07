@@ -375,5 +375,18 @@
   "musterLoggedOk": "Muster log हो गया (geofence OK){photoNote}",
   "musterLoggedMiss": "Muster log हो गया (geofence MISS){photoNote}",
   "materialInwardLogged": "Material inward log हो गया{photoNote}",
-  "materialConsumptionLogged": "Material consumption log हो गया{photoNote}"
+  "materialConsumptionLogged": "Material consumption log हो गया{photoNote}",
+  "todaysDprIncomplete": "आज का DPR अधूरा है",
+  "noDraftYet": "अभी कोई draft नहीं",
+  "draftNotSubmitted": "Draft submit नहीं हुआ",
+  "issueStatusSubtitle": "Issue · {status}",
+  "rfiStatusSubtitle": "RFI · {status}",
+  "blockerTitle": "Blocker · {date}",
+  "dprNudgeReminder": "Reminder: आज का DPR submit करो ({hour}:00 के बाद nudge).",
+  "pmDigestShareHeader": "PM DIGEST — {projectName}",
+  "pmDigestGenerated": "Generated: {iso}",
+  "pmDigestOpenIssues": "Open issues: {count}",
+  "pmDigestOpenRfis": "Open RFIs: {count}",
+  "pmDigestTodayMissing": "Today DPR: missing / not submitted",
+  "pmDigestTodayOk": "Today DPR: ok"
 }

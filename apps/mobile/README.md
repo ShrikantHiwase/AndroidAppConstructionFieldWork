@@ -10,7 +10,7 @@ lib/
   core/                theme, constants, shared widgets
   features/            auth, projects, issues, rfis, documents, dpr, sync, admin
   sync/outbox/         offline outbox contracts
-  l10n/                ARB (en + Hinglish hi) — field chrome through Voice notes + leftovers (docs status, DPR blockers, site-ops snackbars)
+  l10n/                ARB (en + Hinglish hi) — field chrome through Voice notes + leftovers + digest items/nudge
 ```
 
 ## Commands

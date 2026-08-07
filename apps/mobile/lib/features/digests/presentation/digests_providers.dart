@@ -1,6 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/l10n/app_locale_provider.dart';
 import '../../../core/notifications/dpr_nudge_scheduler.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../auth/domain/auth_models.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../../dpr/domain/dpr_models.dart';
@@ -42,11 +45,18 @@ class DigestPrefsController extends StateNotifier<DigestPrefs> {
   }
 }
 
+/// Locale used when building digest copy outside a BuildContext.
+AppLocalizations digestsCopy(Ref ref) {
+  final override = ref.watch(appLocaleProvider);
+  return lookupAppLocalizations(override ?? const Locale('en'));
+}
+
 PmDigestSnapshot buildPmDigest({
   required AuthSession session,
   required List<Issue> issues,
   required List<Rfi> rfis,
   required List<DailyProgressReport> dprs,
+  required AppLocalizations l10n,
   DateTime? now,
 }) {
   final clock = now ?? DateTime.now();
@@ -84,15 +94,15 @@ PmDigestSnapshot buildPmDigest({
     if (missingTodayDpr)
       DigestItem(
         kind: DigestItemKind.missingDpr,
-        title: "Today's DPR incomplete",
-        subtitle: today == null ? 'No draft yet' : 'Draft not submitted',
+        title: l10n.todaysDprIncomplete,
+        subtitle: today == null ? l10n.noDraftYet : l10n.draftNotSubmitted,
         relatedId: today?.id,
       ),
     ...openIssues.map(
       (i) => DigestItem(
         kind: DigestItemKind.openIssue,
         title: i.title,
-        subtitle: 'Issue · ${i.status.label}',
+        subtitle: l10n.issueStatusSubtitle(i.status.label),
         relatedId: i.id,
       ),
     ),
@@ -100,7 +110,7 @@ PmDigestSnapshot buildPmDigest({
       (r) => DigestItem(
         kind: DigestItemKind.openRfi,
         title: r.subject,
-        subtitle: 'RFI · ${r.status.label}',
+        subtitle: l10n.rfiStatusSubtitle(r.status.label),
         relatedId: r.id,
       ),
     ),
@@ -114,8 +124,9 @@ PmDigestSnapshot buildPmDigest({
         .map(
           (d) => DigestItem(
             kind: DigestItemKind.dprBlocker,
-            title:
-                'Blocker · ${d.reportDate.toIso8601String().split('T').first}',
+            title: l10n.blockerTitle(
+              d.reportDate.toIso8601String().split('T').first,
+            ),
             subtitle: d.blockers,
             relatedId: d.id,
           ),
@@ -134,6 +145,7 @@ PmDigestSnapshot buildPmDigest({
 DprNudge? evaluateDprNudge({
   required DigestPrefs prefs,
   required bool todaySubmitted,
+  required AppLocalizations l10n,
   DateTime? now,
 }) {
   if (!prefs.dprNudgeEnabled) return null;
@@ -141,8 +153,7 @@ DprNudge? evaluateDprNudge({
   if (clock.hour < prefs.nudgeHourLocal) return null;
   if (todaySubmitted) return null;
   return DprNudge(
-    message:
-        "Reminder: submit today's DPR (nudge after ${prefs.nudgeHourLocal}:00).",
+    message: l10n.dprNudgeReminder(prefs.nudgeHourLocal),
     dueHourLocal: prefs.nudgeHourLocal,
   );
 }
@@ -151,6 +162,7 @@ final pmDigestProvider = FutureProvider<PmDigestSnapshot?>((ref) async {
   final session = ref.watch(authSessionProvider);
   if (session == null || !canViewPmDigest(session.activeRole)) return null;
   final prefs = ref.watch(digestPrefsProvider);
+  final l10n = digestsCopy(ref);
   if (!prefs.pmDigestEnabled) {
     return PmDigestSnapshot(
       generatedAt: DateTime.now().toUtc(),
@@ -170,6 +182,7 @@ final pmDigestProvider = FutureProvider<PmDigestSnapshot?>((ref) async {
     issues: issues,
     rfis: rfis,
     dprs: dprs,
+    l10n: l10n,
   );
 });
 
@@ -177,6 +190,7 @@ final dprNudgeProvider = FutureProvider<DprNudge?>((ref) async {
   final session = ref.watch(authSessionProvider);
   if (session == null) return null;
   final prefs = ref.watch(digestPrefsProvider);
+  final l10n = digestsCopy(ref);
   final today = await ref.watch(dprRepositoryProvider).todayDpr(
         session.activeProjectId,
         DateTime.now(),
@@ -184,5 +198,6 @@ final dprNudgeProvider = FutureProvider<DprNudge?>((ref) async {
   return evaluateDprNudge(
     prefs: prefs,
     todaySubmitted: today?.submitted ?? false,
+    l10n: l10n,
   );
 });

@@ -110,6 +110,7 @@ class DigestsPage extends ConsumerWidget {
                     final simulated = evaluateDprNudge(
                       prefs: prefs,
                       todaySubmitted: today?.submitted ?? false,
+                      l10n: l10n,
                       now: DateTime(
                         DateTime.now().year,
                         DateTime.now().month,
@@ -205,6 +206,7 @@ class DigestsPage extends ConsumerWidget {
                         final projectName = session.activeProject.name;
                         final text = digest.toShareText(
                           projectName: projectName,
+                          l10n: l10n,
                         );
                         final subject = 'PM digest — $projectName';
                         final bytes = await FieldPdfExport.digest(
@@ -241,6 +243,7 @@ class DigestsPage extends ConsumerWidget {
                       onPressed: () async {
                         final text = digest.toShareText(
                           projectName: session.activeProject.name,
+                          l10n: l10n,
                         );
                         final outcome =
                             await ref.read(sharePortProvider).shareText(

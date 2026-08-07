@@ -1,4 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:construction_field_app/l10n/app_localizations.dart';
 
 import 'package:construction_field_app/core/share/field_pdf_export.dart';
 import 'package:construction_field_app/core/share/share_port.dart';
@@ -60,7 +62,10 @@ void main() {
     expect(dprText, contains('DAILY PROGRESS REPORT'));
     expect(dprText, contains('Pune Tower'));
 
-    final digestText = _sampleDigest().toShareText(projectName: 'Pune Tower');
+    final digestText = _sampleDigest().toShareText(
+      projectName: 'Pune Tower',
+      l10n: lookupAppLocalizations(const Locale('en')),
+    );
     expect(digestText, contains('PM DIGEST'));
     expect(digestText, contains('Crack'));
 

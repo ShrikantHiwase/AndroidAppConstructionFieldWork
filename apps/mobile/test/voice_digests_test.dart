@@ -13,9 +13,12 @@ import 'package:construction_field_app/features/issues/data/local_field_records_
 import 'package:construction_field_app/features/issues/domain/issue_models.dart';
 import 'package:construction_field_app/features/voice_notes/data/local_voice_notes_repository.dart';
 import 'package:construction_field_app/features/voice_notes/domain/voice_note_models.dart';
+import 'package:construction_field_app/l10n/app_localizations.dart';
+import 'package:flutter/material.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+  final en = lookupAppLocalizations(const Locale('en'));
 
   late SharedPreferences prefs;
   late AuthSession engineer;
@@ -84,6 +87,7 @@ void main() {
     final nudge = evaluateDprNudge(
       prefs: const DigestPrefs(dprNudgeEnabled: true, nudgeHourLocal: 17),
       todaySubmitted: false,
+      l10n: en,
       now: DateTime(2026, 8, 6, 17, 5),
     );
     expect(nudge, isNotNull);
@@ -92,6 +96,7 @@ void main() {
     final early = evaluateDprNudge(
       prefs: const DigestPrefs(),
       todaySubmitted: false,
+      l10n: en,
       now: DateTime(2026, 8, 6, 10),
     );
     expect(early, isNull);
@@ -99,6 +104,7 @@ void main() {
     final done = evaluateDprNudge(
       prefs: const DigestPrefs(),
       todaySubmitted: true,
+      l10n: en,
       now: DateTime(2026, 8, 6, 18),
     );
     expect(done, isNull);
@@ -143,6 +149,7 @@ void main() {
       issues: issues,
       rfis: rfis,
       dprs: reports,
+      l10n: en,
       now: DateTime.now(),
     );
 
@@ -153,7 +160,7 @@ void main() {
       digest.items.any((i) => i.kind == DigestItemKind.dprBlocker),
       isTrue,
     );
-    expect(digest.toShareText(projectName: 'Pune Tower A'), contains('PM DIGEST'));
+    expect(digest.toShareText(projectName: 'Pune Tower A', l10n: en), contains('PM DIGEST'));
     expect(canViewPmDigest(AppRole.projectManager), isTrue);
     expect(canViewPmDigest(AppRole.siteEngineer), isFalse);
   });

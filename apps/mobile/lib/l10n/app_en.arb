@@ -815,5 +815,74 @@
         "type": "String"
       }
     }
-  }
+  },
+  "todaysDprIncomplete": "Today's DPR incomplete",
+  "noDraftYet": "No draft yet",
+  "draftNotSubmitted": "Draft not submitted",
+  "issueStatusSubtitle": "Issue · {status}",
+  "@issueStatusSubtitle": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "rfiStatusSubtitle": "RFI · {status}",
+  "@rfiStatusSubtitle": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "blockerTitle": "Blocker · {date}",
+  "@blockerTitle": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dprNudgeReminder": "Reminder: submit today's DPR (nudge after {hour}:00).",
+  "@dprNudgeReminder": {
+    "placeholders": {
+      "hour": {
+        "type": "int"
+      }
+    }
+  },
+  "pmDigestShareHeader": "PM DIGEST — {projectName}",
+  "@pmDigestShareHeader": {
+    "placeholders": {
+      "projectName": {
+        "type": "String"
+      }
+    }
+  },
+  "pmDigestGenerated": "Generated: {iso}",
+  "@pmDigestGenerated": {
+    "placeholders": {
+      "iso": {
+        "type": "String"
+      }
+    }
+  },
+  "pmDigestOpenIssues": "Open issues: {count}",
+  "@pmDigestOpenIssues": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pmDigestOpenRfis": "Open RFIs: {count}",
+  "@pmDigestOpenRfis": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pmDigestTodayMissing": "Today DPR: missing / not submitted",
+  "pmDigestTodayOk": "Today DPR: ok"
 }
