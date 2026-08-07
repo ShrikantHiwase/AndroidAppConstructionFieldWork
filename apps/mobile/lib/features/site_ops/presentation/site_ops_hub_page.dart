@@ -5,6 +5,7 @@ import '../../../core/device/device_providers.dart';
 import '../../../core/device/evidence_capture.dart';
 import '../../../core/device/evidence_image_policy.dart';
 import '../../../core/device/fake_location_service.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../domain/site_ops_models.dart';
 import 'site_ops_providers.dart';
@@ -16,19 +17,20 @@ class SiteOpsHubPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     return DefaultTabController(
       length: 4,
       initialIndex: initialTab.clamp(0, 3),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Site ops'),
-          bottom: const TabBar(
+          title: Text(l10n.siteOps),
+          bottom: TabBar(
             isScrollable: true,
             tabs: [
-              Tab(text: 'Safety'),
-              Tab(text: 'QA/QC'),
-              Tab(text: 'Labour'),
-              Tab(text: 'Materials'),
+              Tab(text: l10n.tabSafety),
+              Tab(text: l10n.tabQaQc),
+              Tab(text: l10n.tabLabour),
+              Tab(text: l10n.tabMaterials),
             ],
           ),
         ),
@@ -50,6 +52,7 @@ class _SafetyTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final list = ref.watch(safetyProvider);
     final session = ref.watch(authSessionProvider);
     final canEdit = session != null && canMutateSiteOps(session.activeRole);
@@ -59,7 +62,7 @@ class _SafetyTab extends ConsumerWidget {
           ? FloatingActionButton.extended(
               onPressed: () => _openCreateSafety(context, ref),
               icon: const Icon(Icons.add),
-              label: const Text('Log safety'),
+              label: Text(l10n.logSafety),
             )
           : null,
       body: list.when(
@@ -67,7 +70,7 @@ class _SafetyTab extends ConsumerWidget {
         error: (e, _) => Center(child: Text('$e')),
         data: (rows) {
           if (rows.isEmpty) {
-            return const Center(child: Text('No safety records yet.'));
+            return Center(child: Text(l10n.noSafetyRecordsYet));
           }
           return ListView.separated(
             padding: const EdgeInsets.all(16),
@@ -105,16 +108,17 @@ class _SafetyTab extends ConsumerWidget {
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setLocal) {
+            final l10n = AppLocalizations.of(context);
             final needsPhoto = kind != SafetyKind.toolboxTalk;
             return AlertDialog(
-              title: const Text('Safety record'),
+              title: Text(l10n.safetyRecord),
               content: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     DropdownMenu<SafetyKind>(
                       initialSelection: kind,
-                      label: const Text('Kind'),
+                      label: Text(l10n.kindLabel),
                       expandedInsets: EdgeInsets.zero,
                       dropdownMenuEntries: SafetyKind.values
                           .map(
@@ -131,25 +135,25 @@ class _SafetyTab extends ConsumerWidget {
                     const SizedBox(height: 12),
                     TextField(
                       controller: title,
-                      decoration: const InputDecoration(
-                        labelText: 'Title',
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: l10n.titleLabel,
+                        border: const OutlineInputBorder(),
                       ),
                     ),
                     const SizedBox(height: 12),
                     TextField(
                       controller: notes,
                       maxLines: 3,
-                      decoration: const InputDecoration(
-                        labelText: 'Notes',
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: l10n.notesLabel,
+                        border: const OutlineInputBorder(),
                       ),
                     ),
                     const SizedBox(height: 8),
                     Text(
                       needsPhoto
-                          ? 'Photo evidence required for observations / incidents.'
-                          : 'Photo optional for toolbox talks.',
+                          ? l10n.photoRequiredObservation
+                          : l10n.photoOptionalToolbox,
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                     const SizedBox(height: 8),
@@ -172,7 +176,7 @@ class _SafetyTab extends ConsumerWidget {
                             });
                           },
                           icon: const Icon(Icons.photo_camera_outlined),
-                          label: const Text('Add photo'),
+                          label: Text(l10n.addPhoto),
                         ),
                         OutlinedButton.icon(
                           onPressed: () async {
@@ -189,7 +193,7 @@ class _SafetyTab extends ConsumerWidget {
                             });
                           },
                           icon: const Icon(Icons.photo_library_outlined),
-                          label: const Text('Gallery'),
+                          label: Text(l10n.gallery),
                         ),
                       ],
                     ),
@@ -202,8 +206,12 @@ class _SafetyTab extends ConsumerWidget {
                         title: Text(photoLabel!),
                         subtitle: Text(
                           photoByteSizeBytes == null
-                              ? 'Queued'
-                              : 'Queued · ~${EvidenceImagePolicy.formatBytes(photoByteSizeBytes!)}',
+                              ? l10n.queuedLabel
+                              : l10n.queuedWithSize(
+                                  EvidenceImagePolicy.formatBytes(
+                                    photoByteSizeBytes!,
+                                  ),
+                                ),
                         ),
                       ),
                     ],
@@ -213,11 +221,11 @@ class _SafetyTab extends ConsumerWidget {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context, false),
-                  child: const Text('Cancel'),
+                  child: Text(l10n.cancel),
                 ),
                 FilledButton(
                   onPressed: () => Navigator.pop(context, true),
-                  child: const Text('Save'),
+                  child: Text(l10n.save),
                 ),
               ],
             );
@@ -251,6 +259,7 @@ class _QaTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final list = ref.watch(inspectionsProvider);
     final session = ref.watch(authSessionProvider);
     final canEdit = session != null && canMutateSiteOps(session.activeRole);
@@ -260,7 +269,7 @@ class _QaTab extends ConsumerWidget {
           ? FloatingActionButton.extended(
               onPressed: () => _createInspection(context, ref),
               icon: const Icon(Icons.checklist_outlined),
-              label: const Text('WIR checklist'),
+              label: Text(l10n.wirChecklist),
             )
           : null,
       body: list.when(
@@ -268,7 +277,7 @@ class _QaTab extends ConsumerWidget {
         error: (e, _) => Center(child: Text('$e')),
         data: (rows) {
           if (rows.isEmpty) {
-            return const Center(child: Text('No inspections yet.'));
+            return Center(child: Text(l10n.noInspectionsYet));
           }
           return ListView.separated(
             padding: const EdgeInsets.all(16),
@@ -301,9 +310,10 @@ class _QaTab extends ConsumerWidget {
       final shot = await ref.read(evidenceCaptureProvider).capturePhoto();
       if (shot == null) {
         if (context.mounted) {
+          final l10n = AppLocalizations.of(context);
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Photo required for failed checklist items'),
+            SnackBar(
+              content: Text(l10n.photoRequiredForFail),
             ),
           );
         }
@@ -334,12 +344,13 @@ class _QaTab extends ConsumerWidget {
             ],
           );
       if (context.mounted) {
+        final l10n = AppLocalizations.of(context);
         final size = shot.byteSizeBytes == null
             ? ''
             : ' · ~${EvidenceImagePolicy.formatBytes(shot.byteSizeBytes!)}';
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Inspection saved with fail photo$size'),
+            content: Text(l10n.inspectionSavedWithFailPhoto(size)),
           ),
         );
       }
@@ -356,6 +367,7 @@ class _LabourTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final list = ref.watch(musterProvider);
     final session = ref.watch(authSessionProvider);
     final canEdit = session != null && canMutateSiteOps(session.activeRole);
@@ -365,7 +377,7 @@ class _LabourTab extends ConsumerWidget {
           ? FloatingActionButton.extended(
               onPressed: () => _addMuster(context, ref),
               icon: const Icon(Icons.groups_outlined),
-              label: const Text('Muster'),
+              label: Text(l10n.muster),
             )
           : null,
       body: list.when(
@@ -373,8 +385,8 @@ class _LabourTab extends ConsumerWidget {
         error: (e, _) => Center(child: Text('$e')),
         data: (rows) {
           if (rows.isEmpty) {
-            return const Center(
-              child: Text('No labour muster yet (supervisor-led).'),
+            return Center(
+              child: Text(l10n.noLabourMusterYet),
             );
           }
           return ListView.separated(
@@ -416,16 +428,16 @@ class _LabourTab extends ConsumerWidget {
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setLocal) {
+            final l10n = AppLocalizations.of(context);
             return AlertDialog(
-              title: const Text('Labour muster'),
+              title: Text(l10n.labourMuster),
               content: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Logs Civil · Shree Contractors · 18 with geofence check. '
-                      'Photo is optional.',
+                      l10n.musterDialogHint,
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                     const SizedBox(height: 12),
@@ -449,7 +461,7 @@ class _LabourTab extends ConsumerWidget {
                             });
                           },
                           icon: const Icon(Icons.photo_camera_outlined),
-                          label: const Text('Add photo'),
+                          label: Text(l10n.addPhoto),
                         ),
                         OutlinedButton.icon(
                           onPressed: () async {
@@ -466,7 +478,7 @@ class _LabourTab extends ConsumerWidget {
                             });
                           },
                           icon: const Icon(Icons.photo_library_outlined),
-                          label: const Text('Gallery'),
+                          label: Text(l10n.gallery),
                         ),
                         if (photoLocalPath != null)
                           Text(
@@ -482,11 +494,11 @@ class _LabourTab extends ConsumerWidget {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context, false),
-                  child: const Text('Cancel'),
+                  child: Text(l10n.cancel),
                 ),
                 FilledButton(
                   onPressed: () => Navigator.pop(context, true),
-                  child: const Text('Log muster'),
+                  child: Text(l10n.logMuster),
                 ),
               ],
             );
@@ -536,6 +548,7 @@ class _MaterialsTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final list = ref.watch(materialsProvider);
     final session = ref.watch(authSessionProvider);
     final canEdit = session != null && canMutateSiteOps(session.activeRole);
@@ -545,7 +558,7 @@ class _MaterialsTab extends ConsumerWidget {
           ? FloatingActionButton.extended(
               onPressed: () => _addMaterial(context, ref),
               icon: const Icon(Icons.inventory_2_outlined),
-              label: const Text('GRN / use'),
+              label: Text(l10n.grnUse),
             )
           : null,
       body: list.when(
@@ -553,7 +566,7 @@ class _MaterialsTab extends ConsumerWidget {
         error: (e, _) => Center(child: Text('$e')),
         data: (rows) {
           if (rows.isEmpty) {
-            return const Center(child: Text('No material logs yet.'));
+            return Center(child: Text(l10n.noMaterialLogsYet));
           }
           return ListView.separated(
             padding: const EdgeInsets.all(16),
@@ -595,27 +608,28 @@ class _MaterialsTab extends ConsumerWidget {
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setLocal) {
+            final l10n = AppLocalizations.of(context);
             return AlertDialog(
-              title: const Text('Material log'),
+              title: Text(l10n.materialLog),
               content: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'GRN inward or consumption lite. Photo is optional.',
+                      l10n.materialDialogHint,
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                     const SizedBox(height: 12),
                     SegmentedButton<MaterialLogKind>(
-                      segments: const [
+                      segments: [
                         ButtonSegment(
                           value: MaterialLogKind.inward,
-                          label: Text('Inward'),
+                          label: Text(l10n.inward),
                         ),
                         ButtonSegment(
                           value: MaterialLogKind.consumption,
-                          label: Text('Use'),
+                          label: Text(l10n.useLabel),
                         ),
                       ],
                       selected: {kind},
@@ -624,9 +638,9 @@ class _MaterialsTab extends ConsumerWidget {
                     const SizedBox(height: 12),
                     TextField(
                       controller: materialCtrl,
-                      decoration: const InputDecoration(
-                        labelText: 'Material',
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: l10n.materialLabel,
+                        border: const OutlineInputBorder(),
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -636,9 +650,9 @@ class _MaterialsTab extends ConsumerWidget {
                           child: TextField(
                             controller: qtyCtrl,
                             keyboardType: TextInputType.number,
-                            decoration: const InputDecoration(
-                              labelText: 'Qty',
-                              border: OutlineInputBorder(),
+                            decoration: InputDecoration(
+                              labelText: l10n.qtyLabel,
+                              border: const OutlineInputBorder(),
                             ),
                           ),
                         ),
@@ -646,9 +660,9 @@ class _MaterialsTab extends ConsumerWidget {
                         Expanded(
                           child: TextField(
                             controller: unitCtrl,
-                            decoration: const InputDecoration(
-                              labelText: 'Unit',
-                              border: OutlineInputBorder(),
+                            decoration: InputDecoration(
+                              labelText: l10n.unitLabel,
+                              border: const OutlineInputBorder(),
                             ),
                           ),
                         ),
@@ -657,9 +671,9 @@ class _MaterialsTab extends ConsumerWidget {
                     const SizedBox(height: 8),
                     TextField(
                       controller: activityCtrl,
-                      decoration: const InputDecoration(
-                        labelText: 'Activity ref (optional)',
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: l10n.activityRefOptional,
+                        border: const OutlineInputBorder(),
                       ),
                     ),
                     const SizedBox(height: 12),
@@ -683,7 +697,7 @@ class _MaterialsTab extends ConsumerWidget {
                             });
                           },
                           icon: const Icon(Icons.photo_camera_outlined),
-                          label: const Text('Add photo'),
+                          label: Text(l10n.addPhoto),
                         ),
                         OutlinedButton.icon(
                           onPressed: () async {
@@ -700,7 +714,7 @@ class _MaterialsTab extends ConsumerWidget {
                             });
                           },
                           icon: const Icon(Icons.photo_library_outlined),
-                          label: const Text('Gallery'),
+                          label: Text(l10n.gallery),
                         ),
                         if (photoLocalPath != null)
                           Text(
@@ -716,11 +730,11 @@ class _MaterialsTab extends ConsumerWidget {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context, false),
-                  child: const Text('Cancel'),
+                  child: Text(l10n.cancel),
                 ),
                 FilledButton(
                   onPressed: () => Navigator.pop(context, true),
-                  child: const Text('Save'),
+                  child: Text(l10n.save),
                 ),
               ],
             );
