@@ -7,6 +7,7 @@ import '../../../core/device/evidence_image_policy.dart';
 import '../../../core/share/field_pdf_export.dart';
 import '../../../core/share/share_port.dart';
 import '../../../core/telemetry/telemetry_providers.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../../pilot/presentation/pilot_providers.dart';
 import '../../voice_notes/domain/voice_note_models.dart';
@@ -19,12 +20,13 @@ class DprHomePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final dprs = ref.watch(dprsProvider);
     final session = ref.watch(authSessionProvider);
     final canEdit = session != null && canEditDpr(session.activeRole);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Daily Progress')),
+      appBar: AppBar(title: Text(l10n.dailyProgress)),
       floatingActionButton: canEdit
           ? FloatingActionButton.extended(
               onPressed: () {
@@ -35,7 +37,7 @@ class DprHomePage extends ConsumerWidget {
                 );
               },
               icon: const Icon(Icons.edit_calendar_outlined),
-              label: const Text("Today's DPR"),
+              label: Text(l10n.todaysDpr),
             )
           : null,
       body: dprs.when(
@@ -43,9 +45,7 @@ class DprHomePage extends ConsumerWidget {
         error: (e, _) => Center(child: Text('$e')),
         data: (list) {
           if (list.isEmpty) {
-            return const Center(
-              child: Text('No DPRs yet. Capture today\'s progress in ~3 minutes.'),
-            );
+            return Center(child: Text(l10n.noDprsYet));
           }
           return ListView.separated(
             padding: const EdgeInsets.all(16),
@@ -64,9 +64,9 @@ class DprHomePage extends ConsumerWidget {
                   dpr.reportDate.toIso8601String().split('T').first,
                 ),
                 subtitle: Text(
-                  '${dpr.submitted ? 'Submitted' : 'Draft'} · '
-                  '${dpr.activities.length} activities'
-                  '${dpr.synced ? '' : ' · pending sync'}',
+                  '${dpr.submitted ? l10n.submittedLabel : l10n.draftLabel} · '
+                  '${l10n.activitiesCount(dpr.activities.length)}'
+                  '${dpr.synced ? '' : l10n.pendingSyncPart}',
                 ),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () {
@@ -190,36 +190,37 @@ class _TodaysDprPageState extends ConsumerState<TodaysDprPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final submitted = _existing?.submitted ?? false;
     return Scaffold(
-      appBar: AppBar(title: const Text("Today's DPR")),
+      appBar: AppBar(title: Text(l10n.todaysDpr)),
       body: ListView(
         padding: const EdgeInsets.all(24),
         children: [
           if (submitted)
             Text(
-              'Already submitted — view only.',
+              l10n.alreadySubmittedViewOnly,
               style: Theme.of(context).textTheme.bodyMedium,
             ),
           TextField(
             controller: _weather,
             enabled: !submitted,
-            decoration: const InputDecoration(
-              labelText: 'Weather',
-              border: OutlineInputBorder(),
+            decoration: InputDecoration(
+              labelText: l10n.weatherLabel,
+              border: const OutlineInputBorder(),
             ),
           ),
           const SizedBox(height: 12),
           TextField(
             controller: _manpower,
             enabled: !submitted,
-            decoration: const InputDecoration(
-              labelText: 'Manpower summary',
-              border: OutlineInputBorder(),
+            decoration: InputDecoration(
+              labelText: l10n.manpowerSummaryLabel,
+              border: const OutlineInputBorder(),
             ),
           ),
           const SizedBox(height: 16),
-          Text('Activities', style: Theme.of(context).textTheme.titleMedium),
+          Text(l10n.activities, style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 8),
           if (!submitted) ...[
             Row(
@@ -227,9 +228,9 @@ class _TodaysDprPageState extends ConsumerState<TodaysDprPage> {
                 Expanded(
                   child: TextField(
                     controller: _activity,
-                    decoration: const InputDecoration(
-                      labelText: 'Activity + optional location',
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: l10n.activityLocationLabel,
+                      border: const OutlineInputBorder(),
                     ),
                   ),
                 ),
@@ -280,7 +281,7 @@ class _TodaysDprPageState extends ConsumerState<TodaysDprPage> {
                     });
                   },
                   icon: const Icon(Icons.photo_camera_outlined),
-                  label: const Text('Activity photo'),
+                  label: Text(l10n.activityPhoto),
                 ),
                 OutlinedButton.icon(
                   onPressed: () async {
@@ -295,13 +296,14 @@ class _TodaysDprPageState extends ConsumerState<TodaysDprPage> {
                     });
                   },
                   icon: const Icon(Icons.photo_library_outlined),
-                  label: const Text('Gallery'),
+                  label: Text(l10n.gallery),
                 ),
                 if (_pendingPhotoPath != null)
                   Text(
-                    '${_pendingPhotoLabel ?? 'photo'} · '
-                    '${EvidenceImagePolicy.formatBytes(_pendingPhotoBytes ?? 0)}'
-                    ' (attaches to next activity)',
+                    l10n.photoAttachesNext(
+                      _pendingPhotoLabel ?? 'photo',
+                      EvidenceImagePolicy.formatBytes(_pendingPhotoBytes ?? 0),
+                    ),
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
               ],
@@ -319,12 +321,12 @@ class _TodaysDprPageState extends ConsumerState<TodaysDprPage> {
               subtitle: Text(
                 a.hasPhoto
                     ? (a.pendingPhotoUpload
-                        ? 'Evidence photo · queued upload'
+                        ? l10n.evidencePhotoQueued
                         : a.photoRemoteUrl != null
-                            ? 'Evidence photo · synced'
-                            : 'Evidence photo attached'
+                            ? l10n.evidencePhotoSynced
+                            : '${l10n.evidencePhotoAttached}'
                                 '${a.photoByteSizeBytes == null ? '' : ' · ${EvidenceImagePolicy.formatBytes(a.photoByteSizeBytes!)}'}')
-                    : 'No evidence photo',
+                    : l10n.noEvidencePhoto,
               ),
             ),
           ),
@@ -333,9 +335,9 @@ class _TodaysDprPageState extends ConsumerState<TodaysDprPage> {
             controller: _blockers,
             enabled: !submitted,
             maxLines: 3,
-            decoration: const InputDecoration(
-              labelText: 'Blockers',
-              border: OutlineInputBorder(),
+            decoration: InputDecoration(
+              labelText: l10n.blockersLabel,
+              border: const OutlineInputBorder(),
             ),
           ),
           if (_existing != null) ...[
@@ -348,7 +350,7 @@ class _TodaysDprPageState extends ConsumerState<TodaysDprPage> {
           ] else ...[
             const SizedBox(height: 12),
             Text(
-              'Save a draft once to attach voice notes to today\'s DPR.',
+              l10n.saveDraftForVoice,
               style: Theme.of(context).textTheme.bodySmall,
             ),
           ],
@@ -363,12 +365,12 @@ class _TodaysDprPageState extends ConsumerState<TodaysDprPage> {
             const SizedBox(height: 24),
             FilledButton(
               onPressed: _saving ? null : () => _save(submit: false),
-              child: const Text('Save draft'),
+              child: Text(l10n.saveDraft),
             ),
             const SizedBox(height: 8),
             FilledButton.tonal(
               onPressed: _saving ? null : () => _save(submit: true),
-              child: const Text('Submit DPR'),
+              child: Text(l10n.submitDpr),
             ),
           ],
         ],
@@ -384,6 +386,7 @@ class DprDetailPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final session = ref.watch(authSessionProvider);
     final list = ref.watch(dprsProvider).valueOrNull ?? const <DailyProgressReport>[];
     DailyProgressReport? dpr;
@@ -395,8 +398,8 @@ class DprDetailPage extends ConsumerWidget {
     }
     if (dpr == null || session == null) {
       return Scaffold(
-        appBar: AppBar(title: const Text('DPR')),
-        body: const Center(child: Text('DPR not found')),
+        appBar: AppBar(title: Text(l10n.dprNoun)),
+        body: Center(child: Text(l10n.dprNotFound)),
       );
     }
     final current = dpr;
@@ -447,12 +450,12 @@ class DprDetailPage extends ConsumerWidget {
         title: Text(dateLabel),
         actions: [
           IconButton(
-            tooltip: 'Share PDF',
+            tooltip: l10n.sharePdfTooltip,
             onPressed: sharePdf,
             icon: const Icon(Icons.picture_as_pdf_outlined),
           ),
           IconButton(
-            tooltip: 'Share text summary',
+            tooltip: l10n.shareTextTooltip,
             onPressed: shareAsText,
             icon: const Icon(Icons.ios_share),
           ),
@@ -462,14 +465,14 @@ class DprDetailPage extends ConsumerWidget {
         padding: const EdgeInsets.all(24),
         children: [
           Text(
-            current.submitted ? 'Submitted' : 'Draft',
+            current.submitted ? l10n.submittedLabel : l10n.draftLabel,
             style: Theme.of(context).textTheme.titleMedium,
           ),
           const SizedBox(height: 8),
-          Text('Weather: ${current.weather}'),
-          Text('Manpower: ${current.manpowerSummary}'),
+          Text(l10n.weatherValue(current.weather)),
+          Text(l10n.manpowerValue(current.manpowerSummary)),
           const SizedBox(height: 16),
-          Text('Activities', style: Theme.of(context).textTheme.titleMedium),
+          Text(l10n.activities, style: Theme.of(context).textTheme.titleMedium),
           ...current.activities.map(
             (a) => ListTile(
               contentPadding: EdgeInsets.zero,
@@ -477,9 +480,9 @@ class DprDetailPage extends ConsumerWidget {
               subtitle: Text(
                 a.hasPhoto
                     ? (a.pendingPhotoUpload
-                        ? 'Evidence photo · queued upload'
+                        ? l10n.evidencePhotoQueued
                         : '${a.photoCount} photo evidence')
-                    : 'No photo evidence',
+                    : l10n.noEvidencePhoto,
               ),
             ),
           ),
@@ -497,16 +500,16 @@ class DprDetailPage extends ConsumerWidget {
           FilledButton.tonalIcon(
             onPressed: sharePdf,
             icon: const Icon(Icons.picture_as_pdf_outlined),
-            label: const Text('Share PDF'),
+            label: Text(l10n.sharePdf),
           ),
           const SizedBox(height: 8),
           OutlinedButton.icon(
             onPressed: shareAsText,
             icon: const Icon(Icons.ios_share),
-            label: const Text('Share as text'),
+            label: Text(l10n.shareAsText),
           ),
           const SizedBox(height: 16),
-          Text('Text preview', style: Theme.of(context).textTheme.titleMedium),
+          Text(l10n.textPreview, style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 8),
           SelectableText(shareText),
           const SizedBox(height: 8),

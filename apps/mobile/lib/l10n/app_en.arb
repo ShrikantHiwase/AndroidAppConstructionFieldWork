@@ -303,5 +303,140 @@
   "unlockHintDemo": "Demo unlock (FakeBiometricService) until USE_NATIVE_SENSORS=true.",
   "unlockAction": "Unlock",
   "unlockFailed": "Unlock failed",
-  "unlockReason": "Unlock Field Evidence"
+  "unlockReason": "Unlock Field Evidence",
+  "syncingEllipsis": "Syncing…",
+  "pendingCount": "{count} pending",
+  "@pendingCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noIssuesYet": "No issues yet. Capture one from the field.",
+  "notSyncedSuffix": " · not synced",
+  "titleLabel": "Title",
+  "descriptionLabel": "Description",
+  "requiredField": "Required",
+  "evidence": "Evidence",
+  "sensorsNativeHint": "Using device GPS / camera (USE_NATIVE_SENSORS).",
+  "sensorsDemoHint": "Demo sensors — enable with --dart-define=USE_NATIVE_SENSORS=true",
+  "addGps": "Add GPS",
+  "refreshGps": "Refresh GPS",
+  "clearGps": "Clear GPS",
+  "addPhoto": "Add photo",
+  "fromGallery": "From gallery",
+  "queuedForUpload": "Queued for upload",
+  "uploadedStatus": "Uploaded",
+  "onDeviceStatus": "On device",
+  "syncedDemoStatus": "Synced (demo)",
+  "saveIssue": "Save issue",
+  "savesOfflineHint": "Saves offline immediately; syncs when online.",
+  "issueNoun": "Issue",
+  "issueNotFound": "Issue not found",
+  "noDescription": "No description",
+  "byAuthorLine": "By {author}{assigneePart}{syncPart}",
+  "@byAuthorLine": {
+    "placeholders": {
+      "author": {
+        "type": "String"
+      },
+      "assigneePart": {
+        "type": "String"
+      },
+      "syncPart": {
+        "type": "String"
+      }
+    }
+  },
+  "assignedToPart": " · Assigned to {name}",
+  "@assignedToPart": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syncedPart": " · synced",
+  "pendingSyncPart": " · pending sync",
+  "statusSection": "Status",
+  "assignToAsha": "Assign to Asha Patil",
+  "statusHistory": "Status history",
+  "comments": "Comments",
+  "noCommentsYet": "No comments yet.",
+  "addComment": "Add comment",
+  "postComment": "Post comment",
+  "pendingLabel": "pending",
+  "syncedLabel": "synced",
+  "rfisTitle": "RFIs",
+  "newRfi": "New RFI",
+  "noRfisYet": "No RFIs yet.",
+  "subjectLabel": "Subject",
+  "questionLabel": "Question",
+  "submitRfi": "Submit RFI",
+  "rfiNoun": "RFI",
+  "rfiNotFound": "RFI not found",
+  "threadedResponses": "Threaded responses",
+  "addResponse": "Add response",
+  "postResponse": "Post response",
+  "dailyProgress": "Daily Progress",
+  "noDprsYet": "No DPRs yet. Capture today's progress in ~3 minutes.",
+  "submittedLabel": "Submitted",
+  "draftLabel": "Draft",
+  "activitiesCount": "{count} activities",
+  "@activitiesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "alreadySubmittedViewOnly": "Already submitted — view only.",
+  "weatherLabel": "Weather",
+  "manpowerSummaryLabel": "Manpower summary",
+  "activities": "Activities",
+  "activityLocationLabel": "Activity + optional location",
+  "activityPhoto": "Activity photo",
+  "gallery": "Gallery",
+  "photoAttachesNext": "{label} · {size} (attaches to next activity)",
+  "@photoAttachesNext": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "blockersLabel": "Blockers",
+  "saveDraftForVoice": "Save a draft once to attach voice notes to today's DPR.",
+  "saveDraft": "Save draft",
+  "submitDpr": "Submit DPR",
+  "dprNoun": "DPR",
+  "dprNotFound": "DPR not found",
+  "sharePdf": "Share PDF",
+  "sharePdfTooltip": "Share PDF",
+  "shareTextTooltip": "Share text summary",
+  "weatherValue": "Weather: {value}",
+  "@weatherValue": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "manpowerValue": "Manpower: {value}",
+  "@manpowerValue": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "textPreview": "Text preview",
+  "noEvidencePhoto": "No evidence photo",
+  "evidencePhotoQueued": "Evidence photo · queued upload",
+  "evidencePhotoSynced": "Evidence photo · synced",
+  "evidencePhotoAttached": "Evidence photo attached"
 }

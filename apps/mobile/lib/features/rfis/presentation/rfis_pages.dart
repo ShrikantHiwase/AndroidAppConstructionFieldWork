@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/notifications/notification_providers.dart';
 import '../../../core/providers/connectivity_provider.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../auth/domain/auth_models.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../../issues/domain/issue_models.dart';
@@ -13,6 +14,7 @@ class RfisListPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final rfisAsync = ref.watch(rfisProvider);
     final session = ref.watch(authSessionProvider);
     final offline = ref.watch(isOfflineProvider);
@@ -21,10 +23,10 @@ class RfisListPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('RFIs'),
+        title: Text(l10n.rfisTitle),
         actions: [
           IconButton(
-            tooltip: offline ? 'Go online & sync' : 'Go offline',
+            tooltip: offline ? l10n.tooltipGoOnlineSync : l10n.goOffline,
             onPressed: () => ref.read(isOfflineProvider.notifier).toggle(),
             icon: Icon(offline ? Icons.cloud_off : Icons.cloud_done_outlined),
           ),
@@ -40,7 +42,7 @@ class RfisListPage extends ConsumerWidget {
                 );
               },
               icon: const Icon(Icons.add),
-              label: const Text('New RFI'),
+              label: Text(l10n.newRfi),
             )
           : null,
       body: rfisAsync.when(
@@ -48,7 +50,7 @@ class RfisListPage extends ConsumerWidget {
         error: (e, _) => Center(child: Text('$e')),
         data: (rfis) {
           if (rfis.isEmpty) {
-            return const Center(child: Text('No RFIs yet.'));
+            return Center(child: Text(l10n.noRfisYet));
           }
           return ListView.separated(
             padding: const EdgeInsets.all(16),
@@ -67,7 +69,7 @@ class RfisListPage extends ConsumerWidget {
                 subtitle: Text(
                   '${rfi.status.label}'
                   '${rfi.assigneeName == null ? '' : ' · ${rfi.assigneeName}'}'
-                  '${rfi.synced ? '' : ' · not synced'}',
+                  '${rfi.synced ? '' : l10n.notSyncedSuffix}',
                 ),
                 onTap: () {
                   Navigator.of(context).push(
@@ -135,8 +137,9 @@ class _CreateRfiPageState extends ConsumerState<CreateRfiPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('New RFI')),
+      appBar: AppBar(title: Text(l10n.newRfi)),
       body: ListView(
         padding: const EdgeInsets.all(24),
         children: [
@@ -146,23 +149,23 @@ class _CreateRfiPageState extends ConsumerState<CreateRfiPage> {
               children: [
                 TextFormField(
                   controller: _subject,
-                  decoration: const InputDecoration(
-                    labelText: 'Subject',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: l10n.subjectLabel,
+                    border: const OutlineInputBorder(),
                   ),
                   validator: (v) =>
-                      (v == null || v.trim().isEmpty) ? 'Required' : null,
+                      (v == null || v.trim().isEmpty) ? l10n.requiredField : null,
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: _question,
                   maxLines: 5,
-                  decoration: const InputDecoration(
-                    labelText: 'Question',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: l10n.questionLabel,
+                    border: const OutlineInputBorder(),
                   ),
                   validator: (v) =>
-                      (v == null || v.trim().isEmpty) ? 'Required' : null,
+                      (v == null || v.trim().isEmpty) ? l10n.requiredField : null,
                 ),
               ],
             ),
@@ -183,7 +186,7 @@ class _CreateRfiPageState extends ConsumerState<CreateRfiPage> {
                     height: 22,
                     child: CircularProgressIndicator(strokeWidth: 2),
                   )
-                : const Text('Submit RFI'),
+                : Text(l10n.submitRfi),
           ),
         ],
       ),
@@ -230,6 +233,7 @@ class _RfiDetailPageState extends ConsumerState<RfiDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final rfis = ref.watch(rfisProvider).valueOrNull ?? const <Rfi>[];
     Rfi? rfi;
     for (final item in rfis) {
@@ -244,8 +248,8 @@ class _RfiDetailPageState extends ConsumerState<RfiDetailPage> {
 
     if (rfi == null || session == null) {
       return Scaffold(
-        appBar: AppBar(title: const Text('RFI')),
-        body: const Center(child: Text('RFI not found')),
+        appBar: AppBar(title: Text(l10n.rfiNoun)),
+        body: Center(child: Text(l10n.rfiNotFound)),
       );
     }
 
@@ -266,9 +270,13 @@ class _RfiDetailPageState extends ConsumerState<RfiDetailPage> {
           Text(current.question),
           const SizedBox(height: 8),
           Text(
-            'By ${current.createdByName}'
-            '${current.assigneeName == null ? '' : ' · Assigned to ${current.assigneeName}'}'
-            '${current.synced ? ' · synced' : ' · pending sync'}',
+            l10n.byAuthorLine(
+              current.createdByName,
+              current.assigneeName == null
+                  ? ''
+                  : l10n.assignedToPart(current.assigneeName!),
+              current.synced ? l10n.syncedPart : l10n.pendingSyncPart,
+            ),
             style: Theme.of(context).textTheme.bodySmall,
           ),
           if (canStatus && current.status.nextStatuses.isNotEmpty) ...[
@@ -344,11 +352,11 @@ class _RfiDetailPageState extends ConsumerState<RfiDetailPage> {
                         if (mounted) setState(() => _busy = false);
                       }
                     },
-              child: const Text('Assign to Asha Patil'),
+              child: Text(l10n.assignToAsha),
             ),
           ],
           const SizedBox(height: 16),
-          Text('Threaded responses', style: Theme.of(context).textTheme.titleMedium),
+          Text(l10n.threadedResponses, style: Theme.of(context).textTheme.titleMedium),
           commentsAsync.when(
             loading: () => const LinearProgressIndicator(),
             error: (e, _) => Text('$e'),
@@ -368,9 +376,9 @@ class _RfiDetailPageState extends ConsumerState<RfiDetailPage> {
             const SizedBox(height: 12),
             TextField(
               controller: _comment,
-              decoration: const InputDecoration(
-                labelText: 'Add response',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: l10n.addResponse,
+                border: const OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 8),
@@ -392,7 +400,7 @@ class _RfiDetailPageState extends ConsumerState<RfiDetailPage> {
                         if (mounted) setState(() => _busy = false);
                       }
                     },
-              child: const Text('Post response'),
+              child: Text(l10n.postResponse),
             ),
           ],
         ],

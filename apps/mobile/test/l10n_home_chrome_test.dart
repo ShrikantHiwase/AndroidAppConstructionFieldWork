@@ -96,6 +96,51 @@ void main() {
     expect(find.text('5 PM check simulate करो'), findsOneWidget);
   });
 
+
+  testWidgets('Hinglish New Issue chrome', (tester) async {
+    SharedPreferences.setMockInitialValues({'app.locale_code': 'hi'});
+    final prefs = await SharedPreferences.getInstance();
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          sharedPreferencesProvider.overrideWithValue(prefs),
+        ],
+        child: const FieldApp(),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Sign in'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('नया Issue'));
+    await tester.pumpAndSettle();
+    expect(find.text('Issue save करो'), findsOneWidget);
+    expect(find.text('GPS जोड़ो'), findsOneWidget);
+  });
+
+  testWidgets('Hinglish Today DPR chrome', (tester) async {
+    SharedPreferences.setMockInitialValues({'app.locale_code': 'hi'});
+    final prefs = await SharedPreferences.getInstance();
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          sharedPreferencesProvider.overrideWithValue(prefs),
+        ],
+        child: const FieldApp(),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Sign in'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('आज का DPR'));
+    await tester.pumpAndSettle();
+    expect(find.text('DPR submit करो'), findsOneWidget);
+    expect(find.text('Draft save करो'), findsOneWidget);
+  });
+
   testWidgets('English locale keeps New Issue CTA', (tester) async {
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();
@@ -135,10 +180,16 @@ void main() {
     expect(hi.flushNow, 'अभी Flush करो');
     expect(hi.digestsAndReminders, 'Digests और reminders');
     expect(hi.simulate5PmCheck, '5 PM check simulate करो');
+    expect(hi.saveIssue, 'Issue save करो');
+    expect(hi.addGps, 'GPS जोड़ो');
+    expect(hi.submitDpr, 'DPR submit करो');
+    expect(hi.newRfi, 'नया RFI');
     final en = lookupAppLocalizations(const Locale('en'));
     expect(en.newIssue, 'New Issue');
     expect(en.syncPendingCount(3), '3 sync');
     expect(en.flushNow, 'Flush now');
     expect(en.digestsAndReminders, 'Digests & reminders');
+    expect(en.saveIssue, 'Save issue');
+    expect(en.submitDpr, 'Submit DPR');
   });
 }

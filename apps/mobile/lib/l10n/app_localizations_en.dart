@@ -484,4 +484,254 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get unlockReason => 'Unlock Field Evidence';
+
+  @override
+  String get syncingEllipsis => 'Syncing…';
+
+  @override
+  String pendingCount(int count) {
+    return '$count pending';
+  }
+
+  @override
+  String get noIssuesYet => 'No issues yet. Capture one from the field.';
+
+  @override
+  String get notSyncedSuffix => ' · not synced';
+
+  @override
+  String get titleLabel => 'Title';
+
+  @override
+  String get descriptionLabel => 'Description';
+
+  @override
+  String get requiredField => 'Required';
+
+  @override
+  String get evidence => 'Evidence';
+
+  @override
+  String get sensorsNativeHint =>
+      'Using device GPS / camera (USE_NATIVE_SENSORS).';
+
+  @override
+  String get sensorsDemoHint =>
+      'Demo sensors — enable with --dart-define=USE_NATIVE_SENSORS=true';
+
+  @override
+  String get addGps => 'Add GPS';
+
+  @override
+  String get refreshGps => 'Refresh GPS';
+
+  @override
+  String get clearGps => 'Clear GPS';
+
+  @override
+  String get addPhoto => 'Add photo';
+
+  @override
+  String get fromGallery => 'From gallery';
+
+  @override
+  String get queuedForUpload => 'Queued for upload';
+
+  @override
+  String get uploadedStatus => 'Uploaded';
+
+  @override
+  String get onDeviceStatus => 'On device';
+
+  @override
+  String get syncedDemoStatus => 'Synced (demo)';
+
+  @override
+  String get saveIssue => 'Save issue';
+
+  @override
+  String get savesOfflineHint =>
+      'Saves offline immediately; syncs when online.';
+
+  @override
+  String get issueNoun => 'Issue';
+
+  @override
+  String get issueNotFound => 'Issue not found';
+
+  @override
+  String get noDescription => 'No description';
+
+  @override
+  String byAuthorLine(String author, String assigneePart, String syncPart) {
+    return 'By $author$assigneePart$syncPart';
+  }
+
+  @override
+  String assignedToPart(String name) {
+    return ' · Assigned to $name';
+  }
+
+  @override
+  String get syncedPart => ' · synced';
+
+  @override
+  String get pendingSyncPart => ' · pending sync';
+
+  @override
+  String get statusSection => 'Status';
+
+  @override
+  String get assignToAsha => 'Assign to Asha Patil';
+
+  @override
+  String get statusHistory => 'Status history';
+
+  @override
+  String get comments => 'Comments';
+
+  @override
+  String get noCommentsYet => 'No comments yet.';
+
+  @override
+  String get addComment => 'Add comment';
+
+  @override
+  String get postComment => 'Post comment';
+
+  @override
+  String get pendingLabel => 'pending';
+
+  @override
+  String get syncedLabel => 'synced';
+
+  @override
+  String get rfisTitle => 'RFIs';
+
+  @override
+  String get newRfi => 'New RFI';
+
+  @override
+  String get noRfisYet => 'No RFIs yet.';
+
+  @override
+  String get subjectLabel => 'Subject';
+
+  @override
+  String get questionLabel => 'Question';
+
+  @override
+  String get submitRfi => 'Submit RFI';
+
+  @override
+  String get rfiNoun => 'RFI';
+
+  @override
+  String get rfiNotFound => 'RFI not found';
+
+  @override
+  String get threadedResponses => 'Threaded responses';
+
+  @override
+  String get addResponse => 'Add response';
+
+  @override
+  String get postResponse => 'Post response';
+
+  @override
+  String get dailyProgress => 'Daily Progress';
+
+  @override
+  String get noDprsYet =>
+      'No DPRs yet. Capture today\'s progress in ~3 minutes.';
+
+  @override
+  String get submittedLabel => 'Submitted';
+
+  @override
+  String get draftLabel => 'Draft';
+
+  @override
+  String activitiesCount(int count) {
+    return '$count activities';
+  }
+
+  @override
+  String get alreadySubmittedViewOnly => 'Already submitted — view only.';
+
+  @override
+  String get weatherLabel => 'Weather';
+
+  @override
+  String get manpowerSummaryLabel => 'Manpower summary';
+
+  @override
+  String get activities => 'Activities';
+
+  @override
+  String get activityLocationLabel => 'Activity + optional location';
+
+  @override
+  String get activityPhoto => 'Activity photo';
+
+  @override
+  String get gallery => 'Gallery';
+
+  @override
+  String photoAttachesNext(String label, String size) {
+    return '$label · $size (attaches to next activity)';
+  }
+
+  @override
+  String get blockersLabel => 'Blockers';
+
+  @override
+  String get saveDraftForVoice =>
+      'Save a draft once to attach voice notes to today\'s DPR.';
+
+  @override
+  String get saveDraft => 'Save draft';
+
+  @override
+  String get submitDpr => 'Submit DPR';
+
+  @override
+  String get dprNoun => 'DPR';
+
+  @override
+  String get dprNotFound => 'DPR not found';
+
+  @override
+  String get sharePdf => 'Share PDF';
+
+  @override
+  String get sharePdfTooltip => 'Share PDF';
+
+  @override
+  String get shareTextTooltip => 'Share text summary';
+
+  @override
+  String weatherValue(String value) {
+    return 'Weather: $value';
+  }
+
+  @override
+  String manpowerValue(String value) {
+    return 'Manpower: $value';
+  }
+
+  @override
+  String get textPreview => 'Text preview';
+
+  @override
+  String get noEvidencePhoto => 'No evidence photo';
+
+  @override
+  String get evidencePhotoQueued => 'Evidence photo · queued upload';
+
+  @override
+  String get evidencePhotoSynced => 'Evidence photo · synced';
+
+  @override
+  String get evidencePhotoAttached => 'Evidence photo attached';
 }

@@ -943,6 +943,468 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unlock Field Evidence'**
   String get unlockReason;
+
+  /// No description provided for @syncingEllipsis.
+  ///
+  /// In en, this message translates to:
+  /// **'Syncing…'**
+  String get syncingEllipsis;
+
+  /// No description provided for @pendingCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} pending'**
+  String pendingCount(int count);
+
+  /// No description provided for @noIssuesYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No issues yet. Capture one from the field.'**
+  String get noIssuesYet;
+
+  /// No description provided for @notSyncedSuffix.
+  ///
+  /// In en, this message translates to:
+  /// **' · not synced'**
+  String get notSyncedSuffix;
+
+  /// No description provided for @titleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get titleLabel;
+
+  /// No description provided for @descriptionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get descriptionLabel;
+
+  /// No description provided for @requiredField.
+  ///
+  /// In en, this message translates to:
+  /// **'Required'**
+  String get requiredField;
+
+  /// No description provided for @evidence.
+  ///
+  /// In en, this message translates to:
+  /// **'Evidence'**
+  String get evidence;
+
+  /// No description provided for @sensorsNativeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Using device GPS / camera (USE_NATIVE_SENSORS).'**
+  String get sensorsNativeHint;
+
+  /// No description provided for @sensorsDemoHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Demo sensors — enable with --dart-define=USE_NATIVE_SENSORS=true'**
+  String get sensorsDemoHint;
+
+  /// No description provided for @addGps.
+  ///
+  /// In en, this message translates to:
+  /// **'Add GPS'**
+  String get addGps;
+
+  /// No description provided for @refreshGps.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh GPS'**
+  String get refreshGps;
+
+  /// No description provided for @clearGps.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear GPS'**
+  String get clearGps;
+
+  /// No description provided for @addPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Add photo'**
+  String get addPhoto;
+
+  /// No description provided for @fromGallery.
+  ///
+  /// In en, this message translates to:
+  /// **'From gallery'**
+  String get fromGallery;
+
+  /// No description provided for @queuedForUpload.
+  ///
+  /// In en, this message translates to:
+  /// **'Queued for upload'**
+  String get queuedForUpload;
+
+  /// No description provided for @uploadedStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploaded'**
+  String get uploadedStatus;
+
+  /// No description provided for @onDeviceStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'On device'**
+  String get onDeviceStatus;
+
+  /// No description provided for @syncedDemoStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Synced (demo)'**
+  String get syncedDemoStatus;
+
+  /// No description provided for @saveIssue.
+  ///
+  /// In en, this message translates to:
+  /// **'Save issue'**
+  String get saveIssue;
+
+  /// No description provided for @savesOfflineHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Saves offline immediately; syncs when online.'**
+  String get savesOfflineHint;
+
+  /// No description provided for @issueNoun.
+  ///
+  /// In en, this message translates to:
+  /// **'Issue'**
+  String get issueNoun;
+
+  /// No description provided for @issueNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Issue not found'**
+  String get issueNotFound;
+
+  /// No description provided for @noDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'No description'**
+  String get noDescription;
+
+  /// No description provided for @byAuthorLine.
+  ///
+  /// In en, this message translates to:
+  /// **'By {author}{assigneePart}{syncPart}'**
+  String byAuthorLine(String author, String assigneePart, String syncPart);
+
+  /// No description provided for @assignedToPart.
+  ///
+  /// In en, this message translates to:
+  /// **' · Assigned to {name}'**
+  String assignedToPart(String name);
+
+  /// No description provided for @syncedPart.
+  ///
+  /// In en, this message translates to:
+  /// **' · synced'**
+  String get syncedPart;
+
+  /// No description provided for @pendingSyncPart.
+  ///
+  /// In en, this message translates to:
+  /// **' · pending sync'**
+  String get pendingSyncPart;
+
+  /// No description provided for @statusSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get statusSection;
+
+  /// No description provided for @assignToAsha.
+  ///
+  /// In en, this message translates to:
+  /// **'Assign to Asha Patil'**
+  String get assignToAsha;
+
+  /// No description provided for @statusHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Status history'**
+  String get statusHistory;
+
+  /// No description provided for @comments.
+  ///
+  /// In en, this message translates to:
+  /// **'Comments'**
+  String get comments;
+
+  /// No description provided for @noCommentsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No comments yet.'**
+  String get noCommentsYet;
+
+  /// No description provided for @addComment.
+  ///
+  /// In en, this message translates to:
+  /// **'Add comment'**
+  String get addComment;
+
+  /// No description provided for @postComment.
+  ///
+  /// In en, this message translates to:
+  /// **'Post comment'**
+  String get postComment;
+
+  /// No description provided for @pendingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'pending'**
+  String get pendingLabel;
+
+  /// No description provided for @syncedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'synced'**
+  String get syncedLabel;
+
+  /// No description provided for @rfisTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'RFIs'**
+  String get rfisTitle;
+
+  /// No description provided for @newRfi.
+  ///
+  /// In en, this message translates to:
+  /// **'New RFI'**
+  String get newRfi;
+
+  /// No description provided for @noRfisYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No RFIs yet.'**
+  String get noRfisYet;
+
+  /// No description provided for @subjectLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Subject'**
+  String get subjectLabel;
+
+  /// No description provided for @questionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Question'**
+  String get questionLabel;
+
+  /// No description provided for @submitRfi.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit RFI'**
+  String get submitRfi;
+
+  /// No description provided for @rfiNoun.
+  ///
+  /// In en, this message translates to:
+  /// **'RFI'**
+  String get rfiNoun;
+
+  /// No description provided for @rfiNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'RFI not found'**
+  String get rfiNotFound;
+
+  /// No description provided for @threadedResponses.
+  ///
+  /// In en, this message translates to:
+  /// **'Threaded responses'**
+  String get threadedResponses;
+
+  /// No description provided for @addResponse.
+  ///
+  /// In en, this message translates to:
+  /// **'Add response'**
+  String get addResponse;
+
+  /// No description provided for @postResponse.
+  ///
+  /// In en, this message translates to:
+  /// **'Post response'**
+  String get postResponse;
+
+  /// No description provided for @dailyProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Progress'**
+  String get dailyProgress;
+
+  /// No description provided for @noDprsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No DPRs yet. Capture today\'s progress in ~3 minutes.'**
+  String get noDprsYet;
+
+  /// No description provided for @submittedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Submitted'**
+  String get submittedLabel;
+
+  /// No description provided for @draftLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Draft'**
+  String get draftLabel;
+
+  /// No description provided for @activitiesCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} activities'**
+  String activitiesCount(int count);
+
+  /// No description provided for @alreadySubmittedViewOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Already submitted — view only.'**
+  String get alreadySubmittedViewOnly;
+
+  /// No description provided for @weatherLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Weather'**
+  String get weatherLabel;
+
+  /// No description provided for @manpowerSummaryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Manpower summary'**
+  String get manpowerSummaryLabel;
+
+  /// No description provided for @activities.
+  ///
+  /// In en, this message translates to:
+  /// **'Activities'**
+  String get activities;
+
+  /// No description provided for @activityLocationLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Activity + optional location'**
+  String get activityLocationLabel;
+
+  /// No description provided for @activityPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Activity photo'**
+  String get activityPhoto;
+
+  /// No description provided for @gallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Gallery'**
+  String get gallery;
+
+  /// No description provided for @photoAttachesNext.
+  ///
+  /// In en, this message translates to:
+  /// **'{label} · {size} (attaches to next activity)'**
+  String photoAttachesNext(String label, String size);
+
+  /// No description provided for @blockersLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Blockers'**
+  String get blockersLabel;
+
+  /// No description provided for @saveDraftForVoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Save a draft once to attach voice notes to today\'s DPR.'**
+  String get saveDraftForVoice;
+
+  /// No description provided for @saveDraft.
+  ///
+  /// In en, this message translates to:
+  /// **'Save draft'**
+  String get saveDraft;
+
+  /// No description provided for @submitDpr.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit DPR'**
+  String get submitDpr;
+
+  /// No description provided for @dprNoun.
+  ///
+  /// In en, this message translates to:
+  /// **'DPR'**
+  String get dprNoun;
+
+  /// No description provided for @dprNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'DPR not found'**
+  String get dprNotFound;
+
+  /// No description provided for @sharePdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Share PDF'**
+  String get sharePdf;
+
+  /// No description provided for @sharePdfTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Share PDF'**
+  String get sharePdfTooltip;
+
+  /// No description provided for @shareTextTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Share text summary'**
+  String get shareTextTooltip;
+
+  /// No description provided for @weatherValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Weather: {value}'**
+  String weatherValue(String value);
+
+  /// No description provided for @manpowerValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Manpower: {value}'**
+  String manpowerValue(String value);
+
+  /// No description provided for @textPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Text preview'**
+  String get textPreview;
+
+  /// No description provided for @noEvidencePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'No evidence photo'**
+  String get noEvidencePhoto;
+
+  /// No description provided for @evidencePhotoQueued.
+  ///
+  /// In en, this message translates to:
+  /// **'Evidence photo · queued upload'**
+  String get evidencePhotoQueued;
+
+  /// No description provided for @evidencePhotoSynced.
+  ///
+  /// In en, this message translates to:
+  /// **'Evidence photo · synced'**
+  String get evidencePhotoSynced;
+
+  /// No description provided for @evidencePhotoAttached.
+  ///
+  /// In en, this message translates to:
+  /// **'Evidence photo attached'**
+  String get evidencePhotoAttached;
 }
 
 class _AppLocalizationsDelegate

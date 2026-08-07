@@ -20,9 +20,9 @@ Password for all: `demo1234`
 
 ## Engineer — day-one script (15 minutes)
 
-1. Sign in (optional **English / Hinglish** on the login screen, or translate icon on home) → confirm active project (switcher at top). Home, Sync status, Digests/Reminders chrome follow the selected language.
-2. **New Issue** / **नया Issue** → title, Add demo GPS, Add demo photo → Save (duration feeds Pilot **issue create median**). Toggle cloud icon offline (**Offline** / **ऑफ़लाइन** badge), create another issue, go online (auto-sync).
-3. **Today's DPR** / **आज का DPR** → weather, manpower, ≥1 activity (optional evidence photo), blockers if any → Save draft → add voice note (demo stub, or live mic with `USE_NATIVE_SENSORS=true`) → **Submit** (duration feeds Pilot **DPR submit median**) → **Share PDF** (or text) to WhatsApp.
+1. Sign in (optional **English / Hinglish** on the login screen, or translate icon on home) → confirm active project (switcher at top). Home, Sync status, Digests/Reminders, Issues/RFI/DPR chrome follow the selected language.
+2. **New Issue** / **नया Issue** → title, Add GPS / **GPS जोड़ो**, photo → **Save issue** / **Issue save करो** (duration feeds Pilot **issue create median**). Toggle cloud icon offline (**Offline** / **ऑफ़लाइन** badge), create another issue, go online (auto-sync).
+3. **Today's DPR** / **आज का DPR** → weather, manpower, ≥1 activity (optional evidence photo), blockers if any → **Save draft** / **Draft save करो** → add voice note (demo stub, or live mic with `USE_NATIVE_SENSORS=true`) → **Submit DPR** / **DPR submit करो** (duration feeds Pilot **DPR submit median**) → **Share PDF** (or text) to WhatsApp.
 4. **Pin on Drawing** → pick issue → tap sheet to drop pin.
 5. **Reminders** → leave 5 PM DPR nudge on (schedules a local tray reminder); use **Simulate 5 PM** to fire tray + inbox. After FlutterFire + Blaze, Cloud `dailyDprNudge` also fans out FCM.
 

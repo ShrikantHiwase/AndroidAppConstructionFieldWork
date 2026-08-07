@@ -482,4 +482,253 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get unlockReason => 'Unlock Field Evidence';
+
+  @override
+  String get syncingEllipsis => 'Sync हो रहा है…';
+
+  @override
+  String pendingCount(int count) {
+    return '$count pending';
+  }
+
+  @override
+  String get noIssuesYet => 'अभी कोई issue नहीं। Field से capture करो।';
+
+  @override
+  String get notSyncedSuffix => ' · not synced';
+
+  @override
+  String get titleLabel => 'Title';
+
+  @override
+  String get descriptionLabel => 'Description';
+
+  @override
+  String get requiredField => 'ज़रूरी है';
+
+  @override
+  String get evidence => 'Evidence';
+
+  @override
+  String get sensorsNativeHint =>
+      'Device GPS / camera use हो रहा है (USE_NATIVE_SENSORS).';
+
+  @override
+  String get sensorsDemoHint =>
+      'Demo sensors — --dart-define=USE_NATIVE_SENSORS=true से enable करो';
+
+  @override
+  String get addGps => 'GPS जोड़ो';
+
+  @override
+  String get refreshGps => 'GPS refresh करो';
+
+  @override
+  String get clearGps => 'GPS हटाओ';
+
+  @override
+  String get addPhoto => 'Photo जोड़ो';
+
+  @override
+  String get fromGallery => 'Gallery से';
+
+  @override
+  String get queuedForUpload => 'Upload queue में';
+
+  @override
+  String get uploadedStatus => 'Uploaded';
+
+  @override
+  String get onDeviceStatus => 'Device पर';
+
+  @override
+  String get syncedDemoStatus => 'Synced (demo)';
+
+  @override
+  String get saveIssue => 'Issue save करो';
+
+  @override
+  String get savesOfflineHint => 'Offline तुरंत save; online पर sync।';
+
+  @override
+  String get issueNoun => 'Issue';
+
+  @override
+  String get issueNotFound => 'Issue नहीं मिला';
+
+  @override
+  String get noDescription => 'Description नहीं';
+
+  @override
+  String byAuthorLine(String author, String assigneePart, String syncPart) {
+    return 'By $author$assigneePart$syncPart';
+  }
+
+  @override
+  String assignedToPart(String name) {
+    return ' · Assigned to $name';
+  }
+
+  @override
+  String get syncedPart => ' · synced';
+
+  @override
+  String get pendingSyncPart => ' · pending sync';
+
+  @override
+  String get statusSection => 'Status';
+
+  @override
+  String get assignToAsha => 'Asha Patil को assign करो';
+
+  @override
+  String get statusHistory => 'Status history';
+
+  @override
+  String get comments => 'Comments';
+
+  @override
+  String get noCommentsYet => 'अभी कोई comment नहीं।';
+
+  @override
+  String get addComment => 'Comment जोड़ो';
+
+  @override
+  String get postComment => 'Comment post करो';
+
+  @override
+  String get pendingLabel => 'pending';
+
+  @override
+  String get syncedLabel => 'synced';
+
+  @override
+  String get rfisTitle => 'RFIs';
+
+  @override
+  String get newRfi => 'नया RFI';
+
+  @override
+  String get noRfisYet => 'अभी कोई RFI नहीं।';
+
+  @override
+  String get subjectLabel => 'Subject';
+
+  @override
+  String get questionLabel => 'Question';
+
+  @override
+  String get submitRfi => 'RFI submit करो';
+
+  @override
+  String get rfiNoun => 'RFI';
+
+  @override
+  String get rfiNotFound => 'RFI नहीं मिला';
+
+  @override
+  String get threadedResponses => 'Threaded responses';
+
+  @override
+  String get addResponse => 'Response जोड़ो';
+
+  @override
+  String get postResponse => 'Response post करो';
+
+  @override
+  String get dailyProgress => 'Daily Progress';
+
+  @override
+  String get noDprsYet =>
+      'अभी कोई DPR नहीं। आज का progress ~3 min में capture करो।';
+
+  @override
+  String get submittedLabel => 'Submitted';
+
+  @override
+  String get draftLabel => 'Draft';
+
+  @override
+  String activitiesCount(int count) {
+    return '$count activities';
+  }
+
+  @override
+  String get alreadySubmittedViewOnly => 'पहले से submit — सिर्फ देख सकते हो।';
+
+  @override
+  String get weatherLabel => 'Weather';
+
+  @override
+  String get manpowerSummaryLabel => 'Manpower summary';
+
+  @override
+  String get activities => 'Activities';
+
+  @override
+  String get activityLocationLabel => 'Activity + optional location';
+
+  @override
+  String get activityPhoto => 'Activity photo';
+
+  @override
+  String get gallery => 'Gallery';
+
+  @override
+  String photoAttachesNext(String label, String size) {
+    return '$label · $size (अगली activity से attach)';
+  }
+
+  @override
+  String get blockersLabel => 'Blockers';
+
+  @override
+  String get saveDraftForVoice =>
+      'आज के DPR पर voice notes के लिए एक बार draft save करो।';
+
+  @override
+  String get saveDraft => 'Draft save करो';
+
+  @override
+  String get submitDpr => 'DPR submit करो';
+
+  @override
+  String get dprNoun => 'DPR';
+
+  @override
+  String get dprNotFound => 'DPR नहीं मिला';
+
+  @override
+  String get sharePdf => 'PDF share करो';
+
+  @override
+  String get sharePdfTooltip => 'PDF share करो';
+
+  @override
+  String get shareTextTooltip => 'Text summary share करो';
+
+  @override
+  String weatherValue(String value) {
+    return 'Weather: $value';
+  }
+
+  @override
+  String manpowerValue(String value) {
+    return 'Manpower: $value';
+  }
+
+  @override
+  String get textPreview => 'Text preview';
+
+  @override
+  String get noEvidencePhoto => 'Evidence photo नहीं';
+
+  @override
+  String get evidencePhotoQueued => 'Evidence photo · upload queue';
+
+  @override
+  String get evidencePhotoSynced => 'Evidence photo · synced';
+
+  @override
+  String get evidencePhotoAttached => 'Evidence photo attached';
 }

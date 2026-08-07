@@ -6,6 +6,7 @@ import '../../../core/device/evidence_capture.dart';
 import '../../../core/device/evidence_image_policy.dart';
 import '../../../core/providers/connectivity_provider.dart';
 import '../../../core/telemetry/telemetry_providers.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../../pilot/presentation/pilot_providers.dart';
 import '../domain/issue_models.dart';
@@ -80,8 +81,9 @@ class _CreateIssuePageState extends ConsumerState<CreateIssuePage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('New Issue')),
+      appBar: AppBar(title: Text(l10n.newIssue)),
       body: ListView(
         padding: const EdgeInsets.all(24),
         children: [
@@ -91,32 +93,32 @@ class _CreateIssuePageState extends ConsumerState<CreateIssuePage> {
               children: [
                 TextFormField(
                   controller: _title,
-                  decoration: const InputDecoration(
-                    labelText: 'Title',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: l10n.titleLabel,
+                    border: const OutlineInputBorder(),
                   ),
                   validator: (v) =>
-                      (v == null || v.trim().isEmpty) ? 'Required' : null,
+                      (v == null || v.trim().isEmpty) ? l10n.requiredField : null,
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: _description,
                   maxLines: 4,
-                  decoration: const InputDecoration(
-                    labelText: 'Description',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: l10n.descriptionLabel,
+                    border: const OutlineInputBorder(),
                   ),
                 ),
               ],
             ),
           ),
           const SizedBox(height: 16),
-          Text('Evidence', style: Theme.of(context).textTheme.titleMedium),
+          Text(l10n.evidence, style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 8),
           Text(
             ref.watch(usingNativeSensorsProvider)
-                ? 'Using device GPS / camera (USE_NATIVE_SENSORS).'
-                : 'Demo sensors — enable with --dart-define=USE_NATIVE_SENSORS=true',
+                ? l10n.sensorsNativeHint
+                : l10n.sensorsDemoHint,
             style: Theme.of(context).textTheme.bodySmall,
           ),
           const SizedBox(height: 8),
@@ -132,12 +134,14 @@ class _CreateIssuePageState extends ConsumerState<CreateIssuePage> {
                   setState(() => _location = loc);
                 },
                 icon: const Icon(Icons.my_location),
-                label: Text(_location == null ? 'Add GPS' : 'Refresh GPS'),
+                label: Text(
+                  _location == null ? l10n.addGps : l10n.refreshGps,
+                ),
               ),
               if (_location != null)
                 TextButton(
                   onPressed: () => setState(() => _location = null),
-                  child: const Text('Clear GPS'),
+                  child: Text(l10n.clearGps),
                 ),
               OutlinedButton.icon(
                 onPressed: () async {
@@ -148,7 +152,7 @@ class _CreateIssuePageState extends ConsumerState<CreateIssuePage> {
                   setState(() => _attachments.add(shot));
                 },
                 icon: const Icon(Icons.photo_camera_outlined),
-                label: const Text('Add photo'),
+                label: Text(l10n.addPhoto),
               ),
               OutlinedButton.icon(
                 onPressed: () async {
@@ -159,16 +163,16 @@ class _CreateIssuePageState extends ConsumerState<CreateIssuePage> {
                   setState(() => _attachments.add(shot));
                 },
                 icon: const Icon(Icons.photo_library_outlined),
-                label: const Text('From gallery'),
+                label: Text(l10n.fromGallery),
               ),
             ],
           ),
           if (_location != null) ...[
             const SizedBox(height: 8),
             Text(
-              '${_location!.label ?? 'GPS'}: '
-              '${_location!.latitude.toStringAsFixed(5)}, '
-              '${_location!.longitude.toStringAsFixed(5)}',
+              "${_location!.label ?? 'GPS'}: "
+              "${_location!.latitude.toStringAsFixed(5)}, "
+              "${_location!.longitude.toStringAsFixed(5)}",
             ),
           ],
           if (_attachments.isNotEmpty) ...[
@@ -178,8 +182,9 @@ class _CreateIssuePageState extends ConsumerState<CreateIssuePage> {
                 final size = a.byteSizeBytes == null
                     ? null
                     : EvidenceImagePolicy.formatBytes(a.byteSizeBytes!);
-                final status =
-                    a.pendingUpload ? 'Queued for upload' : 'Uploaded';
+                final status = a.pendingUpload
+                    ? l10n.queuedForUpload
+                    : l10n.uploadedStatus;
                 return ListTile(
                   contentPadding: EdgeInsets.zero,
                   leading: const Icon(Icons.image_outlined),
@@ -207,11 +212,11 @@ class _CreateIssuePageState extends ConsumerState<CreateIssuePage> {
                     height: 22,
                     child: CircularProgressIndicator(strokeWidth: 2),
                   )
-                : const Text('Save issue'),
+                : Text(l10n.saveIssue),
           ),
           const SizedBox(height: 8),
           Text(
-            'Saves offline immediately; syncs when online.',
+            l10n.savesOfflineHint,
             style: Theme.of(context).textTheme.bodySmall,
           ),
         ],
