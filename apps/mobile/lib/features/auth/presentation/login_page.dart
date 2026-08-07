@@ -59,14 +59,12 @@ class _LoginPageState extends ConsumerState<LoginPage> {
             Text(l10n.appTitle, style: textTheme.headlineLarge),
             const SizedBox(height: 8),
             Text(
-              firebaseEnabled
-                  ? 'Sign in with your org email (Firebase Auth).'
-                  : 'Demo mode — password for all accounts: demo1234',
+              firebaseEnabled ? l10n.firebaseSignInHint : l10n.demoModeHint,
               style: textTheme.bodyLarge,
             ),
             const SizedBox(height: 8),
             Text(
-              firebaseEnabled ? 'Backend: Firebase' : 'Backend: local demo',
+              firebaseEnabled ? l10n.backendFirebase : l10n.backendLocalDemo,
               style: textTheme.labelLarge?.copyWith(
                 color: Theme.of(context).colorScheme.primary,
               ),
@@ -99,12 +97,12 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     controller: _email,
                     keyboardType: TextInputType.emailAddress,
                     autofillHints: const [AutofillHints.email],
-                    decoration: const InputDecoration(
-                      labelText: 'Email',
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: l10n.emailLabel,
+                      border: const OutlineInputBorder(),
                     ),
                     validator: (v) => (v == null || v.trim().isEmpty)
-                        ? 'Email required'
+                        ? l10n.emailRequired
                         : null,
                   ),
                   const SizedBox(height: 16),
@@ -112,12 +110,12 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     controller: _password,
                     obscureText: true,
                     autofillHints: const [AutofillHints.password],
-                    decoration: const InputDecoration(
-                      labelText: 'Password',
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: l10n.passwordLabel,
+                      border: const OutlineInputBorder(),
                     ),
                     validator: (v) =>
-                        (v == null || v.isEmpty) ? 'Password required' : null,
+                        (v == null || v.isEmpty) ? l10n.passwordRequired : null,
                     onFieldSubmitted: (_) => _submit(),
                   ),
                 ],
@@ -143,7 +141,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
             ),
             if (!firebaseEnabled) ...[
               const SizedBox(height: 32),
-              Text('Demo roles', style: textTheme.titleMedium),
+              Text(l10n.demoRoles, style: textTheme.titleMedium),
               const SizedBox(height: 8),
               Wrap(
                 spacing: 8,

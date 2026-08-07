@@ -243,12 +243,12 @@ class _RoleScaffold extends ConsumerWidget {
     final pending = ref.watch(pendingSyncCountProvider).valueOrNull ?? 0;
     final role = session.activeRole;
     final perms = <String>[
-      if (RolePermissions.canCreateIssues(role)) 'Create issues',
-      if (RolePermissions.canAssignWork(role)) 'Assign work',
-      if (RolePermissions.canChangeIssueStatus(role)) 'Change status',
-      if (RolePermissions.canApprove(role)) 'Approve',
-      if (RolePermissions.canManageUsers(role)) 'Manage users',
-      if (RolePermissions.isReadOnly(role)) 'Read-only',
+      if (RolePermissions.canCreateIssues(role)) l10n.permCreateIssues,
+      if (RolePermissions.canAssignWork(role)) l10n.permAssignWork,
+      if (RolePermissions.canChangeIssueStatus(role)) l10n.permChangeStatus,
+      if (RolePermissions.canApprove(role)) l10n.permApprove,
+      if (RolePermissions.canManageUsers(role)) l10n.permManageUsers,
+      if (RolePermissions.isReadOnly(role)) l10n.permReadOnly,
     ];
 
     return Scaffold(
@@ -276,12 +276,14 @@ class _RoleScaffold extends ConsumerWidget {
             icon: const Icon(Icons.translate_outlined),
           ),
           IconButton(
-            tooltip: offline ? 'Go online & sync' : 'Simulate offline',
+            tooltip: offline
+                ? l10n.tooltipGoOnlineSync
+                : l10n.tooltipSimulateOffline,
             onPressed: () => ref.read(isOfflineProvider.notifier).toggle(),
             icon: Icon(offline ? Icons.cloud_off : Icons.cloud_outlined),
           ),
           IconButton(
-            tooltip: 'Sync status',
+            tooltip: l10n.tooltipSyncStatus,
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute<void>(
@@ -292,7 +294,7 @@ class _RoleScaffold extends ConsumerWidget {
             icon: const Icon(Icons.sync),
           ),
           IconButton(
-            tooltip: 'Sign out',
+            tooltip: l10n.signOut,
             onPressed: () =>
                 ref.read(authControllerProvider.notifier).signOut(),
             icon: const Icon(Icons.logout),
@@ -314,12 +316,12 @@ class _RoleScaffold extends ConsumerWidget {
           if (readOnly) ...[
             const SizedBox(height: 8),
             Text(
-              'Client accounts cannot create or edit field records.',
+              l10n.clientReadOnlyNote,
               style: textTheme.bodySmall,
             ),
           ],
           const SizedBox(height: 20),
-          Text('Permissions', style: textTheme.titleMedium),
+          Text(l10n.permissions, style: textTheme.titleMedium),
           const SizedBox(height: 8),
           Wrap(
             spacing: 8,
@@ -352,10 +354,8 @@ class _RoleScaffold extends ConsumerWidget {
           const SizedBox(height: 32),
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
-            title: const Text('Biometric unlock'),
-            subtitle: const Text(
-              'Require unlock after app resume (local_auth when USE_NATIVE_SENSORS=true)',
-            ),
+            title: Text(l10n.biometricUnlock),
+            subtitle: Text(l10n.biometricUnlockSubtitle),
             value: session.biometricsEnabled,
             onChanged: (v) => ref
                 .read(authControllerProvider.notifier)
@@ -365,7 +365,7 @@ class _RoleScaffold extends ConsumerWidget {
             OutlinedButton(
               onPressed: () =>
                   ref.read(authControllerProvider.notifier).lockForResume(),
-              child: const Text('Simulate app resume lock'),
+              child: Text(l10n.simulateAppResumeLock),
             ),
         ],
       ),
@@ -380,12 +380,13 @@ class _ProjectSwitcher extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final session = ref.watch(authSessionProvider);
     if (session == null) return const SizedBox.shrink();
+    final l10n = AppLocalizations.of(context);
 
     return InputDecorator(
-      decoration: const InputDecoration(
-        labelText: 'Active project',
-        border: OutlineInputBorder(),
-        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      decoration: InputDecoration(
+        labelText: l10n.activeProject,
+        border: const OutlineInputBorder(),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(

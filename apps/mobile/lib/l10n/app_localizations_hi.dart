@@ -15,6 +15,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String get offlineBadge => 'ऑफ़लाइन';
 
   @override
+  String get onlineBadge => 'ऑनलाइन';
+
+  @override
   String syncPendingCount(int count) {
     return '$count sync';
   }
@@ -115,4 +118,368 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get signIn => 'Sign in';
+
+  @override
+  String get signOut => 'Sign out';
+
+  @override
+  String get emailLabel => 'Email';
+
+  @override
+  String get passwordLabel => 'Password';
+
+  @override
+  String get emailRequired => 'Email ज़रूरी है';
+
+  @override
+  String get passwordRequired => 'Password ज़रूरी है';
+
+  @override
+  String get demoRoles => 'Demo roles';
+
+  @override
+  String get demoModeHint => 'Demo mode — सब accounts का password: demo1234';
+
+  @override
+  String get firebaseSignInHint => 'Org email से Sign in करो (Firebase Auth).';
+
+  @override
+  String get backendFirebase => 'Backend: Firebase';
+
+  @override
+  String get backendLocalDemo => 'Backend: local demo';
+
+  @override
+  String get permissions => 'Permissions';
+
+  @override
+  String get permCreateIssues => 'Issues बना सकते हो';
+
+  @override
+  String get permAssignWork => 'Work assign';
+
+  @override
+  String get permChangeStatus => 'Status बदलो';
+
+  @override
+  String get permApprove => 'Approve';
+
+  @override
+  String get permManageUsers => 'Users manage';
+
+  @override
+  String get permReadOnly => 'Read-only';
+
+  @override
+  String get clientReadOnlyNote =>
+      'Client account field records create/edit नहीं कर सकता।';
+
+  @override
+  String get biometricUnlock => 'Biometric unlock';
+
+  @override
+  String get biometricUnlockSubtitle =>
+      'App resume पर unlock चाहिए (USE_NATIVE_SENSORS=true पर local_auth)';
+
+  @override
+  String get simulateAppResumeLock => 'App resume lock simulate करो';
+
+  @override
+  String get activeProject => 'Active project';
+
+  @override
+  String get tooltipGoOnlineSync => 'Online जाओ और sync करो';
+
+  @override
+  String get tooltipSimulateOffline => 'Offline simulate करो';
+
+  @override
+  String get tooltipSyncStatus => 'Sync status';
+
+  @override
+  String get syncStatusTitle => 'Sync status';
+
+  @override
+  String get outboxEmpty => 'Outbox खाली है';
+
+  @override
+  String outboxPendingCount(int count) {
+    return '$count item sync के इंतज़ार में';
+  }
+
+  @override
+  String get remoteFirestore => 'Remote: Cloud Firestore (outbox push + pull)';
+
+  @override
+  String get remoteDemo => 'Remote: local demo sink (cloud write नहीं)';
+
+  @override
+  String demoCloudToggleLine(String demoState, String deviceState) {
+    return 'Demo cloud toggle: $demoState · Device network: $deviceState';
+  }
+
+  @override
+  String get stateOffline => 'offline';
+
+  @override
+  String get stateOnline => 'online';
+
+  @override
+  String get lastSuccessPrefix => 'Last success:';
+
+  @override
+  String get lastFailurePrefix => 'Last failure:';
+
+  @override
+  String get localCache => 'Local cache';
+
+  @override
+  String softBudgetLine(String used, String cap, String over) {
+    return '$used / $cap soft budget$over';
+  }
+
+  @override
+  String get softBudgetOverSuffix => ' (over)';
+
+  @override
+  String cleanupCanReclaim(String bytes) {
+    return 'Cleanup $bytes reclaim कर सकता है (uploaded local stubs)';
+  }
+
+  @override
+  String get backgroundSync => 'Background sync';
+
+  @override
+  String get lastBackgroundFlushNever => 'Last background flush: कभी नहीं';
+
+  @override
+  String lastBackgroundFlushAt(String when, int count) {
+    return 'Last background flush: $when ($count item(s))';
+  }
+
+  @override
+  String get enqueueBackgroundFlush => 'Background flush enqueue करो';
+
+  @override
+  String get oneOffFlushEnqueued => 'One-off background flush enqueue हो गया';
+
+  @override
+  String get oneOffFlushFailed => 'Enqueue नहीं हुआ (Workmanager यहाँ नहीं)';
+
+  @override
+  String get backendHealth => 'Backend health';
+
+  @override
+  String get healthNotProbedFirebase =>
+      'अभी probe नहीं — Cloud Functions health call करो।';
+
+  @override
+  String get healthDemoNoop => 'Demo mode local NoOp health probe use करता है।';
+
+  @override
+  String get probeHealth => 'Probe health';
+
+  @override
+  String get telemetry => 'Telemetry';
+
+  @override
+  String telemetryBackendLine(String label, String userPart) {
+    return 'Backend: $label$userPart';
+  }
+
+  @override
+  String telemetryUserPart(String userId) {
+    return ' · user $userId';
+  }
+
+  @override
+  String secureStoreLine(String label) {
+    return 'Secure store: $label (session email, biometrics flag, FCM token)';
+  }
+
+  @override
+  String get telemetryFirebaseDeferred =>
+      'Crashlytics/Analytics packages अभी deferred — FlutterFire go-live तक events local रहेंगे।';
+
+  @override
+  String get telemetryDemoNoop =>
+      'Demo NoOp recorder — network नहीं। Events नीचे list हैं।';
+
+  @override
+  String get pushFcm => 'Push (FCM)';
+
+  @override
+  String get registeringToken => 'Device token register हो रहा है…';
+
+  @override
+  String tokenError(String error) {
+    return 'Token error: $error';
+  }
+
+  @override
+  String get noTokenSignIn => 'Token नहीं (sign in ज़रूरी)';
+
+  @override
+  String demoTokenLine(String token) {
+    return 'Demo token: $token';
+  }
+
+  @override
+  String tokenLine(String token) {
+    return 'Token: $token';
+  }
+
+  @override
+  String get pushHelpFirebase =>
+      'Inbox row tap करो — related DPR / issue / RFI खुलेगा। Functions DPR submit / issue & RFI assign & status पर send करते हैं।';
+
+  @override
+  String get pushHelpDemo =>
+      'Demo mode assign/status intents local log करता है जब तक FlutterFire configure न हो। Inbox rows tap करके linked screens खोलो।';
+
+  @override
+  String get noLinkedScreen => 'इस alert के लिए linked screen नहीं';
+
+  @override
+  String get flushNow => 'अभी Flush करो';
+
+  @override
+  String flushedItems(int count) {
+    return '$count item flush हो गए';
+  }
+
+  @override
+  String get goOnline => 'Online जाओ';
+
+  @override
+  String get goOffline => 'Offline जाओ';
+
+  @override
+  String get cleanup => 'Cleanup';
+
+  @override
+  String cleanupRemovedLogs(int logs, String mediaNote, String freed) {
+    return '$logs log हटाए$mediaNote (~$freed)';
+  }
+
+  @override
+  String cleanupMediaNote(int count) {
+    return ', $count media path reclaim';
+  }
+
+  @override
+  String get conflictPolicy => 'Conflict policy';
+
+  @override
+  String get syncLog => 'Sync log';
+
+  @override
+  String get noSyncEventsYet => 'अभी कोई sync event नहीं।';
+
+  @override
+  String get syncFooterNote =>
+      'Periodic Workmanager flush (~15 min, network चाहिए) + connectivity_plus auto-flush जब device reconnect हो। Cleanup sync logs और uploaded local:// media stubs clear करता है। Drift अभी deferred।';
+
+  @override
+  String get digestsTitle => 'Digests';
+
+  @override
+  String get digestsAndReminders => 'Digests और reminders';
+
+  @override
+  String get signInRequired => 'Sign in ज़रूरी है';
+
+  @override
+  String get dailyDprNudge => 'Daily DPR nudge';
+
+  @override
+  String dailyDprNudgeSubtitle(int hour) {
+    return 'आज का DPR submit न हो तो लगभग $hour:00 पर local tray reminder। Cloud FCM cron अभी deferred।';
+  }
+
+  @override
+  String get reminderHour => 'Reminder hour';
+
+  @override
+  String get noDprNudgeNow => 'अभी कोई DPR nudge नहीं।';
+
+  @override
+  String get openDpr => 'DPR खोलो';
+
+  @override
+  String get simulate5PmCheck => '5 PM check simulate करो';
+
+  @override
+  String get noNudgeAlreadySubmitted =>
+      'Nudge नहीं (DPR already submitted या prefs off)।';
+
+  @override
+  String get dprReminderTitle => 'DPR reminder';
+
+  @override
+  String get pmDigests => 'PM digests';
+
+  @override
+  String get pmDigestsSubtitle =>
+      'Active project के open issues, RFIs, और DPR blockers aggregate करो।';
+
+  @override
+  String get pmDigest => 'PM digest';
+
+  @override
+  String get digestUnavailableRole => 'इस role के लिए digest उपलब्ध नहीं।';
+
+  @override
+  String get pmDigestsOff => 'PM digests बंद हैं।';
+
+  @override
+  String digestSummaryLine(int issues, int rfis, String dpr) {
+    return 'Open issues: $issues · Open RFIs: $rfis · Today DPR: $dpr';
+  }
+
+  @override
+  String get todayDprIncomplete => 'incomplete';
+
+  @override
+  String get todayDprOk => 'ok';
+
+  @override
+  String get queueIsClear => 'Queue clear है।';
+
+  @override
+  String get shareDigestPdf => 'Digest PDF share करो';
+
+  @override
+  String get shareAsText => 'Text के रूप में share';
+
+  @override
+  String get pmDigestsStaffOnly =>
+      'PM digests project managers और admins के लिए हैं।';
+
+  @override
+  String get unlockTitle => 'Field Evidence unlock करो';
+
+  @override
+  String get unlockConfirm => 'जारी रखने के लिए confirm करो कि आप ही हो।';
+
+  @override
+  String unlockWelcomeBack(String name, String hint) {
+    return 'Welcome back, $name. $hint';
+  }
+
+  @override
+  String get unlockHintNative => 'Device biometrics या PIN use करो।';
+
+  @override
+  String get unlockHintDemo =>
+      'Demo unlock (FakeBiometricService) — USE_NATIVE_SENSORS=true तक।';
+
+  @override
+  String get unlockAction => 'Unlock';
+
+  @override
+  String get unlockFailed => 'Unlock fail हो गया';
+
+  @override
+  String get unlockReason => 'Unlock Field Evidence';
 }

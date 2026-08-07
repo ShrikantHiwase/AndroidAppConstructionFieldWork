@@ -6,6 +6,7 @@ import '../../../core/health/health_check_port.dart';
 import '../../../core/notifications/notification_deep_link.dart';
 import '../../../core/notifications/notification_providers.dart';
 import '../../../core/telemetry/telemetry_providers.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../sync/conflict/conflict_policy.dart';
 import '../../auth/presentation/auth_controller.dart';
 import 'sync_providers.dart';
@@ -15,6 +16,7 @@ class SyncStatusPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final offline = ref.watch(isOfflineProvider);
     final deviceOffline = ref.watch(deviceOfflineProvider);
     final pending = ref.watch(pendingSyncCountProvider).valueOrNull ?? 0;
@@ -35,47 +37,50 @@ class SyncStatusPage extends ConsumerWidget {
     final overBudget = cache.estimatedBytes > cache.capBytes;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Sync status')),
+      appBar: AppBar(title: Text(l10n.syncStatusTitle)),
       body: ListView(
         padding: const EdgeInsets.all(24),
         children: [
-          Text(offline ? 'Offline' : 'Online', style: textTheme.headlineSmall),
+          Text(
+            offline ? l10n.offlineBadge : l10n.onlineBadge,
+            style: textTheme.headlineSmall,
+          ),
           const SizedBox(height: 4),
           Text(
             pending == 0
-                ? 'Outbox empty'
-                : '$pending item(s) waiting to sync',
+                ? l10n.outboxEmpty
+                : l10n.outboxPendingCount(pending),
             style: textTheme.bodyLarge,
           ),
           Text(
-            firebase
-                ? 'Remote: Cloud Firestore (outbox push + pull)'
-                : 'Remote: local demo sink (no cloud write)',
+            firebase ? l10n.remoteFirestore : l10n.remoteDemo,
             style: textTheme.bodySmall,
           ),
           Text(
-            'Demo cloud toggle: ${offline ? 'offline' : 'online'} · '
-            'Device network: ${deviceOffline ? 'offline' : 'online'}',
+            l10n.demoCloudToggleLine(
+              offline ? l10n.stateOffline : l10n.stateOnline,
+              deviceOffline ? l10n.stateOffline : l10n.stateOnline,
+            ),
             style: textTheme.bodySmall,
           ),
           if (engine.lastSuccessAt != null) ...[
             const SizedBox(height: 4),
             Text(
-              'Last success: ${engine.lastSuccessAt!.toLocal()}',
+              '${l10n.lastSuccessPrefix} ${engine.lastSuccessAt!.toLocal()}',
               style: textTheme.bodySmall,
             ),
           ],
           if (engine.lastFailure != null) ...[
             const SizedBox(height: 4),
             Text(
-              'Last failure: ${engine.lastFailure}',
+              '${l10n.lastFailurePrefix} ${engine.lastFailure}',
               style: textTheme.bodySmall?.copyWith(
                 color: scheme.error,
               ),
             ),
           ],
           const SizedBox(height: 16),
-          Text('Local cache', style: textTheme.titleMedium),
+          Text(l10n.localCache, style: textTheme.titleMedium),
           const SizedBox(height: 8),
           ClipRRect(
             borderRadius: BorderRadius.circular(4),
@@ -88,9 +93,11 @@ class SyncStatusPage extends ConsumerWidget {
           ),
           const SizedBox(height: 6),
           Text(
-            '${EvidenceImagePolicy.formatBytes(cache.estimatedBytes)} / '
-            '${EvidenceImagePolicy.formatBytes(cache.capBytes)} soft budget'
-            '${overBudget ? ' (over)' : ''}',
+            l10n.softBudgetLine(
+              EvidenceImagePolicy.formatBytes(cache.estimatedBytes),
+              EvidenceImagePolicy.formatBytes(cache.capBytes),
+              overBudget ? l10n.softBudgetOverSuffix : '',
+            ),
             style: textTheme.bodySmall?.copyWith(
               color: overBudget ? scheme.error : null,
             ),
@@ -102,20 +109,22 @@ class SyncStatusPage extends ConsumerWidget {
           if (cache.reclaimableBytes > 0) ...[
             const SizedBox(height: 4),
             Text(
-              'Cleanup can reclaim '
-              '${EvidenceImagePolicy.formatBytes(cache.reclaimableBytes)} '
-              '(uploaded local stubs)',
+              l10n.cleanupCanReclaim(
+                EvidenceImagePolicy.formatBytes(cache.reclaimableBytes),
+              ),
               style: textTheme.bodySmall,
             ),
           ],
           const SizedBox(height: 16),
-          Text('Background sync', style: textTheme.titleMedium),
+          Text(l10n.backgroundSync, style: textTheme.titleMedium),
           const SizedBox(height: 4),
           Text(
             bgMeta.lastAt == null
-                ? 'Last background flush: never'
-                : 'Last background flush: ${bgMeta.lastAt!.toLocal()} '
-                    '(${bgMeta.lastFlushed} item(s))',
+                ? l10n.lastBackgroundFlushNever
+                : l10n.lastBackgroundFlushAt(
+                    bgMeta.lastAt!.toLocal().toString(),
+                    bgMeta.lastFlushed,
+                  ),
             style: textTheme.bodySmall,
           ),
           const SizedBox(height: 8),
@@ -129,25 +138,23 @@ class SyncStatusPage extends ConsumerWidget {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(
-                      ok
-                          ? 'One-off background flush enqueued'
-                          : 'Could not enqueue (Workmanager unavailable here)',
+                      ok ? l10n.oneOffFlushEnqueued : l10n.oneOffFlushFailed,
                     ),
                   ),
                 );
               }
             },
             icon: const Icon(Icons.schedule_send_outlined),
-            label: const Text('Enqueue background flush'),
+            label: Text(l10n.enqueueBackgroundFlush),
           ),
           const SizedBox(height: 16),
-          Text('Backend health', style: textTheme.titleMedium),
+          Text(l10n.backendHealth, style: textTheme.titleMedium),
           const SizedBox(height: 4),
           Text(
             lastHealth?.summary ??
                 (firebase
-                    ? 'Not probed yet — call Cloud Functions health.'
-                    : 'Demo mode uses a local NoOp health probe.'),
+                    ? l10n.healthNotProbedFirebase
+                    : l10n.healthDemoNoop),
             style: textTheme.bodySmall?.copyWith(
               color: lastHealth == null
                   ? null
@@ -174,26 +181,28 @@ class SyncStatusPage extends ConsumerWidget {
               }
             },
             icon: const Icon(Icons.monitor_heart_outlined),
-            label: const Text('Probe health'),
+            label: Text(l10n.probeHealth),
           ),
           const SizedBox(height: 16),
-          Text('Telemetry', style: textTheme.titleMedium),
+          Text(l10n.telemetry, style: textTheme.titleMedium),
           const SizedBox(height: 4),
           Text(
-            'Backend: ${telemetry.backendLabel}'
-            '${telemetry.userId == null ? '' : ' · user ${telemetry.userId}'}',
+            l10n.telemetryBackendLine(
+              telemetry.backendLabel,
+              telemetry.userId == null
+                  ? ''
+                  : l10n.telemetryUserPart(telemetry.userId!),
+            ),
             style: textTheme.bodySmall,
           ),
           Text(
-            'Secure store: ${secure.backendLabel} '
-            '(session email, biometrics flag, FCM token)',
+            l10n.secureStoreLine(secure.backendLabel),
             style: textTheme.bodySmall,
           ),
           Text(
             firebase
-                ? 'Crashlytics/Analytics packages still deferred — '
-                    'events stay local until FlutterFire go-live.'
-                : 'Demo NoOp recorder — no network. Events listed below.',
+                ? l10n.telemetryFirebaseDeferred
+                : l10n.telemetryDemoNoop,
             style: textTheme.bodySmall,
           ),
           if (telemetry.recentEvents.isNotEmpty) ...[
@@ -215,27 +224,27 @@ class SyncStatusPage extends ConsumerWidget {
                 ),
           ],
           const SizedBox(height: 16),
-          Text('Push (FCM)', style: textTheme.titleMedium),
+          Text(l10n.pushFcm, style: textTheme.titleMedium),
           const SizedBox(height: 4),
           pushToken.when(
-            loading: () => const Text('Registering device token…'),
-            error: (e, _) => Text('Token error: $e'),
+            loading: () => Text(l10n.registeringToken),
+            error: (e, _) => Text(l10n.tokenError('$e')),
             data: (token) => Text(
               token == null
-                  ? 'No token (sign in required)'
+                  ? l10n.noTokenSignIn
                   : (firebase
-                      ? 'Token: ${token.length > 24 ? '${token.substring(0, 24)}…' : token}'
-                      : 'Demo token: $token'),
+                      ? l10n.tokenLine(
+                          token.length > 24
+                              ? '${token.substring(0, 24)}…'
+                              : token,
+                        )
+                      : l10n.demoTokenLine(token)),
               style: textTheme.bodySmall,
             ),
           ),
           const SizedBox(height: 8),
           Text(
-            firebase
-                ? 'Tap an inbox row to open the related DPR / issue / RFI. '
-                    'Functions send on DPR submit / issue & RFI assign & status.'
-                : 'Demo mode logs assign/status intents locally until FlutterFire is configured. '
-                    'Tap inbox rows to open linked screens.',
+            firebase ? l10n.pushHelpFirebase : l10n.pushHelpDemo,
             style: textTheme.bodySmall,
           ),
           if (inbox.entries.isNotEmpty) ...[
@@ -257,9 +266,7 @@ class SyncStatusPage extends ConsumerWidget {
                       final opened = openNotificationDeepLink(data: e.data);
                       if (!opened && context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('No linked screen for this alert'),
-                          ),
+                          SnackBar(content: Text(l10n.noLinkedScreen)),
                         );
                       }
                     },
@@ -290,18 +297,18 @@ class SyncStatusPage extends ConsumerWidget {
                         );
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Flushed $n item(s)')),
+                            SnackBar(content: Text(l10n.flushedItems(n))),
                           );
                         }
                       },
                 icon: const Icon(Icons.sync),
-                label: const Text('Flush now'),
+                label: Text(l10n.flushNow),
               ),
               OutlinedButton.icon(
                 onPressed: () =>
                     ref.read(isOfflineProvider.notifier).toggle(),
                 icon: Icon(offline ? Icons.cloud_done_outlined : Icons.cloud_off),
-                label: Text(offline ? 'Go online' : 'Go offline'),
+                label: Text(offline ? l10n.goOnline : l10n.goOffline),
               ),
               OutlinedButton.icon(
                 onPressed: () async {
@@ -323,26 +330,28 @@ class SyncStatusPage extends ConsumerWidget {
                       result.bytesFreedEstimate,
                     );
                     final mediaNote = result.reclaimedMediaPaths > 0
-                        ? ', reclaimed ${result.reclaimedMediaPaths} media '
-                            'path(s)'
+                        ? l10n.cleanupMediaNote(result.reclaimedMediaPaths)
                         : '';
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(
-                          'Removed ${result.removedLogEntries} log(s)$mediaNote '
-                          '(~$freed)',
+                          l10n.cleanupRemovedLogs(
+                            result.removedLogEntries,
+                            mediaNote,
+                            freed,
+                          ),
                         ),
                       ),
                     );
                   }
                 },
                 icon: const Icon(Icons.cleaning_services_outlined),
-                label: const Text('Cleanup'),
+                label: Text(l10n.cleanup),
               ),
             ],
           ),
           const SizedBox(height: 24),
-          Text('Conflict policy', style: textTheme.titleMedium),
+          Text(l10n.conflictPolicy, style: textTheme.titleMedium),
           const SizedBox(height: 8),
           ...ConflictStrategy.values.map(
             (s) => ListTile(
@@ -353,14 +362,14 @@ class SyncStatusPage extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 16),
-          Text('Sync log', style: textTheme.titleMedium),
+          Text(l10n.syncLog, style: textTheme.titleMedium),
           const SizedBox(height: 8),
           logsAsync.when(
             loading: () => const LinearProgressIndicator(),
             error: (e, _) => Text('$e'),
             data: (logs) {
               if (logs.isEmpty) {
-                return const Text('No sync events yet.');
+                return Text(l10n.noSyncEventsYet);
               }
               final visible = logs.take(40).toList();
               return Column(
@@ -379,10 +388,7 @@ class SyncStatusPage extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            'Periodic Workmanager flush (~15 min, network required) + '
-            'connectivity_plus auto-flush when the device reconnects. '
-            'Cleanup clears sync logs and uploaded local:// media stubs. '
-            'Drift still deferred.',
+            l10n.syncFooterNote,
             style: textTheme.bodySmall,
           ),
         ],

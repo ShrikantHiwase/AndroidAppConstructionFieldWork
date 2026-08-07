@@ -41,6 +41,61 @@ void main() {
     expect(find.text('ऑफ़लाइन'), findsOneWidget);
   });
 
+  testWidgets('Hinglish Sync status and Digests chrome', (tester) async {
+    SharedPreferences.setMockInitialValues({'app.locale_code': 'hi'});
+    final prefs = await SharedPreferences.getInstance();
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          sharedPreferencesProvider.overrideWithValue(prefs),
+        ],
+        child: const FieldApp(),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Sign in'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byIcon(Icons.sync));
+    await tester.pumpAndSettle();
+    expect(find.text('Sync status'), findsWidgets);
+    expect(find.text('Outbox खाली है'), findsOneWidget);
+
+    // ListView builds lazily — scroll to action buttons.
+    await tester.scrollUntilVisible(
+      find.text('अभी Flush करो'),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('अभी Flush करो'), findsOneWidget);
+    expect(find.text('Offline जाओ'), findsOneWidget);
+  });
+
+  testWidgets('Hinglish Digests chrome from Reminders', (tester) async {
+    SharedPreferences.setMockInitialValues({'app.locale_code': 'hi'});
+    final prefs = await SharedPreferences.getInstance();
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          sharedPreferencesProvider.overrideWithValue(prefs),
+        ],
+        child: const FieldApp(),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Sign in'));
+    await tester.pumpAndSettle();
+
+    await tester.ensureVisible(find.text('Reminders'));
+    await tester.tap(find.text('Reminders'));
+    await tester.pumpAndSettle();
+    expect(find.text('Digests और reminders'), findsOneWidget);
+    expect(find.text('5 PM check simulate करो'), findsOneWidget);
+  });
+
   testWidgets('English locale keeps New Issue CTA', (tester) async {
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();
@@ -73,13 +128,17 @@ void main() {
     expect(controller.state, isNull);
   });
 
-  test('generated localizations expose Hinglish strings', () {
+  test('generated localizations expose Hinglish Sync/Digests strings', () {
     final hi = lookupAppLocalizations(const Locale('hi'));
     expect(hi.newIssue, 'नया Issue');
     expect(hi.offlineBadge, 'ऑफ़लाइन');
-    expect(hi.todaysDpr, 'आज का DPR');
+    expect(hi.flushNow, 'अभी Flush करो');
+    expect(hi.digestsAndReminders, 'Digests और reminders');
+    expect(hi.simulate5PmCheck, '5 PM check simulate करो');
     final en = lookupAppLocalizations(const Locale('en'));
     expect(en.newIssue, 'New Issue');
     expect(en.syncPendingCount(3), '3 sync');
+    expect(en.flushNow, 'Flush now');
+    expect(en.digestsAndReminders, 'Digests & reminders');
   });
 }

@@ -15,6 +15,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get offlineBadge => 'Offline';
 
   @override
+  String get onlineBadge => 'Online';
+
+  @override
   String syncPendingCount(int count) {
     return '$count sync';
   }
@@ -115,4 +118,370 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get signIn => 'Sign in';
+
+  @override
+  String get signOut => 'Sign out';
+
+  @override
+  String get emailLabel => 'Email';
+
+  @override
+  String get passwordLabel => 'Password';
+
+  @override
+  String get emailRequired => 'Email required';
+
+  @override
+  String get passwordRequired => 'Password required';
+
+  @override
+  String get demoRoles => 'Demo roles';
+
+  @override
+  String get demoModeHint => 'Demo mode — password for all accounts: demo1234';
+
+  @override
+  String get firebaseSignInHint =>
+      'Sign in with your org email (Firebase Auth).';
+
+  @override
+  String get backendFirebase => 'Backend: Firebase';
+
+  @override
+  String get backendLocalDemo => 'Backend: local demo';
+
+  @override
+  String get permissions => 'Permissions';
+
+  @override
+  String get permCreateIssues => 'Create issues';
+
+  @override
+  String get permAssignWork => 'Assign work';
+
+  @override
+  String get permChangeStatus => 'Change status';
+
+  @override
+  String get permApprove => 'Approve';
+
+  @override
+  String get permManageUsers => 'Manage users';
+
+  @override
+  String get permReadOnly => 'Read-only';
+
+  @override
+  String get clientReadOnlyNote =>
+      'Client accounts cannot create or edit field records.';
+
+  @override
+  String get biometricUnlock => 'Biometric unlock';
+
+  @override
+  String get biometricUnlockSubtitle =>
+      'Require unlock after app resume (local_auth when USE_NATIVE_SENSORS=true)';
+
+  @override
+  String get simulateAppResumeLock => 'Simulate app resume lock';
+
+  @override
+  String get activeProject => 'Active project';
+
+  @override
+  String get tooltipGoOnlineSync => 'Go online & sync';
+
+  @override
+  String get tooltipSimulateOffline => 'Simulate offline';
+
+  @override
+  String get tooltipSyncStatus => 'Sync status';
+
+  @override
+  String get syncStatusTitle => 'Sync status';
+
+  @override
+  String get outboxEmpty => 'Outbox empty';
+
+  @override
+  String outboxPendingCount(int count) {
+    return '$count item(s) waiting to sync';
+  }
+
+  @override
+  String get remoteFirestore => 'Remote: Cloud Firestore (outbox push + pull)';
+
+  @override
+  String get remoteDemo => 'Remote: local demo sink (no cloud write)';
+
+  @override
+  String demoCloudToggleLine(String demoState, String deviceState) {
+    return 'Demo cloud toggle: $demoState · Device network: $deviceState';
+  }
+
+  @override
+  String get stateOffline => 'offline';
+
+  @override
+  String get stateOnline => 'online';
+
+  @override
+  String get lastSuccessPrefix => 'Last success:';
+
+  @override
+  String get lastFailurePrefix => 'Last failure:';
+
+  @override
+  String get localCache => 'Local cache';
+
+  @override
+  String softBudgetLine(String used, String cap, String over) {
+    return '$used / $cap soft budget$over';
+  }
+
+  @override
+  String get softBudgetOverSuffix => ' (over)';
+
+  @override
+  String cleanupCanReclaim(String bytes) {
+    return 'Cleanup can reclaim $bytes (uploaded local stubs)';
+  }
+
+  @override
+  String get backgroundSync => 'Background sync';
+
+  @override
+  String get lastBackgroundFlushNever => 'Last background flush: never';
+
+  @override
+  String lastBackgroundFlushAt(String when, int count) {
+    return 'Last background flush: $when ($count item(s))';
+  }
+
+  @override
+  String get enqueueBackgroundFlush => 'Enqueue background flush';
+
+  @override
+  String get oneOffFlushEnqueued => 'One-off background flush enqueued';
+
+  @override
+  String get oneOffFlushFailed =>
+      'Could not enqueue (Workmanager unavailable here)';
+
+  @override
+  String get backendHealth => 'Backend health';
+
+  @override
+  String get healthNotProbedFirebase =>
+      'Not probed yet — call Cloud Functions health.';
+
+  @override
+  String get healthDemoNoop => 'Demo mode uses a local NoOp health probe.';
+
+  @override
+  String get probeHealth => 'Probe health';
+
+  @override
+  String get telemetry => 'Telemetry';
+
+  @override
+  String telemetryBackendLine(String label, String userPart) {
+    return 'Backend: $label$userPart';
+  }
+
+  @override
+  String telemetryUserPart(String userId) {
+    return ' · user $userId';
+  }
+
+  @override
+  String secureStoreLine(String label) {
+    return 'Secure store: $label (session email, biometrics flag, FCM token)';
+  }
+
+  @override
+  String get telemetryFirebaseDeferred =>
+      'Crashlytics/Analytics packages still deferred — events stay local until FlutterFire go-live.';
+
+  @override
+  String get telemetryDemoNoop =>
+      'Demo NoOp recorder — no network. Events listed below.';
+
+  @override
+  String get pushFcm => 'Push (FCM)';
+
+  @override
+  String get registeringToken => 'Registering device token…';
+
+  @override
+  String tokenError(String error) {
+    return 'Token error: $error';
+  }
+
+  @override
+  String get noTokenSignIn => 'No token (sign in required)';
+
+  @override
+  String demoTokenLine(String token) {
+    return 'Demo token: $token';
+  }
+
+  @override
+  String tokenLine(String token) {
+    return 'Token: $token';
+  }
+
+  @override
+  String get pushHelpFirebase =>
+      'Tap an inbox row to open the related DPR / issue / RFI. Functions send on DPR submit / issue & RFI assign & status.';
+
+  @override
+  String get pushHelpDemo =>
+      'Demo mode logs assign/status intents locally until FlutterFire is configured. Tap inbox rows to open linked screens.';
+
+  @override
+  String get noLinkedScreen => 'No linked screen for this alert';
+
+  @override
+  String get flushNow => 'Flush now';
+
+  @override
+  String flushedItems(int count) {
+    return 'Flushed $count item(s)';
+  }
+
+  @override
+  String get goOnline => 'Go online';
+
+  @override
+  String get goOffline => 'Go offline';
+
+  @override
+  String get cleanup => 'Cleanup';
+
+  @override
+  String cleanupRemovedLogs(int logs, String mediaNote, String freed) {
+    return 'Removed $logs log(s)$mediaNote (~$freed)';
+  }
+
+  @override
+  String cleanupMediaNote(int count) {
+    return ', reclaimed $count media path(s)';
+  }
+
+  @override
+  String get conflictPolicy => 'Conflict policy';
+
+  @override
+  String get syncLog => 'Sync log';
+
+  @override
+  String get noSyncEventsYet => 'No sync events yet.';
+
+  @override
+  String get syncFooterNote =>
+      'Periodic Workmanager flush (~15 min, network required) + connectivity_plus auto-flush when the device reconnects. Cleanup clears sync logs and uploaded local:// media stubs. Drift still deferred.';
+
+  @override
+  String get digestsTitle => 'Digests';
+
+  @override
+  String get digestsAndReminders => 'Digests & reminders';
+
+  @override
+  String get signInRequired => 'Sign in required';
+
+  @override
+  String get dailyDprNudge => 'Daily DPR nudge';
+
+  @override
+  String dailyDprNudgeSubtitle(int hour) {
+    return 'Local tray reminder around $hour:00 if today\'s DPR is not submitted. Cloud FCM cron still deferred.';
+  }
+
+  @override
+  String get reminderHour => 'Reminder hour';
+
+  @override
+  String get noDprNudgeNow => 'No DPR nudge right now.';
+
+  @override
+  String get openDpr => 'Open DPR';
+
+  @override
+  String get simulate5PmCheck => 'Simulate 5 PM check';
+
+  @override
+  String get noNudgeAlreadySubmitted =>
+      'No nudge (DPR already submitted or prefs off).';
+
+  @override
+  String get dprReminderTitle => 'DPR reminder';
+
+  @override
+  String get pmDigests => 'PM digests';
+
+  @override
+  String get pmDigestsSubtitle =>
+      'Aggregate open issues, RFIs, and DPR blockers for the active project.';
+
+  @override
+  String get pmDigest => 'PM digest';
+
+  @override
+  String get digestUnavailableRole => 'Digest unavailable for this role.';
+
+  @override
+  String get pmDigestsOff => 'PM digests are turned off.';
+
+  @override
+  String digestSummaryLine(int issues, int rfis, String dpr) {
+    return 'Open issues: $issues · Open RFIs: $rfis · Today DPR: $dpr';
+  }
+
+  @override
+  String get todayDprIncomplete => 'incomplete';
+
+  @override
+  String get todayDprOk => 'ok';
+
+  @override
+  String get queueIsClear => 'Queue is clear.';
+
+  @override
+  String get shareDigestPdf => 'Share digest PDF';
+
+  @override
+  String get shareAsText => 'Share as text';
+
+  @override
+  String get pmDigestsStaffOnly =>
+      'PM digests are available to project managers and admins.';
+
+  @override
+  String get unlockTitle => 'Unlock Field Evidence';
+
+  @override
+  String get unlockConfirm => 'Confirm it is you to continue.';
+
+  @override
+  String unlockWelcomeBack(String name, String hint) {
+    return 'Welcome back, $name. $hint';
+  }
+
+  @override
+  String get unlockHintNative => 'Use device biometrics or PIN.';
+
+  @override
+  String get unlockHintDemo =>
+      'Demo unlock (FakeBiometricService) until USE_NATIVE_SENSORS=true.';
+
+  @override
+  String get unlockAction => 'Unlock';
+
+  @override
+  String get unlockFailed => 'Unlock failed';
+
+  @override
+  String get unlockReason => 'Unlock Field Evidence';
 }
