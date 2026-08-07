@@ -289,10 +289,12 @@ class _QaTab extends ConsumerWidget {
                 shape: _tileShape(context),
                 title: Text(r.title),
                 subtitle: Text(
-                  '${r.items.length} checks · '
-                  '${r.hasFailures ? 'HAS FAILS' : 'PASS'}'
-                  '${r.items.any((i) => i.pendingPhotoUpload) ? ' · photo queued' : ''}'
-                  '${r.items.any((i) => i.photoRemoteUrl != null) ? ' · photo uploaded' : ''}',
+                  '${l10n.inspectionChecksCount(
+                    r.items.length,
+                    r.hasFailures ? l10n.hasFailsLabel : l10n.passLabel,
+                  )}'
+                  '${r.items.any((i) => i.pendingPhotoUpload) ? l10n.photoQueuedPart : ''}'
+                  '${r.items.any((i) => i.photoRemoteUrl != null) ? l10n.photoUploadedPart : ''}',
                 ),
               );
             },
@@ -404,9 +406,11 @@ class _LabourTab extends ConsumerWidget {
                 ),
                 title: Text('${r.trade} · ${r.headcount}'),
                 subtitle: Text(
-                  '${r.subcontractor} · geofence '
-                  '${r.geofenceOk ? 'OK' : 'MISS'}'
-                  '${r.hasPhoto ? ' · photo' : ''}',
+                  '${l10n.geofenceStatusLine(
+                    r.subcontractor,
+                    r.geofenceOk ? l10n.geofenceOk : l10n.geofenceMiss,
+                  )}'
+                  '${r.hasPhoto ? l10n.photoAttachedPart : ''}',
                 ),
               );
             },
@@ -523,14 +527,15 @@ class _LabourTab extends ConsumerWidget {
             photoByteSizeBytes: photoByteSizeBytes,
           );
       if (context.mounted) {
+        final l10n = AppLocalizations.of(context);
         final photoNote =
-            photoLocalPath != null ? ' + evidence photo' : '';
+            photoLocalPath != null ? l10n.plusEvidencePhoto : '';
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
               geofenceOk
-                  ? 'Muster logged (geofence OK)$photoNote'
-                  : 'Muster logged (geofence MISS)$photoNote',
+                  ? l10n.musterLoggedOk(photoNote)
+                  : l10n.musterLoggedMiss(photoNote),
             ),
           ),
         );
@@ -580,7 +585,7 @@ class _MaterialsTab extends ConsumerWidget {
                 subtitle: Text(
                   '${r.kind.name}'
                   '${r.activityRef == null ? '' : ' · ${r.activityRef}'}'
-                  '${r.hasPhoto ? (r.pendingPhotoUpload ? ' · photo queued' : ' · photo') : ''}',
+                  '${r.hasPhoto ? (r.pendingPhotoUpload ? l10n.photoQueuedPart : l10n.photoAttachedPart) : ''}',
                 ),
               );
             },
@@ -766,14 +771,15 @@ class _MaterialsTab extends ConsumerWidget {
             photoByteSizeBytes: photoByteSizeBytes,
           );
       if (context.mounted) {
+        final l10n = AppLocalizations.of(context);
         final photoNote =
-            photoLocalPath != null ? ' + evidence photo' : '';
+            photoLocalPath != null ? l10n.plusEvidencePhoto : '';
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
               kind == MaterialLogKind.inward
-                  ? 'Material inward logged$photoNote'
-                  : 'Material consumption logged$photoNote',
+                  ? l10n.materialInwardLogged(photoNote)
+                  : l10n.materialConsumptionLogged(photoNote),
             ),
           ),
         );

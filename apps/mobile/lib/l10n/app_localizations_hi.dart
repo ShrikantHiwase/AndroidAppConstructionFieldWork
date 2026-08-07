@@ -1175,4 +1175,106 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get addDemoVoiceNote => 'Demo voice note जोड़ो';
+
+  @override
+  String get disciplineFolderKind => 'Discipline';
+
+  @override
+  String get documentTypeFolderKind => 'Document type';
+
+  @override
+  String get onDevicePart => ' · device पर';
+
+  @override
+  String get cloudPart => ' · cloud';
+
+  @override
+  String pageOfTotal(int current, int total) {
+    return 'Page $current / $total';
+  }
+
+  @override
+  String get noPdfPreview => 'PDF preview उपलब्ध नहीं।';
+
+  @override
+  String get textPdfPreviewHint =>
+      'Text PDF preview — pdfrx के लिए seeded या on-device PDF खोलो।';
+
+  @override
+  String get noPreviewForFileType => 'इस file type के लिए preview उपलब्ध नहीं।';
+
+  @override
+  String get noneLabel => 'None';
+
+  @override
+  String photoEvidenceCount(int count) {
+    return '$count photo evidence';
+  }
+
+  @override
+  String gpsCoords(String lat, String lng, String labelPart) {
+    return 'GPS: $lat, $lng$labelPart';
+  }
+
+  @override
+  String get demoStubLabel => 'Demo stub';
+
+  @override
+  String get fileNoun => 'File';
+
+  @override
+  String pickedFileMeta(String kind, String bytes) {
+    return '$kind · $bytes';
+  }
+
+  @override
+  String inspectionChecksCount(int count, String status) {
+    return '$count checks · $status';
+  }
+
+  @override
+  String get hasFailsLabel => 'HAS FAILS';
+
+  @override
+  String get passLabel => 'PASS';
+
+  @override
+  String get photoQueuedPart => ' · photo queued';
+
+  @override
+  String get photoUploadedPart => ' · photo uploaded';
+
+  @override
+  String get photoAttachedPart => ' · photo';
+
+  @override
+  String geofenceStatusLine(String subcontractor, String status) {
+    return '$subcontractor · geofence $status';
+  }
+
+  @override
+  String get geofenceOk => 'OK';
+
+  @override
+  String get geofenceMiss => 'MISS';
+
+  @override
+  String musterLoggedOk(String photoNote) {
+    return 'Muster log हो गया (geofence OK)$photoNote';
+  }
+
+  @override
+  String musterLoggedMiss(String photoNote) {
+    return 'Muster log हो गया (geofence MISS)$photoNote';
+  }
+
+  @override
+  String materialInwardLogged(String photoNote) {
+    return 'Material inward log हो गया$photoNote';
+  }
+
+  @override
+  String materialConsumptionLogged(String photoNote) {
+    return 'Material consumption log हो गया$photoNote';
+  }
 }

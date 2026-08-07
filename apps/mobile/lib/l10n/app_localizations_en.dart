@@ -1178,4 +1178,106 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get addDemoVoiceNote => 'Add demo voice note';
+
+  @override
+  String get disciplineFolderKind => 'Discipline';
+
+  @override
+  String get documentTypeFolderKind => 'Document type';
+
+  @override
+  String get onDevicePart => ' · on device';
+
+  @override
+  String get cloudPart => ' · cloud';
+
+  @override
+  String pageOfTotal(int current, int total) {
+    return 'Page $current / $total';
+  }
+
+  @override
+  String get noPdfPreview => 'No PDF preview available.';
+
+  @override
+  String get textPdfPreviewHint =>
+      'Text PDF preview — open a seeded or on-device PDF for pdfrx.';
+
+  @override
+  String get noPreviewForFileType => 'No preview available for this file type.';
+
+  @override
+  String get noneLabel => 'None';
+
+  @override
+  String photoEvidenceCount(int count) {
+    return '$count photo evidence';
+  }
+
+  @override
+  String gpsCoords(String lat, String lng, String labelPart) {
+    return 'GPS: $lat, $lng$labelPart';
+  }
+
+  @override
+  String get demoStubLabel => 'Demo stub';
+
+  @override
+  String get fileNoun => 'File';
+
+  @override
+  String pickedFileMeta(String kind, String bytes) {
+    return '$kind · $bytes';
+  }
+
+  @override
+  String inspectionChecksCount(int count, String status) {
+    return '$count checks · $status';
+  }
+
+  @override
+  String get hasFailsLabel => 'HAS FAILS';
+
+  @override
+  String get passLabel => 'PASS';
+
+  @override
+  String get photoQueuedPart => ' · photo queued';
+
+  @override
+  String get photoUploadedPart => ' · photo uploaded';
+
+  @override
+  String get photoAttachedPart => ' · photo';
+
+  @override
+  String geofenceStatusLine(String subcontractor, String status) {
+    return '$subcontractor · geofence $status';
+  }
+
+  @override
+  String get geofenceOk => 'OK';
+
+  @override
+  String get geofenceMiss => 'MISS';
+
+  @override
+  String musterLoggedOk(String photoNote) {
+    return 'Muster logged (geofence OK)$photoNote';
+  }
+
+  @override
+  String musterLoggedMiss(String photoNote) {
+    return 'Muster logged (geofence MISS)$photoNote';
+  }
+
+  @override
+  String materialInwardLogged(String photoNote) {
+    return 'Material inward logged$photoNote';
+  }
+
+  @override
+  String materialConsumptionLogged(String photoNote) {
+    return 'Material consumption logged$photoNote';
+  }
 }

@@ -119,8 +119,8 @@ class _DocumentsBrowserPageState extends ConsumerState<DocumentsBrowserPage> {
                       title: Text(folder.name),
                       subtitle: Text(
                         folder.kind == FolderKind.discipline
-                            ? 'Discipline'
-                            : 'Document type',
+                            ? l10n.disciplineFolderKind
+                            : l10n.documentTypeFolderKind,
                       ),
                       trailing: const Icon(Icons.chevron_right),
                       onTap: () => _openFolder(folder),
@@ -142,8 +142,8 @@ class _DocumentsBrowserPageState extends ConsumerState<DocumentsBrowserPage> {
                         title: Text(doc.name),
                         subtitle: Text(
                           '${doc.kind.label}'
-                          '${doc.downloaded ? ' · on device' : ' · cloud'}'
-                          '${doc.synced ? '' : ' · pending sync'}',
+                          '${doc.downloaded ? l10n.onDevicePart : l10n.cloudPart}'
+                          '${doc.synced ? '' : l10n.pendingSyncPart}',
                         ),
                         onTap: () {
                           Navigator.of(context).push(

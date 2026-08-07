@@ -481,14 +481,16 @@ class DprDetailPage extends ConsumerWidget {
                 a.hasPhoto
                     ? (a.pendingPhotoUpload
                         ? l10n.evidencePhotoQueued
-                        : '${a.photoCount} photo evidence')
+                        : l10n.photoEvidenceCount(a.photoCount))
                     : l10n.noEvidencePhoto,
               ),
             ),
           ),
           const SizedBox(height: 8),
           Text(
-            'Blockers: ${current.blockers.isEmpty ? 'None' : current.blockers}',
+            l10n.blockersLine(
+              current.blockers.isEmpty ? l10n.noneLabel : current.blockers,
+            ),
           ),
           const SizedBox(height: 20),
           VoiceNotesSection(
