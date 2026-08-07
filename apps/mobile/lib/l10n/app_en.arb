@@ -438,5 +438,53 @@
   "noEvidencePhoto": "No evidence photo",
   "evidencePhotoQueued": "Evidence photo · queued upload",
   "evidencePhotoSynced": "Evidence photo · synced",
-  "evidencePhotoAttached": "Evidence photo attached"
+  "evidencePhotoAttached": "Evidence photo attached",
+  "tabSafety": "Safety",
+  "tabQaQc": "QA/QC",
+  "tabLabour": "Labour",
+  "tabMaterials": "Materials",
+  "logSafety": "Log safety",
+  "wirChecklist": "WIR checklist",
+  "muster": "Muster",
+  "grnUse": "GRN / use",
+  "noSafetyRecordsYet": "No safety records yet.",
+  "noInspectionsYet": "No inspections yet.",
+  "noLabourMusterYet": "No labour muster yet (supervisor-led).",
+  "noMaterialLogsYet": "No material logs yet.",
+  "safetyRecord": "Safety record",
+  "labourMuster": "Labour muster",
+  "materialLog": "Material log",
+  "kindLabel": "Kind",
+  "notesLabel": "Notes",
+  "cancel": "Cancel",
+  "save": "Save",
+  "photoRequiredObservation": "Photo evidence required for observations / incidents.",
+  "photoOptionalToolbox": "Photo optional for toolbox talks.",
+  "queuedLabel": "Queued",
+  "queuedWithSize": "Queued · ~{size}",
+  "@queuedWithSize": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "photoRequiredForFail": "Photo required for failed checklist items",
+  "inspectionSavedWithFailPhoto": "Inspection saved with fail photo{size}",
+  "@inspectionSavedWithFailPhoto": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "musterDialogHint": "Logs Civil · Shree Contractors · 18 with geofence check. Photo is optional.",
+  "logMuster": "Log muster",
+  "materialDialogHint": "GRN inward or consumption lite. Photo is optional.",
+  "inward": "Inward",
+  "useLabel": "Use",
+  "materialLabel": "Material",
+  "qtyLabel": "Qty",
+  "unitLabel": "Unit",
+  "activityRefOptional": "Activity ref (optional)"
 }

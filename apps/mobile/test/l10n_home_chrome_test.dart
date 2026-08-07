@@ -141,6 +141,29 @@ void main() {
     expect(find.text('Draft save करो'), findsOneWidget);
   });
 
+  testWidgets('Hinglish Site ops chrome', (tester) async {
+    SharedPreferences.setMockInitialValues({'app.locale_code': 'hi'});
+    final prefs = await SharedPreferences.getInstance();
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          sharedPreferencesProvider.overrideWithValue(prefs),
+        ],
+        child: const FieldApp(),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Sign in'));
+    await tester.pumpAndSettle();
+
+    await tester.ensureVisible(find.text('Site ops'));
+    await tester.tap(find.text('Site ops'));
+    await tester.pumpAndSettle();
+    expect(find.text('Safety log करो'), findsOneWidget);
+    expect(find.text('Safety'), findsWidgets);
+  });
+
   testWidgets('English locale keeps New Issue CTA', (tester) async {
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();
@@ -184,6 +207,8 @@ void main() {
     expect(hi.addGps, 'GPS जोड़ो');
     expect(hi.submitDpr, 'DPR submit करो');
     expect(hi.newRfi, 'नया RFI');
+    expect(hi.logSafety, 'Safety log करो');
+    expect(hi.save, 'Save करो');
     final en = lookupAppLocalizations(const Locale('en'));
     expect(en.newIssue, 'New Issue');
     expect(en.syncPendingCount(3), '3 sync');
@@ -191,5 +216,7 @@ void main() {
     expect(en.digestsAndReminders, 'Digests & reminders');
     expect(en.saveIssue, 'Save issue');
     expect(en.submitDpr, 'Submit DPR');
+    expect(en.logSafety, 'Log safety');
+    expect(en.siteOps, 'Site ops');
   });
 }

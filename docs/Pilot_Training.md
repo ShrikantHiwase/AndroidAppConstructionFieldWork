@@ -6,7 +6,7 @@ Short training for 1–2 live pilot sites. Demo logins work without Firebase; pr
 
 | Role | Daily job in the app |
 |------|----------------------|
-| **Site Engineer** | New Issue (photo + GPS), Today's DPR (~3 min), Pin on Drawing, Site ops as needed, Reminders |
+| **Site Engineer** | New Issue (photo + GPS), Today's DPR (~3 min), Pin on Drawing, Site ops / **Safety log करो** (Hinglish), Reminders |
 | **Project Manager** | Open queue (assign / status), DPRs, Digests (PM digest + copy), Weekly pack, Site ops |
 | **QA/QC** | Inspections (photo on fail), quality issues |
 | **Client** | Read-only **Weekly progress** (PDF/text share) + Issues + Documents |
