@@ -1131,4 +1131,48 @@ class AppLocalizationsHi extends AppLocalizations {
   String clipboardInviteHint(String email) {
     return 'Field Evidence invite\nEmail: $email\nPassword: demo1234';
   }
+
+  @override
+  String get noSession => 'Session नहीं है';
+
+  @override
+  String get voiceNotesTitle => 'Voice notes';
+
+  @override
+  String get voiceNotesHintNative =>
+      'Live mic capture; flush audio Storage पर और transcript Firestore पर sync करता है।';
+
+  @override
+  String get voiceNotesHintDemo =>
+      'Demo capture audio stub + transcript store करता है; flush Firestore/Storage पर sync करता है। Live mic: --dart-define=USE_NATIVE_SENSORS=true.';
+
+  @override
+  String get noVoiceNotesYet => 'अभी कोई voice note नहीं।';
+
+  @override
+  String get transcriptPendingPart => ' · transcript pending';
+
+  @override
+  String get audioReadyPart => ' · audio ready';
+
+  @override
+  String get recordingVoiceNoteTitle => 'Voice note record हो रहा है';
+
+  @override
+  String get recordingVoiceNoteBody => 'बोलो, फिर Stop दबाओ (max 60s).';
+
+  @override
+  String get stopAction => 'Stop';
+
+  @override
+  String get recordVoiceOffline => 'Voice record करो (offline)';
+
+  @override
+  String get addDemoVoiceOffline => 'Demo voice जोड़ो (offline)';
+
+  @override
+  String get recordVoiceNote => 'Voice note record करो';
+
+  @override
+  String get addDemoVoiceNote => 'Demo voice note जोड़ो';
 }

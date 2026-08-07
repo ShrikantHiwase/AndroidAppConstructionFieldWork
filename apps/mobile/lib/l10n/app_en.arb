@@ -686,5 +686,19 @@
         "type": "String"
       }
     }
-  }
+  },
+  "noSession": "No session",
+  "voiceNotesTitle": "Voice notes",
+  "voiceNotesHintNative": "Live mic capture; flush syncs audio to Storage and transcript to Firestore.",
+  "voiceNotesHintDemo": "Demo capture stores audio stub + transcript; flush syncs to Firestore/Storage. Enable live mic with --dart-define=USE_NATIVE_SENSORS=true.",
+  "noVoiceNotesYet": "No voice notes yet.",
+  "transcriptPendingPart": " · transcript pending",
+  "audioReadyPart": " · audio ready",
+  "recordingVoiceNoteTitle": "Recording voice note",
+  "recordingVoiceNoteBody": "Speak, then tap Stop (max 60s).",
+  "stopAction": "Stop",
+  "recordVoiceOffline": "Record voice (offline)",
+  "addDemoVoiceOffline": "Add demo voice (offline)",
+  "recordVoiceNote": "Record voice note",
+  "addDemoVoiceNote": "Add demo voice note"
 }

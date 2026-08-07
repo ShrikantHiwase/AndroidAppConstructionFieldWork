@@ -247,6 +247,54 @@ void main() {
     expect(find.text('Invite भेजो'), findsOneWidget);
   });
 
+  testWidgets('Hinglish Voice notes chrome from PM open queue', (tester) async {
+    SharedPreferences.setMockInitialValues({'app.locale_code': 'hi'});
+    final prefs = await SharedPreferences.getInstance();
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          sharedPreferencesProvider.overrideWithValue(prefs),
+        ],
+        child: const FieldApp(),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    // Seed an issue as engineer (demo has no local issue seed).
+    await tester.tap(find.text('Sign in'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('नया Issue'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextFormField).first, 'Voice chrome issue');
+    await tester.ensureVisible(find.text('Issue save करो'));
+    await tester.tap(find.text('Issue save करो'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byTooltip('Sign out'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.widgetWithText(ActionChip, 'pm'));
+    await tester.pump();
+    await tester.tap(find.text('Sign in'));
+    await tester.pumpAndSettle();
+
+    await tester.ensureVisible(find.text('Open queue'));
+    await tester.tap(find.text('Open queue'));
+    await tester.pumpAndSettle();
+    expect(find.text('Issues'), findsOneWidget);
+
+    await tester.tap(find.text('Voice chrome issue'));
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(
+      find.text('Demo voice note जोड़ो'),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.text('Voice notes'), findsOneWidget);
+    expect(find.text('Demo voice note जोड़ो'), findsOneWidget);
+  });
+
   testWidgets('English locale keeps New Issue CTA', (tester) async {
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();
@@ -299,6 +347,8 @@ void main() {
     expect(hi.shareWeeklyPdf, 'Weekly PDF share करो');
     expect(hi.sendInvite, 'Invite भेजो');
     expect(hi.createInvite, 'Invite बनाओ');
+    expect(hi.addDemoVoiceNote, 'Demo voice note जोड़ो');
+    expect(hi.noVoiceNotesYet, 'अभी कोई voice note नहीं।');
     final en = lookupAppLocalizations(const Locale('en'));
     expect(en.newIssue, 'New Issue');
     expect(en.syncPendingCount(3), '3 sync');
@@ -314,5 +364,7 @@ void main() {
     expect(en.inviteUsersTitle, 'Invite users');
     expect(en.sharePilotPdf, 'Share pilot PDF');
     expect(en.sendInvite, 'Send invite');
+    expect(en.addDemoVoiceNote, 'Add demo voice note');
+    expect(en.voiceNotesTitle, 'Voice notes');
   });
 }

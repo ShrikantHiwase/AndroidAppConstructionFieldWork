@@ -7,6 +7,7 @@ import '../../../core/device/device_providers.dart';
 import '../../../core/device/voice_audio_policy.dart';
 import '../../../core/device/voice_capture.dart';
 import '../../../core/providers/connectivity_provider.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../auth/domain/auth_models.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../domain/voice_note_models.dart';
@@ -27,6 +28,7 @@ class VoiceNotesSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final notesAsync = ref.watch(
       voiceNotesForParentProvider((type: parentType, id: parentId)),
     );
@@ -37,13 +39,10 @@ class VoiceNotesSection extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text('Voice notes', style: Theme.of(context).textTheme.titleMedium),
+        Text(l10n.voiceNotesTitle, style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 4),
         Text(
-          native
-              ? 'Live mic capture; flush syncs audio to Storage and transcript to Firestore.'
-              : 'Demo capture stores audio stub + transcript; flush syncs to Firestore/Storage. '
-                  'Enable live mic with --dart-define=USE_NATIVE_SENSORS=true.',
+          native ? l10n.voiceNotesHintNative : l10n.voiceNotesHintDemo,
           style: Theme.of(context).textTheme.bodySmall,
         ),
         const SizedBox(height: 8),
@@ -53,7 +52,7 @@ class VoiceNotesSection extends ConsumerWidget {
           data: (notes) {
             if (notes.isEmpty) {
               return Text(
-                'No voice notes yet.',
+                l10n.noVoiceNotesYet,
                 style: Theme.of(context).textTheme.bodyMedium,
               );
             }
@@ -70,9 +69,9 @@ class VoiceNotesSection extends ConsumerWidget {
                       title: Text(n.transcript),
                       subtitle: Text(
                         '${n.createdByName}'
-                        '${n.transcriptPending ? ' · transcript pending' : ''}'
-                        '${n.synced ? ' · synced' : ' · pending sync'}'
-                        '${n.remoteAudioUrl == null ? '' : ' · audio ready'}'
+                        '${n.transcriptPending ? l10n.transcriptPendingPart : ''}'
+                        '${n.synced ? l10n.syncedPart : l10n.pendingSyncPart}'
+                        '${n.remoteAudioUrl == null ? '' : l10n.audioReadyPart}'
                         '${n.audioByteSizeBytes == null ? '' : ' · ${VoiceAudioPolicy.formatBytes(n.audioByteSizeBytes!)}'}',
                       ),
                     ),
@@ -125,16 +124,17 @@ class _AddVoiceButton extends ConsumerWidget {
         context: context,
         barrierDismissible: false,
         builder: (ctx) {
+          final dialogL10n = AppLocalizations.of(ctx);
           return AlertDialog(
-            title: const Text('Recording voice note'),
-            content: const Text('Speak, then tap Stop (max 60s).'),
+            title: Text(dialogL10n.recordingVoiceNoteTitle),
+            content: Text(dialogL10n.recordingVoiceNoteBody),
             actions: [
               TextButton(
                 onPressed: () {
                   if (!stop.isCompleted) stop.complete();
                   Navigator.of(ctx).pop();
                 },
-                child: const Text('Stop'),
+                child: Text(dialogL10n.stopAction),
               ),
             ],
           );
@@ -147,6 +147,7 @@ class _AddVoiceButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final active = session;
     if (active == null || !canAddVoiceNotes(active.activeRole)) {
       return const SizedBox.shrink();
@@ -188,8 +189,8 @@ class _AddVoiceButton extends ConsumerWidget {
         icon: const Icon(Icons.mic_outlined),
         label: Text(
           offline
-              ? (native ? 'Record voice (offline)' : 'Add demo voice (offline)')
-              : (native ? 'Record voice note' : 'Add demo voice note'),
+              ? (native ? l10n.recordVoiceOffline : l10n.addDemoVoiceOffline)
+              : (native ? l10n.recordVoiceNote : l10n.addDemoVoiceNote),
         ),
       ),
     );
