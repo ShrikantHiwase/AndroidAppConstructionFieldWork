@@ -1277,4 +1277,59 @@ class AppLocalizationsHi extends AppLocalizations {
   String materialConsumptionLogged(String photoNote) {
     return 'Material consumption log हो गया$photoNote';
   }
+
+  @override
+  String get todaysDprIncomplete => 'आज का DPR अधूरा है';
+
+  @override
+  String get noDraftYet => 'अभी कोई draft नहीं';
+
+  @override
+  String get draftNotSubmitted => 'Draft submit नहीं हुआ';
+
+  @override
+  String issueStatusSubtitle(String status) {
+    return 'Issue · $status';
+  }
+
+  @override
+  String rfiStatusSubtitle(String status) {
+    return 'RFI · $status';
+  }
+
+  @override
+  String blockerTitle(String date) {
+    return 'Blocker · $date';
+  }
+
+  @override
+  String dprNudgeReminder(int hour) {
+    return 'Reminder: आज का DPR submit करो ($hour:00 के बाद nudge).';
+  }
+
+  @override
+  String pmDigestShareHeader(String projectName) {
+    return 'PM DIGEST — $projectName';
+  }
+
+  @override
+  String pmDigestGenerated(String iso) {
+    return 'Generated: $iso';
+  }
+
+  @override
+  String pmDigestOpenIssues(int count) {
+    return 'Open issues: $count';
+  }
+
+  @override
+  String pmDigestOpenRfis(int count) {
+    return 'Open RFIs: $count';
+  }
+
+  @override
+  String get pmDigestTodayMissing => 'Today DPR: missing / not submitted';
+
+  @override
+  String get pmDigestTodayOk => 'Today DPR: ok';
 }

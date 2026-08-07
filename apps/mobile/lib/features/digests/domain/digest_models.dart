@@ -1,4 +1,5 @@
 import '../../../core/constants/app_constants.dart';
+import '../../../l10n/app_localizations.dart';
 
 class DigestPrefs {
   const DigestPrefs({
@@ -77,14 +78,17 @@ class PmDigestSnapshot {
   final int openRfiCount;
   final bool missingTodayDpr;
 
-  String toShareText({required String projectName}) {
+  String toShareText({
+    required String projectName,
+    required AppLocalizations l10n,
+  }) {
     final buf = StringBuffer()
-      ..writeln('PM DIGEST — $projectName')
-      ..writeln('Generated: ${generatedAt.toIso8601String()}')
-      ..writeln('Open issues: $openIssueCount')
-      ..writeln('Open RFIs: $openRfiCount')
+      ..writeln(l10n.pmDigestShareHeader(projectName))
+      ..writeln(l10n.pmDigestGenerated(generatedAt.toIso8601String()))
+      ..writeln(l10n.pmDigestOpenIssues(openIssueCount))
+      ..writeln(l10n.pmDigestOpenRfis(openRfiCount))
       ..writeln(
-        missingTodayDpr ? 'Today DPR: missing / not submitted' : 'Today DPR: ok',
+        missingTodayDpr ? l10n.pmDigestTodayMissing : l10n.pmDigestTodayOk,
       )
       ..writeln('---');
     for (final item in items) {

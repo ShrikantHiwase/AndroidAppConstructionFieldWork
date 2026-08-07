@@ -2359,6 +2359,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Material consumption logged{photoNote}'**
   String materialConsumptionLogged(String photoNote);
+
+  /// No description provided for @todaysDprIncomplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s DPR incomplete'**
+  String get todaysDprIncomplete;
+
+  /// No description provided for @noDraftYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No draft yet'**
+  String get noDraftYet;
+
+  /// No description provided for @draftNotSubmitted.
+  ///
+  /// In en, this message translates to:
+  /// **'Draft not submitted'**
+  String get draftNotSubmitted;
+
+  /// No description provided for @issueStatusSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Issue · {status}'**
+  String issueStatusSubtitle(String status);
+
+  /// No description provided for @rfiStatusSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'RFI · {status}'**
+  String rfiStatusSubtitle(String status);
+
+  /// No description provided for @blockerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Blocker · {date}'**
+  String blockerTitle(String date);
+
+  /// No description provided for @dprNudgeReminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminder: submit today\'s DPR (nudge after {hour}:00).'**
+  String dprNudgeReminder(int hour);
+
+  /// No description provided for @pmDigestShareHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'PM DIGEST — {projectName}'**
+  String pmDigestShareHeader(String projectName);
+
+  /// No description provided for @pmDigestGenerated.
+  ///
+  /// In en, this message translates to:
+  /// **'Generated: {iso}'**
+  String pmDigestGenerated(String iso);
+
+  /// No description provided for @pmDigestOpenIssues.
+  ///
+  /// In en, this message translates to:
+  /// **'Open issues: {count}'**
+  String pmDigestOpenIssues(int count);
+
+  /// No description provided for @pmDigestOpenRfis.
+  ///
+  /// In en, this message translates to:
+  /// **'Open RFIs: {count}'**
+  String pmDigestOpenRfis(int count);
+
+  /// No description provided for @pmDigestTodayMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Today DPR: missing / not submitted'**
+  String get pmDigestTodayMissing;
+
+  /// No description provided for @pmDigestTodayOk.
+  ///
+  /// In en, this message translates to:
+  /// **'Today DPR: ok'**
+  String get pmDigestTodayOk;
 }
 
 class _AppLocalizationsDelegate

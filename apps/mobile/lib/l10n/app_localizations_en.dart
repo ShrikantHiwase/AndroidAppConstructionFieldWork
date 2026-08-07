@@ -1280,4 +1280,59 @@ class AppLocalizationsEn extends AppLocalizations {
   String materialConsumptionLogged(String photoNote) {
     return 'Material consumption logged$photoNote';
   }
+
+  @override
+  String get todaysDprIncomplete => 'Today\'s DPR incomplete';
+
+  @override
+  String get noDraftYet => 'No draft yet';
+
+  @override
+  String get draftNotSubmitted => 'Draft not submitted';
+
+  @override
+  String issueStatusSubtitle(String status) {
+    return 'Issue · $status';
+  }
+
+  @override
+  String rfiStatusSubtitle(String status) {
+    return 'RFI · $status';
+  }
+
+  @override
+  String blockerTitle(String date) {
+    return 'Blocker · $date';
+  }
+
+  @override
+  String dprNudgeReminder(int hour) {
+    return 'Reminder: submit today\'s DPR (nudge after $hour:00).';
+  }
+
+  @override
+  String pmDigestShareHeader(String projectName) {
+    return 'PM DIGEST — $projectName';
+  }
+
+  @override
+  String pmDigestGenerated(String iso) {
+    return 'Generated: $iso';
+  }
+
+  @override
+  String pmDigestOpenIssues(int count) {
+    return 'Open issues: $count';
+  }
+
+  @override
+  String pmDigestOpenRfis(int count) {
+    return 'Open RFIs: $count';
+  }
+
+  @override
+  String get pmDigestTodayMissing => 'Today DPR: missing / not submitted';
+
+  @override
+  String get pmDigestTodayOk => 'Today DPR: ok';
 }
