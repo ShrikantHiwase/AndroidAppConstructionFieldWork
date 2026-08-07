@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Seeds Auth + Firestore with the RAYNS demo org/users.
+ * Seeds Auth + Firestore with the RAYNS demo org/users and field sample data.
  *
  * Emulators (default):
  *   FIRESTORE_EMULATOR_HOST=127.0.0.1:8080 \
@@ -14,12 +14,20 @@
  * (reuses firebase-admin from functions/)
  */
 const path = require("path");
-const fs = require("fs");
+const {
+  loadSeed,
+  validateSeed,
+  buildFieldDocuments,
+} = require("./seed_lib");
 
-const seedPath = path.join(__dirname, "demo_seed.json");
-const seed = JSON.parse(fs.readFileSync(seedPath, "utf8"));
+const seed = loadSeed();
+const validationErrors = validateSeed(seed);
+if (validationErrors.length) {
+  console.error("Seed validation failed:");
+  for (const err of validationErrors) console.error(`  - ${err}`);
+  process.exit(1);
+}
 
-// Prefer local functions node_modules for firebase-admin.
 const adminPath = path.join(__dirname, "../functions/node_modules/firebase-admin");
 let admin;
 try {
@@ -78,8 +86,16 @@ async function main() {
     console.log(`project ${projectId}`);
   }
 
+  /** @type {Record<string, {uid: string, displayName: string, email: string}>} */
+  const usersByEmail = {};
+
   for (const user of seed.authUsers) {
     const uid = await upsertUser(user);
+    usersByEmail[user.email] = {
+      uid,
+      displayName: user.displayName,
+      email: user.email,
+    };
     console.log(`auth ${user.email} → ${uid}`);
     for (const projectId of user.projectIds) {
       const project = seed.projects[projectId];
@@ -103,13 +119,23 @@ async function main() {
     }
   }
 
-  console.log("Seed complete.");
+  const fieldDocs = buildFieldDocuments(seed, usersByEmail);
+  for (const doc of fieldDocs) {
+    await db.collection(doc.collection).doc(doc.id).set(doc.data, { merge: true });
+    console.log(`${doc.collection}/${doc.id}`);
+  }
+
+  console.log(`Seed complete (${fieldDocs.length} field docs).`);
   console.log(
     "App: flutterfire configure → set FirebaseOptionsGate.isConfigured=true → sign in with demo emails / demo1234"
   );
 }
 
-main().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+if (require.main === module) {
+  main().catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });
+}
+
+module.exports = { main };

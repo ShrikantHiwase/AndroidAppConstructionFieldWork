@@ -8,8 +8,8 @@ Backend for Auth, Firestore, Storage, Functions, and FCM.
 2. Link this folder: `firebase use --add`
 3. Configure the Flutter app: see [docs/Firebase_Setup.md](../docs/Firebase_Setup.md)
 4. Go-live order: [docs/Go_Live_Checklist.md](../docs/Go_Live_Checklist.md)
-5. Emulators: `firebase emulators:start`
-6. Seed demo users: `./seed/run_seed_emulators.sh` (with emulators running)
+6. Seed demo users + field samples: `./seed/run_seed_emulators.sh` (with emulators running)
+7. Seed shape tests: `cd functions && npm test` (includes `../seed/seed_demo.test.js`)
 
 Rules are deny-by-default with membership helpers. Expand with emulator tests
 before production traffic.
@@ -23,5 +23,8 @@ firestore.indexes.json
 storage.rules
 functions/          # health, inviteMember, onDprWrite, onIssueWrite, onRfiWrite,
                     # dailyDprNudge (+ fcm.js, dpr_nudge.js)
-seed/               # demo_seed.json + seed_demo.js
+seed/               # demo_seed.json + seed_lib.js + seed_demo.js (+ Node tests)
 ```
+
+Seed covers Auth/memberships plus sample field collections so emulator pull-sync
+is not empty after FlutterFire.

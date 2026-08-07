@@ -7,7 +7,7 @@
   "main": "index.js",
   "private": true,
   "scripts": {
-    "test": "node --test fcm.test.js dpr_nudge.test.js"
+    "test": "node --test fcm.test.js dpr_nudge.test.js ../seed/seed_demo.test.js"
   },
   "dependencies": {
     "firebase-admin": "^13.4.0",

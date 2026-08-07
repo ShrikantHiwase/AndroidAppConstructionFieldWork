@@ -63,7 +63,16 @@ cd firebase/functions && npm install
 cd .. && node seed/seed_demo.js
 ```
 
-Seed writes `organizations`, `projects`, Auth users, and `memberships/{uid}_{projectId}`.
+Seed writes `organizations`, `projects`, Auth users, `memberships/{uid}_{projectId}`,
+and sample field docs for pull-sync demos: `issues`, `rfis`, `comments`, `dprs`,
+`folders`, `documents` (incl. **GA Plan Level 02.pdf** metadata), `drawing_pins`,
+`safety_records`, `inspections`, `attendance_logs`, `material_logs`, `voice_notes`.
+
+Validate locally (no emulators):
+
+```bash
+cd firebase/functions && npm test
+```
 
 `role` values: `site_engineer`, `project_manager`, `qa_qc`, `client`, `admin`.
 

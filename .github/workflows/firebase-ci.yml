@@ -1,0 +1,27 @@
+name: Firebase CI
+
+on:
+  push:
+    paths:
+      - "firebase/**"
+      - ".github/workflows/firebase-ci.yml"
+  pull_request:
+    paths:
+      - "firebase/**"
+      - ".github/workflows/firebase-ci.yml"
+
+jobs:
+  functions-seed-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: firebase/functions
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: firebase/functions/package-lock.json
+      - run: npm ci
+      - run: npm test
