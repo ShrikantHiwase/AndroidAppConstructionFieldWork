@@ -2113,6 +2113,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Field Evidence invite\nEmail: {email}\nPassword: demo1234'**
   String clipboardInviteHint(String email);
+
+  /// No description provided for @noSession.
+  ///
+  /// In en, this message translates to:
+  /// **'No session'**
+  String get noSession;
+
+  /// No description provided for @voiceNotesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice notes'**
+  String get voiceNotesTitle;
+
+  /// No description provided for @voiceNotesHintNative.
+  ///
+  /// In en, this message translates to:
+  /// **'Live mic capture; flush syncs audio to Storage and transcript to Firestore.'**
+  String get voiceNotesHintNative;
+
+  /// No description provided for @voiceNotesHintDemo.
+  ///
+  /// In en, this message translates to:
+  /// **'Demo capture stores audio stub + transcript; flush syncs to Firestore/Storage. Enable live mic with --dart-define=USE_NATIVE_SENSORS=true.'**
+  String get voiceNotesHintDemo;
+
+  /// No description provided for @noVoiceNotesYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No voice notes yet.'**
+  String get noVoiceNotesYet;
+
+  /// No description provided for @transcriptPendingPart.
+  ///
+  /// In en, this message translates to:
+  /// **' · transcript pending'**
+  String get transcriptPendingPart;
+
+  /// No description provided for @audioReadyPart.
+  ///
+  /// In en, this message translates to:
+  /// **' · audio ready'**
+  String get audioReadyPart;
+
+  /// No description provided for @recordingVoiceNoteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recording voice note'**
+  String get recordingVoiceNoteTitle;
+
+  /// No description provided for @recordingVoiceNoteBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Speak, then tap Stop (max 60s).'**
+  String get recordingVoiceNoteBody;
+
+  /// No description provided for @stopAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop'**
+  String get stopAction;
+
+  /// No description provided for @recordVoiceOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Record voice (offline)'**
+  String get recordVoiceOffline;
+
+  /// No description provided for @addDemoVoiceOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Add demo voice (offline)'**
+  String get addDemoVoiceOffline;
+
+  /// No description provided for @recordVoiceNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Record voice note'**
+  String get recordVoiceNote;
+
+  /// No description provided for @addDemoVoiceNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Add demo voice note'**
+  String get addDemoVoiceNote;
 }
 
 class _AppLocalizationsDelegate

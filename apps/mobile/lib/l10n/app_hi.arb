@@ -334,5 +334,19 @@
   "inviteCreatedFirebase": "{email} के लिए invite बन गया। Temp password: demo1234",
   "inviteCreatedDemo": "{email} के लिए invite बन गया। Password: demo1234",
   "inviteListSubtitle": "{role} · {status} · {count} project(s)",
-  "clipboardInviteHint": "Field Evidence invite\nEmail: {email}\nPassword: demo1234"
+  "clipboardInviteHint": "Field Evidence invite\nEmail: {email}\nPassword: demo1234",
+  "noSession": "Session नहीं है",
+  "voiceNotesTitle": "Voice notes",
+  "voiceNotesHintNative": "Live mic capture; flush audio Storage पर और transcript Firestore पर sync करता है।",
+  "voiceNotesHintDemo": "Demo capture audio stub + transcript store करता है; flush Firestore/Storage पर sync करता है। Live mic: --dart-define=USE_NATIVE_SENSORS=true.",
+  "noVoiceNotesYet": "अभी कोई voice note नहीं।",
+  "transcriptPendingPart": " · transcript pending",
+  "audioReadyPart": " · audio ready",
+  "recordingVoiceNoteTitle": "Voice note record हो रहा है",
+  "recordingVoiceNoteBody": "बोलो, फिर Stop दबाओ (max 60s).",
+  "stopAction": "Stop",
+  "recordVoiceOffline": "Voice record करो (offline)",
+  "addDemoVoiceOffline": "Demo voice जोड़ो (offline)",
+  "recordVoiceNote": "Voice note record करो",
+  "addDemoVoiceNote": "Demo voice note जोड़ो"
 }

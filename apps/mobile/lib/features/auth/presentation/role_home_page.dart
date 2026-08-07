@@ -47,7 +47,8 @@ class _RoleHomePageState extends ConsumerState<RoleHomePage> {
     // Align telemetry user id with the signed-in session.
     ref.watch(telemetryBootstrapProvider);
     if (session == null) {
-      return const Scaffold(body: Center(child: Text('No session')));
+      final l10n = AppLocalizations.of(context);
+      return Scaffold(body: Center(child: Text(l10n.noSession)));
     }
 
     final l10n = AppLocalizations.of(context);
