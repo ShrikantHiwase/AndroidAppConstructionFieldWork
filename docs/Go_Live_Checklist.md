@@ -55,6 +55,7 @@ cd .. && node seed/seed_demo.js
 ```
 
 - [ ] Demo emails sign in (`demo1234`) with memberships for Pune / Mumbai projects
+- [ ] After seed, Firestore has sample issues / DPR / GA Plan folder docs on **Pune Tower A** (pull-sync UAT)
 
 ## 5. Device build
 

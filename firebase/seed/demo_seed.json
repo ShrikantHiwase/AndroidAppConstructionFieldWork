@@ -57,5 +57,326 @@
       "role": "admin",
       "projectIds": ["proj_pune_tower", "proj_mumbai_metro"]
     }
-  ]
+  ],
+  "issues": {
+    "issue_seed_rebar": {
+      "orgId": "org_demo",
+      "projectId": "proj_pune_tower",
+      "title": "Rebar spacing off grid — Level 02",
+      "description": "North grid B2 spacing looks wide vs GA Plan. Photo + GPS on site.",
+      "status": "open",
+      "createdByEmail": "engineer@demo.rayns",
+      "assigneeEmail": "pm@demo.rayns",
+      "createdAt": "2026-08-01T04:30:00.000Z",
+      "updatedAt": "2026-08-01T05:00:00.000Z",
+      "location": {
+        "latitude": 18.5912,
+        "longitude": 73.7389,
+        "accuracyMeters": 8,
+        "label": "Hinjewadi Phase 1"
+      },
+      "attachments": [],
+      "statusHistory": [
+        {
+          "from": "open",
+          "to": "open",
+          "changedBy": "seed",
+          "changedAt": "2026-08-01T04:30:00.000Z"
+        }
+      ],
+      "synced": true
+    },
+    "issue_seed_leak": {
+      "orgId": "org_demo",
+      "projectId": "proj_pune_tower",
+      "title": "Water seepage — basement wall",
+      "description": "Damp patch near expansion joint. QA to inspect.",
+      "status": "in_progress",
+      "createdByEmail": "engineer@demo.rayns",
+      "assigneeEmail": "qa@demo.rayns",
+      "createdAt": "2026-07-28T09:00:00.000Z",
+      "updatedAt": "2026-07-29T11:15:00.000Z",
+      "attachments": [],
+      "statusHistory": [
+        {
+          "from": "open",
+          "to": "open",
+          "changedBy": "seed",
+          "changedAt": "2026-07-28T09:00:00.000Z"
+        },
+        {
+          "from": "open",
+          "to": "in_progress",
+          "changedBy": "seed",
+          "changedAt": "2026-07-29T11:15:00.000Z"
+        }
+      ],
+      "synced": true
+    },
+    "issue_seed_mumbai_access": {
+      "orgId": "org_demo",
+      "projectId": "proj_mumbai_metro",
+      "title": "Yard gate access badge delay",
+      "description": "Night shift waiting on visitor badges at BKC yard.",
+      "status": "open",
+      "createdByEmail": "engineer@demo.rayns",
+      "createdAt": "2026-08-02T02:00:00.000Z",
+      "updatedAt": "2026-08-02T02:00:00.000Z",
+      "attachments": [],
+      "statusHistory": [],
+      "synced": true
+    }
+  },
+  "rfis": {
+    "rfi_seed_beam": {
+      "orgId": "org_demo",
+      "projectId": "proj_pune_tower",
+      "subject": "Beam B2 depth clash with duct",
+      "question": "Confirm Rev B beam depth vs MEP duct routing on Level 02.",
+      "status": "open",
+      "createdByEmail": "engineer@demo.rayns",
+      "assigneeEmail": "pm@demo.rayns",
+      "createdAt": "2026-08-01T06:00:00.000Z",
+      "updatedAt": "2026-08-01T06:00:00.000Z",
+      "synced": true
+    }
+  },
+  "comments": {
+    "comment_seed_rebar_1": {
+      "orgId": "org_demo",
+      "projectId": "proj_pune_tower",
+      "parentType": "issue",
+      "parentId": "issue_seed_rebar",
+      "body": "PM reviewed — assign bar benders tomorrow AM.",
+      "authorEmail": "pm@demo.rayns",
+      "createdAt": "2026-08-01T05:10:00.000Z",
+      "synced": true
+    }
+  },
+  "dprs": {
+    "dpr_seed_pune_0801": {
+      "orgId": "org_demo",
+      "projectId": "proj_pune_tower",
+      "reportDate": "2026-08-01T00:00:00.000Z",
+      "weather": "Clear, 32°C",
+      "manpowerSummary": "42 on site (bar + shuttering)",
+      "activities": [
+        {
+          "id": "act_seed_1",
+          "description": "Level 02 slab shuttering",
+          "location": "Grid A-C",
+          "photoCount": 0,
+          "hasPhoto": false
+        }
+      ],
+      "blockers": "Waiting on beam depth RFI answer",
+      "createdByEmail": "engineer@demo.rayns",
+      "createdAt": "2026-08-01T11:30:00.000Z",
+      "updatedAt": "2026-08-01T11:45:00.000Z",
+      "submitted": true,
+      "synced": true
+    }
+  },
+  "folders": {
+    "folder_seed_structural": {
+      "orgId": "org_demo",
+      "projectId": "proj_pune_tower",
+      "name": "Structural",
+      "kind": "discipline",
+      "parentId": null,
+      "synced": true
+    },
+    "folder_seed_mep": {
+      "orgId": "org_demo",
+      "projectId": "proj_pune_tower",
+      "name": "MEP",
+      "kind": "discipline",
+      "parentId": null,
+      "synced": true
+    },
+    "folder_seed_drawings": {
+      "orgId": "org_demo",
+      "projectId": "proj_pune_tower",
+      "name": "Drawings",
+      "kind": "documentType",
+      "parentId": "folder_seed_structural",
+      "synced": true
+    },
+    "folder_seed_specs": {
+      "orgId": "org_demo",
+      "projectId": "proj_pune_tower",
+      "name": "Specifications",
+      "kind": "documentType",
+      "parentId": "folder_seed_structural",
+      "synced": true
+    },
+    "folder_seed_schedules": {
+      "orgId": "org_demo",
+      "projectId": "proj_pune_tower",
+      "name": "Schedules",
+      "kind": "documentType",
+      "parentId": "folder_seed_mep",
+      "synced": true
+    }
+  },
+  "documents": {
+    "doc_seed_ga_plan": {
+      "orgId": "org_demo",
+      "projectId": "proj_pune_tower",
+      "folderId": "folder_seed_drawings",
+      "name": "GA Plan Level 02.pdf",
+      "contentType": "application/pdf",
+      "kind": "pdf",
+      "createdByEmail": "admin@demo.rayns",
+      "createdAt": "2026-07-20T08:00:00.000Z",
+      "updatedAt": "2026-07-20T08:00:00.000Z",
+      "sizeBytes": 5150,
+      "downloaded": false,
+      "synced": true,
+      "pdfPages": [
+        "GA PLAN — LEVEL 02 (seed metadata; open asset in demo or Storage URL when uploaded)",
+        "SECTION A-A — Beam B2: 300x600",
+        "REVISION LOG — Rev A IFC / Rev B beam depth"
+      ],
+      "remoteUrl": "demo://seed/ga-plan-level-02.pdf",
+      "pendingUpload": false
+    },
+    "doc_seed_mix_notes": {
+      "orgId": "org_demo",
+      "projectId": "proj_pune_tower",
+      "folderId": "folder_seed_specs",
+      "name": "Concrete mix notes.txt",
+      "contentType": "text/plain",
+      "kind": "txt",
+      "createdByEmail": "admin@demo.rayns",
+      "createdAt": "2026-07-20T08:05:00.000Z",
+      "updatedAt": "2026-07-20T08:05:00.000Z",
+      "sizeBytes": 120,
+      "downloaded": false,
+      "synced": true,
+      "textContent": "CONCRETE MIX NOTES\n\nM30 for columns.\nM25 for slabs.\nCure 7 days minimum.\nPhoto evidence required on pour day.",
+      "remoteUrl": "demo://seed/concrete-mix-notes.txt",
+      "pendingUpload": false
+    },
+    "doc_seed_cable_csv": {
+      "orgId": "org_demo",
+      "projectId": "proj_pune_tower",
+      "folderId": "folder_seed_schedules",
+      "name": "Cable tray schedule.csv",
+      "contentType": "text/csv",
+      "kind": "csv",
+      "createdByEmail": "admin@demo.rayns",
+      "createdAt": "2026-07-20T08:10:00.000Z",
+      "updatedAt": "2026-07-20T08:10:00.000Z",
+      "sizeBytes": 80,
+      "downloaded": false,
+      "synced": true,
+      "textContent": "tag,level,size_mm,length_m\nCT-01,L2,300,42\nCT-02,L2,450,18\nCT-03,L3,300,25\n",
+      "remoteUrl": "demo://seed/cable-tray-schedule.csv",
+      "pendingUpload": false
+    }
+  },
+  "drawing_pins": {
+    "pin_seed_rebar": {
+      "orgId": "org_demo",
+      "projectId": "proj_pune_tower",
+      "drawingId": "drawing_proj_pune_tower_ga02",
+      "page": 1,
+      "x": 0.42,
+      "y": 0.58,
+      "issueId": "issue_seed_rebar",
+      "issueTitle": "Rebar spacing off grid — Level 02",
+      "createdByEmail": "engineer@demo.rayns",
+      "createdAt": "2026-08-01T04:45:00.000Z",
+      "note": "Pin near grid B2",
+      "hasPhoto": false,
+      "synced": true
+    }
+  },
+  "safety_records": {
+    "safety_seed_observation": {
+      "orgId": "org_demo",
+      "projectId": "proj_pune_tower",
+      "kind": "observation",
+      "title": "Missing edge protection — Level 02 slab edge",
+      "notes": "Temp rails incomplete on north edge.",
+      "createdByEmail": "engineer@demo.rayns",
+      "createdAt": "2026-08-01T07:00:00.000Z",
+      "photoRequired": true,
+      "hasPhoto": false,
+      "synced": true
+    }
+  },
+  "inspections": {
+    "insp_seed_slab": {
+      "orgId": "org_demo",
+      "projectId": "proj_pune_tower",
+      "title": "Level 02 slab pre-pour",
+      "items": [
+        {
+          "id": "insp_item_1",
+          "label": "Rebar cover OK",
+          "result": "pass",
+          "photoOnFail": true,
+          "hasPhoto": false
+        },
+        {
+          "id": "insp_item_2",
+          "label": "Formwork alignment",
+          "result": "fail",
+          "photoOnFail": true,
+          "hasPhoto": false
+        }
+      ],
+      "createdByEmail": "qa@demo.rayns",
+      "createdAt": "2026-08-01T08:00:00.000Z",
+      "synced": true
+    }
+  },
+  "attendance_logs": {
+    "muster_seed_bar": {
+      "orgId": "org_demo",
+      "projectId": "proj_pune_tower",
+      "musterDate": "2026-08-01T00:00:00.000Z",
+      "trade": "Bar bending",
+      "subcontractor": "Patil Steel Works",
+      "headcount": 14,
+      "createdByEmail": "engineer@demo.rayns",
+      "createdAt": "2026-08-01T03:30:00.000Z",
+      "geofenceOk": true,
+      "photoOptional": true,
+      "hasPhoto": false,
+      "synced": true
+    }
+  },
+  "material_logs": {
+    "mat_seed_cement": {
+      "orgId": "org_demo",
+      "projectId": "proj_pune_tower",
+      "kind": "inward",
+      "material": "OPC 53",
+      "quantity": 200,
+      "unit": "bags",
+      "createdByEmail": "engineer@demo.rayns",
+      "createdAt": "2026-08-01T04:00:00.000Z",
+      "activityRef": "Level 02 pour staging",
+      "photoOptional": true,
+      "hasPhoto": false,
+      "synced": true
+    }
+  },
+  "voice_notes": {
+    "voice_seed_dpr": {
+      "orgId": "org_demo",
+      "projectId": "proj_pune_tower",
+      "parentType": "dpr",
+      "parentId": "dpr_seed_pune_0801",
+      "transcript": "Slab shuttering 80 percent. Need beam depth answer before pour.",
+      "createdByEmail": "engineer@demo.rayns",
+      "createdAt": "2026-08-01T11:40:00.000Z",
+      "remoteAudioUrl": "demo://seed/voice-dpr-0801.m4a",
+      "transcriptPending": false,
+      "synced": true
+    }
+  }
 }
