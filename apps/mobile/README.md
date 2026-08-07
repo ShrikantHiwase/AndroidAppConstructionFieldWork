@@ -10,7 +10,7 @@ lib/
   core/                theme, constants, shared widgets
   features/            auth, projects, issues, rfis, documents, dpr, sync, admin
   sync/outbox/         offline outbox contracts
-  l10n/                ARB (en + Hinglish hi) — home + Sync + Digests + Issues/RFI/DPR + Site ops + Documents/pins chrome
+  l10n/                ARB (en + Hinglish hi) — home + Sync + Digests + Issues/RFI/DPR + Site ops + Documents/pins + Pilot/Weekly/Admin invites chrome
 ```
 
 ## Commands

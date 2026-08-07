@@ -333,7 +333,8 @@ docs/                 # plans and training
 48. ~~Hinglish ARB Issues + RFI + DPR~~ — Issues list/create/detail, RFIs, Daily Progress / Today's DPR chrome via ARB.
 49. ~~Hinglish ARB Site ops~~ — Site ops hub tabs / FABs / dialog chrome via ARB.
 50. ~~Hinglish ARB Documents + Drawing pins~~ — Documents browser/upload/viewer + Drawings / pin chrome via ARB.
-51. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift remains a follow-up.
+51. ~~Hinglish ARB Pilot + Weekly + Admin invites~~ — Pilot hub / Weekly progress / Admin invites chrome via ARB.
+52. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift remains a follow-up.
 7. ~~Pilot / UAT pack~~ — training guide, UAT checklist, hypercare metrics docs + in-app Pilot hub (checklist + live snapshot). Live-site execution and store tracks still need your Firebase project / devices.
 8. ~~Admin invites~~ — in-app create invite + demo accept via FakeAuth (scoped memberships); Cloud Functions email later.
 9. ~~Device sensors~~ — `geolocator` / `image_picker` / `local_auth` / `record` / `file_picker` with Fake defaults; enable native via `--dart-define=USE_NATIVE_SENSORS=true`. See `docs/Device_Sensors.md`.
@@ -378,6 +379,7 @@ docs/                 # plans and training
 48. ~~Hinglish ARB Issues + RFI + DPR~~ — Issues list/create/detail, RFIs, Daily Progress / Today's DPR chrome via ARB.
 49. ~~Hinglish ARB Site ops~~ — Site ops hub tabs / FABs / dialog chrome via ARB.
 50. ~~Hinglish ARB Documents + Drawing pins~~ — Documents browser/upload/viewer + Drawings / pin chrome via ARB.
-51. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift remains a follow-up.
+51. ~~Hinglish ARB Pilot + Weekly + Admin invites~~ — Pilot hub / Weekly progress / Admin invites chrome via ARB.
+52. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift remains a follow-up.
 
 No native-only Android path; iOS ships from the same Flutter codebase. Enterprise BIM/Forge remains a WebView module after MVP.
