@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/notifications/notification_providers.dart';
 import '../../../core/providers/connectivity_provider.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../auth/domain/auth_models.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../../voice_notes/domain/voice_note_models.dart';
@@ -56,6 +57,7 @@ class _IssueDetailPageState extends ConsumerState<IssueDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final issues = ref.watch(issuesProvider).valueOrNull ?? const <Issue>[];
     final issue = _find(issues);
     final session = ref.watch(authSessionProvider);
@@ -65,8 +67,8 @@ class _IssueDetailPageState extends ConsumerState<IssueDetailPage> {
 
     if (issue == null || session == null) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Issue')),
-        body: const Center(child: Text('Issue not found')),
+        appBar: AppBar(title: Text(l10n.issueNoun)),
+        body: Center(child: Text(l10n.issueNotFound)),
       );
     }
 
@@ -81,12 +83,18 @@ class _IssueDetailPageState extends ConsumerState<IssueDetailPage> {
         children: [
           Text(issue.status.label, style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 8),
-          Text(issue.description.isEmpty ? 'No description' : issue.description),
+          Text(
+            issue.description.isEmpty ? l10n.noDescription : issue.description,
+          ),
           const SizedBox(height: 8),
           Text(
-            'By ${issue.createdByName}'
-            '${issue.assigneeName == null ? '' : ' · Assigned to ${issue.assigneeName}'}'
-            '${issue.synced ? ' · synced' : ' · pending sync'}',
+            l10n.byAuthorLine(
+              issue.createdByName,
+              issue.assigneeName == null
+                  ? ''
+                  : l10n.assignedToPart(issue.assigneeName!),
+              issue.synced ? l10n.syncedPart : l10n.pendingSyncPart,
+            ),
             style: Theme.of(context).textTheme.bodySmall,
           ),
           if (issue.location != null) ...[
@@ -106,12 +114,12 @@ class _IssueDetailPageState extends ConsumerState<IssueDetailPage> {
                 title: Text(a.fileName),
                 subtitle: Text(
                   a.pendingUpload
-                      ? 'Queued for upload'
+                      ? l10n.queuedForUpload
                       : (a.remoteUrl == null
-                          ? 'On device'
+                          ? l10n.onDeviceStatus
                           : (a.remoteUrl!.startsWith('demo://')
-                              ? 'Synced (demo)'
-                              : 'Uploaded')),
+                              ? l10n.syncedDemoStatus
+                              : l10n.uploadedStatus)),
                 ),
               ),
             ),
@@ -124,7 +132,7 @@ class _IssueDetailPageState extends ConsumerState<IssueDetailPage> {
           ),
           if (canStatus && issue.status.nextStatuses.isNotEmpty) ...[
             const SizedBox(height: 16),
-            Text('Status', style: Theme.of(context).textTheme.titleMedium),
+            Text(l10n.statusSection, style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 8),
             Wrap(
               spacing: 8,
@@ -204,12 +212,12 @@ class _IssueDetailPageState extends ConsumerState<IssueDetailPage> {
                         if (mounted) setState(() => _busy = false);
                       }
                     },
-              child: const Text('Assign to Asha Patil'),
+              child: Text(l10n.assignToAsha),
             ),
           ],
           if (issue.statusHistory.isNotEmpty) ...[
             const SizedBox(height: 16),
-            Text('Status history', style: Theme.of(context).textTheme.titleMedium),
+            Text(l10n.statusHistory, style: Theme.of(context).textTheme.titleMedium),
             ...issue.statusHistory.map(
               (h) => ListTile(
                 contentPadding: EdgeInsets.zero,
@@ -220,14 +228,14 @@ class _IssueDetailPageState extends ConsumerState<IssueDetailPage> {
             ),
           ],
           const SizedBox(height: 16),
-          Text('Comments', style: Theme.of(context).textTheme.titleMedium),
+          Text(l10n.comments, style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 8),
           commentsAsync.when(
             loading: () => const LinearProgressIndicator(),
             error: (e, _) => Text('$e'),
             data: (comments) {
               if (comments.isEmpty) {
-                return const Text('No comments yet.');
+                return Text(l10n.noCommentsYet);
               }
               return Column(
                 children: comments
@@ -236,7 +244,7 @@ class _IssueDetailPageState extends ConsumerState<IssueDetailPage> {
                         contentPadding: EdgeInsets.zero,
                         title: Text(c.body),
                         subtitle: Text(
-                          '${c.authorName} · ${c.synced ? 'synced' : 'pending'}',
+                          '${c.authorName} · ${c.synced ? l10n.syncedLabel : l10n.pendingLabel}',
                         ),
                       ),
                     )
@@ -248,9 +256,9 @@ class _IssueDetailPageState extends ConsumerState<IssueDetailPage> {
             const SizedBox(height: 12),
             TextField(
               controller: _comment,
-              decoration: const InputDecoration(
-                labelText: 'Add comment',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: l10n.addComment,
+                border: const OutlineInputBorder(),
               ),
               minLines: 1,
               maxLines: 3,
@@ -280,7 +288,7 @@ class _IssueDetailPageState extends ConsumerState<IssueDetailPage> {
                         if (mounted) setState(() => _busy = false);
                       }
                     },
-              child: const Text('Post comment'),
+              child: Text(l10n.postComment),
             ),
           ],
         ],

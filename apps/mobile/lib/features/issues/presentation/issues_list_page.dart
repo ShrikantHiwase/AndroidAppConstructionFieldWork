@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/providers/connectivity_provider.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../auth/domain/auth_models.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../domain/issue_models.dart';
@@ -14,6 +15,7 @@ class IssuesListPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final issuesAsync = ref.watch(issuesProvider);
     final session = ref.watch(authSessionProvider);
     final pending = ref.watch(pendingSyncCountProvider).valueOrNull ?? 0;
@@ -23,20 +25,22 @@ class IssuesListPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Issues'),
+        title: Text(l10n.issues),
         actions: [
           if (pending > 0)
             Padding(
               padding: const EdgeInsets.only(right: 8),
               child: Center(
                 child: Text(
-                  offline ? '$pending pending' : 'Syncing…',
+                  offline
+                      ? l10n.pendingCount(pending)
+                      : l10n.syncingEllipsis,
                   style: Theme.of(context).textTheme.labelLarge,
                 ),
               ),
             ),
           IconButton(
-            tooltip: offline ? 'Go online & sync' : 'Go offline',
+            tooltip: offline ? l10n.tooltipGoOnlineSync : l10n.goOffline,
             onPressed: () => ref.read(isOfflineProvider.notifier).toggle(),
             icon: Icon(offline ? Icons.cloud_off : Icons.cloud_done_outlined),
           ),
@@ -52,7 +56,7 @@ class IssuesListPage extends ConsumerWidget {
                 );
               },
               icon: const Icon(Icons.add),
-              label: const Text('New Issue'),
+              label: Text(l10n.newIssue),
             )
           : null,
       body: issuesAsync.when(
@@ -60,9 +64,7 @@ class IssuesListPage extends ConsumerWidget {
         error: (e, _) => Center(child: Text('$e')),
         data: (issues) {
           if (issues.isEmpty) {
-            return const Center(
-              child: Text('No issues yet. Capture one from the field.'),
-            );
+            return Center(child: Text(l10n.noIssuesYet));
           }
           return ListView.separated(
             padding: const EdgeInsets.all(16),
@@ -81,7 +83,7 @@ class IssuesListPage extends ConsumerWidget {
                 subtitle: Text(
                   '${issue.status.label}'
                   '${issue.assigneeName == null ? '' : ' · ${issue.assigneeName}'}'
-                  '${issue.synced ? '' : ' · not synced'}',
+                  '${issue.synced ? '' : l10n.notSyncedSuffix}',
                 ),
                 trailing: issue.location == null
                     ? null
