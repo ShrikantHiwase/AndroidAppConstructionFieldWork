@@ -337,7 +337,8 @@ docs/                 # plans and training
 52. ~~Hinglish ARB Voice notes~~ — Voice notes section chrome (issue/DPR) via ARB.
 53. ~~Hinglish ARB field leftovers~~ — Documents browser/viewer status, DPR blockers/photo evidence, Site ops list/snackbar polish via ARB.
 54. ~~Hinglish ARB digest items + nudge~~ — PM digest list item copy, DPR nudge reminder, and digest share text via ARB.
-55. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift remains a follow-up.
+55. ~~Local demo field queue seed~~ — synced sample issues/RFIs for Open queue (mirrors firebase seed titles; no outbox).
+56. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift remains a follow-up.
 7. ~~Pilot / UAT pack~~ — training guide, UAT checklist, hypercare metrics docs + in-app Pilot hub (checklist + live snapshot). Live-site execution and store tracks still need your Firebase project / devices.
 8. ~~Admin invites~~ — in-app create invite + demo accept via FakeAuth (scoped memberships); Cloud Functions email later.
 9. ~~Device sensors~~ — `geolocator` / `image_picker` / `local_auth` / `record` / `file_picker` with Fake defaults; enable native via `--dart-define=USE_NATIVE_SENSORS=true`. See `docs/Device_Sensors.md`.
@@ -386,6 +387,7 @@ docs/                 # plans and training
 52. ~~Hinglish ARB Voice notes~~ — Voice notes section chrome (issue/DPR) via ARB.
 53. ~~Hinglish ARB field leftovers~~ — Documents browser/viewer status, DPR blockers/photo evidence, Site ops list/snackbar polish via ARB.
 54. ~~Hinglish ARB digest items + nudge~~ — PM digest list item copy, DPR nudge reminder, and digest share text via ARB.
-55. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift remains a follow-up.
+55. ~~Local demo field queue seed~~ — synced sample issues/RFIs for Open queue (mirrors firebase seed titles; no outbox).
+56. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift remains a follow-up.
 
 No native-only Android path; iOS ships from the same Flutter codebase. Enterprise BIM/Forge remains a WebView module after MVP.

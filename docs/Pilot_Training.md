@@ -28,7 +28,7 @@ Password for all: `demo1234`
 
 ## PM — day-one script (10 minutes)
 
-1. **Open queue** → assign an issue, move status.
+1. **Open queue** → seeded demo issues (Rebar / Water seepage) — assign an issue, move status.
 2. **Digests** → review open issues/RFIs/blockers → **Share digest**.
 3. Confirm client can open **Weekly progress** → Share weekly PDF, and Documents → seeded **GA Plan** (pdfrx) without help.
 
