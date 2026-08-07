@@ -1609,6 +1609,234 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Activity ref (optional)'**
   String get activityRefOptional;
+
+  /// No description provided for @uploadTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload'**
+  String get uploadTooltip;
+
+  /// No description provided for @noDocumentFoldersYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No document folders yet.'**
+  String get noDocumentFoldersYet;
+
+  /// No description provided for @emptyFolderUploadHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Empty folder. Upload a file to get started.'**
+  String get emptyFolderUploadHint;
+
+  /// No description provided for @uploadDocument.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload document'**
+  String get uploadDocument;
+
+  /// No description provided for @fileNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'File name'**
+  String get fileNameLabel;
+
+  /// No description provided for @typeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get typeLabel;
+
+  /// No description provided for @pickFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick file'**
+  String get pickFile;
+
+  /// No description provided for @pickDemoFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick demo file'**
+  String get pickDemoFile;
+
+  /// No description provided for @previewNotesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview / notes'**
+  String get previewNotesLabel;
+
+  /// No description provided for @contentPreviewLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Content preview'**
+  String get contentPreviewLabel;
+
+  /// No description provided for @uploadAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload'**
+  String get uploadAction;
+
+  /// No description provided for @uploadHintNative.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a file from the device, or upload with typed preview. On flush, paths upload to Firebase Storage when configured.'**
+  String get uploadHintNative;
+
+  /// No description provided for @uploadHintDemo.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick demo file fills a local:// stub + preview. On flush, demo paths use demo:// Storage URLs. Enable native pick with --dart-define=USE_NATIVE_SENSORS=true.'**
+  String get uploadHintDemo;
+
+  /// No description provided for @documentNoun.
+  ///
+  /// In en, this message translates to:
+  /// **'Document'**
+  String get documentNoun;
+
+  /// No description provided for @documentNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Document not found'**
+  String get documentNotFound;
+
+  /// No description provided for @downloadTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get downloadTooltip;
+
+  /// No description provided for @savedOnDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved on device'**
+  String get savedOnDevice;
+
+  /// No description provided for @shareDocumentSummaryTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Share document summary'**
+  String get shareDocumentSummaryTooltip;
+
+  /// No description provided for @searchLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get searchLabel;
+
+  /// No description provided for @pdfrxViewerHint.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF viewer (pdfrx) — pinch to zoom, scroll pages.'**
+  String get pdfrxViewerHint;
+
+  /// No description provided for @drawingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Drawings'**
+  String get drawingsTitle;
+
+  /// No description provided for @noDrawingsSeededYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No drawings seeded yet.'**
+  String get noDrawingsSeededYet;
+
+  /// No description provided for @drawingPagesCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{version} · {count} pages'**
+  String drawingPagesCount(String version, int count);
+
+  /// No description provided for @drawingNoun.
+  ///
+  /// In en, this message translates to:
+  /// **'Drawing'**
+  String get drawingNoun;
+
+  /// No description provided for @drawingNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Drawing not found'**
+  String get drawingNotFound;
+
+  /// No description provided for @linkIssue.
+  ///
+  /// In en, this message translates to:
+  /// **'Link issue'**
+  String get linkIssue;
+
+  /// No description provided for @tapToDropPin.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the sheet to drop a punch pin (after linking an issue).'**
+  String get tapToDropPin;
+
+  /// No description provided for @selectIssueFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Select an issue first'**
+  String get selectIssueFirst;
+
+  /// No description provided for @pinDropped.
+  ///
+  /// In en, this message translates to:
+  /// **'Pin dropped'**
+  String get pinDropped;
+
+  /// No description provided for @createIssueFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Create an issue first'**
+  String get createIssueFirst;
+
+  /// No description provided for @selectIssueToPin.
+  ///
+  /// In en, this message translates to:
+  /// **'Select issue to pin'**
+  String get selectIssueToPin;
+
+  /// No description provided for @photoOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo optional'**
+  String get photoOptional;
+
+  /// No description provided for @tapSheetHint.
+  ///
+  /// In en, this message translates to:
+  /// **'{title}\n{version}\nPage {page}\n\nTap to drop a punch pin{issueHint}{photoHint}.'**
+  String tapSheetHint(
+    String title,
+    String version,
+    int page,
+    String issueHint,
+    String photoHint,
+  );
+
+  /// No description provided for @selectIssueFirstParen.
+  ///
+  /// In en, this message translates to:
+  /// **' (select an issue first)'**
+  String get selectIssueFirstParen;
+
+  /// No description provided for @withEvidencePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **' with evidence photo'**
+  String get withEvidencePhoto;
+
+  /// No description provided for @pinnedIssueSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Pinned \"{title}\"{photoNote}'**
+  String pinnedIssueSnack(String title, String photoNote);
+
+  /// No description provided for @plusEvidencePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **' + evidence photo'**
+  String get plusEvidencePhoto;
 }
 
 class _AppLocalizationsDelegate

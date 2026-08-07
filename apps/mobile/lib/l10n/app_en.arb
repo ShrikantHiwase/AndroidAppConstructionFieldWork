@@ -486,5 +486,81 @@
   "materialLabel": "Material",
   "qtyLabel": "Qty",
   "unitLabel": "Unit",
-  "activityRefOptional": "Activity ref (optional)"
+  "activityRefOptional": "Activity ref (optional)",
+  "uploadTooltip": "Upload",
+  "noDocumentFoldersYet": "No document folders yet.",
+  "emptyFolderUploadHint": "Empty folder. Upload a file to get started.",
+  "uploadDocument": "Upload document",
+  "fileNameLabel": "File name",
+  "typeLabel": "Type",
+  "pickFile": "Pick file",
+  "pickDemoFile": "Pick demo file",
+  "previewNotesLabel": "Preview / notes",
+  "contentPreviewLabel": "Content preview",
+  "uploadAction": "Upload",
+  "uploadHintNative": "Pick a file from the device, or upload with typed preview. On flush, paths upload to Firebase Storage when configured.",
+  "uploadHintDemo": "Pick demo file fills a local:// stub + preview. On flush, demo paths use demo:// Storage URLs. Enable native pick with --dart-define=USE_NATIVE_SENSORS=true.",
+  "documentNoun": "Document",
+  "documentNotFound": "Document not found",
+  "downloadTooltip": "Download",
+  "savedOnDevice": "Saved on device",
+  "shareDocumentSummaryTooltip": "Share document summary",
+  "searchLabel": "Search",
+  "pdfrxViewerHint": "PDF viewer (pdfrx) — pinch to zoom, scroll pages.",
+  "drawingsTitle": "Drawings",
+  "noDrawingsSeededYet": "No drawings seeded yet.",
+  "drawingPagesCount": "{version} · {count} pages",
+  "@drawingPagesCount": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "drawingNoun": "Drawing",
+  "drawingNotFound": "Drawing not found",
+  "linkIssue": "Link issue",
+  "tapToDropPin": "Tap the sheet to drop a punch pin (after linking an issue).",
+  "selectIssueFirst": "Select an issue first",
+  "pinDropped": "Pin dropped",
+  "createIssueFirst": "Create an issue first",
+  "selectIssueToPin": "Select issue to pin",
+  "photoOptional": "Photo optional",
+  "tapSheetHint": "{title}\n{version}\nPage {page}\n\nTap to drop a punch pin{issueHint}{photoHint}.",
+  "@tapSheetHint": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "version": {
+        "type": "String"
+      },
+      "page": {
+        "type": "int"
+      },
+      "issueHint": {
+        "type": "String"
+      },
+      "photoHint": {
+        "type": "String"
+      }
+    }
+  },
+  "selectIssueFirstParen": " (select an issue first)",
+  "withEvidencePhoto": " with evidence photo",
+  "pinnedIssueSnack": "Pinned \"{title}\"{photoNote}",
+  "@pinnedIssueSnack": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "photoNote": {
+        "type": "String"
+      }
+    }
+  },
+  "plusEvidencePhoto": " + evidence photo"
 }

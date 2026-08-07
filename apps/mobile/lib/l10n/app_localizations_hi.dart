@@ -840,4 +840,132 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get activityRefOptional => 'Activity ref (optional)';
+
+  @override
+  String get uploadTooltip => 'Upload';
+
+  @override
+  String get noDocumentFoldersYet => 'अभी कोई document folder नहीं।';
+
+  @override
+  String get emptyFolderUploadHint =>
+      'Folder खाली है। शुरू करने के लिए file upload करो।';
+
+  @override
+  String get uploadDocument => 'Document upload करो';
+
+  @override
+  String get fileNameLabel => 'File name';
+
+  @override
+  String get typeLabel => 'Type';
+
+  @override
+  String get pickFile => 'File pick करो';
+
+  @override
+  String get pickDemoFile => 'Demo file pick करो';
+
+  @override
+  String get previewNotesLabel => 'Preview / notes';
+
+  @override
+  String get contentPreviewLabel => 'Content preview';
+
+  @override
+  String get uploadAction => 'Upload';
+
+  @override
+  String get uploadHintNative =>
+      'Device से file pick करो, या typed preview के साथ upload। Flush पर paths Firebase Storage पर जाते हैं (जब configure हो).';
+
+  @override
+  String get uploadHintDemo =>
+      'Demo file pick से local:// stub + preview मिलता है। Flush पर demo:// Storage URLs। Native pick: --dart-define=USE_NATIVE_SENSORS=true.';
+
+  @override
+  String get documentNoun => 'Document';
+
+  @override
+  String get documentNotFound => 'Document नहीं मिला';
+
+  @override
+  String get downloadTooltip => 'Download';
+
+  @override
+  String get savedOnDevice => 'Device पर save हो गया';
+
+  @override
+  String get shareDocumentSummaryTooltip => 'Document summary share करो';
+
+  @override
+  String get searchLabel => 'Search';
+
+  @override
+  String get pdfrxViewerHint =>
+      'PDF viewer (pdfrx) — pinch zoom, pages scroll.';
+
+  @override
+  String get drawingsTitle => 'Drawings';
+
+  @override
+  String get noDrawingsSeededYet => 'अभी कोई drawing seed नहीं।';
+
+  @override
+  String drawingPagesCount(String version, int count) {
+    return '$version · $count pages';
+  }
+
+  @override
+  String get drawingNoun => 'Drawing';
+
+  @override
+  String get drawingNotFound => 'Drawing नहीं मिला';
+
+  @override
+  String get linkIssue => 'Issue link करो';
+
+  @override
+  String get tapToDropPin =>
+      'Issue link के बाद sheet पर tap करके punch pin डालो।';
+
+  @override
+  String get selectIssueFirst => 'पहले issue select करो';
+
+  @override
+  String get pinDropped => 'Pin drop हो गया';
+
+  @override
+  String get createIssueFirst => 'पहले issue बनाओ';
+
+  @override
+  String get selectIssueToPin => 'Pin के लिए issue select करो';
+
+  @override
+  String get photoOptional => 'Photo optional';
+
+  @override
+  String tapSheetHint(
+    String title,
+    String version,
+    int page,
+    String issueHint,
+    String photoHint,
+  ) {
+    return '$title\n$version\nPage $page\n\nPunch pin डालने के लिए tap करो$issueHint$photoHint.';
+  }
+
+  @override
+  String get selectIssueFirstParen => ' (पहले issue select करो)';
+
+  @override
+  String get withEvidencePhoto => ' evidence photo के साथ';
+
+  @override
+  String pinnedIssueSnack(String title, String photoNote) {
+    return '\"$title\" pin हो गया$photoNote';
+  }
+
+  @override
+  String get plusEvidencePhoto => ' + evidence photo';
 }
