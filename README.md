@@ -91,6 +91,7 @@ docs/              Build plan and training
 | Hinglish Documents + Drawing pins (ARB) | Done |
 | Hinglish Pilot + Weekly + Admin invites (ARB) | Done |
 | Hinglish Voice notes chrome (ARB) | Done |
+| Hinglish field leftovers polish (ARB) | Done |
 | FlutterFire configure + store release | Next (needs your Firebase project) |
 | Phase 3 Enterprise hooks | Deferred |
 
