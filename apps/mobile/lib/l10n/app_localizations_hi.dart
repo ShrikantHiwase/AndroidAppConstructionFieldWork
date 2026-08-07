@@ -968,4 +968,167 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get plusEvidencePhoto => ' + evidence photo';
+
+  @override
+  String get pilotUatTitle => 'Pilot / UAT';
+
+  @override
+  String get pilotHubRestricted => 'Pilot hub PM और Admin के लिए है।';
+
+  @override
+  String get resetUatChecklistTitle => 'UAT checklist reset करें?';
+
+  @override
+  String get resetUatChecklistBody =>
+      'इस device पर सारे local ticks clear हो जाएंगे।';
+
+  @override
+  String get resetAction => 'Reset';
+
+  @override
+  String get hypercareSnapshot => 'Hypercare snapshot';
+
+  @override
+  String get hypercareTargetsHint =>
+      'Targets: DPR >=4 days this week · DPR submit median <3m · issue create median <90s · sync errors <2%. Full guide: docs/Hypercare_Metrics.md';
+
+  @override
+  String get noSnapshot => 'अभी कोई snapshot नहीं';
+
+  @override
+  String get sharePilotPdf => 'Pilot PDF share करो';
+
+  @override
+  String get metricDprDaysSubmitted => 'DPR days submitted (ISO week)';
+
+  @override
+  String get metricDprSubmitMedian => 'DPR submit median';
+
+  @override
+  String get metricIssueCreateMedian => 'Issue create median';
+
+  @override
+  String get metricOpenIssues => 'Open issues';
+
+  @override
+  String get metricPendingSync => 'Pending sync';
+
+  @override
+  String get metricSyncFailureRate => 'Sync failure rate';
+
+  @override
+  String get hintTargetGte4 => 'target >=4';
+
+  @override
+  String get hintActiveProject => 'active project';
+
+  @override
+  String get hintOutbox => 'outbox';
+
+  @override
+  String uatChecklistProgress(int completed, int total) {
+    return 'UAT checklist ($completed/$total)';
+  }
+
+  @override
+  String get uatChecklistHint =>
+      'docs/UAT_Checklist.md mirror — device पर verify करते हुए tick करो।';
+
+  @override
+  String get weeklyProgressRoleGate =>
+      'Weekly progress clients, PMs, और admins के लिए उपलब्ध है।';
+
+  @override
+  String get progressPackUnavailable => 'Progress pack उपलब्ध नहीं।';
+
+  @override
+  String isoWeekLabel(String range) {
+    return 'ISO week $range';
+  }
+
+  @override
+  String submittedDprDaysLine(int days, int openCount) {
+    return 'Submitted DPR days: $days / 7 · Open issues: $openCount';
+  }
+
+  @override
+  String get emptyWeekShareHint =>
+      'इस ISO week में अभी कोई submitted DPR नहीं। Share फिर भी काम करता है ताकि client empty pack बिना PM compile खोल सके।';
+
+  @override
+  String weatherManpowerLine(String weather, String manpower) {
+    return 'Weather: $weather · Manpower: $manpower';
+  }
+
+  @override
+  String blockersLine(String text) {
+    return 'Blockers: $text';
+  }
+
+  @override
+  String get openIssuesSection => 'Open issues';
+
+  @override
+  String get shareWeeklyPdf => 'Weekly PDF share करो';
+
+  @override
+  String get invitesTitle => 'Invites';
+
+  @override
+  String get inviteUsersTitle => 'Invite users';
+
+  @override
+  String get adminOnly => 'सिर्फ Admin';
+
+  @override
+  String get createInvite => 'Invite बनाओ';
+
+  @override
+  String get firebaseInviteHint =>
+      'Firebase Auth user + memberships inviteMember callable से (temporary password demo1234 जब तक email delivery wire न हो).';
+
+  @override
+  String get demoInviteHint =>
+      'Invitees email + password demo1234 से sign in (local demo). Firebase on होने पर वही form Cloud Functions call करता है।';
+
+  @override
+  String get roleSectionLabel => 'Role';
+
+  @override
+  String get projectsSectionLabel => 'Projects';
+
+  @override
+  String get sendInvite => 'Invite भेजो';
+
+  @override
+  String get invitesSection => 'Invites';
+
+  @override
+  String get noInvitesYet => 'अभी कोई invite नहीं।';
+
+  @override
+  String get copySignInHintTooltip => 'Sign-in hint copy करो';
+
+  @override
+  String get inviteHintCopied => 'Invite hint copy हो गया';
+
+  @override
+  String inviteCreatedFirebase(String email) {
+    return '$email के लिए invite बन गया। Temp password: demo1234';
+  }
+
+  @override
+  String inviteCreatedDemo(String email) {
+    return '$email के लिए invite बन गया। Password: demo1234';
+  }
+
+  @override
+  String inviteListSubtitle(String role, String status, int count) {
+    return '$role · $status · $count project(s)';
+  }
+
+  @override
+  String clipboardInviteHint(String email) {
+    return 'Field Evidence invite\nEmail: $email\nPassword: demo1234';
+  }
 }
