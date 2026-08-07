@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/share/field_pdf_export.dart';
 import '../../../core/share/share_port.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../domain/pilot_models.dart';
 import 'pilot_providers.dart';
@@ -12,47 +13,51 @@ class PilotHubPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final session = ref.watch(authSessionProvider);
     final checklist = ref.watch(pilotChecklistProvider);
     final snapshotAsync = ref.watch(pilotSnapshotProvider);
 
     if (session == null || !canAccessPilotHub(session.activeRole)) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Pilot')),
-        body: const Center(
-          child: Text('Pilot hub is for PM and Admin.'),
+        appBar: AppBar(title: Text(l10n.pilot)),
+        body: Center(
+          child: Text(l10n.pilotHubRestricted),
         ),
       );
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Pilot / UAT'),
+        title: Text(l10n.pilotUatTitle),
         actions: [
           TextButton(
             onPressed: () async {
               final ok = await showDialog<bool>(
                 context: context,
-                builder: (ctx) => AlertDialog(
-                  title: const Text('Reset UAT checklist?'),
-                  content: const Text('Clears all local ticks on this device.'),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(ctx, false),
-                      child: const Text('Cancel'),
-                    ),
-                    FilledButton(
-                      onPressed: () => Navigator.pop(ctx, true),
-                      child: const Text('Reset'),
-                    ),
-                  ],
-                ),
+                builder: (ctx) {
+                  final dialogL10n = AppLocalizations.of(ctx);
+                  return AlertDialog(
+                    title: Text(dialogL10n.resetUatChecklistTitle),
+                    content: Text(dialogL10n.resetUatChecklistBody),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(ctx, false),
+                        child: Text(dialogL10n.cancel),
+                      ),
+                      FilledButton(
+                        onPressed: () => Navigator.pop(ctx, true),
+                        child: Text(dialogL10n.resetAction),
+                      ),
+                    ],
+                  );
+                },
               );
               if (ok == true) {
                 await ref.read(pilotChecklistProvider.notifier).reset();
               }
             },
-            child: const Text('Reset'),
+            child: Text(l10n.resetAction),
           ),
         ],
       ),
@@ -60,14 +65,12 @@ class PilotHubPage extends ConsumerWidget {
         padding: const EdgeInsets.all(24),
         children: [
           Text(
-            'Hypercare snapshot',
+            l10n.hypercareSnapshot,
             style: Theme.of(context).textTheme.titleMedium,
           ),
           const SizedBox(height: 4),
           Text(
-            'Targets: DPR >=4 days this week · DPR submit median <3m · '
-            'issue create median <90s · sync errors <2%. '
-            'Full guide: docs/Hypercare_Metrics.md',
+            l10n.hypercareTargetsHint,
             style: Theme.of(context).textTheme.bodySmall,
           ),
           const SizedBox(height: 12),
@@ -75,7 +78,7 @@ class PilotHubPage extends ConsumerWidget {
             loading: () => const LinearProgressIndicator(),
             error: (e, _) => Text('$e'),
             data: (snap) {
-              if (snap == null) return const Text('No snapshot');
+              if (snap == null) return Text(l10n.noSnapshot);
               final rate = snap.syncFailureRate;
               final projectName = session.activeProject.name;
               final shareText = snap.toShareText(projectName: projectName);
@@ -126,13 +129,13 @@ class PilotHubPage extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   _MetricTile(
-                    label: 'DPR days submitted (ISO week)',
+                    label: l10n.metricDprDaysSubmitted,
                     value: '${snap.dprSubmittedDaysThisWeek}',
                     ok: snap.dprTargetMet,
-                    hint: 'target >=4',
+                    hint: l10n.hintTargetGte4,
                   ),
                   _MetricTile(
-                    label: 'DPR submit median',
+                    label: l10n.metricDprSubmitMedian,
                     value: snap.dprSubmitMedianLabel,
                     ok: snap.dprSubmitTargetMet != false,
                     hint: snap.dprSubmitSampleCount <
@@ -143,7 +146,7 @@ class PilotHubPage extends ConsumerWidget {
                         : 'n=${snap.dprSubmitSampleCount} · target <3m',
                   ),
                   _MetricTile(
-                    label: 'Issue create median',
+                    label: l10n.metricIssueCreateMedian,
                     value: snap.issueCreateMedianLabel,
                     ok: snap.issueCreateTargetMet != false,
                     hint: snap.issueCreateSampleCount <
@@ -154,19 +157,19 @@ class PilotHubPage extends ConsumerWidget {
                         : 'n=${snap.issueCreateSampleCount} · target <90s',
                   ),
                   _MetricTile(
-                    label: 'Open issues',
+                    label: l10n.metricOpenIssues,
                     value: '${snap.openIssueCount}',
                     ok: true,
-                    hint: 'active project',
+                    hint: l10n.hintActiveProject,
                   ),
                   _MetricTile(
-                    label: 'Pending sync',
+                    label: l10n.metricPendingSync,
                     value: '${snap.pendingSyncCount}',
                     ok: snap.pendingSyncCount == 0,
-                    hint: 'outbox',
+                    hint: l10n.hintOutbox,
                   ),
                   _MetricTile(
-                    label: 'Sync failure rate',
+                    label: l10n.metricSyncFailureRate,
                     value: rate == null
                         ? 'n/a'
                         : '${(rate * 100).toStringAsFixed(1)}%',
@@ -178,13 +181,13 @@ class PilotHubPage extends ConsumerWidget {
                   FilledButton.tonalIcon(
                     onPressed: sharePdf,
                     icon: const Icon(Icons.picture_as_pdf_outlined),
-                    label: const Text('Share pilot PDF'),
+                    label: Text(l10n.sharePilotPdf),
                   ),
                   const SizedBox(height: 8),
                   OutlinedButton.icon(
                     onPressed: shareAsText,
                     icon: const Icon(Icons.ios_share),
-                    label: const Text('Share as text'),
+                    label: Text(l10n.shareAsText),
                   ),
                 ],
               );
@@ -192,14 +195,17 @@ class PilotHubPage extends ConsumerWidget {
           ),
           const SizedBox(height: 28),
           Text(
-            'UAT checklist (${checklist.completedCount}/${checklist.totalCount})',
+            l10n.uatChecklistProgress(
+              checklist.completedCount,
+              checklist.totalCount,
+            ),
             style: Theme.of(context).textTheme.titleMedium,
           ),
           const SizedBox(height: 4),
           LinearProgressIndicator(value: checklist.progress),
           const SizedBox(height: 8),
           Text(
-            'Mirrors docs/UAT_Checklist.md — tick as you verify on device.',
+            l10n.uatChecklistHint,
             style: Theme.of(context).textTheme.bodySmall,
           ),
           const SizedBox(height: 8),

@@ -972,4 +972,166 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get plusEvidencePhoto => ' + evidence photo';
+
+  @override
+  String get pilotUatTitle => 'Pilot / UAT';
+
+  @override
+  String get pilotHubRestricted => 'Pilot hub is for PM and Admin.';
+
+  @override
+  String get resetUatChecklistTitle => 'Reset UAT checklist?';
+
+  @override
+  String get resetUatChecklistBody => 'Clears all local ticks on this device.';
+
+  @override
+  String get resetAction => 'Reset';
+
+  @override
+  String get hypercareSnapshot => 'Hypercare snapshot';
+
+  @override
+  String get hypercareTargetsHint =>
+      'Targets: DPR >=4 days this week · DPR submit median <3m · issue create median <90s · sync errors <2%. Full guide: docs/Hypercare_Metrics.md';
+
+  @override
+  String get noSnapshot => 'No snapshot';
+
+  @override
+  String get sharePilotPdf => 'Share pilot PDF';
+
+  @override
+  String get metricDprDaysSubmitted => 'DPR days submitted (ISO week)';
+
+  @override
+  String get metricDprSubmitMedian => 'DPR submit median';
+
+  @override
+  String get metricIssueCreateMedian => 'Issue create median';
+
+  @override
+  String get metricOpenIssues => 'Open issues';
+
+  @override
+  String get metricPendingSync => 'Pending sync';
+
+  @override
+  String get metricSyncFailureRate => 'Sync failure rate';
+
+  @override
+  String get hintTargetGte4 => 'target >=4';
+
+  @override
+  String get hintActiveProject => 'active project';
+
+  @override
+  String get hintOutbox => 'outbox';
+
+  @override
+  String uatChecklistProgress(int completed, int total) {
+    return 'UAT checklist ($completed/$total)';
+  }
+
+  @override
+  String get uatChecklistHint =>
+      'Mirrors docs/UAT_Checklist.md — tick as you verify on device.';
+
+  @override
+  String get weeklyProgressRoleGate =>
+      'Weekly progress is available to clients, PMs, and admins.';
+
+  @override
+  String get progressPackUnavailable => 'Progress pack unavailable.';
+
+  @override
+  String isoWeekLabel(String range) {
+    return 'ISO week $range';
+  }
+
+  @override
+  String submittedDprDaysLine(int days, int openCount) {
+    return 'Submitted DPR days: $days / 7 · Open issues: $openCount';
+  }
+
+  @override
+  String get emptyWeekShareHint =>
+      'No submitted DPRs in this ISO week yet. Share still works so clients can open an empty pack without a PM compile.';
+
+  @override
+  String weatherManpowerLine(String weather, String manpower) {
+    return 'Weather: $weather · Manpower: $manpower';
+  }
+
+  @override
+  String blockersLine(String text) {
+    return 'Blockers: $text';
+  }
+
+  @override
+  String get openIssuesSection => 'Open issues';
+
+  @override
+  String get shareWeeklyPdf => 'Share weekly PDF';
+
+  @override
+  String get invitesTitle => 'Invites';
+
+  @override
+  String get inviteUsersTitle => 'Invite users';
+
+  @override
+  String get adminOnly => 'Admin only';
+
+  @override
+  String get createInvite => 'Create invite';
+
+  @override
+  String get firebaseInviteHint =>
+      'Creates a Firebase Auth user + memberships via the inviteMember callable (temporary password demo1234 until email delivery is wired).';
+
+  @override
+  String get demoInviteHint =>
+      'Invitees sign in with the email + password demo1234 (local demo). When Firebase is on, the same form calls Cloud Functions.';
+
+  @override
+  String get roleSectionLabel => 'Role';
+
+  @override
+  String get projectsSectionLabel => 'Projects';
+
+  @override
+  String get sendInvite => 'Send invite';
+
+  @override
+  String get invitesSection => 'Invites';
+
+  @override
+  String get noInvitesYet => 'No invites yet.';
+
+  @override
+  String get copySignInHintTooltip => 'Copy sign-in hint';
+
+  @override
+  String get inviteHintCopied => 'Invite hint copied';
+
+  @override
+  String inviteCreatedFirebase(String email) {
+    return 'Invite created for $email. Temp password: demo1234';
+  }
+
+  @override
+  String inviteCreatedDemo(String email) {
+    return 'Invite created for $email. Password: demo1234';
+  }
+
+  @override
+  String inviteListSubtitle(String role, String status, int count) {
+    return '$role · $status · $count project(s)';
+  }
+
+  @override
+  String clipboardInviteHint(String email) {
+    return 'Field Evidence invite\nEmail: $email\nPassword: demo1234';
+  }
 }

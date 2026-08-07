@@ -188,6 +188,65 @@ void main() {
     expect(find.text('अभी कोई drawing seed नहीं।'), findsNothing); // seeded
   });
 
+  testWidgets('Hinglish Pilot hub chrome from PM home', (tester) async {
+    SharedPreferences.setMockInitialValues({'app.locale_code': 'hi'});
+    final prefs = await SharedPreferences.getInstance();
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          sharedPreferencesProvider.overrideWithValue(prefs),
+        ],
+        child: const FieldApp(),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.widgetWithText(ActionChip, 'pm'));
+    await tester.pump();
+    await tester.tap(find.text('Sign in'));
+    await tester.pumpAndSettle();
+
+    await tester.ensureVisible(find.text('Pilot'));
+    await tester.tap(find.text('Pilot'));
+    await tester.pumpAndSettle();
+    expect(find.text('Pilot / UAT'), findsOneWidget);
+    expect(find.text('Hypercare snapshot'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('Pilot PDF share करो'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.text('Pilot PDF share करो'), findsOneWidget);
+  });
+
+  testWidgets('Hinglish Invite users chrome from Admin home', (tester) async {
+    SharedPreferences.setMockInitialValues({'app.locale_code': 'hi'});
+    final prefs = await SharedPreferences.getInstance();
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          sharedPreferencesProvider.overrideWithValue(prefs),
+        ],
+        child: const FieldApp(),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.widgetWithText(ActionChip, 'admin'));
+    await tester.pump();
+    await tester.tap(find.text('Sign in'));
+    await tester.pumpAndSettle();
+
+    await tester.ensureVisible(find.text('Invite user'));
+    await tester.tap(find.text('Invite user'));
+    await tester.pumpAndSettle();
+    expect(find.text('Invite users'), findsOneWidget);
+    expect(find.text('Invite बनाओ'), findsOneWidget);
+    expect(find.text('Invite भेजो'), findsOneWidget);
+  });
+
   testWidgets('English locale keeps New Issue CTA', (tester) async {
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();
@@ -236,6 +295,10 @@ void main() {
     expect(hi.uploadDocument, 'Document upload करो');
     expect(hi.linkIssue, 'Issue link करो');
     expect(hi.drawingsTitle, 'Drawings');
+    expect(hi.sharePilotPdf, 'Pilot PDF share करो');
+    expect(hi.shareWeeklyPdf, 'Weekly PDF share करो');
+    expect(hi.sendInvite, 'Invite भेजो');
+    expect(hi.createInvite, 'Invite बनाओ');
     final en = lookupAppLocalizations(const Locale('en'));
     expect(en.newIssue, 'New Issue');
     expect(en.syncPendingCount(3), '3 sync');
@@ -247,5 +310,9 @@ void main() {
     expect(en.siteOps, 'Site ops');
     expect(en.uploadDocument, 'Upload document');
     expect(en.linkIssue, 'Link issue');
+    expect(en.pilotUatTitle, 'Pilot / UAT');
+    expect(en.inviteUsersTitle, 'Invite users');
+    expect(en.sharePilotPdf, 'Share pilot PDF');
+    expect(en.sendInvite, 'Send invite');
   });
 }

@@ -1837,6 +1837,282 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **' + evidence photo'**
   String get plusEvidencePhoto;
+
+  /// No description provided for @pilotUatTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pilot / UAT'**
+  String get pilotUatTitle;
+
+  /// No description provided for @pilotHubRestricted.
+  ///
+  /// In en, this message translates to:
+  /// **'Pilot hub is for PM and Admin.'**
+  String get pilotHubRestricted;
+
+  /// No description provided for @resetUatChecklistTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset UAT checklist?'**
+  String get resetUatChecklistTitle;
+
+  /// No description provided for @resetUatChecklistBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Clears all local ticks on this device.'**
+  String get resetUatChecklistBody;
+
+  /// No description provided for @resetAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get resetAction;
+
+  /// No description provided for @hypercareSnapshot.
+  ///
+  /// In en, this message translates to:
+  /// **'Hypercare snapshot'**
+  String get hypercareSnapshot;
+
+  /// No description provided for @hypercareTargetsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Targets: DPR >=4 days this week · DPR submit median <3m · issue create median <90s · sync errors <2%. Full guide: docs/Hypercare_Metrics.md'**
+  String get hypercareTargetsHint;
+
+  /// No description provided for @noSnapshot.
+  ///
+  /// In en, this message translates to:
+  /// **'No snapshot'**
+  String get noSnapshot;
+
+  /// No description provided for @sharePilotPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Share pilot PDF'**
+  String get sharePilotPdf;
+
+  /// No description provided for @metricDprDaysSubmitted.
+  ///
+  /// In en, this message translates to:
+  /// **'DPR days submitted (ISO week)'**
+  String get metricDprDaysSubmitted;
+
+  /// No description provided for @metricDprSubmitMedian.
+  ///
+  /// In en, this message translates to:
+  /// **'DPR submit median'**
+  String get metricDprSubmitMedian;
+
+  /// No description provided for @metricIssueCreateMedian.
+  ///
+  /// In en, this message translates to:
+  /// **'Issue create median'**
+  String get metricIssueCreateMedian;
+
+  /// No description provided for @metricOpenIssues.
+  ///
+  /// In en, this message translates to:
+  /// **'Open issues'**
+  String get metricOpenIssues;
+
+  /// No description provided for @metricPendingSync.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending sync'**
+  String get metricPendingSync;
+
+  /// No description provided for @metricSyncFailureRate.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync failure rate'**
+  String get metricSyncFailureRate;
+
+  /// No description provided for @hintTargetGte4.
+  ///
+  /// In en, this message translates to:
+  /// **'target >=4'**
+  String get hintTargetGte4;
+
+  /// No description provided for @hintActiveProject.
+  ///
+  /// In en, this message translates to:
+  /// **'active project'**
+  String get hintActiveProject;
+
+  /// No description provided for @hintOutbox.
+  ///
+  /// In en, this message translates to:
+  /// **'outbox'**
+  String get hintOutbox;
+
+  /// No description provided for @uatChecklistProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'UAT checklist ({completed}/{total})'**
+  String uatChecklistProgress(int completed, int total);
+
+  /// No description provided for @uatChecklistHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Mirrors docs/UAT_Checklist.md — tick as you verify on device.'**
+  String get uatChecklistHint;
+
+  /// No description provided for @weeklyProgressRoleGate.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly progress is available to clients, PMs, and admins.'**
+  String get weeklyProgressRoleGate;
+
+  /// No description provided for @progressPackUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Progress pack unavailable.'**
+  String get progressPackUnavailable;
+
+  /// No description provided for @isoWeekLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'ISO week {range}'**
+  String isoWeekLabel(String range);
+
+  /// No description provided for @submittedDprDaysLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Submitted DPR days: {days} / 7 · Open issues: {openCount}'**
+  String submittedDprDaysLine(int days, int openCount);
+
+  /// No description provided for @emptyWeekShareHint.
+  ///
+  /// In en, this message translates to:
+  /// **'No submitted DPRs in this ISO week yet. Share still works so clients can open an empty pack without a PM compile.'**
+  String get emptyWeekShareHint;
+
+  /// No description provided for @weatherManpowerLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Weather: {weather} · Manpower: {manpower}'**
+  String weatherManpowerLine(String weather, String manpower);
+
+  /// No description provided for @blockersLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Blockers: {text}'**
+  String blockersLine(String text);
+
+  /// No description provided for @openIssuesSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Open issues'**
+  String get openIssuesSection;
+
+  /// No description provided for @shareWeeklyPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Share weekly PDF'**
+  String get shareWeeklyPdf;
+
+  /// No description provided for @invitesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Invites'**
+  String get invitesTitle;
+
+  /// No description provided for @inviteUsersTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite users'**
+  String get inviteUsersTitle;
+
+  /// No description provided for @adminOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin only'**
+  String get adminOnly;
+
+  /// No description provided for @createInvite.
+  ///
+  /// In en, this message translates to:
+  /// **'Create invite'**
+  String get createInvite;
+
+  /// No description provided for @firebaseInviteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Creates a Firebase Auth user + memberships via the inviteMember callable (temporary password demo1234 until email delivery is wired).'**
+  String get firebaseInviteHint;
+
+  /// No description provided for @demoInviteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Invitees sign in with the email + password demo1234 (local demo). When Firebase is on, the same form calls Cloud Functions.'**
+  String get demoInviteHint;
+
+  /// No description provided for @roleSectionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Role'**
+  String get roleSectionLabel;
+
+  /// No description provided for @projectsSectionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Projects'**
+  String get projectsSectionLabel;
+
+  /// No description provided for @sendInvite.
+  ///
+  /// In en, this message translates to:
+  /// **'Send invite'**
+  String get sendInvite;
+
+  /// No description provided for @invitesSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Invites'**
+  String get invitesSection;
+
+  /// No description provided for @noInvitesYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No invites yet.'**
+  String get noInvitesYet;
+
+  /// No description provided for @copySignInHintTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy sign-in hint'**
+  String get copySignInHintTooltip;
+
+  /// No description provided for @inviteHintCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite hint copied'**
+  String get inviteHintCopied;
+
+  /// No description provided for @inviteCreatedFirebase.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite created for {email}. Temp password: demo1234'**
+  String inviteCreatedFirebase(String email);
+
+  /// No description provided for @inviteCreatedDemo.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite created for {email}. Password: demo1234'**
+  String inviteCreatedDemo(String email);
+
+  /// No description provided for @inviteListSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{role} · {status} · {count} project(s)'**
+  String inviteListSubtitle(String role, String status, int count);
+
+  /// No description provided for @clipboardInviteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Field Evidence invite\nEmail: {email}\nPassword: demo1234'**
+  String clipboardInviteHint(String email);
 }
 
 class _AppLocalizationsDelegate

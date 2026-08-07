@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/share/field_pdf_export.dart';
 import '../../../core/share/share_port.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../domain/weekly_progress_models.dart';
 import 'weekly_progress_providers.dart';
@@ -12,33 +13,34 @@ class WeeklyProgressPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final session = ref.watch(authSessionProvider);
     final packAsync = ref.watch(weeklyProgressProvider);
 
     if (session == null) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Weekly progress')),
-        body: const Center(child: Text('Sign in required')),
+        appBar: AppBar(title: Text(l10n.weeklyProgress)),
+        body: Center(child: Text(l10n.signInRequired)),
       );
     }
 
     if (!canViewWeeklyProgress(session.activeRole)) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Weekly progress')),
-        body: const Center(
-          child: Text('Weekly progress is available to clients, PMs, and admins.'),
+        appBar: AppBar(title: Text(l10n.weeklyProgress)),
+        body: Center(
+          child: Text(l10n.weeklyProgressRoleGate),
         ),
       );
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Weekly progress')),
+      appBar: AppBar(title: Text(l10n.weeklyProgress)),
       body: packAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(child: Text('$e')),
         data: (pack) {
           if (pack == null) {
-            return const Center(child: Text('Progress pack unavailable.'));
+            return Center(child: Text(l10n.progressPackUnavailable));
           }
           final projectName = session.activeProject.name;
           return ListView(
@@ -50,21 +52,21 @@ class WeeklyProgressPage extends ConsumerWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                'ISO week ${pack.weekRangeLabel}',
+                l10n.isoWeekLabel(pack.weekRangeLabel),
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
               const SizedBox(height: 16),
               Text(
-                'Submitted DPR days: ${pack.submittedDprDays} / 7 · '
-                'Open issues: ${pack.openIssueCount}',
+                l10n.submittedDprDaysLine(
+                  pack.submittedDprDays,
+                  pack.openIssueCount,
+                ),
                 style: Theme.of(context).textTheme.titleSmall,
               ),
               const SizedBox(height: 16),
               if (pack.isEmptyWeek)
                 Text(
-                  'No submitted DPRs in this ISO week yet. '
-                  'Share still works so clients can open an empty pack '
-                  'without a PM compile.',
+                  l10n.emptyWeekShareHint,
                   style: Theme.of(context).textTheme.bodyMedium,
                 )
               else
@@ -79,13 +81,16 @@ class WeeklyProgressPage extends ConsumerWidget {
                           style: Theme.of(context).textTheme.titleSmall,
                         ),
                         Text(
-                          'Weather: ${day.weather} · Manpower: ${day.manpowerSummary}',
+                          l10n.weatherManpowerLine(
+                            day.weather,
+                            day.manpowerSummary,
+                          ),
                         ),
                         for (final a in day.activitySummaries)
                           Text('• $a'),
                         if (day.blockers != null)
                           Text(
-                            'Blockers: ${day.blockers}',
+                            l10n.blockersLine(day.blockers!),
                             style: TextStyle(
                               color: Theme.of(context).colorScheme.error,
                             ),
@@ -97,7 +102,7 @@ class WeeklyProgressPage extends ConsumerWidget {
               if (pack.openIssueTitles.isNotEmpty) ...[
                 const SizedBox(height: 8),
                 Text(
-                  'Open issues',
+                  l10n.openIssuesSection,
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
                 const SizedBox(height: 4),
@@ -132,7 +137,7 @@ class WeeklyProgressPage extends ConsumerWidget {
                   }
                 },
                 icon: const Icon(Icons.picture_as_pdf_outlined),
-                label: const Text('Share weekly PDF'),
+                label: Text(l10n.shareWeeklyPdf),
               ),
               const SizedBox(height: 8),
               OutlinedButton.icon(
@@ -153,7 +158,7 @@ class WeeklyProgressPage extends ConsumerWidget {
                   }
                 },
                 icon: const Icon(Icons.ios_share),
-                label: const Text('Share as text'),
+                label: Text(l10n.shareAsText),
               ),
             ],
           );

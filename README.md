@@ -89,6 +89,7 @@ docs/              Build plan and training
 | Hinglish Issues + RFI + DPR chrome (ARB) | Done |
 | Hinglish Site ops chrome (ARB) | Done |
 | Hinglish Documents + Drawing pins (ARB) | Done |
+| Hinglish Pilot + Weekly + Admin invites (ARB) | Done |
 | FlutterFire configure + store release | Next (needs your Firebase project) |
 | Phase 3 Enterprise hooks | Deferred |
 

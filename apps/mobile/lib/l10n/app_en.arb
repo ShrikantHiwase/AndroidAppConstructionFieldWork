@@ -562,5 +562,129 @@
       }
     }
   },
-  "plusEvidencePhoto": " + evidence photo"
+  "plusEvidencePhoto": " + evidence photo",
+  "pilotUatTitle": "Pilot / UAT",
+  "pilotHubRestricted": "Pilot hub is for PM and Admin.",
+  "resetUatChecklistTitle": "Reset UAT checklist?",
+  "resetUatChecklistBody": "Clears all local ticks on this device.",
+  "resetAction": "Reset",
+  "hypercareSnapshot": "Hypercare snapshot",
+  "hypercareTargetsHint": "Targets: DPR >=4 days this week · DPR submit median <3m · issue create median <90s · sync errors <2%. Full guide: docs/Hypercare_Metrics.md",
+  "noSnapshot": "No snapshot",
+  "sharePilotPdf": "Share pilot PDF",
+  "metricDprDaysSubmitted": "DPR days submitted (ISO week)",
+  "metricDprSubmitMedian": "DPR submit median",
+  "metricIssueCreateMedian": "Issue create median",
+  "metricOpenIssues": "Open issues",
+  "metricPendingSync": "Pending sync",
+  "metricSyncFailureRate": "Sync failure rate",
+  "hintTargetGte4": "target >=4",
+  "hintActiveProject": "active project",
+  "hintOutbox": "outbox",
+  "uatChecklistProgress": "UAT checklist ({completed}/{total})",
+  "@uatChecklistProgress": {
+    "placeholders": {
+      "completed": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "uatChecklistHint": "Mirrors docs/UAT_Checklist.md — tick as you verify on device.",
+  "weeklyProgressRoleGate": "Weekly progress is available to clients, PMs, and admins.",
+  "progressPackUnavailable": "Progress pack unavailable.",
+  "isoWeekLabel": "ISO week {range}",
+  "@isoWeekLabel": {
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "submittedDprDaysLine": "Submitted DPR days: {days} / 7 · Open issues: {openCount}",
+  "@submittedDprDaysLine": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "openCount": {
+        "type": "int"
+      }
+    }
+  },
+  "emptyWeekShareHint": "No submitted DPRs in this ISO week yet. Share still works so clients can open an empty pack without a PM compile.",
+  "weatherManpowerLine": "Weather: {weather} · Manpower: {manpower}",
+  "@weatherManpowerLine": {
+    "placeholders": {
+      "weather": {
+        "type": "String"
+      },
+      "manpower": {
+        "type": "String"
+      }
+    }
+  },
+  "blockersLine": "Blockers: {text}",
+  "@blockersLine": {
+    "placeholders": {
+      "text": {
+        "type": "String"
+      }
+    }
+  },
+  "openIssuesSection": "Open issues",
+  "shareWeeklyPdf": "Share weekly PDF",
+  "invitesTitle": "Invites",
+  "inviteUsersTitle": "Invite users",
+  "adminOnly": "Admin only",
+  "createInvite": "Create invite",
+  "firebaseInviteHint": "Creates a Firebase Auth user + memberships via the inviteMember callable (temporary password demo1234 until email delivery is wired).",
+  "demoInviteHint": "Invitees sign in with the email + password demo1234 (local demo). When Firebase is on, the same form calls Cloud Functions.",
+  "roleSectionLabel": "Role",
+  "projectsSectionLabel": "Projects",
+  "sendInvite": "Send invite",
+  "invitesSection": "Invites",
+  "noInvitesYet": "No invites yet.",
+  "copySignInHintTooltip": "Copy sign-in hint",
+  "inviteHintCopied": "Invite hint copied",
+  "inviteCreatedFirebase": "Invite created for {email}. Temp password: demo1234",
+  "@inviteCreatedFirebase": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "inviteCreatedDemo": "Invite created for {email}. Password: demo1234",
+  "@inviteCreatedDemo": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "inviteListSubtitle": "{role} · {status} · {count} project(s)",
+  "@inviteListSubtitle": {
+    "placeholders": {
+      "role": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "clipboardInviteHint": "Field Evidence invite\nEmail: {email}\nPassword: demo1234",
+  "@clipboardInviteHint": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  }
 }
