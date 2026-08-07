@@ -1,6 +1,7 @@
 # UAT Checklist — Pilot Sites
 
-Run on mid/low-end Android first. Mark each item in Admin → **Pilot** (or tick here).
+Run on mid/low-end Android first. Mark each item in Admin → **Pilot**
+(`UatItemIds` mirrors this list — 35 checks).
 
 ## Environment
 
