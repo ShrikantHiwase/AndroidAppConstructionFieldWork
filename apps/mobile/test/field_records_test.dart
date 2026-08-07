@@ -179,4 +179,25 @@ void main() {
     expect(comments, hasLength(2));
     expect(comments.first.body, contains('drawing'));
   });
+
+  test('ensureSeedFieldRecords fills Pune queue without outbox', () async {
+    await repo.ensureSeedFieldRecords(engineer);
+    final issues = await repo.watchIssues(engineer.activeProjectId).first;
+    final rfis = await repo.watchRfis(engineer.activeProjectId).first;
+    expect(issues, hasLength(2));
+    expect(
+      issues.map((i) => i.title),
+      containsAll([
+        'Rebar spacing off grid — Level 02',
+        'Water seepage — basement wall',
+      ]),
+    );
+    expect(issues.every((i) => i.synced), isTrue);
+    expect(rfis, hasLength(1));
+    expect(rfis.single.subject, contains('Beam B2'));
+    expect(await repo.watchPendingSyncCount().first, 0);
+
+    await repo.ensureSeedFieldRecords(engineer);
+    expect(await repo.watchIssues(engineer.activeProjectId).first, hasLength(2));
+  });
 }

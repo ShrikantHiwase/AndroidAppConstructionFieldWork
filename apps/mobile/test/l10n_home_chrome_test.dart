@@ -315,19 +315,6 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    // Seed an issue as engineer (demo has no local issue seed).
-    await tester.tap(find.text('Sign in'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('नया Issue'));
-    await tester.pumpAndSettle();
-    await tester.enterText(find.byType(TextFormField).first, 'Voice chrome issue');
-    await tester.ensureVisible(find.text('Issue save करो'));
-    await tester.tap(find.text('Issue save करो'));
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.byTooltip('Sign out'));
-    await tester.pumpAndSettle();
-
     await tester.tap(find.widgetWithText(ActionChip, 'pm'));
     await tester.pump();
     await tester.tap(find.text('Sign in'));
@@ -337,8 +324,9 @@ void main() {
     await tester.tap(find.text('Open queue'));
     await tester.pumpAndSettle();
     expect(find.text('Issues'), findsOneWidget);
+    expect(find.textContaining('Rebar spacing'), findsOneWidget);
 
-    await tester.tap(find.text('Voice chrome issue'));
+    await tester.tap(find.textContaining('Rebar spacing'));
     await tester.pumpAndSettle();
     await tester.scrollUntilVisible(
       find.text('Demo voice note जोड़ो'),

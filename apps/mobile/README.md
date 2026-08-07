@@ -35,7 +35,7 @@ unlock screen stub; wire `local_auth` after FlutterFire.
 
 ## Issues / RFIs (Phase 1)
 
-Offline-first `LocalFieldRecordsRepository` with sync outbox. Demo GPS/photo buttons stand in for geolocator/image_picker until Firebase + device plugins are wired. Toggle offline from the cloud icon on home/issues.
+Offline-first `LocalFieldRecordsRepository` with sync outbox. Demo mode seeds sample issues/RFIs (synced, no outbox) so PM **Open queue** is ready on first sign-in — titles mirror `firebase/seed`. Demo GPS/photo buttons stand in for geolocator/image_picker until Firebase + device plugins are wired. Toggle offline from the cloud icon on home/issues.
 
 ## Documents (Phase 1)
 

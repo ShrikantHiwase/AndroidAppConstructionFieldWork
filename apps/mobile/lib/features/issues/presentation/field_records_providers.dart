@@ -41,18 +41,34 @@ final fieldRecordsRepositoryProvider = Provider<FieldRecordsRepository>((ref) {
   );
 });
 
-final issuesProvider = StreamProvider<List<Issue>>((ref) {
+final fieldRecordsSeedProvider = FutureProvider<void>((ref) async {
   final session = ref.watch(authSessionProvider);
-  if (session == null) return Stream.value(const []);
-  return ref
+  if (session == null) return;
+  await ref
+      .read(fieldRecordsRepositoryProvider)
+      .ensureSeedFieldRecords(session);
+});
+
+final issuesProvider = StreamProvider<List<Issue>>((ref) async* {
+  final session = ref.watch(authSessionProvider);
+  if (session == null) {
+    yield const [];
+    return;
+  }
+  await ref.watch(fieldRecordsSeedProvider.future);
+  yield* ref
       .watch(fieldRecordsRepositoryProvider)
       .watchIssues(session.activeProjectId);
 });
 
-final rfisProvider = StreamProvider<List<Rfi>>((ref) {
+final rfisProvider = StreamProvider<List<Rfi>>((ref) async* {
   final session = ref.watch(authSessionProvider);
-  if (session == null) return Stream.value(const []);
-  return ref
+  if (session == null) {
+    yield const [];
+    return;
+  }
+  await ref.watch(fieldRecordsSeedProvider.future);
+  yield* ref
       .watch(fieldRecordsRepositoryProvider)
       .watchRfis(session.activeProjectId);
 });

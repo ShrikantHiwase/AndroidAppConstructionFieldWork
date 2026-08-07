@@ -177,6 +177,31 @@ void main() {
     expect(find.text('PM digest'), findsOneWidget);
   });
 
+  testWidgets('pm open queue shows seeded demo issues', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          sharedPreferencesProvider.overrideWithValue(prefs),
+        ],
+        child: const FieldApp(),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.widgetWithText(ActionChip, 'pm'));
+    await tester.pump();
+    await tester.tap(find.text('Sign in'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Open queue'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('Rebar spacing'), findsOneWidget);
+    expect(find.textContaining('Water seepage'), findsOneWidget);
+  });
+
   testWidgets('pm can open pilot hub', (tester) async {
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();
