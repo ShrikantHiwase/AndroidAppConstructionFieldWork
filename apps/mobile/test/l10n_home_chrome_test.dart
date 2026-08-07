@@ -164,6 +164,30 @@ void main() {
     expect(find.text('Safety'), findsWidgets);
   });
 
+  testWidgets('Hinglish Documents and Drawings chrome', (tester) async {
+    SharedPreferences.setMockInitialValues({'app.locale_code': 'hi'});
+    final prefs = await SharedPreferences.getInstance();
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          sharedPreferencesProvider.overrideWithValue(prefs),
+        ],
+        child: const FieldApp(),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Sign in'));
+    await tester.pumpAndSettle();
+
+    // Client/engineer home may not show Documents; open via Pin on Drawing.
+    await tester.ensureVisible(find.text('Drawing पर Pin'));
+    await tester.tap(find.text('Drawing पर Pin'));
+    await tester.pumpAndSettle();
+    expect(find.text('Drawings'), findsOneWidget);
+    expect(find.text('अभी कोई drawing seed नहीं।'), findsNothing); // seeded
+  });
+
   testWidgets('English locale keeps New Issue CTA', (tester) async {
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();
@@ -209,6 +233,9 @@ void main() {
     expect(hi.newRfi, 'नया RFI');
     expect(hi.logSafety, 'Safety log करो');
     expect(hi.save, 'Save करो');
+    expect(hi.uploadDocument, 'Document upload करो');
+    expect(hi.linkIssue, 'Issue link करो');
+    expect(hi.drawingsTitle, 'Drawings');
     final en = lookupAppLocalizations(const Locale('en'));
     expect(en.newIssue, 'New Issue');
     expect(en.syncPendingCount(3), '3 sync');
@@ -218,5 +245,7 @@ void main() {
     expect(en.submitDpr, 'Submit DPR');
     expect(en.logSafety, 'Log safety');
     expect(en.siteOps, 'Site ops');
+    expect(en.uploadDocument, 'Upload document');
+    expect(en.linkIssue, 'Link issue');
   });
 }
