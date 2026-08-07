@@ -58,4 +58,7 @@ abstract class FieldRecordsRepository {
 
   /// Pull remote issues/RFIs into the local cache (no-op in demo mode).
   Future<({int issues, int rfis})> pullRemote({required String projectId});
+
+  /// Demo-only sample issues/RFIs for the active project (idempotent, synced, no outbox).
+  Future<void> ensureSeedFieldRecords(AuthSession session);
 }
