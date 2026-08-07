@@ -100,9 +100,13 @@ class _IssueDetailPageState extends ConsumerState<IssueDetailPage> {
           if (issue.location != null) ...[
             const SizedBox(height: 8),
             Text(
-              'GPS: ${issue.location!.latitude.toStringAsFixed(5)}, '
-              '${issue.location!.longitude.toStringAsFixed(5)}'
-              '${issue.location!.label == null ? '' : ' (${issue.location!.label})'}',
+              l10n.gpsCoords(
+                issue.location!.latitude.toStringAsFixed(5),
+                issue.location!.longitude.toStringAsFixed(5),
+                issue.location!.label == null
+                    ? ''
+                    : ' (${issue.location!.label})',
+              ),
             ),
           ],
           if (issue.attachments.isNotEmpty) ...[

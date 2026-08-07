@@ -2197,6 +2197,168 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add demo voice note'**
   String get addDemoVoiceNote;
+
+  /// No description provided for @disciplineFolderKind.
+  ///
+  /// In en, this message translates to:
+  /// **'Discipline'**
+  String get disciplineFolderKind;
+
+  /// No description provided for @documentTypeFolderKind.
+  ///
+  /// In en, this message translates to:
+  /// **'Document type'**
+  String get documentTypeFolderKind;
+
+  /// No description provided for @onDevicePart.
+  ///
+  /// In en, this message translates to:
+  /// **' · on device'**
+  String get onDevicePart;
+
+  /// No description provided for @cloudPart.
+  ///
+  /// In en, this message translates to:
+  /// **' · cloud'**
+  String get cloudPart;
+
+  /// No description provided for @pageOfTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Page {current} / {total}'**
+  String pageOfTotal(int current, int total);
+
+  /// No description provided for @noPdfPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'No PDF preview available.'**
+  String get noPdfPreview;
+
+  /// No description provided for @textPdfPreviewHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Text PDF preview — open a seeded or on-device PDF for pdfrx.'**
+  String get textPdfPreviewHint;
+
+  /// No description provided for @noPreviewForFileType.
+  ///
+  /// In en, this message translates to:
+  /// **'No preview available for this file type.'**
+  String get noPreviewForFileType;
+
+  /// No description provided for @noneLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get noneLabel;
+
+  /// No description provided for @photoEvidenceCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} photo evidence'**
+  String photoEvidenceCount(int count);
+
+  /// No description provided for @gpsCoords.
+  ///
+  /// In en, this message translates to:
+  /// **'GPS: {lat}, {lng}{labelPart}'**
+  String gpsCoords(String lat, String lng, String labelPart);
+
+  /// No description provided for @demoStubLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Demo stub'**
+  String get demoStubLabel;
+
+  /// No description provided for @fileNoun.
+  ///
+  /// In en, this message translates to:
+  /// **'File'**
+  String get fileNoun;
+
+  /// No description provided for @pickedFileMeta.
+  ///
+  /// In en, this message translates to:
+  /// **'{kind} · {bytes}'**
+  String pickedFileMeta(String kind, String bytes);
+
+  /// No description provided for @inspectionChecksCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} checks · {status}'**
+  String inspectionChecksCount(int count, String status);
+
+  /// No description provided for @hasFailsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'HAS FAILS'**
+  String get hasFailsLabel;
+
+  /// No description provided for @passLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'PASS'**
+  String get passLabel;
+
+  /// No description provided for @photoQueuedPart.
+  ///
+  /// In en, this message translates to:
+  /// **' · photo queued'**
+  String get photoQueuedPart;
+
+  /// No description provided for @photoUploadedPart.
+  ///
+  /// In en, this message translates to:
+  /// **' · photo uploaded'**
+  String get photoUploadedPart;
+
+  /// No description provided for @photoAttachedPart.
+  ///
+  /// In en, this message translates to:
+  /// **' · photo'**
+  String get photoAttachedPart;
+
+  /// No description provided for @geofenceStatusLine.
+  ///
+  /// In en, this message translates to:
+  /// **'{subcontractor} · geofence {status}'**
+  String geofenceStatusLine(String subcontractor, String status);
+
+  /// No description provided for @geofenceOk.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get geofenceOk;
+
+  /// No description provided for @geofenceMiss.
+  ///
+  /// In en, this message translates to:
+  /// **'MISS'**
+  String get geofenceMiss;
+
+  /// No description provided for @musterLoggedOk.
+  ///
+  /// In en, this message translates to:
+  /// **'Muster logged (geofence OK){photoNote}'**
+  String musterLoggedOk(String photoNote);
+
+  /// No description provided for @musterLoggedMiss.
+  ///
+  /// In en, this message translates to:
+  /// **'Muster logged (geofence MISS){photoNote}'**
+  String musterLoggedMiss(String photoNote);
+
+  /// No description provided for @materialInwardLogged.
+  ///
+  /// In en, this message translates to:
+  /// **'Material inward logged{photoNote}'**
+  String materialInwardLogged(String photoNote);
+
+  /// No description provided for @materialConsumptionLogged.
+  ///
+  /// In en, this message translates to:
+  /// **'Material consumption logged{photoNote}'**
+  String materialConsumptionLogged(String photoNote);
 }
 
 class _AppLocalizationsDelegate

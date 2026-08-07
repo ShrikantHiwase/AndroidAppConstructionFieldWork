@@ -700,5 +700,120 @@
   "recordVoiceOffline": "Record voice (offline)",
   "addDemoVoiceOffline": "Add demo voice (offline)",
   "recordVoiceNote": "Record voice note",
-  "addDemoVoiceNote": "Add demo voice note"
+  "addDemoVoiceNote": "Add demo voice note",
+  "disciplineFolderKind": "Discipline",
+  "documentTypeFolderKind": "Document type",
+  "onDevicePart": " · on device",
+  "cloudPart": " · cloud",
+  "pageOfTotal": "Page {current} / {total}",
+  "@pageOfTotal": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "noPdfPreview": "No PDF preview available.",
+  "textPdfPreviewHint": "Text PDF preview — open a seeded or on-device PDF for pdfrx.",
+  "noPreviewForFileType": "No preview available for this file type.",
+  "noneLabel": "None",
+  "photoEvidenceCount": "{count} photo evidence",
+  "@photoEvidenceCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "gpsCoords": "GPS: {lat}, {lng}{labelPart}",
+  "@gpsCoords": {
+    "placeholders": {
+      "lat": {
+        "type": "String"
+      },
+      "lng": {
+        "type": "String"
+      },
+      "labelPart": {
+        "type": "String"
+      }
+    }
+  },
+  "demoStubLabel": "Demo stub",
+  "fileNoun": "File",
+  "pickedFileMeta": "{kind} · {bytes}",
+  "@pickedFileMeta": {
+    "placeholders": {
+      "kind": {
+        "type": "String"
+      },
+      "bytes": {
+        "type": "String"
+      }
+    }
+  },
+  "inspectionChecksCount": "{count} checks · {status}",
+  "@inspectionChecksCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "hasFailsLabel": "HAS FAILS",
+  "passLabel": "PASS",
+  "photoQueuedPart": " · photo queued",
+  "photoUploadedPart": " · photo uploaded",
+  "photoAttachedPart": " · photo",
+  "geofenceStatusLine": "{subcontractor} · geofence {status}",
+  "@geofenceStatusLine": {
+    "placeholders": {
+      "subcontractor": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "geofenceOk": "OK",
+  "geofenceMiss": "MISS",
+  "musterLoggedOk": "Muster logged (geofence OK){photoNote}",
+  "@musterLoggedOk": {
+    "placeholders": {
+      "photoNote": {
+        "type": "String"
+      }
+    }
+  },
+  "musterLoggedMiss": "Muster logged (geofence MISS){photoNote}",
+  "@musterLoggedMiss": {
+    "placeholders": {
+      "photoNote": {
+        "type": "String"
+      }
+    }
+  },
+  "materialInwardLogged": "Material inward logged{photoNote}",
+  "@materialInwardLogged": {
+    "placeholders": {
+      "photoNote": {
+        "type": "String"
+      }
+    }
+  },
+  "materialConsumptionLogged": "Material consumption logged{photoNote}",
+  "@materialConsumptionLogged": {
+    "placeholders": {
+      "photoNote": {
+        "type": "String"
+      }
+    }
+  }
 }

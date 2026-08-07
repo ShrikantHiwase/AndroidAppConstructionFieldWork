@@ -158,8 +158,10 @@ class _DocumentViewerPageState extends ConsumerState<DocumentViewerPage> {
                     icon: const Icon(Icons.chevron_left),
                   ),
                   Text(
-                    'Page ${_pageIndex + 1} / '
-                    '${doc.pdfPages.isEmpty ? 1 : doc.pdfPages.length}',
+                    l10n.pageOfTotal(
+                      _pageIndex + 1,
+                      doc.pdfPages.isEmpty ? 1 : doc.pdfPages.length,
+                    ),
                   ),
                   IconButton(
                     onPressed: doc.pdfPages.isEmpty ||
@@ -199,7 +201,7 @@ class _DocumentViewerPageState extends ConsumerState<DocumentViewerPage> {
                     child: _highlightedText(
                       context,
                       doc.pdfPages.isEmpty
-                          ? 'No PDF preview available.'
+                          ? l10n.noPdfPreview
                           : doc.pdfPages[_pageIndex],
                     ),
                   ),
@@ -209,7 +211,7 @@ class _DocumentViewerPageState extends ConsumerState<DocumentViewerPage> {
             Padding(
               padding: const EdgeInsets.all(12),
               child: Text(
-                'Text PDF preview — open a seeded or on-device PDF for pdfrx.',
+                l10n.textPdfPreviewHint,
                 style: Theme.of(context).textTheme.bodySmall,
               ),
             ),
@@ -220,8 +222,7 @@ class _DocumentViewerPageState extends ConsumerState<DocumentViewerPage> {
                   padding: const EdgeInsets.all(16),
                   child: _highlightedText(
                     context,
-                    doc.textContent ??
-                        'No preview available for this file type.',
+                    doc.textContent ?? l10n.noPreviewForFileType,
                   ),
                 ),
               ),

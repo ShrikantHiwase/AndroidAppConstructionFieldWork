@@ -144,8 +144,14 @@ class _UploadDocumentPageState extends ConsumerState<UploadDocumentPage> {
           if (_localPath != null) ...[
             const SizedBox(height: 8),
             Text(
-              '${_localPath!.startsWith('local://') ? 'Demo stub' : 'File'} · '
-              '${DocumentFilePolicy.formatBytes(_byteSizeBytes ?? _body.text.length)}',
+              l10n.pickedFileMeta(
+                _localPath!.startsWith('local://')
+                    ? l10n.demoStubLabel
+                    : l10n.fileNoun,
+                DocumentFilePolicy.formatBytes(
+                  _byteSizeBytes ?? _body.text.length,
+                ),
+              ),
               style: Theme.of(context).textTheme.bodySmall,
             ),
           ],

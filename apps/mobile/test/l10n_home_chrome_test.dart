@@ -188,6 +188,35 @@ void main() {
     expect(find.text('अभी कोई drawing seed नहीं।'), findsNothing); // seeded
   });
 
+  testWidgets('Hinglish Documents browser folder kind chrome', (tester) async {
+    SharedPreferences.setMockInitialValues({'app.locale_code': 'hi'});
+    final prefs = await SharedPreferences.getInstance();
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          sharedPreferencesProvider.overrideWithValue(prefs),
+        ],
+        child: const FieldApp(),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.widgetWithText(ActionChip, 'client'));
+    await tester.pump();
+    await tester.tap(find.text('Sign in'));
+    await tester.pumpAndSettle();
+
+    await tester.ensureVisible(find.text('Documents'));
+    await tester.tap(find.text('Documents'));
+    await tester.pumpAndSettle();
+    expect(find.text('Discipline'), findsWidgets);
+
+    await tester.tap(find.byType(ListTile).first);
+    await tester.pumpAndSettle();
+    expect(find.text('Document type'), findsWidgets);
+  });
+
   testWidgets('Hinglish Pilot hub chrome from PM home', (tester) async {
     SharedPreferences.setMockInitialValues({'app.locale_code': 'hi'});
     final prefs = await SharedPreferences.getInstance();
@@ -349,6 +378,9 @@ void main() {
     expect(hi.createInvite, 'Invite बनाओ');
     expect(hi.addDemoVoiceNote, 'Demo voice note जोड़ो');
     expect(hi.noVoiceNotesYet, 'अभी कोई voice note नहीं।');
+    expect(hi.musterLoggedOk('+'), 'Muster log हो गया (geofence OK)+');
+    expect(hi.onDevicePart, ' · device पर');
+    expect(hi.noPdfPreview, 'PDF preview उपलब्ध नहीं।');
     final en = lookupAppLocalizations(const Locale('en'));
     expect(en.newIssue, 'New Issue');
     expect(en.syncPendingCount(3), '3 sync');
@@ -366,5 +398,8 @@ void main() {
     expect(en.sendInvite, 'Send invite');
     expect(en.addDemoVoiceNote, 'Add demo voice note');
     expect(en.voiceNotesTitle, 'Voice notes');
+    expect(en.disciplineFolderKind, 'Discipline');
+    expect(en.blockersLine('None'), 'Blockers: None');
+    expect(en.hasFailsLabel, 'HAS FAILS');
   });
 }
