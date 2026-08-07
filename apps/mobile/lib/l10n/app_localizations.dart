@@ -1405,6 +1405,210 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Evidence photo attached'**
   String get evidencePhotoAttached;
+
+  /// No description provided for @tabSafety.
+  ///
+  /// In en, this message translates to:
+  /// **'Safety'**
+  String get tabSafety;
+
+  /// No description provided for @tabQaQc.
+  ///
+  /// In en, this message translates to:
+  /// **'QA/QC'**
+  String get tabQaQc;
+
+  /// No description provided for @tabLabour.
+  ///
+  /// In en, this message translates to:
+  /// **'Labour'**
+  String get tabLabour;
+
+  /// No description provided for @tabMaterials.
+  ///
+  /// In en, this message translates to:
+  /// **'Materials'**
+  String get tabMaterials;
+
+  /// No description provided for @logSafety.
+  ///
+  /// In en, this message translates to:
+  /// **'Log safety'**
+  String get logSafety;
+
+  /// No description provided for @wirChecklist.
+  ///
+  /// In en, this message translates to:
+  /// **'WIR checklist'**
+  String get wirChecklist;
+
+  /// No description provided for @muster.
+  ///
+  /// In en, this message translates to:
+  /// **'Muster'**
+  String get muster;
+
+  /// No description provided for @grnUse.
+  ///
+  /// In en, this message translates to:
+  /// **'GRN / use'**
+  String get grnUse;
+
+  /// No description provided for @noSafetyRecordsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No safety records yet.'**
+  String get noSafetyRecordsYet;
+
+  /// No description provided for @noInspectionsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No inspections yet.'**
+  String get noInspectionsYet;
+
+  /// No description provided for @noLabourMusterYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No labour muster yet (supervisor-led).'**
+  String get noLabourMusterYet;
+
+  /// No description provided for @noMaterialLogsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No material logs yet.'**
+  String get noMaterialLogsYet;
+
+  /// No description provided for @safetyRecord.
+  ///
+  /// In en, this message translates to:
+  /// **'Safety record'**
+  String get safetyRecord;
+
+  /// No description provided for @labourMuster.
+  ///
+  /// In en, this message translates to:
+  /// **'Labour muster'**
+  String get labourMuster;
+
+  /// No description provided for @materialLog.
+  ///
+  /// In en, this message translates to:
+  /// **'Material log'**
+  String get materialLog;
+
+  /// No description provided for @kindLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Kind'**
+  String get kindLabel;
+
+  /// No description provided for @notesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get notesLabel;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
+
+  /// No description provided for @photoRequiredObservation.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo evidence required for observations / incidents.'**
+  String get photoRequiredObservation;
+
+  /// No description provided for @photoOptionalToolbox.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo optional for toolbox talks.'**
+  String get photoOptionalToolbox;
+
+  /// No description provided for @queuedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Queued'**
+  String get queuedLabel;
+
+  /// No description provided for @queuedWithSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Queued · ~{size}'**
+  String queuedWithSize(String size);
+
+  /// No description provided for @photoRequiredForFail.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo required for failed checklist items'**
+  String get photoRequiredForFail;
+
+  /// No description provided for @inspectionSavedWithFailPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Inspection saved with fail photo{size}'**
+  String inspectionSavedWithFailPhoto(String size);
+
+  /// No description provided for @musterDialogHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Logs Civil · Shree Contractors · 18 with geofence check. Photo is optional.'**
+  String get musterDialogHint;
+
+  /// No description provided for @logMuster.
+  ///
+  /// In en, this message translates to:
+  /// **'Log muster'**
+  String get logMuster;
+
+  /// No description provided for @materialDialogHint.
+  ///
+  /// In en, this message translates to:
+  /// **'GRN inward or consumption lite. Photo is optional.'**
+  String get materialDialogHint;
+
+  /// No description provided for @inward.
+  ///
+  /// In en, this message translates to:
+  /// **'Inward'**
+  String get inward;
+
+  /// No description provided for @useLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Use'**
+  String get useLabel;
+
+  /// No description provided for @materialLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Material'**
+  String get materialLabel;
+
+  /// No description provided for @qtyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Qty'**
+  String get qtyLabel;
+
+  /// No description provided for @unitLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Unit'**
+  String get unitLabel;
+
+  /// No description provided for @activityRefOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Activity ref (optional)'**
+  String get activityRefOptional;
 }
 
 class _AppLocalizationsDelegate

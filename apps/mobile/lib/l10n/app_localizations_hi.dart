@@ -731,4 +731,113 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get evidencePhotoAttached => 'Evidence photo attached';
+
+  @override
+  String get tabSafety => 'Safety';
+
+  @override
+  String get tabQaQc => 'QA/QC';
+
+  @override
+  String get tabLabour => 'Labour';
+
+  @override
+  String get tabMaterials => 'Materials';
+
+  @override
+  String get logSafety => 'Safety log करो';
+
+  @override
+  String get wirChecklist => 'WIR checklist';
+
+  @override
+  String get muster => 'Muster';
+
+  @override
+  String get grnUse => 'GRN / use';
+
+  @override
+  String get noSafetyRecordsYet => 'अभी कोई safety record नहीं।';
+
+  @override
+  String get noInspectionsYet => 'अभी कोई inspection नहीं।';
+
+  @override
+  String get noLabourMusterYet => 'अभी labour muster नहीं (supervisor-led).';
+
+  @override
+  String get noMaterialLogsYet => 'अभी कोई material log नहीं।';
+
+  @override
+  String get safetyRecord => 'Safety record';
+
+  @override
+  String get labourMuster => 'Labour muster';
+
+  @override
+  String get materialLog => 'Material log';
+
+  @override
+  String get kindLabel => 'Kind';
+
+  @override
+  String get notesLabel => 'Notes';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get save => 'Save करो';
+
+  @override
+  String get photoRequiredObservation =>
+      'Observation / incident के लिए photo evidence ज़रूरी।';
+
+  @override
+  String get photoOptionalToolbox => 'Toolbox talk के लिए photo optional।';
+
+  @override
+  String get queuedLabel => 'Queued';
+
+  @override
+  String queuedWithSize(String size) {
+    return 'Queued · ~$size';
+  }
+
+  @override
+  String get photoRequiredForFail => 'Fail checklist items के लिए photo ज़रूरी';
+
+  @override
+  String inspectionSavedWithFailPhoto(String size) {
+    return 'Inspection fail photo के साथ save हो गई$size';
+  }
+
+  @override
+  String get musterDialogHint =>
+      'Civil · Shree Contractors · 18 geofence check के साथ log। Photo optional।';
+
+  @override
+  String get logMuster => 'Muster log करो';
+
+  @override
+  String get materialDialogHint =>
+      'GRN inward या consumption lite। Photo optional।';
+
+  @override
+  String get inward => 'Inward';
+
+  @override
+  String get useLabel => 'Use';
+
+  @override
+  String get materialLabel => 'Material';
+
+  @override
+  String get qtyLabel => 'Qty';
+
+  @override
+  String get unitLabel => 'Unit';
+
+  @override
+  String get activityRefOptional => 'Activity ref (optional)';
 }

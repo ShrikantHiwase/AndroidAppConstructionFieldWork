@@ -734,4 +734,114 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get evidencePhotoAttached => 'Evidence photo attached';
+
+  @override
+  String get tabSafety => 'Safety';
+
+  @override
+  String get tabQaQc => 'QA/QC';
+
+  @override
+  String get tabLabour => 'Labour';
+
+  @override
+  String get tabMaterials => 'Materials';
+
+  @override
+  String get logSafety => 'Log safety';
+
+  @override
+  String get wirChecklist => 'WIR checklist';
+
+  @override
+  String get muster => 'Muster';
+
+  @override
+  String get grnUse => 'GRN / use';
+
+  @override
+  String get noSafetyRecordsYet => 'No safety records yet.';
+
+  @override
+  String get noInspectionsYet => 'No inspections yet.';
+
+  @override
+  String get noLabourMusterYet => 'No labour muster yet (supervisor-led).';
+
+  @override
+  String get noMaterialLogsYet => 'No material logs yet.';
+
+  @override
+  String get safetyRecord => 'Safety record';
+
+  @override
+  String get labourMuster => 'Labour muster';
+
+  @override
+  String get materialLog => 'Material log';
+
+  @override
+  String get kindLabel => 'Kind';
+
+  @override
+  String get notesLabel => 'Notes';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get save => 'Save';
+
+  @override
+  String get photoRequiredObservation =>
+      'Photo evidence required for observations / incidents.';
+
+  @override
+  String get photoOptionalToolbox => 'Photo optional for toolbox talks.';
+
+  @override
+  String get queuedLabel => 'Queued';
+
+  @override
+  String queuedWithSize(String size) {
+    return 'Queued · ~$size';
+  }
+
+  @override
+  String get photoRequiredForFail =>
+      'Photo required for failed checklist items';
+
+  @override
+  String inspectionSavedWithFailPhoto(String size) {
+    return 'Inspection saved with fail photo$size';
+  }
+
+  @override
+  String get musterDialogHint =>
+      'Logs Civil · Shree Contractors · 18 with geofence check. Photo is optional.';
+
+  @override
+  String get logMuster => 'Log muster';
+
+  @override
+  String get materialDialogHint =>
+      'GRN inward or consumption lite. Photo is optional.';
+
+  @override
+  String get inward => 'Inward';
+
+  @override
+  String get useLabel => 'Use';
+
+  @override
+  String get materialLabel => 'Material';
+
+  @override
+  String get qtyLabel => 'Qty';
+
+  @override
+  String get unitLabel => 'Unit';
+
+  @override
+  String get activityRefOptional => 'Activity ref (optional)';
 }
