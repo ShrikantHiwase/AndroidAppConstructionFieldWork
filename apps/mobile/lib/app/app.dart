@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../core/l10n/app_locale_provider.dart';
 import '../core/notifications/notification_deep_link.dart';
 import '../core/providers/connectivity_provider.dart';
 import '../core/theme/app_theme.dart';
@@ -9,6 +10,7 @@ import '../features/auth/presentation/auth_controller.dart';
 import '../features/auth/presentation/biometric_unlock_page.dart';
 import '../features/auth/presentation/login_page.dart';
 import '../features/auth/presentation/role_home_page.dart';
+import '../l10n/app_localizations.dart';
 
 class FieldApp extends ConsumerWidget {
   const FieldApp({super.key});
@@ -17,12 +19,16 @@ class FieldApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final auth = ref.watch(authControllerProvider);
     final firebaseEnabled = ref.watch(firebaseEnabledProvider);
+    final localeOverride = ref.watch(appLocaleProvider);
 
     return MaterialApp(
-      title: 'Field Evidence',
+      onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
       navigatorKey: rootNavigatorKey,
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light(),
+      locale: localeOverride,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       home: switch (auth.status) {
         AuthStatus.unknown => const _BootSplash(),
         AuthStatus.signedOut => const LoginPage(),

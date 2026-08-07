@@ -15,26 +15,104 @@ class AppLocalizationsHi extends AppLocalizations {
   String get offlineBadge => 'ऑफ़लाइन';
 
   @override
-  String get syncPending => 'सिंक हो रहा है…';
+  String syncPendingCount(int count) {
+    return '$count sync';
+  }
 
   @override
-  String get newIssue => 'नया इश्यू';
+  String get languageEnglish => 'English';
+
+  @override
+  String get languageHinglish => 'Hinglish';
+
+  @override
+  String get languagePickerLabel => 'भाषा / Language';
+
+  @override
+  String get newIssue => 'नया Issue';
 
   @override
   String get todaysDpr => 'आज का DPR';
 
   @override
-  String get pinOnDrawing => 'ड्रॉइंग पर पिन';
+  String get pinOnDrawing => 'Drawing पर Pin';
 
   @override
-  String get roleEngineerHome => 'साइट पर काम कैप्चर करें';
+  String get siteOps => 'Site ops';
 
   @override
-  String get rolePmHome => 'क्यू और अप्रूवल';
+  String get reminders => 'Reminders';
 
   @override
-  String get roleQaHome => 'इंस्पेक्शन';
+  String get openQueue => 'Open queue';
 
   @override
-  String get roleClientHome => 'प्रगति और दस्तावेज़';
+  String get dprs => 'DPRs';
+
+  @override
+  String get digests => 'Digests';
+
+  @override
+  String get weeklyPack => 'Weekly pack';
+
+  @override
+  String get weeklyProgress => 'Weekly progress';
+
+  @override
+  String get pilot => 'Pilot';
+
+  @override
+  String get inspections => 'Inspections';
+
+  @override
+  String get qualityIssues => 'Quality issues';
+
+  @override
+  String get issues => 'Issues';
+
+  @override
+  String get documents => 'Documents';
+
+  @override
+  String get inviteUser => 'Invite user';
+
+  @override
+  String get roleEngineerTitle => 'Site capture';
+
+  @override
+  String get roleEngineerSubtitle =>
+      'Photo + GPS से issue बनाओ। DPR ready रखो।';
+
+  @override
+  String get rolePmTitle => 'PM queue';
+
+  @override
+  String get rolePmSubtitle =>
+      'Open issues/RFIs देखो, assign करो, status approve करो।';
+
+  @override
+  String get roleQaTitle => 'QA / QC';
+
+  @override
+  String get roleQaSubtitle =>
+      'Inspections और quality issues — photo evidence के साथ।';
+
+  @override
+  String get roleClientTitle => 'Client view';
+
+  @override
+  String get roleClientSubtitle => 'Read-only progress और project documents.';
+
+  @override
+  String get roleAdminTitle => 'Admin';
+
+  @override
+  String get roleAdminSubtitle =>
+      'Users invite करो, roles/projects assign करो।';
+
+  @override
+  String get primaryActions => 'Primary actions';
+
+  @override
+  String get signIn => 'Sign in';
 }

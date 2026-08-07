@@ -110,11 +110,29 @@ abstract class AppLocalizations {
   /// **'Offline'**
   String get offlineBadge;
 
-  /// No description provided for @syncPending.
+  /// Pending outbox count in the home app bar
   ///
   /// In en, this message translates to:
-  /// **'Syncing…'**
-  String get syncPending;
+  /// **'{count} sync'**
+  String syncPendingCount(int count);
+
+  /// No description provided for @languageEnglish.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get languageEnglish;
+
+  /// No description provided for @languageHinglish.
+  ///
+  /// In en, this message translates to:
+  /// **'Hinglish'**
+  String get languageHinglish;
+
+  /// No description provided for @languagePickerLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get languagePickerLabel;
 
   /// No description provided for @newIssue.
   ///
@@ -134,29 +152,155 @@ abstract class AppLocalizations {
   /// **'Pin on Drawing'**
   String get pinOnDrawing;
 
-  /// No description provided for @roleEngineerHome.
+  /// No description provided for @siteOps.
   ///
   /// In en, this message translates to:
-  /// **'Capture work on site'**
-  String get roleEngineerHome;
+  /// **'Site ops'**
+  String get siteOps;
 
-  /// No description provided for @rolePmHome.
+  /// No description provided for @reminders.
   ///
   /// In en, this message translates to:
-  /// **'Queue and approvals'**
-  String get rolePmHome;
+  /// **'Reminders'**
+  String get reminders;
 
-  /// No description provided for @roleQaHome.
+  /// No description provided for @openQueue.
+  ///
+  /// In en, this message translates to:
+  /// **'Open queue'**
+  String get openQueue;
+
+  /// No description provided for @dprs.
+  ///
+  /// In en, this message translates to:
+  /// **'DPRs'**
+  String get dprs;
+
+  /// No description provided for @digests.
+  ///
+  /// In en, this message translates to:
+  /// **'Digests'**
+  String get digests;
+
+  /// No description provided for @weeklyPack.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly pack'**
+  String get weeklyPack;
+
+  /// No description provided for @weeklyProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly progress'**
+  String get weeklyProgress;
+
+  /// No description provided for @pilot.
+  ///
+  /// In en, this message translates to:
+  /// **'Pilot'**
+  String get pilot;
+
+  /// No description provided for @inspections.
   ///
   /// In en, this message translates to:
   /// **'Inspections'**
-  String get roleQaHome;
+  String get inspections;
 
-  /// No description provided for @roleClientHome.
+  /// No description provided for @qualityIssues.
   ///
   /// In en, this message translates to:
-  /// **'Progress and documents'**
-  String get roleClientHome;
+  /// **'Quality issues'**
+  String get qualityIssues;
+
+  /// No description provided for @issues.
+  ///
+  /// In en, this message translates to:
+  /// **'Issues'**
+  String get issues;
+
+  /// No description provided for @documents.
+  ///
+  /// In en, this message translates to:
+  /// **'Documents'**
+  String get documents;
+
+  /// No description provided for @inviteUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite user'**
+  String get inviteUser;
+
+  /// No description provided for @roleEngineerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Site capture'**
+  String get roleEngineerTitle;
+
+  /// No description provided for @roleEngineerSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Log issues with photos and location. Keep DPR ready.'**
+  String get roleEngineerSubtitle;
+
+  /// No description provided for @rolePmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'PM queue'**
+  String get rolePmTitle;
+
+  /// No description provided for @rolePmSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Review open issues/RFIs, assign work, approve status.'**
+  String get rolePmSubtitle;
+
+  /// No description provided for @roleQaTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'QA / QC'**
+  String get roleQaTitle;
+
+  /// No description provided for @roleQaSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Inspections and quality issues with photo evidence.'**
+  String get roleQaSubtitle;
+
+  /// No description provided for @roleClientTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Client view'**
+  String get roleClientTitle;
+
+  /// No description provided for @roleClientSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Read-only progress and project documents.'**
+  String get roleClientSubtitle;
+
+  /// No description provided for @roleAdminTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin'**
+  String get roleAdminTitle;
+
+  /// No description provided for @roleAdminSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite users, assign roles and projects, org settings.'**
+  String get roleAdminSubtitle;
+
+  /// No description provided for @primaryActions.
+  ///
+  /// In en, this message translates to:
+  /// **'Primary actions'**
+  String get primaryActions;
+
+  /// No description provided for @signIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in'**
+  String get signIn;
 }
 
 class _AppLocalizationsDelegate

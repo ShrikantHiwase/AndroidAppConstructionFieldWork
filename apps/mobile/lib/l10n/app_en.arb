@@ -8,12 +8,44 @@
   "@offlineBadge": {
     "description": "Shown when the device has no network"
   },
-  "syncPending": "Syncing…",
+  "syncPendingCount": "{count} sync",
+  "@syncPendingCount": {
+    "description": "Pending outbox count in the home app bar",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "languageEnglish": "English",
+  "languageHinglish": "Hinglish",
+  "languagePickerLabel": "Language",
   "newIssue": "New Issue",
   "todaysDpr": "Today's DPR",
   "pinOnDrawing": "Pin on Drawing",
-  "roleEngineerHome": "Capture work on site",
-  "rolePmHome": "Queue and approvals",
-  "roleQaHome": "Inspections",
-  "roleClientHome": "Progress and documents"
+  "siteOps": "Site ops",
+  "reminders": "Reminders",
+  "openQueue": "Open queue",
+  "dprs": "DPRs",
+  "digests": "Digests",
+  "weeklyPack": "Weekly pack",
+  "weeklyProgress": "Weekly progress",
+  "pilot": "Pilot",
+  "inspections": "Inspections",
+  "qualityIssues": "Quality issues",
+  "issues": "Issues",
+  "documents": "Documents",
+  "inviteUser": "Invite user",
+  "roleEngineerTitle": "Site capture",
+  "roleEngineerSubtitle": "Log issues with photos and location. Keep DPR ready.",
+  "rolePmTitle": "PM queue",
+  "rolePmSubtitle": "Review open issues/RFIs, assign work, approve status.",
+  "roleQaTitle": "QA / QC",
+  "roleQaSubtitle": "Inspections and quality issues with photo evidence.",
+  "roleClientTitle": "Client view",
+  "roleClientSubtitle": "Read-only progress and project documents.",
+  "roleAdminTitle": "Admin",
+  "roleAdminSubtitle": "Invite users, assign roles and projects, org settings.",
+  "primaryActions": "Primary actions",
+  "signIn": "Sign in"
 }

@@ -10,7 +10,7 @@ lib/
   core/                theme, constants, shared widgets
   features/            auth, projects, issues, rfis, documents, dpr, sync, admin
   sync/outbox/         offline outbox contracts
-  l10n/                ARB (en + hi stub)
+  l10n/                ARB (en + Hinglish hi) — home chrome + Offline
 ```
 
 ## Commands

@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/constants/app_constants.dart';
+import '../../../core/l10n/app_locale_provider.dart';
 import '../../../core/notifications/notification_deep_link.dart';
 import '../../../core/notifications/notification_providers.dart';
 import '../../../core/providers/connectivity_provider.dart';
 import '../../../core/telemetry/telemetry_providers.dart';
 import '../../../core/widgets/offline_badge.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../admin/presentation/admin_invites_page.dart';
 import '../../client_progress/presentation/weekly_progress_page.dart';
 import '../../digests/presentation/digests_page.dart';
@@ -48,117 +50,119 @@ class _RoleHomePageState extends ConsumerState<RoleHomePage> {
       return const Scaffold(body: Center(child: Text('No session')));
     }
 
+    final l10n = AppLocalizations.of(context);
+
     return switch (session.activeRole) {
       AppRole.siteEngineer => _RoleScaffold(
           session: session,
-          title: 'Site capture',
-          subtitle: 'Log issues with photos and location. Keep DPR ready.',
+          title: l10n.roleEngineerTitle,
+          subtitle: l10n.roleEngineerSubtitle,
           actions: [
             _PrimaryAction(
               Icons.report_problem_outlined,
-              'New Issue',
+              l10n.newIssue,
               onPressed: () => _open(context, const CreateIssuePage()),
             ),
             _PrimaryAction(
               Icons.assignment_outlined,
-              "Today's DPR",
+              l10n.todaysDpr,
               onPressed: () => _open(context, const TodaysDprPage()),
             ),
             _PrimaryAction(
               Icons.push_pin_outlined,
-              'Pin on Drawing',
+              l10n.pinOnDrawing,
               onPressed: () => _open(context, const DrawingsListPage()),
             ),
             _PrimaryAction(
               Icons.health_and_safety_outlined,
-              'Site ops',
+              l10n.siteOps,
               onPressed: () => _open(context, const SiteOpsHubPage()),
             ),
             _PrimaryAction(
               Icons.notifications_active_outlined,
-              'Reminders',
+              l10n.reminders,
               onPressed: () => _open(context, const DigestsPage()),
             ),
           ],
         ),
       AppRole.projectManager => _RoleScaffold(
           session: session,
-          title: 'PM queue',
-          subtitle: 'Review open issues/RFIs, assign work, approve status.',
+          title: l10n.rolePmTitle,
+          subtitle: l10n.rolePmSubtitle,
           actions: [
             _PrimaryAction(
               Icons.inbox_outlined,
-              'Open queue',
+              l10n.openQueue,
               onPressed: () => _open(context, const IssuesListPage()),
             ),
             _PrimaryAction(
               Icons.assignment_outlined,
-              'DPRs',
+              l10n.dprs,
               onPressed: () => _open(context, const DprHomePage()),
             ),
             _PrimaryAction(
               Icons.notifications_active_outlined,
-              'Digests',
+              l10n.digests,
               onPressed: () => _open(context, const DigestsPage()),
             ),
             _PrimaryAction(
               Icons.calendar_view_week_outlined,
-              'Weekly pack',
+              l10n.weeklyPack,
               onPressed: () => _open(context, const WeeklyProgressPage()),
             ),
             _PrimaryAction(
               Icons.health_and_safety_outlined,
-              'Site ops',
+              l10n.siteOps,
               onPressed: () => _open(context, const SiteOpsHubPage()),
             ),
             _PrimaryAction(
               Icons.flag_outlined,
-              'Pilot',
+              l10n.pilot,
               onPressed: () => _open(context, const PilotHubPage()),
             ),
           ],
         ),
       AppRole.qaQc => _RoleScaffold(
           session: session,
-          title: 'QA / QC',
-          subtitle: 'Inspections and quality issues with photo evidence.',
+          title: l10n.roleQaTitle,
+          subtitle: l10n.roleQaSubtitle,
           actions: [
             _PrimaryAction(
               Icons.checklist_outlined,
-              'Inspections',
+              l10n.inspections,
               onPressed: () =>
                   _open(context, const SiteOpsHubPage(initialTab: 1)),
             ),
             _PrimaryAction(
               Icons.report_problem_outlined,
-              'Quality issues',
+              l10n.qualityIssues,
               onPressed: () => _open(context, const IssuesListPage()),
             ),
             _PrimaryAction(
               Icons.health_and_safety_outlined,
-              'Site ops',
+              l10n.siteOps,
               onPressed: () => _open(context, const SiteOpsHubPage()),
             ),
           ],
         ),
       AppRole.client => _RoleScaffold(
           session: session,
-          title: 'Client view',
-          subtitle: 'Read-only progress and project documents.',
+          title: l10n.roleClientTitle,
+          subtitle: l10n.roleClientSubtitle,
           actions: [
             _PrimaryAction(
               Icons.calendar_view_week_outlined,
-              'Weekly progress',
+              l10n.weeklyProgress,
               onPressed: () => _open(context, const WeeklyProgressPage()),
             ),
             _PrimaryAction(
               Icons.list_alt_outlined,
-              'Issues',
+              l10n.issues,
               onPressed: () => _open(context, const IssuesListPage()),
             ),
             _PrimaryAction(
               Icons.folder_open_outlined,
-              'Documents',
+              l10n.documents,
               onPressed: () => _open(context, const DocumentsBrowserPage()),
             ),
           ],
@@ -166,37 +170,37 @@ class _RoleHomePageState extends ConsumerState<RoleHomePage> {
         ),
       AppRole.admin => _RoleScaffold(
           session: session,
-          title: 'Admin',
-          subtitle: 'Invite users, assign roles and projects, org settings.',
+          title: l10n.roleAdminTitle,
+          subtitle: l10n.roleAdminSubtitle,
           actions: [
             _PrimaryAction(
               Icons.folder_open_outlined,
-              'Documents',
+              l10n.documents,
               onPressed: () => _open(context, const DocumentsBrowserPage()),
             ),
             _PrimaryAction(
               Icons.list_alt_outlined,
-              'Issues',
+              l10n.issues,
               onPressed: () => _open(context, const IssuesListPage()),
             ),
             _PrimaryAction(
               Icons.calendar_view_week_outlined,
-              'Weekly pack',
+              l10n.weeklyPack,
               onPressed: () => _open(context, const WeeklyProgressPage()),
             ),
             _PrimaryAction(
               Icons.person_add_outlined,
-              'Invite user',
+              l10n.inviteUser,
               onPressed: () => _open(context, const AdminInvitesPage()),
             ),
             _PrimaryAction(
               Icons.notifications_active_outlined,
-              'Digests',
+              l10n.digests,
               onPressed: () => _open(context, const DigestsPage()),
             ),
             _PrimaryAction(
               Icons.flag_outlined,
-              'Pilot',
+              l10n.pilot,
               onPressed: () => _open(context, const PilotHubPage()),
             ),
           ],
@@ -234,6 +238,7 @@ class _RoleScaffold extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final textTheme = Theme.of(context).textTheme;
+    final l10n = AppLocalizations.of(context);
     final offline = ref.watch(isOfflineProvider);
     final pending = ref.watch(pendingSyncCountProvider).valueOrNull ?? 0;
     final role = session.activeRole;
@@ -255,7 +260,7 @@ class _RoleScaffold extends ConsumerWidget {
               padding: const EdgeInsets.only(right: 4),
               child: Center(
                 child: Text(
-                  '$pending sync',
+                  l10n.syncPendingCount(pending),
                   style: textTheme.labelLarge,
                 ),
               ),
@@ -263,6 +268,12 @@ class _RoleScaffold extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.only(right: 8),
             child: Center(child: OfflineBadge(isOffline: offline)),
+          ),
+          IconButton(
+            tooltip: l10n.languagePickerLabel,
+            onPressed: () =>
+                ref.read(appLocaleProvider.notifier).cycle(),
+            icon: const Icon(Icons.translate_outlined),
           ),
           IconButton(
             tooltip: offline ? 'Go online & sync' : 'Simulate offline',
@@ -323,7 +334,7 @@ class _RoleScaffold extends ConsumerWidget {
                 .toList(),
           ),
           const SizedBox(height: 24),
-          Text('Primary actions', style: textTheme.titleMedium),
+          Text(l10n.primaryActions, style: textTheme.titleMedium),
           const SizedBox(height: 12),
           Wrap(
             spacing: 12,
