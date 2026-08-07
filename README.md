@@ -83,6 +83,7 @@ docs/              Build plan and training
 | Pilot issue-create timing | Done |
 | Pilot DPR submit timing | Done |
 | Pilot UAT checklist parity | Done |
+| Hinglish home chrome (ARB) | Done |
 | FlutterFire configure + store release | Next (needs your Firebase project) |
 | Phase 3 Enterprise hooks | Deferred |
 

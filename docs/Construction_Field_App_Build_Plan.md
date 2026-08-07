@@ -327,7 +327,8 @@ docs/                 # plans and training
 42. ~~Pilot issue-create timing~~ — New Issue open→save duration samples; Pilot hub median (&lt;90s, ≥3 samples) + PDF/share + `issue_create` telemetry.
 43. ~~Pilot DPR submit timing~~ — Today's DPR open→Submit duration samples; Pilot hub median (&lt;3m, ≥3 samples) + PDF/share + `dpr_submit` telemetry.
 44. ~~Pilot UAT checklist parity~~ — `UatItemIds` matches docs/UAT_Checklist.md (35 items: activity evidence, pilot PDF, client weekly PDF + refreshed labels).
-45. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift remains a follow-up.
+45. ~~Hinglish ARB home chrome~~ — MaterialApp locale + Offline badge + login EN/Hinglish toggle + role-home CTAs/titles; translate icon cycles locale.
+46. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift remains a follow-up.
 7. ~~Pilot / UAT pack~~ — training guide, UAT checklist, hypercare metrics docs + in-app Pilot hub (checklist + live snapshot). Live-site execution and store tracks still need your Firebase project / devices.
 8. ~~Admin invites~~ — in-app create invite + demo accept via FakeAuth (scoped memberships); Cloud Functions email later.
 9. ~~Device sensors~~ — `geolocator` / `image_picker` / `local_auth` / `record` / `file_picker` with Fake defaults; enable native via `--dart-define=USE_NATIVE_SENSORS=true`. See `docs/Device_Sensors.md`.
@@ -366,6 +367,7 @@ docs/                 # plans and training
 42. ~~Pilot issue-create timing~~ — New Issue open→save duration samples; Pilot hub median (&lt;90s, ≥3 samples) + PDF/share + `issue_create` telemetry.
 43. ~~Pilot DPR submit timing~~ — Today's DPR open→Submit duration samples; Pilot hub median (&lt;3m, ≥3 samples) + PDF/share + `dpr_submit` telemetry.
 44. ~~Pilot UAT checklist parity~~ — `UatItemIds` matches docs/UAT_Checklist.md (35 items: activity evidence, pilot PDF, client weekly PDF + refreshed labels).
-45. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift remains a follow-up.
+45. ~~Hinglish ARB home chrome~~ — MaterialApp locale + Offline badge + login EN/Hinglish toggle + role-home CTAs/titles; translate icon cycles locale.
+46. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift remains a follow-up.
 
 No native-only Android path; iOS ships from the same Flutter codebase. Enterprise BIM/Forge remains a WebView module after MVP.

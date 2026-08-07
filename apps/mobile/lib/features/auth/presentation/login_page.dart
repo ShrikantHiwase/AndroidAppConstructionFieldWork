@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/l10n/app_locale_provider.dart';
+import '../../../l10n/app_localizations.dart';
 import 'auth_controller.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
@@ -42,8 +44,11 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   Widget build(BuildContext context) {
     final auth = ref.watch(authControllerProvider);
     final firebaseEnabled = ref.watch(firebaseEnabledProvider);
+    final localeOverride = ref.watch(appLocaleProvider);
+    final l10n = AppLocalizations.of(context);
     final textTheme = Theme.of(context).textTheme;
     final busy = auth.isSubmitting;
+    final selectedLang = localeOverride?.languageCode ?? 'en';
 
     return Scaffold(
       body: SafeArea(
@@ -51,7 +56,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           padding: const EdgeInsets.all(24),
           children: [
             const SizedBox(height: 24),
-            Text('Field Evidence', style: textTheme.headlineLarge),
+            Text(l10n.appTitle, style: textTheme.headlineLarge),
             const SizedBox(height: 8),
             Text(
               firebaseEnabled
@@ -66,6 +71,25 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 color: Theme.of(context).colorScheme.primary,
               ),
             ),
+            const SizedBox(height: 16),
+            Text(l10n.languagePickerLabel, style: textTheme.titleSmall),
+            const SizedBox(height: 8),
+            SegmentedButton<String>(
+              segments: [
+                ButtonSegment(
+                  value: 'en',
+                  label: Text(l10n.languageEnglish),
+                ),
+                ButtonSegment(
+                  value: 'hi',
+                  label: Text(l10n.languageHinglish),
+                ),
+              ],
+              selected: {selectedLang == 'hi' ? 'hi' : 'en'},
+              onSelectionChanged: (next) {
+                ref.read(appLocaleProvider.notifier).setLocaleCode(next.first);
+              },
+            ),
             const SizedBox(height: 32),
             Form(
               key: _formKey,
@@ -79,8 +103,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       labelText: 'Email',
                       border: OutlineInputBorder(),
                     ),
-                    validator: (v) =>
-                        (v == null || v.trim().isEmpty) ? 'Email required' : null,
+                    validator: (v) => (v == null || v.trim().isEmpty)
+                        ? 'Email required'
+                        : null,
                   ),
                   const SizedBox(height: 16),
                   TextFormField(
@@ -114,7 +139,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       width: 22,
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
-                  : const Text('Sign in'),
+                  : Text(l10n.signIn),
             ),
             if (!firebaseEnabled) ...[
               const SizedBox(height: 32),
