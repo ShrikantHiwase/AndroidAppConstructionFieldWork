@@ -50,7 +50,7 @@ on-device PDF paths; TXT/CSV keep search; synthetic text pages remain as fallbac
 
 ## Phase 2a — DPR & drawing pins
 
-- **Today's DPR:** weather, manpower, activities (+ demo photos), blockers; submit; copy WhatsApp/PDF summary.
+- **Today's DPR:** weather, manpower, activities (+ demo photos), blockers; submit; copy WhatsApp/PDF summary. Demo mode also seeds **yesterday's** submitted DPR (synced) so Digests blockers / Weekly pack have progress while **today** stays empty for nudge demos.
 - **Pin on Drawing:** seeded GA Plan sheet; select an issue, optionally attach evidence photo (camera/gallery), tap to drop a punch pin. Photos enqueue Storage upload then create (demo → `demo://`).
 
 ## Phase 2b — Site ops
