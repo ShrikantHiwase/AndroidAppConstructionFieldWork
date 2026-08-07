@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../domain/document_models.dart';
 import 'document_viewer_page.dart';
@@ -34,13 +35,14 @@ class _DocumentsBrowserPageState extends ConsumerState<DocumentsBrowserPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final foldersAsync = ref.watch(foldersProvider);
     final docsAsync = ref.watch(documentsInFolderProvider(_current?.id));
     final session = ref.watch(authSessionProvider);
     final canUpload =
         session != null && canUploadDocuments(session.activeRole);
 
-    final title = _current?.name ?? 'Documents';
+    final title = _current?.name ?? l10n.documents;
     final crumb = _stack
         .whereType<DocFolder>()
         .map((f) => f.name)
@@ -56,7 +58,7 @@ class _DocumentsBrowserPageState extends ConsumerState<DocumentsBrowserPage> {
         actions: [
           if (canUpload && _current?.kind == FolderKind.documentType)
             IconButton(
-              tooltip: 'Upload',
+              tooltip: l10n.uploadTooltip,
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute<void>(
@@ -85,8 +87,8 @@ class _DocumentsBrowserPageState extends ConsumerState<DocumentsBrowserPage> {
                 return Center(
                   child: Text(
                     _current == null
-                        ? 'No document folders yet.'
-                        : 'Empty folder. Upload a file to get started.',
+                        ? l10n.noDocumentFoldersYet
+                        : l10n.emptyFolderUploadHint,
                   ),
                 );
               }

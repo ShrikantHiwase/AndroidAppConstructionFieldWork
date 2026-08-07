@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/device/evidence_capture.dart';
 import '../../../core/device/evidence_image_policy.dart';
 import '../../../core/device/device_providers.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../../issues/domain/issue_models.dart';
 import '../../issues/presentation/field_records_providers.dart';
@@ -15,16 +16,17 @@ class DrawingsListPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final drawings = ref.watch(drawingsProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Drawings')),
+      appBar: AppBar(title: Text(l10n.drawingsTitle)),
       body: drawings.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(child: Text('$e')),
         data: (list) {
           if (list.isEmpty) {
-            return const Center(child: Text('No drawings seeded yet.'));
+            return Center(child: Text(l10n.noDrawingsSeededYet));
           }
           return ListView.separated(
             padding: const EdgeInsets.all(16),
@@ -41,7 +43,9 @@ class DrawingsListPage extends ConsumerWidget {
                 ),
                 leading: const Icon(Icons.map_outlined),
                 title: Text(sheet.title),
-                subtitle: Text('${sheet.version} · ${sheet.pageCount} pages'),
+                subtitle: Text(
+                  l10n.drawingPagesCount(sheet.version, sheet.pageCount),
+                ),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () {
                   Navigator.of(context).push(
@@ -89,6 +93,7 @@ class _DrawingPinPageState extends ConsumerState<DrawingPinPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final drawings =
         ref.watch(drawingsProvider).valueOrNull ?? const <DrawingSheet>[];
     DrawingSheet? sheet;
@@ -106,8 +111,8 @@ class _DrawingPinPageState extends ConsumerState<DrawingPinPage> {
 
     if (sheet == null || session == null) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Drawing')),
-        body: const Center(child: Text('Drawing not found')),
+        appBar: AppBar(title: Text(l10n.drawingNoun)),
+        body: Center(child: Text(l10n.drawingNotFound)),
       );
     }
     final current = sheet;
@@ -139,10 +144,10 @@ class _DrawingPinPageState extends ConsumerState<DrawingPinPage> {
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
               child: DropdownMenu<Issue>(
                 expandedInsets: EdgeInsets.zero,
-                label: const Text('Link issue'),
+                label: Text(l10n.linkIssue),
                 hintText: issues.isEmpty
-                    ? 'Create an issue first'
-                    : 'Select issue to pin',
+                    ? l10n.createIssueFirst
+                    : l10n.selectIssueToPin,
                 dropdownMenuEntries: issues
                     .map(
                       (i) => DropdownMenuEntry(value: i, label: i.title),
@@ -163,14 +168,14 @@ class _DrawingPinPageState extends ConsumerState<DrawingPinPage> {
                         ? null
                         : () => _attachPhoto(EvidencePhotoSource.camera),
                     icon: const Icon(Icons.photo_camera_outlined),
-                    label: const Text('Add photo'),
+                    label: Text(l10n.addPhoto),
                   ),
                   OutlinedButton.icon(
                     onPressed: _busy
                         ? null
                         : () => _attachPhoto(EvidencePhotoSource.gallery),
                     icon: const Icon(Icons.photo_library_outlined),
-                    label: const Text('Gallery'),
+                    label: Text(l10n.gallery),
                   ),
                   if (photoReady)
                     Text(
@@ -180,7 +185,7 @@ class _DrawingPinPageState extends ConsumerState<DrawingPinPage> {
                     )
                   else
                     Text(
-                      'Photo optional',
+                      l10n.photoOptional,
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                 ],
@@ -221,12 +226,15 @@ class _DrawingPinPageState extends ConsumerState<DrawingPinPage> {
                                 );
                             if (context.mounted) {
                               final photoNote = photoReady
-                                  ? ' + evidence photo'
+                                  ? l10n.plusEvidencePhoto
                                   : '';
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text(
-                                    'Pinned "${_selectedIssue!.title}"$photoNote',
+                                    l10n.pinnedIssueSnack(
+                                      _selectedIssue!.title,
+                                      photoNote,
+                                    ),
                                   ),
                                 ),
                               );
@@ -265,10 +273,15 @@ class _DrawingPinPageState extends ConsumerState<DrawingPinPage> {
                           child: Padding(
                             padding: const EdgeInsets.all(16),
                             child: Text(
-                              '${current.title}\n${current.version}\nPage $_page\n\n'
-                              'Tap to drop a punch pin'
-                              '${_selectedIssue == null ? ' (select an issue first)' : ''}'
-                              '${photoReady ? ' with evidence photo' : ''}.',
+                              l10n.tapSheetHint(
+                                current.title,
+                                current.version,
+                                _page,
+                                _selectedIssue == null
+                                    ? l10n.selectIssueFirstParen
+                                    : '',
+                                photoReady ? l10n.withEvidencePhoto : '',
+                              ),
                               style: Theme.of(context).textTheme.bodyLarge,
                             ),
                           ),

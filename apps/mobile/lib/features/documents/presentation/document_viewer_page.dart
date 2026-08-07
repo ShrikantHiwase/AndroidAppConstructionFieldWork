@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pdfrx/pdfrx.dart';
 
 import '../../../core/share/share_port.dart';
+import '../../../l10n/app_localizations.dart';
 import '../domain/document_models.dart';
 import '../domain/pdf_open_source.dart';
 import 'documents_providers.dart';
@@ -50,14 +51,15 @@ class _DocumentViewerPageState extends ConsumerState<DocumentViewerPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     if (_loading) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
     final doc = _doc;
     if (doc == null) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Document')),
-        body: const Center(child: Text('Document not found')),
+        appBar: AppBar(title: Text(l10n.documentNoun)),
+        body: Center(child: Text(l10n.documentNotFound)),
       );
     }
 
@@ -71,7 +73,7 @@ class _DocumentViewerPageState extends ConsumerState<DocumentViewerPage> {
         actions: [
           if (!doc.downloaded)
             IconButton(
-              tooltip: 'Download',
+              tooltip: l10n.downloadTooltip,
               onPressed: () async {
                 final updated = await ref
                     .read(documentsRepositoryProvider)
@@ -79,14 +81,14 @@ class _DocumentViewerPageState extends ConsumerState<DocumentViewerPage> {
                 if (mounted) setState(() => _doc = updated);
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Saved on device')),
+                    SnackBar(content: Text(l10n.savedOnDevice)),
                   );
                 }
               },
               icon: const Icon(Icons.download_outlined),
             ),
           IconButton(
-            tooltip: 'Share document summary',
+            tooltip: l10n.shareDocumentSummaryTooltip,
             onPressed: () async {
               final doc = _doc;
               if (doc == null) return;
@@ -124,7 +126,7 @@ class _DocumentViewerPageState extends ConsumerState<DocumentViewerPage> {
               child: TextField(
                 controller: _search,
                 decoration: InputDecoration(
-                  labelText: 'Search',
+                  labelText: l10n.searchLabel,
                   border: const OutlineInputBorder(),
                   suffixIcon: IconButton(
                     icon: const Icon(Icons.search),
@@ -140,7 +142,7 @@ class _DocumentViewerPageState extends ConsumerState<DocumentViewerPage> {
             Padding(
               padding: const EdgeInsets.all(12),
               child: Text(
-                'PDF viewer (pdfrx) — pinch to zoom, scroll pages.',
+                l10n.pdfrxViewerHint,
                 style: Theme.of(context).textTheme.bodySmall,
               ),
             ),

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/device/device_providers.dart';
 import '../../../core/device/document_file_policy.dart';
 import '../../../core/providers/connectivity_provider.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../domain/document_models.dart';
 import 'documents_providers.dart';
@@ -106,23 +107,24 @@ class _UploadDocumentPageState extends ConsumerState<UploadDocumentPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final native = ref.watch(usingNativeSensorsProvider);
     return Scaffold(
-      appBar: AppBar(title: const Text('Upload document')),
+      appBar: AppBar(title: Text(l10n.uploadDocument)),
       body: ListView(
         padding: const EdgeInsets.all(24),
         children: [
           TextFormField(
             controller: _name,
-            decoration: const InputDecoration(
-              labelText: 'File name',
-              border: OutlineInputBorder(),
+            decoration: InputDecoration(
+              labelText: l10n.fileNameLabel,
+              border: const OutlineInputBorder(),
             ),
           ),
           const SizedBox(height: 16),
           DropdownMenu<DocContentType>(
             initialSelection: _type,
-            label: const Text('Type'),
+            label: Text(l10n.typeLabel),
             expandedInsets: EdgeInsets.zero,
             dropdownMenuEntries: const [
               DropdownMenuEntry(value: DocContentType.txt, label: 'TXT'),
@@ -137,7 +139,7 @@ class _UploadDocumentPageState extends ConsumerState<UploadDocumentPage> {
           OutlinedButton.icon(
             onPressed: _saving ? null : _pick,
             icon: const Icon(Icons.attach_file),
-            label: Text(native ? 'Pick file' : 'Pick demo file'),
+            label: Text(native ? l10n.pickFile : l10n.pickDemoFile),
           ),
           if (_localPath != null) ...[
             const SizedBox(height: 8),
@@ -153,8 +155,8 @@ class _UploadDocumentPageState extends ConsumerState<UploadDocumentPage> {
             maxLines: 8,
             decoration: InputDecoration(
               labelText: _type == DocContentType.pdf
-                  ? 'Preview / notes'
-                  : 'Content preview',
+                  ? l10n.previewNotesLabel
+                  : l10n.contentPreviewLabel,
               border: const OutlineInputBorder(),
             ),
           ),
@@ -174,16 +176,11 @@ class _UploadDocumentPageState extends ConsumerState<UploadDocumentPage> {
                     height: 22,
                     child: CircularProgressIndicator(strokeWidth: 2),
                   )
-                : const Text('Upload'),
+                : Text(l10n.uploadAction),
           ),
           const SizedBox(height: 8),
           Text(
-            native
-                ? 'Pick a file from the device, or upload with typed preview. '
-                    'On flush, paths upload to Firebase Storage when configured.'
-                : 'Pick demo file fills a local:// stub + preview. On flush, '
-                    'demo paths use demo:// Storage URLs. Enable native pick '
-                    'with --dart-define=USE_NATIVE_SENSORS=true.',
+            native ? l10n.uploadHintNative : l10n.uploadHintDemo,
             style: Theme.of(context).textTheme.bodySmall,
           ),
         ],
