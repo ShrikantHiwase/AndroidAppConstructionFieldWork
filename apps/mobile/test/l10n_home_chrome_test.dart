@@ -96,6 +96,31 @@ void main() {
     expect(find.text('5 PM check simulate करो'), findsOneWidget);
   });
 
+  testWidgets('Hinglish PM digest item copy', (tester) async {
+    SharedPreferences.setMockInitialValues({'app.locale_code': 'hi'});
+    final prefs = await SharedPreferences.getInstance();
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          sharedPreferencesProvider.overrideWithValue(prefs),
+        ],
+        child: const FieldApp(),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.widgetWithText(ActionChip, 'pm'));
+    await tester.pump();
+    await tester.tap(find.text('Sign in'));
+    await tester.pumpAndSettle();
+
+    await tester.ensureVisible(find.text('Digests'));
+    await tester.tap(find.text('Digests'));
+    await tester.pumpAndSettle();
+    expect(find.text('आज का DPR अधूरा है'), findsOneWidget);
+    expect(find.text('अभी कोई draft नहीं'), findsOneWidget);
+  });
 
   testWidgets('Hinglish New Issue chrome', (tester) async {
     SharedPreferences.setMockInitialValues({'app.locale_code': 'hi'});
@@ -381,6 +406,8 @@ void main() {
     expect(hi.musterLoggedOk('+'), 'Muster log हो गया (geofence OK)+');
     expect(hi.onDevicePart, ' · device पर');
     expect(hi.noPdfPreview, 'PDF preview उपलब्ध नहीं।');
+    expect(hi.todaysDprIncomplete, 'आज का DPR अधूरा है');
+    expect(hi.dprNudgeReminder(17), contains('DPR submit करो'));
     final en = lookupAppLocalizations(const Locale('en'));
     expect(en.newIssue, 'New Issue');
     expect(en.syncPendingCount(3), '3 sync');
@@ -401,5 +428,7 @@ void main() {
     expect(en.disciplineFolderKind, 'Discipline');
     expect(en.blockersLine('None'), 'Blockers: None');
     expect(en.hasFailsLabel, 'HAS FAILS');
+    expect(en.todaysDprIncomplete, "Today's DPR incomplete");
+    expect(en.dprNudgeReminder(17), contains('submit today'));
   });
 }
