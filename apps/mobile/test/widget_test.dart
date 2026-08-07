@@ -202,6 +202,31 @@ void main() {
     expect(find.textContaining('Water seepage'), findsOneWidget);
   });
 
+  testWidgets('client weekly progress shows seeded yesterday DPR', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          sharedPreferencesProvider.overrideWithValue(prefs),
+        ],
+        child: const FieldApp(),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.widgetWithText(ActionChip, 'client'));
+    await tester.pump();
+    await tester.tap(find.text('Sign in'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Weekly progress'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('slab shuttering'), findsWidgets);
+    expect(find.textContaining('beam depth'), findsWidgets);
+  });
+
   testWidgets('pm can open pilot hub', (tester) async {
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();

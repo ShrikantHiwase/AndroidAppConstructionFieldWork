@@ -12,6 +12,9 @@ abstract class DprRepository {
     required String dprId,
   });
   Future<DailyProgressReport?> todayDpr(String projectId, DateTime day);
+
+  /// Demo-only yesterday submitted DPR (synced, no outbox). Leaves today empty for nudge demos.
+  Future<void> ensureSeedDprs(AuthSession session);
 }
 
 abstract class DrawingPinsRepository {

@@ -37,6 +37,7 @@ class LocalDprRepository
 
   static const _key = 'dpr.reports';
   static const _outboxKey = 'dpr.outbox';
+  static const _seededKey = 'dpr.seeded_projects.v1';
 
   final _items = <String, DailyProgressReport>{};
   final _controller = StreamController<List<DailyProgressReport>>.broadcast();
@@ -444,6 +445,65 @@ class LocalDprRepository
     }
     if (changed) await _persist();
     return freed;
+  }
+
+  @override
+  Future<void> ensureSeedDprs(AuthSession session) async {
+    final seeded = _prefs.getStringList(_seededKey) ?? [];
+    if (seeded.contains(session.activeProjectId)) return;
+
+    final now = DateTime.now().toUtc();
+    final yesterday = DateTime.utc(now.year, now.month, now.day)
+        .subtract(const Duration(days: 1));
+    final orgId = session.activeProject.orgId;
+    final projectId = session.activeProjectId;
+
+    final (weather, manpower, activityDesc, activityLoc, blockers) =
+        switch (projectId) {
+      'proj_mumbai_metro' => (
+          'Humid, 29°C',
+          '28 on site (civil + electrical)',
+          'Yard access / staging prep',
+          'BKC yard',
+          'Visitor badges delayed overnight',
+        ),
+      _ => (
+          'Clear, 32°C',
+          '42 on site (bar + shuttering)',
+          'Level 02 slab shuttering',
+          'Grid A-C',
+          'Waiting on beam depth RFI answer',
+        ),
+    };
+
+    final id =
+        'dpr_seed_${projectId}_${yesterday.toIso8601String().split('T').first}';
+    _items[id] = DailyProgressReport(
+      id: id,
+      orgId: orgId,
+      projectId: projectId,
+      reportDate: yesterday,
+      weather: weather,
+      manpowerSummary: manpower,
+      activities: [
+        DprActivity(
+          id: 'act_seed_1',
+          description: activityDesc,
+          location: activityLoc,
+        ),
+      ],
+      blockers: blockers,
+      createdBy: 'u_engineer',
+      createdByName: 'Asha Patil',
+      createdAt: yesterday.add(const Duration(hours: 11, minutes: 30)),
+      updatedAt: yesterday.add(const Duration(hours: 11, minutes: 45)),
+      submitted: true,
+      synced: true,
+    );
+
+    seeded.add(projectId);
+    await _prefs.setStringList(_seededKey, seeded);
+    await _persist();
   }
 }
 
