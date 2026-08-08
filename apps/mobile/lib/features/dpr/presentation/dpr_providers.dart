@@ -68,6 +68,7 @@ final drawingsProvider = StreamProvider<List<DrawingSheet>>((ref) async* {
 });
 
 final pinsProvider =
-    StreamProvider.family<List<DrawingPin>, String>((ref, drawingId) {
-  return ref.watch(drawingPinsRepositoryProvider).watchPins(drawingId);
+    StreamProvider.family<List<DrawingPin>, String>((ref, drawingId) async* {
+  await ref.watch(drawingsSeedProvider.future);
+  yield* ref.watch(drawingPinsRepositoryProvider).watchPins(drawingId);
 });

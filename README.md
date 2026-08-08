@@ -95,6 +95,7 @@ docs/              Build plan and training
 | Hinglish digest items + nudge (ARB) | Done |
 | Local demo field queue seed | Done |
 | Local demo DPR seed (yesterday) | Done |
+| Local demo drawing pin seed | Done |
 | FlutterFire configure + store release | Next (needs your Firebase project) |
 | Phase 3 Enterprise hooks | Deferred |
 

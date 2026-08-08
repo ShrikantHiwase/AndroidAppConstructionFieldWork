@@ -530,6 +530,7 @@ class LocalDrawingPinsRepository
   static const _drawingsKey = 'drawings.sheets';
   static const _pinsKey = 'drawings.pins';
   static const _seededKey = 'drawings.seeded';
+  static const _pinsSeededKey = 'drawings.pins_seeded.v1';
   static const _outboxKey = 'drawings.outbox';
 
   final _drawings = <String, DrawingSheet>{};
@@ -578,20 +579,62 @@ class LocalDrawingPinsRepository
 
   @override
   Future<void> ensureSeedDrawings(AuthSession session) async {
+    final projectId = session.activeProjectId;
+    final orgId = session.activeProject.orgId;
+    final sheetId = 'drawing_${projectId}_ga02';
+    var changed = false;
+
     final seeded = _prefs.getStringList(_seededKey) ?? [];
-    if (seeded.contains(session.activeProjectId)) return;
-    final sheet = DrawingSheet(
-      id: 'drawing_${session.activeProjectId}_ga02',
-      orgId: session.activeProject.orgId,
-      projectId: session.activeProjectId,
-      title: 'GA Plan Level 02',
-      version: 'Rev B',
-      pageCount: 3,
-    );
-    _drawings[sheet.id] = sheet;
-    seeded.add(session.activeProjectId);
-    await _prefs.setStringList(_seededKey, seeded);
-    await _persist();
+    if (!seeded.contains(projectId)) {
+      _drawings[sheetId] = DrawingSheet(
+        id: sheetId,
+        orgId: orgId,
+        projectId: projectId,
+        title: 'GA Plan Level 02',
+        version: 'Rev B',
+        pageCount: 3,
+      );
+      seeded.add(projectId);
+      await _prefs.setStringList(_seededKey, seeded);
+      changed = true;
+    }
+
+    // Separate key so installs that already seeded sheets still get the pin.
+    final pinsSeeded = _prefs.getStringList(_pinsSeededKey) ?? [];
+    if (!pinsSeeded.contains(projectId) && projectId == 'proj_pune_tower') {
+      if (!_drawings.containsKey(sheetId)) {
+        _drawings[sheetId] = DrawingSheet(
+          id: sheetId,
+          orgId: orgId,
+          projectId: projectId,
+          title: 'GA Plan Level 02',
+          version: 'Rev B',
+          pageCount: 3,
+        );
+        changed = true;
+      }
+      _pins['pin_seed_rebar'] = DrawingPin(
+        id: 'pin_seed_rebar',
+        orgId: orgId,
+        projectId: projectId,
+        drawingId: sheetId,
+        page: 1,
+        x: 0.42,
+        y: 0.58,
+        issueId: 'issue_seed_rebar',
+        issueTitle: 'Rebar spacing off grid — Level 02',
+        createdBy: 'u_engineer',
+        createdByName: 'Asha Patil',
+        createdAt: DateTime.utc(2026, 8, 1, 4, 45),
+        note: 'Pin near grid B2',
+        synced: true,
+      );
+      pinsSeeded.add(projectId);
+      await _prefs.setStringList(_pinsSeededKey, pinsSeeded);
+      changed = true;
+    }
+
+    if (changed) await _persist();
   }
 
   @override
