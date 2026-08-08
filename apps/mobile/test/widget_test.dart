@@ -273,6 +273,33 @@ void main() {
     );
   });
 
+  testWidgets('pin on drawing shows seeded rebar punch', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          sharedPreferencesProvider.overrideWithValue(prefs),
+        ],
+        child: const FieldApp(),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Sign in'));
+    await tester.pumpAndSettle();
+
+    await tester.ensureVisible(find.text('Pin on Drawing'));
+    await tester.tap(find.text('Pin on Drawing'));
+    await tester.pumpAndSettle();
+    expect(find.text('GA Plan Level 02'), findsOneWidget);
+
+    await tester.tap(find.text('GA Plan Level 02'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('1 pin(s) on this page'), findsOneWidget);
+  });
+
   testWidgets('admin can open invite users', (tester) async {
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();

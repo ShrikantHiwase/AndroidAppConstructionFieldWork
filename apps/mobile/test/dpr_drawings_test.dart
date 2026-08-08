@@ -119,6 +119,34 @@ void main() {
     );
     expect(pin.issueTitle, 'Crack at grid B');
     final pins = await drawings.watchPins(sheet.id).first;
+    expect(pins.where((p) => p.issueTitle == 'Crack at grid B'), hasLength(1));
+    expect(
+      pins.where((p) => p.id == 'pin_seed_rebar'),
+      hasLength(1),
+    );
+  });
+
+  test('ensureSeedDrawings seeds rebar pin once for Pune', () async {
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+    final auth = FakeAuthRepository(prefs);
+    final session = await auth.signInWithEmail(
+      email: 'engineer@demo.rayns',
+      password: FakeAuthRepository.demoPassword,
+    );
+    final drawings = LocalDrawingPinsRepository(prefs);
+    await drawings.ensureSeedDrawings(session);
+    final sheet =
+        (await drawings.watchDrawings(session.activeProjectId).first).single;
+    var pins = await drawings.watchPins(sheet.id).first;
+    expect(pins, hasLength(1));
+    expect(pins.single.id, 'pin_seed_rebar');
+    expect(pins.single.issueTitle, contains('Rebar spacing'));
+    expect(pins.single.synced, isTrue);
+    expect(await drawings.watchPendingSyncCount().first, 0);
+
+    await drawings.ensureSeedDrawings(session);
+    pins = await drawings.watchPins(sheet.id).first;
     expect(pins, hasLength(1));
   });
 }
