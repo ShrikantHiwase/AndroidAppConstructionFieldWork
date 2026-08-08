@@ -423,7 +423,13 @@ class DprDetailPage extends ConsumerWidget {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(shareSnackMessage(outcome, kind: 'DPR PDF')),
+            content: Text(
+              shareSnackMessage(
+                outcome,
+                kind: l10n.shareKindDprPdf,
+                l10n: l10n,
+              ),
+            ),
           ),
         );
       }
@@ -438,7 +444,11 @@ class DprDetailPage extends ConsumerWidget {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              shareSnackMessage(outcome, kind: 'DPR summary'),
+              shareSnackMessage(
+                outcome,
+                kind: l10n.shareKindDprSummary,
+                l10n: l10n,
+              ),
             ),
           ),
         );

@@ -6,6 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../l10n/app_localizations.dart';
+
 /// Result of a share attempt (system sheet or clipboard fallback).
 enum ShareDelivery {
   /// Native share sheet accepted / completed (or unavailable-but-shown).
@@ -177,10 +179,13 @@ final sharePortProvider = Provider<SharePort>((ref) {
   return const SystemSharePort();
 });
 
-String shareSnackMessage(ShareOutcome outcome, {required String kind}) {
+String shareSnackMessage(
+  ShareOutcome outcome, {
+  required String kind,
+  required AppLocalizations l10n,
+}) {
   return switch (outcome.delivery) {
-    ShareDelivery.system => '$kind opened in the system share sheet',
-    ShareDelivery.clipboard =>
-      '$kind copied — paste into WhatsApp or email',
+    ShareDelivery.system => l10n.shareSnackSystem(kind),
+    ShareDelivery.clipboard => l10n.shareSnackClipboard(kind),
   };
 }

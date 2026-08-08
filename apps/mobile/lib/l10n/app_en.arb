@@ -884,5 +884,40 @@
     }
   },
   "pmDigestTodayMissing": "Today DPR: missing / not submitted",
-  "pmDigestTodayOk": "Today DPR: ok"
+  "pmDigestTodayOk": "Today DPR: ok",
+  "shareSnackSystem": "{kind} opened in the system share sheet",
+  "@shareSnackSystem": {
+    "placeholders": {
+      "kind": {
+        "type": "String"
+      }
+    }
+  },
+  "shareSnackClipboard": "{kind} copied — paste into WhatsApp or email",
+  "@shareSnackClipboard": {
+    "placeholders": {
+      "kind": {
+        "type": "String"
+      }
+    }
+  },
+  "shareKindDigestPdf": "Digest PDF",
+  "shareKindDigest": "Digest",
+  "shareKindDocumentSummary": "Document summary",
+  "shareKindDprPdf": "DPR PDF",
+  "shareKindDprSummary": "DPR summary",
+  "shareKindPilotPdf": "Pilot PDF",
+  "shareKindPilotSnapshot": "Pilot snapshot",
+  "shareKindWeeklyPdf": "Weekly PDF",
+  "shareKindWeeklyProgress": "Weekly progress",
+  "conflictLastWriteWins": "Last write wins on scalar fields",
+  "conflictAppendOnly": "Append-only for comments and photos",
+  "conflictAuditedStatus": "Status changes are audited; illegal transitions rejected",
+  "notifyIssueAssigned": "Issue assigned",
+  "notifyIssueStatusUpdated": "Issue status updated",
+  "notifyRfiAssigned": "RFI assigned",
+  "notifyRfiStatusUpdated": "RFI status updated",
+  "notifyDprSubmitted": "DPR submitted",
+  "notifyFieldUpdate": "Field update",
+  "notifyOpenAppForDetails": "Open the app for details"
 }

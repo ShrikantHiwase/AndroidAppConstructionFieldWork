@@ -130,7 +130,11 @@ class WeeklyProgressPage extends ConsumerWidget {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(
-                          shareSnackMessage(outcome, kind: 'Weekly PDF'),
+                          shareSnackMessage(
+                            outcome,
+                            kind: l10n.shareKindWeeklyPdf,
+                            l10n: l10n,
+                          ),
                         ),
                       ),
                     );
@@ -151,7 +155,11 @@ class WeeklyProgressPage extends ConsumerWidget {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(
-                          shareSnackMessage(outcome, kind: 'Weekly progress'),
+                          shareSnackMessage(
+                            outcome,
+                            kind: l10n.shareKindWeeklyProgress,
+                            l10n: l10n,
+                          ),
                         ),
                       ),
                     );

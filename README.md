@@ -97,6 +97,7 @@ docs/              Build plan and training
 | Local demo DPR seed (yesterday) | Done |
 | Local demo drawing pin seed | Done |
 | Local demo site ops seed | Done |
+| Hinglish share snacks + notify titles (ARB) | Done |
 | FlutterFire configure + store release | Next (needs your Firebase project) |
 | Phase 3 Enterprise hooks | Deferred |
 

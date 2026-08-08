@@ -41,10 +41,12 @@ void main() {
   });
 
   test('shareSnackMessage distinguishes delivery', () {
+    final en = lookupAppLocalizations(const Locale('en'));
     expect(
       shareSnackMessage(
         const ShareOutcome(delivery: ShareDelivery.system),
         kind: 'Digest',
+        l10n: en,
       ),
       contains('share sheet'),
     );
@@ -52,8 +54,18 @@ void main() {
       shareSnackMessage(
         const ShareOutcome(delivery: ShareDelivery.clipboard),
         kind: 'DPR summary',
+        l10n: en,
       ),
       contains('copied'),
+    );
+    final hi = lookupAppLocalizations(const Locale('hi'));
+    expect(
+      shareSnackMessage(
+        const ShareOutcome(delivery: ShareDelivery.clipboard),
+        kind: hi.shareKindDigest,
+        l10n: hi,
+      ),
+      contains('paste करो'),
     );
   });
 

@@ -1,3 +1,5 @@
+import '../../l10n/app_localizations.dart';
+
 /// Default conflict policy for offline-first field records.
 enum ConflictStrategy {
   /// Scalar fields (title, assignee, status payload scalars).
@@ -45,12 +47,13 @@ abstract final class ConflictPolicy {
     return ConflictStrategy.lastWriteWins;
   }
 
-  static String describe(ConflictStrategy strategy) => switch (strategy) {
-        ConflictStrategy.lastWriteWins =>
-          'Last write wins on scalar fields',
-        ConflictStrategy.appendOnly =>
-          'Append-only for comments and photos',
-        ConflictStrategy.auditedStatus =>
-          'Status changes are audited; illegal transitions rejected',
+  static String describe(
+    ConflictStrategy strategy,
+    AppLocalizations l10n,
+  ) =>
+      switch (strategy) {
+        ConflictStrategy.lastWriteWins => l10n.conflictLastWriteWins,
+        ConflictStrategy.appendOnly => l10n.conflictAppendOnly,
+        ConflictStrategy.auditedStatus => l10n.conflictAuditedStatus,
       };
 }

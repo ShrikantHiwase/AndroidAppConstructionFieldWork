@@ -108,7 +108,11 @@ class _DocumentViewerPageState extends ConsumerState<DocumentViewerPage> {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(
-                      shareSnackMessage(outcome, kind: 'Document summary'),
+                      shareSnackMessage(
+                        outcome,
+                        kind: l10n.shareKindDocumentSummary,
+                        l10n: l10n,
+                      ),
                     ),
                   ),
                 );

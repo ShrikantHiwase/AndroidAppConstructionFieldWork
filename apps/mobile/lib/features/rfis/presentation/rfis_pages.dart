@@ -299,7 +299,7 @@ class _RfiDetailPageState extends ConsumerState<RfiDetailPage> {
                                       status: s,
                                     );
                                 await _notify(
-                                  title: 'RFI status updated',
+                                  title: l10n.notifyRfiStatusUpdated,
                                   body: '${current.subject} → ${s.label}',
                                   data: {
                                     'type': 'rfi_status',
@@ -333,7 +333,7 @@ class _RfiDetailPageState extends ConsumerState<RfiDetailPage> {
                               assigneeName: 'Asha Patil',
                             );
                         await _notify(
-                          title: 'RFI assigned',
+                          title: l10n.notifyRfiAssigned,
                           body: '${current.subject} → Asha Patil',
                           data: {
                             'type': 'rfi_assigned',

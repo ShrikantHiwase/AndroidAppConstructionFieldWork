@@ -397,6 +397,10 @@ void main() {
     expect(hi.noPdfPreview, 'PDF preview उपलब्ध नहीं।');
     expect(hi.todaysDprIncomplete, 'आज का DPR अधूरा है');
     expect(hi.dprNudgeReminder(17), contains('DPR submit करो'));
+    expect(hi.shareSnackClipboard('Digest'), contains('paste करो'));
+    expect(hi.conflictAppendOnly, contains('append-only'));
+    expect(hi.notifyIssueAssigned, 'Issue assign हो गया');
+    expect(hi.notifyRfiStatusUpdated, 'RFI status update हुआ');
     final en = lookupAppLocalizations(const Locale('en'));
     expect(en.newIssue, 'New Issue');
     expect(en.syncPendingCount(3), '3 sync');
@@ -419,5 +423,8 @@ void main() {
     expect(en.hasFailsLabel, 'HAS FAILS');
     expect(en.todaysDprIncomplete, "Today's DPR incomplete");
     expect(en.dprNudgeReminder(17), contains('submit today'));
+    expect(en.shareSnackSystem('DPR PDF'), contains('share sheet'));
+    expect(en.conflictLastWriteWins, contains('Last write wins'));
+    expect(en.notifyDprSubmitted, 'DPR submitted');
   });
 }

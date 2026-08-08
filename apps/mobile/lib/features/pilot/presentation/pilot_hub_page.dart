@@ -102,7 +102,11 @@ class PilotHubPage extends ConsumerWidget {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(
-                        shareSnackMessage(outcome, kind: 'Pilot PDF'),
+                        shareSnackMessage(
+                          outcome,
+                          kind: l10n.shareKindPilotPdf,
+                          l10n: l10n,
+                        ),
                       ),
                     ),
                   );
@@ -118,7 +122,11 @@ class PilotHubPage extends ConsumerWidget {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(
-                        shareSnackMessage(outcome, kind: 'Pilot snapshot'),
+                        shareSnackMessage(
+                          outcome,
+                          kind: l10n.shareKindPilotSnapshot,
+                          l10n: l10n,
+                        ),
                       ),
                     ),
                   );

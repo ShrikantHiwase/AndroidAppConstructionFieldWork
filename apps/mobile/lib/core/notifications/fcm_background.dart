@@ -1,9 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../firebase_options.dart';
+import '../../l10n/app_localizations.dart';
 import 'local_notification_inbox.dart';
 import 'notification_deep_link.dart';
 import 'notification_message_mapper.dart';
@@ -25,18 +26,27 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
   final prefs = await SharedPreferences.getInstance();
   final inbox = LocalNotificationInbox(prefs);
-  await recordRemoteMessage(inbox, message, source: 'fcm_bg');
+  await recordRemoteMessage(inbox, message, source: 'fcm_bg', prefs: prefs);
 }
 
 Future<void> recordRemoteMessage(
   LocalNotificationInbox inbox,
   RemoteMessage message, {
   required String source,
+  SharedPreferences? prefs,
 }) async {
+  AppLocalizations? l10n;
+  if (prefs != null) {
+    final code = prefs.getString('app.locale_code');
+    if (code != null && code.isNotEmpty) {
+      l10n = lookupAppLocalizations(Locale(code));
+    }
+  }
   final parsed = parsePushPayload(
     notificationTitle: message.notification?.title,
     notificationBody: message.notification?.body,
     data: message.data,
+    l10n: l10n,
   );
   await inbox.add(
     title: parsed.title,

@@ -1332,4 +1332,72 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get pmDigestTodayOk => 'Today DPR: ok';
+
+  @override
+  String shareSnackSystem(String kind) {
+    return '$kind system share sheet में खुला';
+  }
+
+  @override
+  String shareSnackClipboard(String kind) {
+    return '$kind copy हो गया — WhatsApp या email में paste करो';
+  }
+
+  @override
+  String get shareKindDigestPdf => 'Digest PDF';
+
+  @override
+  String get shareKindDigest => 'Digest';
+
+  @override
+  String get shareKindDocumentSummary => 'Document summary';
+
+  @override
+  String get shareKindDprPdf => 'DPR PDF';
+
+  @override
+  String get shareKindDprSummary => 'DPR summary';
+
+  @override
+  String get shareKindPilotPdf => 'Pilot PDF';
+
+  @override
+  String get shareKindPilotSnapshot => 'Pilot snapshot';
+
+  @override
+  String get shareKindWeeklyPdf => 'Weekly PDF';
+
+  @override
+  String get shareKindWeeklyProgress => 'Weekly progress';
+
+  @override
+  String get conflictLastWriteWins => 'Scalar fields पर last write wins';
+
+  @override
+  String get conflictAppendOnly => 'Comments और photos append-only';
+
+  @override
+  String get conflictAuditedStatus =>
+      'Status changes audit होते हैं; illegal transitions reject';
+
+  @override
+  String get notifyIssueAssigned => 'Issue assign हो गया';
+
+  @override
+  String get notifyIssueStatusUpdated => 'Issue status update हुआ';
+
+  @override
+  String get notifyRfiAssigned => 'RFI assign हो गया';
+
+  @override
+  String get notifyRfiStatusUpdated => 'RFI status update हुआ';
+
+  @override
+  String get notifyDprSubmitted => 'DPR submit हो गया';
+
+  @override
+  String get notifyFieldUpdate => 'Field update';
+
+  @override
+  String get notifyOpenAppForDetails => 'Details के लिए app खोलो';
 }

@@ -1,9 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:construction_field_app/core/notifications/local_notification_inbox.dart';
 import 'package:construction_field_app/core/notifications/notification_message_mapper.dart';
 import 'package:construction_field_app/core/notifications/push_notification_service.dart';
+import 'package:construction_field_app/l10n/app_localizations.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -73,5 +75,15 @@ void main() {
     );
     expect(rfiStatus.title, 'RFI status updated');
     expect(rfiStatus.body, 'in_progress');
+
+    final hi = lookupAppLocalizations(const Locale('hi'));
+    final hiAssign = parsePushPayload(
+      data: {'type': 'issue_assigned'},
+      l10n: hi,
+    );
+    expect(hiAssign.title, 'Issue assign हो गया');
+    final hiEmpty = parsePushPayload(l10n: hi);
+    expect(hiEmpty.title, 'Field update');
+    expect(hiEmpty.body, 'Details के लिए app खोलो');
   });
 }

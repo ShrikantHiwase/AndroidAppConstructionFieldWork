@@ -1,3 +1,7 @@
+import 'package:flutter/material.dart';
+
+import '../../l10n/app_localizations.dart';
+
 /// Maps FCM / local payloads into inbox title/body/data (testable without plugins).
 class ParsedPushMessage {
   const ParsedPushMessage({
@@ -15,35 +19,37 @@ ParsedPushMessage parsePushPayload({
   String? notificationTitle,
   String? notificationBody,
   Map<String, dynamic> data = const {},
+  AppLocalizations? l10n,
 }) {
+  final copy = l10n ?? lookupAppLocalizations(const Locale('en'));
   final stringData = <String, String>{
     for (final e in data.entries) e.key: e.value?.toString() ?? '',
   };
   final title = notificationTitle ??
       stringData['title'] ??
-      _titleForType(stringData['type']) ??
-      'Field update';
+      _titleForType(stringData['type'], copy) ??
+      copy.notifyFieldUpdate;
   final body = notificationBody ??
       stringData['body'] ??
       stringData['status'] ??
-      (stringData.isEmpty ? 'Open the app for details' : stringData.toString());
+      (stringData.isEmpty ? copy.notifyOpenAppForDetails : stringData.toString());
   return ParsedPushMessage(title: title, body: body, data: stringData);
 }
 
-String? _titleForType(String? type) {
+String? _titleForType(String? type, AppLocalizations l10n) {
   switch (type) {
     case 'issue_assigned':
-      return 'Issue assigned';
+      return l10n.notifyIssueAssigned;
     case 'issue_status':
-      return 'Issue status updated';
+      return l10n.notifyIssueStatusUpdated;
     case 'rfi_assigned':
-      return 'RFI assigned';
+      return l10n.notifyRfiAssigned;
     case 'rfi_status':
-      return 'RFI status updated';
+      return l10n.notifyRfiStatusUpdated;
     case 'dpr_submitted':
-      return 'DPR submitted';
+      return l10n.notifyDprSubmitted;
     case 'dpr_nudge':
-      return 'DPR reminder';
+      return l10n.dprReminderTitle;
     default:
       return null;
   }
