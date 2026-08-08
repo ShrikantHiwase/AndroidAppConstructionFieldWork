@@ -96,6 +96,7 @@ docs/              Build plan and training
 | Local demo field queue seed | Done |
 | Local demo DPR seed (yesterday) | Done |
 | Local demo drawing pin seed | Done |
+| Local demo site ops seed | Done |
 | FlutterFire configure + store release | Next (needs your Firebase project) |
 | Phase 3 Enterprise hooks | Deferred |
 

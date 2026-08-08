@@ -140,4 +140,54 @@ void main() {
       throwsA(isA<SiteOpsException>()),
     );
   });
+
+  test('ensureSeedSiteOps fills Pune tabs without outbox', () async {
+    final prefs = await SharedPreferences.getInstance();
+    final auth = FakeAuthRepository(prefs);
+    final engineer = await auth.signInWithEmail(
+      email: 'engineer@demo.rayns',
+      password: FakeAuthRepository.demoPassword,
+    );
+
+    await repo.ensureSeedSiteOps(engineer);
+
+    final safety = await repo.watchSafety(engineer.activeProjectId).first;
+    final inspections =
+        await repo.watchInspections(engineer.activeProjectId).first;
+    final muster = await repo.watchMuster(engineer.activeProjectId).first;
+    final materials =
+        await repo.watchMaterials(engineer.activeProjectId).first;
+
+    expect(safety, hasLength(1));
+    expect(safety.single.id, 'safety_seed_observation');
+    expect(safety.single.title, contains('edge protection'));
+    expect(safety.single.synced, isTrue);
+
+    expect(inspections, hasLength(1));
+    expect(inspections.single.id, 'insp_seed_slab');
+    expect(inspections.single.title, contains('pre-pour'));
+    expect(inspections.single.hasFailures, isTrue);
+    expect(inspections.single.synced, isTrue);
+
+    expect(muster, hasLength(1));
+    expect(muster.single.id, 'muster_seed_bar');
+    expect(muster.single.trade, 'Bar bending');
+    expect(muster.single.headcount, 14);
+    expect(muster.single.synced, isTrue);
+
+    expect(materials, hasLength(1));
+    expect(materials.single.id, 'mat_seed_cement');
+    expect(materials.single.material, 'OPC 53');
+    expect(materials.single.quantity, 200);
+    expect(materials.single.synced, isTrue);
+
+    expect(await repo.watchPendingSyncCount().first, 0);
+
+    await repo.ensureSeedSiteOps(engineer);
+    expect(await repo.watchSafety(engineer.activeProjectId).first, hasLength(1));
+    expect(
+      await repo.watchInspections(engineer.activeProjectId).first,
+      hasLength(1),
+    );
+  });
 }

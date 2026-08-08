@@ -24,7 +24,8 @@ Password for all: `demo1234`
 2. **New Issue** / **नया Issue** → title, Add GPS / **GPS जोड़ो**, photo → **Save issue** / **Issue save करो** (duration feeds Pilot **issue create median**). Toggle cloud icon offline (**Offline** / **ऑफ़लाइन** badge), create another issue, go online (auto-sync).
 3. **Today's DPR** / **आज का DPR** → weather, manpower, ≥1 activity (optional evidence photo), blockers if any → **Save draft** / **Draft save करो** → add voice note (demo stub, or live mic with `USE_NATIVE_SENSORS=true`) → **Submit DPR** / **DPR submit करो** (duration feeds Pilot **DPR submit median**) → **Share PDF** (or text) to WhatsApp.
 4. **Pin on Drawing** → open seeded GA Plan → see seeded rebar punch (or pick issue → tap sheet to drop pin).
-5. **Reminders** → leave 5 PM DPR nudge on (schedules a local tray reminder); use **Simulate 5 PM** to fire tray + inbox. After FlutterFire + Blaze, Cloud `dailyDprNudge` also fans out FCM.
+5. **Site ops** → Safety / QA / Labour / Materials already show seeded Pune samples (edge protection, slab pre-pour, bar muster, OPC inward); add a new Safety log with photo when practicing create.
+6. **Reminders** → leave 5 PM DPR nudge on (schedules a local tray reminder); use **Simulate 5 PM** to fire tray + inbox. After FlutterFire + Blaze, Cloud `dailyDprNudge` also fans out FCM.
 
 ## PM — day-one script (10 minutes)
 
