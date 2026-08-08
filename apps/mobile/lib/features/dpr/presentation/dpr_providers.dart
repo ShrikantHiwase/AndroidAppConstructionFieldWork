@@ -33,10 +33,20 @@ final drawingPinsRepositoryProvider = Provider<DrawingPinsRepository>((ref) {
   );
 });
 
-final dprsProvider = StreamProvider<List<DailyProgressReport>>((ref) {
+final dprSeedProvider = FutureProvider<void>((ref) async {
   final session = ref.watch(authSessionProvider);
-  if (session == null) return Stream.value(const []);
-  return ref.watch(dprRepositoryProvider).watchDprs(session.activeProjectId);
+  if (session == null) return;
+  await ref.read(dprRepositoryProvider).ensureSeedDprs(session);
+});
+
+final dprsProvider = StreamProvider<List<DailyProgressReport>>((ref) async* {
+  final session = ref.watch(authSessionProvider);
+  if (session == null) {
+    yield const [];
+    return;
+  }
+  await ref.watch(dprSeedProvider.future);
+  yield* ref.watch(dprRepositoryProvider).watchDprs(session.activeProjectId);
 });
 
 final drawingsSeedProvider = FutureProvider<void>((ref) async {

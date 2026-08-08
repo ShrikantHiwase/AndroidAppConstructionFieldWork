@@ -120,6 +120,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('आज का DPR अधूरा है'), findsOneWidget);
     expect(find.text('अभी कोई draft नहीं'), findsOneWidget);
+    expect(find.textContaining('beam depth'), findsOneWidget);
   });
 
   testWidgets('Hinglish New Issue chrome', (tester) async {

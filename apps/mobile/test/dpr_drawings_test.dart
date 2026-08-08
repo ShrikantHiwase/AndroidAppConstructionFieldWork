@@ -41,6 +41,30 @@ void main() {
     expect(share, contains('Waiting on rebar'));
   });
 
+  test('ensureSeedDprs adds yesterday submitted report without outbox', () async {
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+    final auth = FakeAuthRepository(prefs);
+    final session = await auth.signInWithEmail(
+      email: 'engineer@demo.rayns',
+      password: FakeAuthRepository.demoPassword,
+    );
+    final repo = LocalDprRepository(prefs);
+
+    await repo.ensureSeedDprs(session);
+    final list = await repo.watchDprs(session.activeProjectId).first;
+    expect(list, hasLength(1));
+    expect(list.single.submitted, isTrue);
+    expect(list.single.synced, isTrue);
+    expect(list.single.blockers, contains('beam depth'));
+    final today = await repo.todayDpr(session.activeProjectId, DateTime.now());
+    expect(today, isNull);
+    expect(await repo.watchPendingSyncCount().first, 0);
+
+    await repo.ensureSeedDprs(session);
+    expect(await repo.watchDprs(session.activeProjectId).first, hasLength(1));
+  });
+
   test('client cannot edit DPR', () async {
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();
