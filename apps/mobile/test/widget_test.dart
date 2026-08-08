@@ -300,6 +300,41 @@ void main() {
     expect(find.textContaining('1 pin(s) on this page'), findsOneWidget);
   });
 
+  testWidgets('site ops shows seeded safety qa labour materials', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          sharedPreferencesProvider.overrideWithValue(prefs),
+        ],
+        child: const FieldApp(),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Sign in'));
+    await tester.pumpAndSettle();
+
+    await tester.ensureVisible(find.text('Site ops'));
+    await tester.tap(find.text('Site ops'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('edge protection'), findsOneWidget);
+
+    await tester.tap(find.text('QA/QC'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('pre-pour'), findsOneWidget);
+
+    await tester.tap(find.text('Labour'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('Bar bending'), findsOneWidget);
+
+    await tester.tap(find.text('Materials'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('OPC 53'), findsOneWidget);
+  });
+
   testWidgets('admin can open invite users', (tester) async {
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();

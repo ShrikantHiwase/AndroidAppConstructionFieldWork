@@ -15,30 +15,52 @@ final siteOpsRepositoryProvider = Provider<SiteOpsRepository>((ref) {
   );
 });
 
-final safetyProvider = StreamProvider<List<SafetyRecord>>((ref) {
+final siteOpsSeedProvider = FutureProvider<void>((ref) async {
   final session = ref.watch(authSessionProvider);
-  if (session == null) return Stream.value(const []);
-  return ref.watch(siteOpsRepositoryProvider).watchSafety(session.activeProjectId);
+  if (session == null) return;
+  await ref.read(siteOpsRepositoryProvider).ensureSeedSiteOps(session);
 });
 
-final inspectionsProvider = StreamProvider<List<QaInspection>>((ref) {
+final safetyProvider = StreamProvider<List<SafetyRecord>>((ref) async* {
   final session = ref.watch(authSessionProvider);
-  if (session == null) return Stream.value(const []);
-  return ref
+  if (session == null) {
+    yield const [];
+    return;
+  }
+  await ref.watch(siteOpsSeedProvider.future);
+  yield* ref.watch(siteOpsRepositoryProvider).watchSafety(session.activeProjectId);
+});
+
+final inspectionsProvider = StreamProvider<List<QaInspection>>((ref) async* {
+  final session = ref.watch(authSessionProvider);
+  if (session == null) {
+    yield const [];
+    return;
+  }
+  await ref.watch(siteOpsSeedProvider.future);
+  yield* ref
       .watch(siteOpsRepositoryProvider)
       .watchInspections(session.activeProjectId);
 });
 
-final musterProvider = StreamProvider<List<LabourMuster>>((ref) {
+final musterProvider = StreamProvider<List<LabourMuster>>((ref) async* {
   final session = ref.watch(authSessionProvider);
-  if (session == null) return Stream.value(const []);
-  return ref.watch(siteOpsRepositoryProvider).watchMuster(session.activeProjectId);
+  if (session == null) {
+    yield const [];
+    return;
+  }
+  await ref.watch(siteOpsSeedProvider.future);
+  yield* ref.watch(siteOpsRepositoryProvider).watchMuster(session.activeProjectId);
 });
 
-final materialsProvider = StreamProvider<List<MaterialLog>>((ref) {
+final materialsProvider = StreamProvider<List<MaterialLog>>((ref) async* {
   final session = ref.watch(authSessionProvider);
-  if (session == null) return Stream.value(const []);
-  return ref
+  if (session == null) {
+    yield const [];
+    return;
+  }
+  await ref.watch(siteOpsSeedProvider.future);
+  yield* ref
       .watch(siteOpsRepositoryProvider)
       .watchMaterials(session.activeProjectId);
 });

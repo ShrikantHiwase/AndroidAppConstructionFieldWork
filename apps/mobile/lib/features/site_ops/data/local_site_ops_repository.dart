@@ -56,6 +56,9 @@ abstract class SiteOpsRepository {
     String? photoLocalPath,
     int? photoByteSizeBytes,
   });
+
+  /// Idempotent local demo seed (mirrors firebase seed; no outbox).
+  Future<void> ensureSeedSiteOps(AuthSession session);
 }
 
 class LocalSiteOpsRepository
@@ -83,6 +86,7 @@ class LocalSiteOpsRepository
   static const _musterKey = 'siteops.muster';
   static const _matKey = 'siteops.materials';
   static const _outboxKey = 'siteops.outbox';
+  static const _seededKey = 'siteops.seeded_projects.v1';
 
   final _safety = <String, SafetyRecord>{};
   final _inspections = <String, QaInspection>{};
@@ -945,5 +949,93 @@ class LocalSiteOpsRepository
 
     if (changed) await _persist();
     return freed;
+  }
+
+  @override
+  Future<void> ensureSeedSiteOps(AuthSession session) async {
+    final seeded = _prefs.getStringList(_seededKey) ?? [];
+    if (seeded.contains(session.activeProjectId)) return;
+
+    final orgId = session.activeProject.orgId;
+    final projectId = session.activeProjectId;
+
+    if (projectId == 'proj_pune_tower') {
+      _safety['safety_seed_observation'] = SafetyRecord(
+        id: 'safety_seed_observation',
+        orgId: orgId,
+        projectId: projectId,
+        kind: SafetyKind.observation,
+        title: 'Missing edge protection — Level 02 slab edge',
+        notes: 'Temp rails incomplete on north edge.',
+        createdBy: 'u_engineer',
+        createdByName: 'Asha Patil',
+        createdAt: DateTime.utc(2026, 8, 1, 7),
+        photoRequired: true,
+        hasPhoto: false,
+        synced: true,
+      );
+      _inspections['insp_seed_slab'] = QaInspection(
+        id: 'insp_seed_slab',
+        orgId: orgId,
+        projectId: projectId,
+        title: 'Level 02 slab pre-pour',
+        items: const [
+          InspectionItem(
+            id: 'insp_item_1',
+            label: 'Rebar cover OK',
+            result: InspectionResult.pass,
+            photoOnFail: true,
+            hasPhoto: false,
+          ),
+          InspectionItem(
+            id: 'insp_item_2',
+            label: 'Formwork alignment',
+            result: InspectionResult.fail,
+            photoOnFail: true,
+            hasPhoto: false,
+          ),
+        ],
+        createdBy: 'u_qa',
+        createdByName: 'Neha Kulkarni',
+        createdAt: DateTime.utc(2026, 8, 1, 8),
+        synced: true,
+      );
+      _muster['muster_seed_bar'] = LabourMuster(
+        id: 'muster_seed_bar',
+        orgId: orgId,
+        projectId: projectId,
+        musterDate: DateTime.utc(2026, 8, 1),
+        trade: 'Bar bending',
+        subcontractor: 'Patil Steel Works',
+        headcount: 14,
+        createdBy: 'u_engineer',
+        createdByName: 'Asha Patil',
+        createdAt: DateTime.utc(2026, 8, 1, 3, 30),
+        geofenceOk: true,
+        photoOptional: true,
+        hasPhoto: false,
+        synced: true,
+      );
+      _materials['mat_seed_cement'] = MaterialLog(
+        id: 'mat_seed_cement',
+        orgId: orgId,
+        projectId: projectId,
+        kind: MaterialLogKind.inward,
+        material: 'OPC 53',
+        quantity: 200,
+        unit: 'bags',
+        createdBy: 'u_engineer',
+        createdByName: 'Asha Patil',
+        createdAt: DateTime.utc(2026, 8, 1, 4),
+        activityRef: 'Level 02 pour staging',
+        photoOptional: true,
+        hasPhoto: false,
+        synced: true,
+      );
+    }
+
+    seeded.add(projectId);
+    await _prefs.setStringList(_seededKey, seeded);
+    await _persist();
   }
 }
