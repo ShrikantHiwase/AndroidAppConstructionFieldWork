@@ -67,7 +67,7 @@ class RfisListPage extends ConsumerWidget {
                 ),
                 title: Text(rfi.subject),
                 subtitle: Text(
-                  '${rfi.status.label}'
+                  '${rfi.status.localizedLabel(l10n)}'
                   '${rfi.assigneeName == null ? '' : ' · ${rfi.assigneeName}'}'
                   '${rfi.synced ? '' : l10n.notSyncedSuffix}',
                 ),
@@ -265,7 +265,7 @@ class _RfiDetailPageState extends ConsumerState<RfiDetailPage> {
       body: ListView(
         padding: const EdgeInsets.all(24),
         children: [
-          Text(current.status.label, style: Theme.of(context).textTheme.titleMedium),
+          Text(current.status.localizedLabel(l10n), style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 8),
           Text(current.question),
           const SizedBox(height: 8),
@@ -300,7 +300,7 @@ class _RfiDetailPageState extends ConsumerState<RfiDetailPage> {
                                     );
                                 await _notify(
                                   title: l10n.notifyRfiStatusUpdated,
-                                  body: '${current.subject} → ${s.label}',
+                                  body: '${current.subject} → ${s.localizedLabel(l10n)}',
                                   data: {
                                     'type': 'rfi_status',
                                     'rfiId': current.id,
@@ -312,7 +312,7 @@ class _RfiDetailPageState extends ConsumerState<RfiDetailPage> {
                                 if (mounted) setState(() => _busy = false);
                               }
                             },
-                      child: Text(s.label),
+                      child: Text(s.localizedLabel(l10n)),
                     ),
                   )
                   .toList(),

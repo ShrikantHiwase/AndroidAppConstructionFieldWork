@@ -1,4 +1,5 @@
 import '../../../core/constants/app_constants.dart';
+import '../../../l10n/app_localizations.dart';
 
 enum IssueStatus {
   open,
@@ -8,11 +9,20 @@ enum IssueStatus {
 }
 
 extension IssueStatusX on IssueStatus {
+  /// English label (errors / logs / legacy callers).
   String get label => switch (this) {
         IssueStatus.open => 'Open',
         IssueStatus.inProgress => 'In Progress',
         IssueStatus.resolved => 'Resolved',
         IssueStatus.closed => 'Closed',
+      };
+
+  /// Locale-aware label for UI chrome.
+  String localizedLabel(AppLocalizations l10n) => switch (this) {
+        IssueStatus.open => l10n.issueStatusOpen,
+        IssueStatus.inProgress => l10n.issueStatusInProgress,
+        IssueStatus.resolved => l10n.issueStatusResolved,
+        IssueStatus.closed => l10n.issueStatusClosed,
       };
 
   String get firestoreValue => switch (this) {

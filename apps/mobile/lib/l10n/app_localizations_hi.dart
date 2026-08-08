@@ -1400,4 +1400,31 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get notifyOpenAppForDetails => 'Details के लिए app खोलो';
+
+  @override
+  String get issueStatusOpen => 'Open';
+
+  @override
+  String get issueStatusInProgress => 'In Progress (चल रहा)';
+
+  @override
+  String get issueStatusResolved => 'Resolved (हल)';
+
+  @override
+  String get issueStatusClosed => 'Closed';
+
+  @override
+  String get roleLabelSiteEngineer => 'Site Engineer (साइट)';
+
+  @override
+  String get roleLabelProjectManager => 'Project Manager';
+
+  @override
+  String get roleLabelQaQc => 'QA/QC';
+
+  @override
+  String get roleLabelClient => 'Client';
+
+  @override
+  String get roleLabelAdmin => 'Admin';
 }

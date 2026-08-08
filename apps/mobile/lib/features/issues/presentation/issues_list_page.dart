@@ -81,7 +81,7 @@ class IssuesListPage extends ConsumerWidget {
                 ),
                 title: Text(issue.title),
                 subtitle: Text(
-                  '${issue.status.label}'
+                  '${issue.status.localizedLabel(l10n)}'
                   '${issue.assigneeName == null ? '' : ' · ${issue.assigneeName}'}'
                   '${issue.synced ? '' : l10n.notSyncedSuffix}',
                 ),

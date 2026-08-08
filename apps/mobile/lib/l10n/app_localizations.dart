@@ -2563,6 +2563,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Open the app for details'**
   String get notifyOpenAppForDetails;
+
+  /// No description provided for @issueStatusOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get issueStatusOpen;
+
+  /// No description provided for @issueStatusInProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'In Progress'**
+  String get issueStatusInProgress;
+
+  /// No description provided for @issueStatusResolved.
+  ///
+  /// In en, this message translates to:
+  /// **'Resolved'**
+  String get issueStatusResolved;
+
+  /// No description provided for @issueStatusClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed'**
+  String get issueStatusClosed;
+
+  /// No description provided for @roleLabelSiteEngineer.
+  ///
+  /// In en, this message translates to:
+  /// **'Site Engineer'**
+  String get roleLabelSiteEngineer;
+
+  /// No description provided for @roleLabelProjectManager.
+  ///
+  /// In en, this message translates to:
+  /// **'Project Manager'**
+  String get roleLabelProjectManager;
+
+  /// No description provided for @roleLabelQaQc.
+  ///
+  /// In en, this message translates to:
+  /// **'QA/QC'**
+  String get roleLabelQaQc;
+
+  /// No description provided for @roleLabelClient.
+  ///
+  /// In en, this message translates to:
+  /// **'Client'**
+  String get roleLabelClient;
+
+  /// No description provided for @roleLabelAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin'**
+  String get roleLabelAdmin;
 }
 
 class _AppLocalizationsDelegate

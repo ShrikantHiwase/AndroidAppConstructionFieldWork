@@ -102,7 +102,7 @@ PmDigestSnapshot buildPmDigest({
       (i) => DigestItem(
         kind: DigestItemKind.openIssue,
         title: i.title,
-        subtitle: l10n.issueStatusSubtitle(i.status.label),
+        subtitle: l10n.issueStatusSubtitle(i.status.localizedLabel(l10n)),
         relatedId: i.id,
       ),
     ),
@@ -110,7 +110,7 @@ PmDigestSnapshot buildPmDigest({
       (r) => DigestItem(
         kind: DigestItemKind.openRfi,
         title: r.subject,
-        subtitle: l10n.rfiStatusSubtitle(r.status.label),
+        subtitle: l10n.rfiStatusSubtitle(r.status.localizedLabel(l10n)),
         relatedId: r.id,
       ),
     ),

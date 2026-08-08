@@ -81,7 +81,7 @@ class _IssueDetailPageState extends ConsumerState<IssueDetailPage> {
       body: ListView(
         padding: const EdgeInsets.all(24),
         children: [
-          Text(issue.status.label, style: Theme.of(context).textTheme.titleMedium),
+          Text(issue.status.localizedLabel(l10n), style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 8),
           Text(
             issue.description.isEmpty ? l10n.noDescription : issue.description,
@@ -158,7 +158,7 @@ class _IssueDetailPageState extends ConsumerState<IssueDetailPage> {
                                 await _notify(
                                   title: l10n.notifyIssueStatusUpdated,
                                   body:
-                                      '${issue.title} → ${s.label}',
+                                      '${issue.title} → ${s.localizedLabel(l10n)}',
                                   data: {
                                     'type': 'issue_status',
                                     'issueId': issue.id,
@@ -176,7 +176,7 @@ class _IssueDetailPageState extends ConsumerState<IssueDetailPage> {
                                 if (mounted) setState(() => _busy = false);
                               }
                             },
-                      child: Text(s.label),
+                      child: Text(s.localizedLabel(l10n)),
                     ),
                   )
                   .toList(),
@@ -226,7 +226,9 @@ class _IssueDetailPageState extends ConsumerState<IssueDetailPage> {
               (h) => ListTile(
                 contentPadding: EdgeInsets.zero,
                 dense: true,
-                title: Text('${h.from.label} → ${h.to.label}'),
+                title: Text(
+                  '${h.from.localizedLabel(l10n)} → ${h.to.localizedLabel(l10n)}',
+                ),
                 subtitle: Text(h.changedAt.toLocal().toString()),
               ),
             ),

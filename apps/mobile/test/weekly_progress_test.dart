@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:construction_field_app/core/constants/app_constants.dart';
@@ -5,8 +6,11 @@ import 'package:construction_field_app/features/client_progress/domain/weekly_pr
 import 'package:construction_field_app/features/client_progress/domain/weekly_progress_models.dart';
 import 'package:construction_field_app/features/dpr/domain/dpr_models.dart';
 import 'package:construction_field_app/features/issues/domain/issue_models.dart';
+import 'package:construction_field_app/l10n/app_localizations.dart';
 
 void main() {
+  final en = lookupAppLocalizations(const Locale('en'));
+
   test('isoWeekStart is Monday of the containing week', () {
     // 2026-08-05 is Wednesday
     final start = isoWeekStart(DateTime(2026, 8, 5));
@@ -19,6 +23,7 @@ void main() {
     final pack = buildWeeklyProgress(
       projectId: 'p1',
       now: now,
+      l10n: en,
       dprs: [
         _dpr(
           id: 'in-week',
@@ -65,7 +70,7 @@ void main() {
     expect(pack.days.single.activitySummaries.single, 'Slab pour @ L3');
     expect(pack.weekBlockers.single, contains('Crane delay'));
     expect(pack.openIssueCount, 1);
-    expect(pack.openIssueTitles.single, contains('Crack'));
+    expect(pack.openIssueTitles.single, 'Crack (Open)');
     expect(pack.weekRangeLabel, '2026-08-03 to 2026-08-09');
 
     final text = pack.toShareText(projectName: 'Pune Tower');
@@ -78,6 +83,7 @@ void main() {
     final pack = buildWeeklyProgress(
       projectId: 'p1',
       now: DateTime(2026, 8, 5),
+      l10n: en,
       dprs: const [],
       issues: const [],
     );

@@ -124,7 +124,7 @@ class _AdminInvitesPageState extends ConsumerState<AdminInvitesPage> {
             children: _inviteableRoles
                 .map(
                   (r) => ChoiceChip(
-                    label: Text(roleLabel(r)),
+                    label: Text(roleLabel(r, l10n)),
                     selected: _role == r,
                     onSelected: (_) => setState(() => _role = r),
                   ),
@@ -185,7 +185,7 @@ class _AdminInvitesPageState extends ConsumerState<AdminInvitesPage> {
                         title: Text(inv.email),
                         subtitle: Text(
                           l10n.inviteListSubtitle(
-                            roleLabel(inv.role),
+                            roleLabel(inv.role, l10n),
                             inv.status.name,
                             inv.projectIds.length,
                           ),

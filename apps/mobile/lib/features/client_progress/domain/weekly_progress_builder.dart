@@ -1,5 +1,6 @@
 import '../../dpr/domain/dpr_models.dart';
 import '../../issues/domain/issue_models.dart';
+import '../../../l10n/app_localizations.dart';
 import 'weekly_progress_models.dart';
 
 /// Monday 00:00 local of the ISO week containing [day].
@@ -12,6 +13,7 @@ WeeklyProgressSnapshot buildWeeklyProgress({
   required String projectId,
   required List<DailyProgressReport> dprs,
   required List<Issue> issues,
+  required AppLocalizations l10n,
   DateTime? now,
   int maxActivitiesPerDay = 5,
   int maxOpenIssueTitles = 8,
@@ -94,7 +96,7 @@ WeeklyProgressSnapshot buildWeeklyProgress({
     openIssueCount: openIssues.length,
     openIssueTitles: openIssues
         .take(maxOpenIssueTitles)
-        .map((i) => '${i.title} (${i.status.label})')
+        .map((i) => '${i.title} (${i.status.localizedLabel(l10n)})')
         .toList(),
     weekBlockers: weekBlockers,
   );

@@ -919,5 +919,14 @@
   "notifyRfiStatusUpdated": "RFI status updated",
   "notifyDprSubmitted": "DPR submitted",
   "notifyFieldUpdate": "Field update",
-  "notifyOpenAppForDetails": "Open the app for details"
+  "notifyOpenAppForDetails": "Open the app for details",
+  "issueStatusOpen": "Open",
+  "issueStatusInProgress": "In Progress",
+  "issueStatusResolved": "Resolved",
+  "issueStatusClosed": "Closed",
+  "roleLabelSiteEngineer": "Site Engineer",
+  "roleLabelProjectManager": "Project Manager",
+  "roleLabelQaQc": "QA/QC",
+  "roleLabelClient": "Client",
+  "roleLabelAdmin": "Admin"
 }

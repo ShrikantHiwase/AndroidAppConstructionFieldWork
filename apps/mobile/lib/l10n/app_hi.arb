@@ -409,5 +409,14 @@
   "notifyRfiStatusUpdated": "RFI status update हुआ",
   "notifyDprSubmitted": "DPR submit हो गया",
   "notifyFieldUpdate": "Field update",
-  "notifyOpenAppForDetails": "Details के लिए app खोलो"
+  "notifyOpenAppForDetails": "Details के लिए app खोलो",
+  "issueStatusOpen": "Open",
+  "issueStatusInProgress": "In Progress (चल रहा)",
+  "issueStatusResolved": "Resolved (हल)",
+  "issueStatusClosed": "Closed",
+  "roleLabelSiteEngineer": "Site Engineer (साइट)",
+  "roleLabelProjectManager": "Project Manager",
+  "roleLabelQaQc": "QA/QC",
+  "roleLabelClient": "Client",
+  "roleLabelAdmin": "Admin"
 }
