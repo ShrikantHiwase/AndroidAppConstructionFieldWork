@@ -16,9 +16,21 @@ final voiceNotesRepositoryProvider = Provider<VoiceNotesRepository>((ref) {
   );
 });
 
+final voiceNotesSeedProvider = FutureProvider<void>((ref) async {
+  final session = ref.watch(authSessionProvider);
+  if (session == null) return;
+  // DPR seed first so parent id matches yesterday's submitted report.
+  await ref.watch(dprSeedProvider.future);
+  await ref.read(voiceNotesRepositoryProvider).ensureSeedVoiceNotes(session);
+});
+
 final voiceNotesForParentProvider = StreamProvider.family<List<VoiceNote>,
-    ({VoiceParentType type, String id})>((ref, key) {
-  return ref.watch(voiceNotesRepositoryProvider).watchForParent(
+    ({VoiceParentType type, String id})>((ref, key) async* {
+  final session = ref.watch(authSessionProvider);
+  if (session != null) {
+    await ref.watch(voiceNotesSeedProvider.future);
+  }
+  yield* ref.watch(voiceNotesRepositoryProvider).watchForParent(
         parentType: key.type,
         parentId: key.id,
       );

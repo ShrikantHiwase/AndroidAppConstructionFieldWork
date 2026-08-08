@@ -342,7 +342,8 @@ docs/                 # plans and training
 57. ~~Local demo drawing pin seed~~ — seeded rebar punch on GA Plan Level 02 (`pin_seed_rebar` → `issue_seed_rebar`).
 58. ~~Local demo site ops seed~~ — synced Safety / QA / Labour / Materials samples for Pune (mirrors firebase seed ids; no outbox).
 59. ~~Hinglish ARB share + notify~~ — share snack kinds, ConflictPolicy labels, issue/RFI/DPR notify titles via ARB.
-60. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift remains a follow-up.
+60. ~~Local demo voice seed~~ — synced voice note on yesterday's seeded DPR (`voice_seed_dpr`; mirrors firebase transcript; no outbox).
+61. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift remains a follow-up.
 7. ~~Pilot / UAT pack~~ — training guide, UAT checklist, hypercare metrics docs + in-app Pilot hub (checklist + live snapshot). Live-site execution and store tracks still need your Firebase project / devices.
 8. ~~Admin invites~~ — in-app create invite + demo accept via FakeAuth (scoped memberships); Cloud Functions email later.
 9. ~~Device sensors~~ — `geolocator` / `image_picker` / `local_auth` / `record` / `file_picker` with Fake defaults; enable native via `--dart-define=USE_NATIVE_SENSORS=true`. See `docs/Device_Sensors.md`.
@@ -396,6 +397,7 @@ docs/                 # plans and training
 57. ~~Local demo drawing pin seed~~ — seeded rebar punch on GA Plan Level 02 (`pin_seed_rebar` → `issue_seed_rebar`).
 58. ~~Local demo site ops seed~~ — synced Safety / QA / Labour / Materials samples for Pune (mirrors firebase seed ids; no outbox).
 59. ~~Hinglish ARB share + notify~~ — share snack kinds, ConflictPolicy labels, issue/RFI/DPR notify titles via ARB.
-60. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift remains a follow-up.
+60. ~~Local demo voice seed~~ — synced voice note on yesterday's seeded DPR (`voice_seed_dpr`; mirrors firebase transcript; no outbox).
+61. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift remains a follow-up.
 
 No native-only Android path; iOS ships from the same Flutter codebase. Enterprise BIM/Forge remains a WebView module after MVP.

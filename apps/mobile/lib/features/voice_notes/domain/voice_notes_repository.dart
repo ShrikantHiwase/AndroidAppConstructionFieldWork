@@ -32,4 +32,7 @@ abstract class VoiceNotesRepository {
     String? transcript,
     bool offline = false,
   });
+
+  /// Idempotent local demo seed (mirrors firebase seed; no outbox).
+  Future<void> ensureSeedVoiceNotes(AuthSession session);
 }

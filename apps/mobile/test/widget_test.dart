@@ -335,6 +335,41 @@ void main() {
     expect(find.textContaining('OPC 53'), findsOneWidget);
   });
 
+  testWidgets('dpr detail shows seeded voice transcript', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          sharedPreferencesProvider.overrideWithValue(prefs),
+        ],
+        child: const FieldApp(),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.widgetWithText(ActionChip, 'pm'));
+    await tester.pump();
+    await tester.tap(find.text('Sign in'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('DPRs'));
+    await tester.pumpAndSettle();
+    expect(find.text('Daily Progress'), findsOneWidget);
+    expect(find.textContaining('Submitted'), findsOneWidget);
+
+    await tester.tap(find.textContaining('Submitted'));
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(
+      find.textContaining('Slab shuttering 80'),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.textContaining('Slab shuttering 80'), findsOneWidget);
+    expect(find.text('Voice notes'), findsOneWidget);
+  });
+
   testWidgets('admin can open invite users', (tester) async {
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();

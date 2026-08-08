@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:construction_field_app/features/auth/data/fake_auth_repository.dart';
+import 'package:construction_field_app/features/dpr/data/local_dpr_repository.dart';
 import 'package:construction_field_app/features/voice_notes/data/local_voice_notes_repository.dart';
 import 'package:construction_field_app/features/voice_notes/domain/voice_note_models.dart';
 import 'package:construction_field_app/sync/outbox/outbox_entry.dart';
@@ -74,5 +75,47 @@ void main() {
     expect(listed.single.synced, isTrue);
     expect(listed.single.transcriptPending, isFalse);
     expect(listed.single.remoteAudioUrl, isNotNull);
+  });
+
+  test('ensureSeedVoiceNotes attaches transcript to yesterday DPR without outbox',
+      () async {
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+    final voices = LocalVoiceNotesRepository(prefs);
+    final dprs = LocalDprRepository(prefs);
+    final auth = FakeAuthRepository(prefs);
+    final session = await auth.signInWithEmail(
+      email: 'engineer@demo.rayns',
+      password: FakeAuthRepository.demoPassword,
+    );
+
+    await dprs.ensureSeedDprs(session);
+    await voices.ensureSeedVoiceNotes(session);
+
+    final now = DateTime.now().toUtc();
+    final yesterday = DateTime.utc(now.year, now.month, now.day)
+        .subtract(const Duration(days: 1));
+    final dprId =
+        'dpr_seed_${session.activeProjectId}_${yesterday.toIso8601String().split('T').first}';
+
+    final notes = await voices.listForParent(
+      parentType: VoiceParentType.dpr,
+      parentId: dprId,
+    );
+    expect(notes, hasLength(1));
+    expect(notes.single.id, 'voice_seed_dpr');
+    expect(notes.single.transcript, contains('Slab shuttering 80'));
+    expect(notes.single.synced, isTrue);
+    expect(notes.single.remoteAudioUrl, startsWith('demo://'));
+    expect(await voices.watchPendingSyncCount().first, 0);
+
+    await voices.ensureSeedVoiceNotes(session);
+    expect(
+      await voices.listForParent(
+        parentType: VoiceParentType.dpr,
+        parentId: dprId,
+      ),
+      hasLength(1),
+    );
   });
 }

@@ -38,6 +38,7 @@ class LocalVoiceNotesRepository
 
   static const _key = 'voice.notes';
   static const _outboxKey = 'voice.outbox';
+  static const _seededKey = 'voice.seeded_projects.v1';
 
   final _items = <String, VoiceNote>{};
   final _controller = StreamController<List<VoiceNote>>.broadcast();
@@ -376,5 +377,52 @@ class LocalVoiceNotesRepository
     }
     if (changed) await _persist();
     return freed;
+  }
+
+  @override
+  Future<void> ensureSeedVoiceNotes(AuthSession session) async {
+    final seeded = _prefs.getStringList(_seededKey) ?? [];
+    if (seeded.contains(session.activeProjectId)) return;
+
+    final now = DateTime.now().toUtc();
+    final yesterday = DateTime.utc(now.year, now.month, now.day)
+        .subtract(const Duration(days: 1));
+    final orgId = session.activeProject.orgId;
+    final projectId = session.activeProjectId;
+    // Matches LocalDprRepository.ensureSeedDprs parent id.
+    final dprId =
+        'dpr_seed_${projectId}_${yesterday.toIso8601String().split('T').first}';
+
+    final (noteId, transcript, remoteUrl) = switch (projectId) {
+      'proj_mumbai_metro' => (
+          'voice_seed_dpr_mumbai',
+          'Yard staging ready. Waiting on visitor badges for night shift.',
+          'demo://seed/voice-dpr-mumbai.m4a',
+        ),
+      _ => (
+          'voice_seed_dpr',
+          'Slab shuttering 80 percent. Need beam depth answer before pour.',
+          'demo://seed/voice-dpr-0801.m4a',
+        ),
+    };
+
+    _items[noteId] = VoiceNote(
+      id: noteId,
+      orgId: orgId,
+      projectId: projectId,
+      parentType: VoiceParentType.dpr,
+      parentId: dprId,
+      transcript: transcript,
+      createdBy: 'u_engineer',
+      createdByName: 'Asha Patil',
+      createdAt: yesterday.add(const Duration(hours: 11, minutes: 40)),
+      remoteAudioUrl: remoteUrl,
+      transcriptPending: false,
+      synced: true,
+    );
+
+    seeded.add(projectId);
+    await _prefs.setStringList(_seededKey, seeded);
+    await _persist();
   }
 }
