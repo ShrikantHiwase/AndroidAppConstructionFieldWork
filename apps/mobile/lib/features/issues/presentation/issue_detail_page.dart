@@ -156,7 +156,7 @@ class _IssueDetailPageState extends ConsumerState<IssueDetailPage> {
                                       status: s,
                                     );
                                 await _notify(
-                                  title: 'Issue status updated',
+                                  title: l10n.notifyIssueStatusUpdated,
                                   body:
                                       '${issue.title} → ${s.label}',
                                   data: {
@@ -197,7 +197,7 @@ class _IssueDetailPageState extends ConsumerState<IssueDetailPage> {
                               assigneeName: 'Asha Patil',
                             );
                         await _notify(
-                          title: 'Issue assigned',
+                          title: l10n.notifyIssueAssigned,
                           body: '${issue.title} → Asha Patil',
                           data: {
                             'type': 'issue_assigned',

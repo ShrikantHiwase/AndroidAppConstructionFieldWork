@@ -229,7 +229,11 @@ class DigestsPage extends ConsumerWidget {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
-                                shareSnackMessage(outcome, kind: 'Digest PDF'),
+                                shareSnackMessage(
+                                  outcome,
+                                  kind: l10n.shareKindDigestPdf,
+                                  l10n: l10n,
+                                ),
                               ),
                             ),
                           );
@@ -255,7 +259,11 @@ class DigestsPage extends ConsumerWidget {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
-                                shareSnackMessage(outcome, kind: 'Digest'),
+                                shareSnackMessage(
+                                  outcome,
+                                  kind: l10n.shareKindDigest,
+                                  l10n: l10n,
+                                ),
                               ),
                             ),
                           );

@@ -358,7 +358,7 @@ class SyncStatusPage extends ConsumerWidget {
               contentPadding: EdgeInsets.zero,
               dense: true,
               leading: const Icon(Icons.rule_folder_outlined),
-              title: Text(ConflictPolicy.describe(s)),
+              title: Text(ConflictPolicy.describe(s, l10n)),
             ),
           ),
           const SizedBox(height: 16),

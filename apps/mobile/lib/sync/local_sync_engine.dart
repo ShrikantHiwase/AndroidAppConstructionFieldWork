@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../features/issues/domain/field_records_repository.dart';
 import '../core/device/local_media_cache.dart';
+import '../l10n/app_localizations.dart';
 import 'conflict/conflict_policy.dart';
 import 'outbox/outbox_entry.dart';
 import 'remote/syncable_store.dart';
@@ -130,7 +132,7 @@ class LocalSyncEngine implements SyncCoordinator {
         at: DateTime.now().toUtc(),
         message:
             'Queued ${entry.operation.name} ${entry.collection}/${entry.documentId} '
-            '(${ConflictPolicy.describe(ConflictPolicy.forCollection(entry.collection))})',
+            '(${ConflictPolicy.describe(ConflictPolicy.forCollection(entry.collection), lookupAppLocalizations(const Locale('en')))})',
         level: SyncLogLevel.info,
       ),
     );

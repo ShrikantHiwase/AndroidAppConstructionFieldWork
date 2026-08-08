@@ -2437,6 +2437,132 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Today DPR: ok'**
   String get pmDigestTodayOk;
+
+  /// No description provided for @shareSnackSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'{kind} opened in the system share sheet'**
+  String shareSnackSystem(String kind);
+
+  /// No description provided for @shareSnackClipboard.
+  ///
+  /// In en, this message translates to:
+  /// **'{kind} copied — paste into WhatsApp or email'**
+  String shareSnackClipboard(String kind);
+
+  /// No description provided for @shareKindDigestPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Digest PDF'**
+  String get shareKindDigestPdf;
+
+  /// No description provided for @shareKindDigest.
+  ///
+  /// In en, this message translates to:
+  /// **'Digest'**
+  String get shareKindDigest;
+
+  /// No description provided for @shareKindDocumentSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Document summary'**
+  String get shareKindDocumentSummary;
+
+  /// No description provided for @shareKindDprPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'DPR PDF'**
+  String get shareKindDprPdf;
+
+  /// No description provided for @shareKindDprSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'DPR summary'**
+  String get shareKindDprSummary;
+
+  /// No description provided for @shareKindPilotPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Pilot PDF'**
+  String get shareKindPilotPdf;
+
+  /// No description provided for @shareKindPilotSnapshot.
+  ///
+  /// In en, this message translates to:
+  /// **'Pilot snapshot'**
+  String get shareKindPilotSnapshot;
+
+  /// No description provided for @shareKindWeeklyPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly PDF'**
+  String get shareKindWeeklyPdf;
+
+  /// No description provided for @shareKindWeeklyProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly progress'**
+  String get shareKindWeeklyProgress;
+
+  /// No description provided for @conflictLastWriteWins.
+  ///
+  /// In en, this message translates to:
+  /// **'Last write wins on scalar fields'**
+  String get conflictLastWriteWins;
+
+  /// No description provided for @conflictAppendOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Append-only for comments and photos'**
+  String get conflictAppendOnly;
+
+  /// No description provided for @conflictAuditedStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Status changes are audited; illegal transitions rejected'**
+  String get conflictAuditedStatus;
+
+  /// No description provided for @notifyIssueAssigned.
+  ///
+  /// In en, this message translates to:
+  /// **'Issue assigned'**
+  String get notifyIssueAssigned;
+
+  /// No description provided for @notifyIssueStatusUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Issue status updated'**
+  String get notifyIssueStatusUpdated;
+
+  /// No description provided for @notifyRfiAssigned.
+  ///
+  /// In en, this message translates to:
+  /// **'RFI assigned'**
+  String get notifyRfiAssigned;
+
+  /// No description provided for @notifyRfiStatusUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'RFI status updated'**
+  String get notifyRfiStatusUpdated;
+
+  /// No description provided for @notifyDprSubmitted.
+  ///
+  /// In en, this message translates to:
+  /// **'DPR submitted'**
+  String get notifyDprSubmitted;
+
+  /// No description provided for @notifyFieldUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Field update'**
+  String get notifyFieldUpdate;
+
+  /// No description provided for @notifyOpenAppForDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the app for details'**
+  String get notifyOpenAppForDetails;
 }
 
 class _AppLocalizationsDelegate

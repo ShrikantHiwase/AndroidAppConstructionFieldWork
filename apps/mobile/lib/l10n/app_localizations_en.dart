@@ -1335,4 +1335,72 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pmDigestTodayOk => 'Today DPR: ok';
+
+  @override
+  String shareSnackSystem(String kind) {
+    return '$kind opened in the system share sheet';
+  }
+
+  @override
+  String shareSnackClipboard(String kind) {
+    return '$kind copied — paste into WhatsApp or email';
+  }
+
+  @override
+  String get shareKindDigestPdf => 'Digest PDF';
+
+  @override
+  String get shareKindDigest => 'Digest';
+
+  @override
+  String get shareKindDocumentSummary => 'Document summary';
+
+  @override
+  String get shareKindDprPdf => 'DPR PDF';
+
+  @override
+  String get shareKindDprSummary => 'DPR summary';
+
+  @override
+  String get shareKindPilotPdf => 'Pilot PDF';
+
+  @override
+  String get shareKindPilotSnapshot => 'Pilot snapshot';
+
+  @override
+  String get shareKindWeeklyPdf => 'Weekly PDF';
+
+  @override
+  String get shareKindWeeklyProgress => 'Weekly progress';
+
+  @override
+  String get conflictLastWriteWins => 'Last write wins on scalar fields';
+
+  @override
+  String get conflictAppendOnly => 'Append-only for comments and photos';
+
+  @override
+  String get conflictAuditedStatus =>
+      'Status changes are audited; illegal transitions rejected';
+
+  @override
+  String get notifyIssueAssigned => 'Issue assigned';
+
+  @override
+  String get notifyIssueStatusUpdated => 'Issue status updated';
+
+  @override
+  String get notifyRfiAssigned => 'RFI assigned';
+
+  @override
+  String get notifyRfiStatusUpdated => 'RFI status updated';
+
+  @override
+  String get notifyDprSubmitted => 'DPR submitted';
+
+  @override
+  String get notifyFieldUpdate => 'Field update';
+
+  @override
+  String get notifyOpenAppForDetails => 'Open the app for details';
 }
