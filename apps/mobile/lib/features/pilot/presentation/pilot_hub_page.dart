@@ -81,8 +81,11 @@ class PilotHubPage extends ConsumerWidget {
               if (snap == null) return Text(l10n.noSnapshot);
               final rate = snap.syncFailureRate;
               final projectName = session.activeProject.name;
-              final shareText = snap.toShareText(projectName: projectName);
-              final subject = 'Pilot snapshot — $projectName';
+              final shareText = snap.toShareText(
+                projectName: projectName,
+                l10n: l10n,
+              );
+              final subject = l10n.shareSubjectPilot(projectName);
 
               Future<void> sharePdf() async {
                 final bytes = await FieldPdfExport.pilot(

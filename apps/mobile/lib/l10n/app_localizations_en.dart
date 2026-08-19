@@ -1430,4 +1430,183 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get roleLabelAdmin => 'Admin';
+
+  @override
+  String shareSubjectPmDigest(String projectName) {
+    return 'PM digest — $projectName';
+  }
+
+  @override
+  String shareSubjectDpr(String date, String projectName) {
+    return 'DPR $date — $projectName';
+  }
+
+  @override
+  String shareSubjectWeekly(String projectName) {
+    return 'Weekly progress — $projectName';
+  }
+
+  @override
+  String shareSubjectPilot(String projectName) {
+    return 'Pilot snapshot — $projectName';
+  }
+
+  @override
+  String get dprShareHeader => 'DAILY PROGRESS REPORT';
+
+  @override
+  String dprShareProject(String projectName) {
+    return 'Project: $projectName';
+  }
+
+  @override
+  String dprShareDate(String date) {
+    return 'Date: $date';
+  }
+
+  @override
+  String dprShareBy(String name) {
+    return 'By: $name';
+  }
+
+  @override
+  String dprShareWeather(String value) {
+    return 'Weather: $value';
+  }
+
+  @override
+  String dprShareManpower(String value) {
+    return 'Manpower: $value';
+  }
+
+  @override
+  String get dprShareActivities => 'Activities:';
+
+  @override
+  String dprShareLocationPart(String location) {
+    return ' @ $location';
+  }
+
+  @override
+  String dprSharePhotoPart(int count) {
+    return ' ($count photo)';
+  }
+
+  @override
+  String dprShareBlockers(String value) {
+    return 'Blockers: $value';
+  }
+
+  @override
+  String weeklyShareHeader(String projectName) {
+    return 'WEEKLY PROGRESS — $projectName';
+  }
+
+  @override
+  String weeklyShareWeek(String range) {
+    return 'Week: $range';
+  }
+
+  @override
+  String weeklyShareGenerated(String iso) {
+    return 'Generated: $iso';
+  }
+
+  @override
+  String weeklyShareSubmittedDays(int count) {
+    return 'Submitted DPR days: $count / 7';
+  }
+
+  @override
+  String weeklyShareOpenIssuesCount(int count) {
+    return 'Open issues: $count';
+  }
+
+  @override
+  String get weeklyShareEmptyWeek => 'No submitted DPRs in this ISO week yet.';
+
+  @override
+  String weeklyShareDayLine(String date, String weather, String manpower) {
+    return '$date · weather $weather · manpower $manpower';
+  }
+
+  @override
+  String weeklyShareDayBlockers(String blockers) {
+    return '  Blockers: $blockers';
+  }
+
+  @override
+  String get weeklyShareBlockersThisWeek => 'Blockers this week:';
+
+  @override
+  String get weeklyShareOpenIssues => 'Open issues:';
+
+  @override
+  String pilotShareHeader(String projectName) {
+    return 'PILOT SNAPSHOT — $projectName';
+  }
+
+  @override
+  String pilotShareGenerated(String iso) {
+    return 'Generated: $iso';
+  }
+
+  @override
+  String pilotShareDprDays(int days, String status) {
+    return 'DPR days submitted (ISO week): $days (target >=4) $status';
+  }
+
+  @override
+  String pilotShareDprSubmitMedian(String median, int n, String status) {
+    return 'DPR submit median: $median (n=$n, target <3m) $status';
+  }
+
+  @override
+  String pilotShareIssueCreateMedian(String median, int n, String status) {
+    return 'Issue create median: $median (n=$n, target <90s) $status';
+  }
+
+  @override
+  String pilotShareOpenIssues(int count) {
+    return 'Open issues: $count';
+  }
+
+  @override
+  String pilotSharePendingSync(int count) {
+    return 'Pending sync: $count';
+  }
+
+  @override
+  String pilotShareSyncErrors(
+    int errors,
+    int logs,
+    String ratePart,
+    String status,
+  ) {
+    return 'Sync errors: $errors / $logs$ratePart (target <2%) $status';
+  }
+
+  @override
+  String pilotShareSyncRatePart(String percent) {
+    return ' ($percent%)';
+  }
+
+  @override
+  String pilotShareUat(int done, int total) {
+    return 'UAT checklist: $done / $total';
+  }
+
+  @override
+  String get pilotStatusOk => 'OK';
+
+  @override
+  String get pilotStatusBelow => 'BELOW';
+
+  @override
+  String get pilotStatusWatch => 'WATCH';
+
+  @override
+  String pilotStatusNeedSamples(int count) {
+    return 'NEED $count+';
+  }
 }

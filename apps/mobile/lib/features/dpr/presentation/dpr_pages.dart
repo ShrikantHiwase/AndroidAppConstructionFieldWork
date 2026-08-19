@@ -405,8 +405,11 @@ class DprDetailPage extends ConsumerWidget {
     final current = dpr;
     final projectName = session.activeProject.name;
     final dateLabel = current.reportDate.toIso8601String().split('T').first;
-    final shareText = current.toShareText(projectName: projectName);
-    final subject = 'DPR $dateLabel — $projectName';
+    final shareText = current.toShareText(
+      projectName: projectName,
+      l10n: l10n,
+    );
+    final subject = l10n.shareSubjectDpr(dateLabel, projectName);
 
     Future<void> sharePdf() async {
       final bytes = await FieldPdfExport.dpr(

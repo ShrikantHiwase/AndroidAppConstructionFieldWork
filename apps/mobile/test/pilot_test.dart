@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -7,10 +8,12 @@ import 'package:construction_field_app/features/issues/domain/issue_models.dart'
 import 'package:construction_field_app/features/pilot/data/local_pilot_repository.dart';
 import 'package:construction_field_app/features/pilot/domain/pilot_models.dart';
 import 'package:construction_field_app/features/pilot/presentation/pilot_providers.dart';
+import 'package:construction_field_app/l10n/app_localizations.dart';
 import 'package:construction_field_app/sync/sync_models.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+  final en = lookupAppLocalizations(const Locale('en'));
 
   test('checklist toggles and persists', () async {
     SharedPreferences.setMockInitialValues({});
@@ -190,7 +193,7 @@ void main() {
     expect(snap.dprSubmitTargetMet, isTrue);
     expect(canAccessPilotHub(AppRole.admin), isTrue);
     expect(canAccessPilotHub(AppRole.siteEngineer), isFalse);
-    final text = snap.toShareText(projectName: 'Pune Tower A');
+    final text = snap.toShareText(projectName: 'Pune Tower A', l10n: en);
     expect(text, contains('PILOT SNAPSHOT'));
     expect(text, contains('Issue create median'));
     expect(text, contains('DPR submit median'));

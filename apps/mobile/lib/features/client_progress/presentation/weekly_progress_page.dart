@@ -111,8 +111,11 @@ class WeeklyProgressPage extends ConsumerWidget {
               const SizedBox(height: 24),
               FilledButton.tonalIcon(
                 onPressed: () async {
-                  final text = pack.toShareText(projectName: projectName);
-                  final subject = 'Weekly progress — $projectName';
+                  final text = pack.toShareText(
+                    projectName: projectName,
+                    l10n: l10n,
+                  );
+                  final subject = l10n.shareSubjectWeekly(projectName);
                   final bytes = await FieldPdfExport.weekly(
                     pack: pack,
                     projectName: projectName,
@@ -146,10 +149,13 @@ class WeeklyProgressPage extends ConsumerWidget {
               const SizedBox(height: 8),
               OutlinedButton.icon(
                 onPressed: () async {
-                  final text = pack.toShareText(projectName: projectName);
+                  final text = pack.toShareText(
+                    projectName: projectName,
+                    l10n: l10n,
+                  );
                   final outcome = await ref.read(sharePortProvider).shareText(
                         text: text,
-                        subject: 'Weekly progress — $projectName',
+                        subject: l10n.shareSubjectWeekly(projectName),
                       );
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(

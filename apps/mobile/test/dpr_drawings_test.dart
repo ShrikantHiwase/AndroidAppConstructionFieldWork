@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -6,9 +7,11 @@ import 'package:construction_field_app/features/dpr/data/local_dpr_repository.da
 import 'package:construction_field_app/features/dpr/domain/dpr_models.dart';
 import 'package:construction_field_app/features/issues/data/local_field_records_repository.dart';
 import 'package:construction_field_app/features/issues/domain/issue_models.dart';
+import 'package:construction_field_app/l10n/app_localizations.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+  final en = lookupAppLocalizations(const Locale('en'));
 
   test('engineer can draft and submit today DPR with share text', () async {
     SharedPreferences.setMockInitialValues({});
@@ -35,7 +38,10 @@ void main() {
 
     final submitted = await repo.submit(session: session, dprId: draft.id);
     expect(submitted.submitted, isTrue);
-    final share = submitted.toShareText(projectName: session.activeProject.name);
+    final share = submitted.toShareText(
+      projectName: session.activeProject.name,
+      l10n: en,
+    );
     expect(share, contains('DAILY PROGRESS REPORT'));
     expect(share, contains('Slab pour Bay 2'));
     expect(share, contains('Waiting on rebar'));

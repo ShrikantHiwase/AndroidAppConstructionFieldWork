@@ -73,7 +73,7 @@ void main() {
     expect(pack.openIssueTitles.single, 'Crack (Open)');
     expect(pack.weekRangeLabel, '2026-08-03 to 2026-08-09');
 
-    final text = pack.toShareText(projectName: 'Pune Tower');
+    final text = pack.toShareText(projectName: 'Pune Tower', l10n: en);
     expect(text, contains('WEEKLY PROGRESS — Pune Tower'));
     expect(text, contains('Slab pour @ L3'));
     expect(text, contains('Crane delay'));
@@ -90,7 +90,7 @@ void main() {
     expect(pack.isEmptyWeek, isTrue);
     expect(pack.submittedDprDays, 0);
     expect(
-      pack.toShareText(projectName: 'Pune Tower'),
+      pack.toShareText(projectName: 'Pune Tower', l10n: en),
       contains('No submitted DPRs'),
     );
   });

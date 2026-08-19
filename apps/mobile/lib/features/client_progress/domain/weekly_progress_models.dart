@@ -1,4 +1,5 @@
 import '../../../core/constants/app_constants.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// One submitted DPR day summarized for the client weekly pack.
 class WeeklyProgressDayLine {
@@ -53,38 +54,46 @@ class WeeklyProgressSnapshot {
 
   bool get isEmptyWeek => days.isEmpty;
 
-  String toShareText({required String projectName}) {
+  String toShareText({
+    required String projectName,
+    required AppLocalizations l10n,
+  }) {
     final buf = StringBuffer()
-      ..writeln('WEEKLY PROGRESS — $projectName')
-      ..writeln('Week: $weekRangeLabel')
-      ..writeln('Generated: ${generatedAt.toIso8601String()}')
-      ..writeln('Submitted DPR days: $submittedDprDays / 7')
-      ..writeln('Open issues: $openIssueCount')
+      ..writeln(l10n.weeklyShareHeader(projectName))
+      ..writeln(l10n.weeklyShareWeek(weekRangeLabel))
+      ..writeln(l10n.weeklyShareGenerated(generatedAt.toIso8601String()))
+      ..writeln(l10n.weeklyShareSubmittedDays(submittedDprDays))
+      ..writeln(l10n.weeklyShareOpenIssuesCount(openIssueCount))
       ..writeln('---');
     if (days.isEmpty) {
-      buf.writeln('No submitted DPRs in this ISO week yet.');
+      buf.writeln(l10n.weeklyShareEmptyWeek);
     } else {
       for (final day in days) {
-        buf.writeln('${day.dateLabel} · weather ${day.weather} · '
-            'manpower ${day.manpowerSummary}');
+        buf.writeln(
+          l10n.weeklyShareDayLine(
+            day.dateLabel,
+            day.weather,
+            day.manpowerSummary,
+          ),
+        );
         for (final a in day.activitySummaries) {
           buf.writeln('  - $a');
         }
         if (day.blockers != null && day.blockers!.isNotEmpty) {
-          buf.writeln('  Blockers: ${day.blockers}');
+          buf.writeln(l10n.weeklyShareDayBlockers(day.blockers!));
         }
       }
     }
     if (weekBlockers.isNotEmpty) {
       buf.writeln('---');
-      buf.writeln('Blockers this week:');
+      buf.writeln(l10n.weeklyShareBlockersThisWeek);
       for (final b in weekBlockers) {
         buf.writeln('• $b');
       }
     }
     if (openIssueTitles.isNotEmpty) {
       buf.writeln('---');
-      buf.writeln('Open issues:');
+      buf.writeln(l10n.weeklyShareOpenIssues);
       for (final t in openIssueTitles) {
         buf.writeln('• $t');
       }
