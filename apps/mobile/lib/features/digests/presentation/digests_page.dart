@@ -208,7 +208,7 @@ class DigestsPage extends ConsumerWidget {
                           projectName: projectName,
                           l10n: l10n,
                         );
-                        final subject = 'PM digest — $projectName';
+                        final subject = l10n.shareSubjectPmDigest(projectName);
                         final bytes = await FieldPdfExport.digest(
                           digest: digest,
                           projectName: projectName,
@@ -252,8 +252,9 @@ class DigestsPage extends ConsumerWidget {
                         final outcome =
                             await ref.read(sharePortProvider).shareText(
                                   text: text,
-                                  subject:
-                                      'PM digest — ${session.activeProject.name}',
+                                  subject: l10n.shareSubjectPmDigest(
+                                    session.activeProject.name,
+                                  ),
                                 );
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(

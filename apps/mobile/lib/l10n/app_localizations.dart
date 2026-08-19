@@ -2617,6 +2617,239 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Admin'**
   String get roleLabelAdmin;
+
+  /// No description provided for @shareSubjectPmDigest.
+  ///
+  /// In en, this message translates to:
+  /// **'PM digest — {projectName}'**
+  String shareSubjectPmDigest(String projectName);
+
+  /// No description provided for @shareSubjectDpr.
+  ///
+  /// In en, this message translates to:
+  /// **'DPR {date} — {projectName}'**
+  String shareSubjectDpr(String date, String projectName);
+
+  /// No description provided for @shareSubjectWeekly.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly progress — {projectName}'**
+  String shareSubjectWeekly(String projectName);
+
+  /// No description provided for @shareSubjectPilot.
+  ///
+  /// In en, this message translates to:
+  /// **'Pilot snapshot — {projectName}'**
+  String shareSubjectPilot(String projectName);
+
+  /// No description provided for @dprShareHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'DAILY PROGRESS REPORT'**
+  String get dprShareHeader;
+
+  /// No description provided for @dprShareProject.
+  ///
+  /// In en, this message translates to:
+  /// **'Project: {projectName}'**
+  String dprShareProject(String projectName);
+
+  /// No description provided for @dprShareDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date: {date}'**
+  String dprShareDate(String date);
+
+  /// No description provided for @dprShareBy.
+  ///
+  /// In en, this message translates to:
+  /// **'By: {name}'**
+  String dprShareBy(String name);
+
+  /// No description provided for @dprShareWeather.
+  ///
+  /// In en, this message translates to:
+  /// **'Weather: {value}'**
+  String dprShareWeather(String value);
+
+  /// No description provided for @dprShareManpower.
+  ///
+  /// In en, this message translates to:
+  /// **'Manpower: {value}'**
+  String dprShareManpower(String value);
+
+  /// No description provided for @dprShareActivities.
+  ///
+  /// In en, this message translates to:
+  /// **'Activities:'**
+  String get dprShareActivities;
+
+  /// No description provided for @dprShareLocationPart.
+  ///
+  /// In en, this message translates to:
+  /// **' @ {location}'**
+  String dprShareLocationPart(String location);
+
+  /// No description provided for @dprSharePhotoPart.
+  ///
+  /// In en, this message translates to:
+  /// **' ({count} photo)'**
+  String dprSharePhotoPart(int count);
+
+  /// No description provided for @dprShareBlockers.
+  ///
+  /// In en, this message translates to:
+  /// **'Blockers: {value}'**
+  String dprShareBlockers(String value);
+
+  /// No description provided for @weeklyShareHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'WEEKLY PROGRESS — {projectName}'**
+  String weeklyShareHeader(String projectName);
+
+  /// No description provided for @weeklyShareWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Week: {range}'**
+  String weeklyShareWeek(String range);
+
+  /// No description provided for @weeklyShareGenerated.
+  ///
+  /// In en, this message translates to:
+  /// **'Generated: {iso}'**
+  String weeklyShareGenerated(String iso);
+
+  /// No description provided for @weeklyShareSubmittedDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Submitted DPR days: {count} / 7'**
+  String weeklyShareSubmittedDays(int count);
+
+  /// No description provided for @weeklyShareOpenIssuesCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Open issues: {count}'**
+  String weeklyShareOpenIssuesCount(int count);
+
+  /// No description provided for @weeklyShareEmptyWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'No submitted DPRs in this ISO week yet.'**
+  String get weeklyShareEmptyWeek;
+
+  /// No description provided for @weeklyShareDayLine.
+  ///
+  /// In en, this message translates to:
+  /// **'{date} · weather {weather} · manpower {manpower}'**
+  String weeklyShareDayLine(String date, String weather, String manpower);
+
+  /// No description provided for @weeklyShareDayBlockers.
+  ///
+  /// In en, this message translates to:
+  /// **'  Blockers: {blockers}'**
+  String weeklyShareDayBlockers(String blockers);
+
+  /// No description provided for @weeklyShareBlockersThisWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Blockers this week:'**
+  String get weeklyShareBlockersThisWeek;
+
+  /// No description provided for @weeklyShareOpenIssues.
+  ///
+  /// In en, this message translates to:
+  /// **'Open issues:'**
+  String get weeklyShareOpenIssues;
+
+  /// No description provided for @pilotShareHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'PILOT SNAPSHOT — {projectName}'**
+  String pilotShareHeader(String projectName);
+
+  /// No description provided for @pilotShareGenerated.
+  ///
+  /// In en, this message translates to:
+  /// **'Generated: {iso}'**
+  String pilotShareGenerated(String iso);
+
+  /// No description provided for @pilotShareDprDays.
+  ///
+  /// In en, this message translates to:
+  /// **'DPR days submitted (ISO week): {days} (target >=4) {status}'**
+  String pilotShareDprDays(int days, String status);
+
+  /// No description provided for @pilotShareDprSubmitMedian.
+  ///
+  /// In en, this message translates to:
+  /// **'DPR submit median: {median} (n={n}, target <3m) {status}'**
+  String pilotShareDprSubmitMedian(String median, int n, String status);
+
+  /// No description provided for @pilotShareIssueCreateMedian.
+  ///
+  /// In en, this message translates to:
+  /// **'Issue create median: {median} (n={n}, target <90s) {status}'**
+  String pilotShareIssueCreateMedian(String median, int n, String status);
+
+  /// No description provided for @pilotShareOpenIssues.
+  ///
+  /// In en, this message translates to:
+  /// **'Open issues: {count}'**
+  String pilotShareOpenIssues(int count);
+
+  /// No description provided for @pilotSharePendingSync.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending sync: {count}'**
+  String pilotSharePendingSync(int count);
+
+  /// No description provided for @pilotShareSyncErrors.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync errors: {errors} / {logs}{ratePart} (target <2%) {status}'**
+  String pilotShareSyncErrors(
+    int errors,
+    int logs,
+    String ratePart,
+    String status,
+  );
+
+  /// No description provided for @pilotShareSyncRatePart.
+  ///
+  /// In en, this message translates to:
+  /// **' ({percent}%)'**
+  String pilotShareSyncRatePart(String percent);
+
+  /// No description provided for @pilotShareUat.
+  ///
+  /// In en, this message translates to:
+  /// **'UAT checklist: {done} / {total}'**
+  String pilotShareUat(int done, int total);
+
+  /// No description provided for @pilotStatusOk.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get pilotStatusOk;
+
+  /// No description provided for @pilotStatusBelow.
+  ///
+  /// In en, this message translates to:
+  /// **'BELOW'**
+  String get pilotStatusBelow;
+
+  /// No description provided for @pilotStatusWatch.
+  ///
+  /// In en, this message translates to:
+  /// **'WATCH'**
+  String get pilotStatusWatch;
+
+  /// No description provided for @pilotStatusNeedSamples.
+  ///
+  /// In en, this message translates to:
+  /// **'NEED {count}+'**
+  String pilotStatusNeedSamples(int count);
 }
 
 class _AppLocalizationsDelegate

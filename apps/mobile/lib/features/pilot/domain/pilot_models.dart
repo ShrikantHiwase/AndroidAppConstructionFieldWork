@@ -1,4 +1,5 @@
 import '../../../core/constants/app_constants.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// Canonical UAT item ids — keep in sync with docs/UAT_Checklist.md.
 abstract final class UatItemIds {
@@ -224,43 +225,59 @@ class PilotMetricsSnapshot {
     return '${minutes.toStringAsFixed(minutes < 10 ? 1 : 0)}m';
   }
 
-  String toShareText({required String projectName}) {
+  String toShareText({
+    required String projectName,
+    required AppLocalizations l10n,
+  }) {
     final rate = syncFailureRate;
     final createStatus = switch (issueCreateTargetMet) {
-      true => 'OK',
-      false => 'BELOW',
-      null => 'NEED $issueCreateMinSamples+',
+      true => l10n.pilotStatusOk,
+      false => l10n.pilotStatusBelow,
+      null => l10n.pilotStatusNeedSamples(issueCreateMinSamples),
     };
     final dprSubmitStatus = switch (dprSubmitTargetMet) {
-      true => 'OK',
-      false => 'BELOW',
-      null => 'NEED $dprSubmitMinSamples+',
+      true => l10n.pilotStatusOk,
+      false => l10n.pilotStatusBelow,
+      null => l10n.pilotStatusNeedSamples(dprSubmitMinSamples),
     };
     final buf = StringBuffer()
-      ..writeln('PILOT SNAPSHOT — $projectName')
-      ..writeln('Generated: ${generatedAt.toIso8601String()}')
+      ..writeln(l10n.pilotShareHeader(projectName))
+      ..writeln(l10n.pilotShareGenerated(generatedAt.toIso8601String()))
       ..writeln(
-        'DPR days submitted (ISO week): $dprSubmittedDaysThisWeek '
-        '(target >=4) ${dprTargetMet ? 'OK' : 'BELOW'}',
+        l10n.pilotShareDprDays(
+          dprSubmittedDaysThisWeek,
+          dprTargetMet ? l10n.pilotStatusOk : l10n.pilotStatusBelow,
+        ),
       )
       ..writeln(
-        'DPR submit median: $dprSubmitMedianLabel '
-        '(n=$dprSubmitSampleCount, target <3m) $dprSubmitStatus',
+        l10n.pilotShareDprSubmitMedian(
+          dprSubmitMedianLabel,
+          dprSubmitSampleCount,
+          dprSubmitStatus,
+        ),
       )
       ..writeln(
-        'Issue create median: $issueCreateMedianLabel '
-        '(n=$issueCreateSampleCount, target <90s) $createStatus',
+        l10n.pilotShareIssueCreateMedian(
+          issueCreateMedianLabel,
+          issueCreateSampleCount,
+          createStatus,
+        ),
       )
-      ..writeln('Open issues: $openIssueCount')
-      ..writeln('Pending sync: $pendingSyncCount')
+      ..writeln(l10n.pilotShareOpenIssues(openIssueCount))
+      ..writeln(l10n.pilotSharePendingSync(pendingSyncCount))
       ..writeln(
-        'Sync errors: $syncErrorCount / $syncLogCount'
-        '${rate == null ? '' : ' (${(rate * 100).toStringAsFixed(1)}%)'} '
-        '(target <2%) ${syncTargetMet ? 'OK' : 'WATCH'}',
+        l10n.pilotShareSyncErrors(
+          syncErrorCount,
+          syncLogCount,
+          rate == null
+              ? ''
+              : l10n.pilotShareSyncRatePart(
+                  (rate * 100).toStringAsFixed(1),
+                ),
+          syncTargetMet ? l10n.pilotStatusOk : l10n.pilotStatusWatch,
+        ),
       )
-      ..writeln(
-        'UAT checklist: $checklistCompleted / $checklistTotal',
-      );
+      ..writeln(l10n.pilotShareUat(checklistCompleted, checklistTotal));
     return buf.toString();
   }
 }

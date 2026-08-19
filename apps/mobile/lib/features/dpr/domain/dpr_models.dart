@@ -1,4 +1,5 @@
 import '../../../core/constants/app_constants.dart';
+import '../../../l10n/app_localizations.dart';
 
 class DprActivity {
   const DprActivity({
@@ -137,23 +138,31 @@ class DailyProgressReport {
     );
   }
 
-  String toShareText({required String projectName}) {
+  String toShareText({
+    required String projectName,
+    required AppLocalizations l10n,
+  }) {
     final buf = StringBuffer()
-      ..writeln('DAILY PROGRESS REPORT')
-      ..writeln('Project: $projectName')
-      ..writeln('Date: ${reportDate.toIso8601String().split('T').first}')
-      ..writeln('By: $createdByName')
-      ..writeln('Weather: $weather')
-      ..writeln('Manpower: $manpowerSummary')
-      ..writeln('Activities:');
+      ..writeln(l10n.dprShareHeader)
+      ..writeln(l10n.dprShareProject(projectName))
+      ..writeln(
+        l10n.dprShareDate(reportDate.toIso8601String().split('T').first),
+      )
+      ..writeln(l10n.dprShareBy(createdByName))
+      ..writeln(l10n.dprShareWeather(weather))
+      ..writeln(l10n.dprShareManpower(manpowerSummary))
+      ..writeln(l10n.dprShareActivities);
     for (final a in activities) {
-      buf.writeln(
-        '- ${a.description}'
-        '${a.location == null ? '' : ' @ ${a.location}'}'
-        '${a.photoCount == 0 ? '' : ' (${a.photoCount} photo)'}',
-      );
+      final locationPart = a.location == null || a.location!.isEmpty
+          ? ''
+          : l10n.dprShareLocationPart(a.location!);
+      final photoPart =
+          a.photoCount == 0 ? '' : l10n.dprSharePhotoPart(a.photoCount);
+      buf.writeln('- ${a.description}$locationPart$photoPart');
     }
-    buf.writeln('Blockers: ${blockers.isEmpty ? 'None' : blockers}');
+    buf.writeln(
+      l10n.dprShareBlockers(blockers.isEmpty ? l10n.noneLabel : blockers),
+    );
     return buf.toString();
   }
 

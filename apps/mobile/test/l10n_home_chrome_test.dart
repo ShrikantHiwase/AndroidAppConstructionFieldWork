@@ -432,5 +432,8 @@ void main() {
     expect(en.notifyDprSubmitted, 'DPR submitted');
     expect(en.issueStatusOpen, 'Open');
     expect(en.roleLabelProjectManager, 'Project Manager');
+    expect(en.shareSubjectDpr('2026-08-01', 'Pune'), contains('DPR'));
+    expect(hi.weeklyShareEmptyWeek, contains('submitted DPR नहीं'));
+    expect(hi.shareSubjectPilot('Pune'), startsWith('Pilot snapshot'));
   });
 }

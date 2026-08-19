@@ -40,7 +40,7 @@ dependencies:
   flutter_secure_storage: ^10.3.1
   record: ^6.2.1
   file_picker: ^11.0.3
-  pdfrx: ^2.1.5
+  pdfrx: ^2.4.7
 
   # Still deferred (see docs/Telemetry.md for NoOp scaffolding):
   # firebase_crashlytics, firebase_analytics, drift

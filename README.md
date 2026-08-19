@@ -100,6 +100,7 @@ docs/              Build plan and training
 | Hinglish share snacks + notify titles (ARB) | Done |
 | Local demo voice seed | Done |
 | Hinglish status + role labels (ARB) | Done |
+| Hinglish share text + subjects (ARB) | Done |
 | FlutterFire configure + store release | Next (needs your Firebase project) |
 | Phase 3 Enterprise hooks | Deferred |
 

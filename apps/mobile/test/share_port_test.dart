@@ -70,20 +70,35 @@ void main() {
   });
 
   test('DPR, digest, and weekly share text stay WhatsApp-friendly', () {
-    final dprText = _sampleDpr().toShareText(projectName: 'Pune Tower');
+    final en = lookupAppLocalizations(const Locale('en'));
+    final dprText = _sampleDpr().toShareText(
+      projectName: 'Pune Tower',
+      l10n: en,
+    );
     expect(dprText, contains('DAILY PROGRESS REPORT'));
     expect(dprText, contains('Pune Tower'));
 
     final digestText = _sampleDigest().toShareText(
       projectName: 'Pune Tower',
-      l10n: lookupAppLocalizations(const Locale('en')),
+      l10n: en,
     );
     expect(digestText, contains('PM DIGEST'));
     expect(digestText, contains('Crack'));
 
-    final weeklyText = _sampleWeekly().toShareText(projectName: 'Pune Tower');
+    final weeklyText = _sampleWeekly().toShareText(
+      projectName: 'Pune Tower',
+      l10n: en,
+    );
     expect(weeklyText, contains('WEEKLY PROGRESS'));
     expect(weeklyText, contains('Slab pour'));
+
+    final hi = lookupAppLocalizations(const Locale('hi'));
+    expect(hi.shareSubjectPmDigest('Pune'), startsWith('PM digest'));
+    expect(hi.weeklyShareEmptyWeek, contains('submitted DPR नहीं'));
+    expect(
+      _sampleWeekly().toShareText(projectName: 'Pune', l10n: hi),
+      contains('WEEKLY PROGRESS'),
+    );
   });
 
   test('FieldPdfExport builds non-empty DPR, digest, pilot, weekly PDFs',
