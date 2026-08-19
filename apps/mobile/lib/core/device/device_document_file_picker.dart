@@ -32,7 +32,7 @@ class DeviceDocumentFilePicker implements DocumentFilePicker {
       final file = result.files.single;
       final path = file.path;
       if (path == null || path.isEmpty) {
-        return _fallback.pick(preferredType: preferredType);
+        return await _fallback.pick(preferredType: preferredType);
       }
 
       String? textContent;
@@ -60,7 +60,7 @@ class DeviceDocumentFilePicker implements DocumentFilePicker {
         pdfPages: pdfPages,
       );
     } catch (_) {
-      return _fallback.pick(preferredType: preferredType);
+      return await _fallback.pick(preferredType: preferredType);
     }
   }
 

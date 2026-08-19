@@ -23,7 +23,10 @@ class DeviceVoiceCapture implements VoiceCapture {
     try {
       if (!await recorder.hasPermission()) {
         await recorder.dispose();
-        return _fallback.record(stopSignal: stopSignal, maxDuration: maxDuration);
+        return await _fallback.record(
+          stopSignal: stopSignal,
+          maxDuration: maxDuration,
+        );
       }
 
       final dir = await getTemporaryDirectory();
@@ -56,7 +59,10 @@ class DeviceVoiceCapture implements VoiceCapture {
       try {
         await recorder.dispose();
       } catch (_) {}
-      return _fallback.record(stopSignal: stopSignal, maxDuration: maxDuration);
+      return await _fallback.record(
+        stopSignal: stopSignal,
+        maxDuration: maxDuration,
+      );
     }
   }
 }

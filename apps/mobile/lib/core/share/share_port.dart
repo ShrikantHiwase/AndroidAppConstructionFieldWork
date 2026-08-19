@@ -101,7 +101,7 @@ class SystemSharePort implements SharePort {
         ),
       );
       if (result.status == ShareResultStatus.unavailable) {
-        return _fileClipboardFallback(fallbackText);
+        return await _fileClipboardFallback(fallbackText);
       }
       return ShareOutcome(
         delivery: ShareDelivery.system,
@@ -109,7 +109,7 @@ class SystemSharePort implements SharePort {
       );
     } catch (e, st) {
       debugPrint('Share file failed: $e\n$st');
-      return _fileClipboardFallback(fallbackText);
+      return await _fileClipboardFallback(fallbackText);
     }
   }
 

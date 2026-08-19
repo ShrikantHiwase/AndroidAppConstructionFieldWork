@@ -15,7 +15,7 @@ class DeviceLocationService implements LocationService {
   Future<GeoLocation?> currentPosition() async {
     try {
       final enabled = await Geolocator.isLocationServiceEnabled();
-      if (!enabled) return _fallback.currentPosition();
+      if (!enabled) return await _fallback.currentPosition();
 
       var permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
@@ -23,7 +23,7 @@ class DeviceLocationService implements LocationService {
       }
       if (permission == LocationPermission.denied ||
           permission == LocationPermission.deniedForever) {
-        return _fallback.currentPosition();
+        return await _fallback.currentPosition();
       }
 
       final pos = await Geolocator.getCurrentPosition(
@@ -39,7 +39,7 @@ class DeviceLocationService implements LocationService {
         label: 'Device GPS',
       );
     } catch (_) {
-      return _fallback.currentPosition();
+      return await _fallback.currentPosition();
     }
   }
 
@@ -59,7 +59,7 @@ class DeviceLocationService implements LocationService {
       );
       return meters <= radiusMeters;
     } catch (_) {
-      return _fallback.isWithinGeofence(
+      return await _fallback.isWithinGeofence(
         site: site,
         radiusMeters: radiusMeters,
       );

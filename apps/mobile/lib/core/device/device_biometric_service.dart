@@ -18,7 +18,7 @@ class DeviceBiometricService implements BiometricService {
     try {
       return await _auth.canCheckBiometrics || await _auth.isDeviceSupported();
     } catch (_) {
-      return _fallback.canCheckBiometrics;
+      return await _fallback.canCheckBiometrics;
     }
   }
 
@@ -26,7 +26,9 @@ class DeviceBiometricService implements BiometricService {
   Future<bool> authenticate({required String reason}) async {
     try {
       final supported = await canCheckBiometrics;
-      if (!supported) return _fallback.authenticate(reason: reason);
+      if (!supported) {
+        return await _fallback.authenticate(reason: reason);
+      }
       return await _auth.authenticate(
         localizedReason: reason,
         options: const AuthenticationOptions(
@@ -35,7 +37,7 @@ class DeviceBiometricService implements BiometricService {
         ),
       );
     } catch (_) {
-      return _fallback.authenticate(reason: reason);
+      return await _fallback.authenticate(reason: reason);
     }
   }
 }
