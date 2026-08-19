@@ -300,6 +300,7 @@ void main() {
     expect(find.text('Invite users'), findsOneWidget);
     expect(find.text('Invite बनाओ'), findsOneWidget);
     expect(find.text('Invite भेजो'), findsOneWidget);
+    expect(find.text('Site Engineer (साइट)'), findsWidgets);
   });
 
   testWidgets('Hinglish Voice notes chrome from PM open queue', (tester) async {
@@ -401,6 +402,9 @@ void main() {
     expect(hi.conflictAppendOnly, contains('append-only'));
     expect(hi.notifyIssueAssigned, 'Issue assign हो गया');
     expect(hi.notifyRfiStatusUpdated, 'RFI status update हुआ');
+    expect(hi.issueStatusInProgress, 'In Progress (चल रहा)');
+    expect(hi.issueStatusResolved, 'Resolved (हल)');
+    expect(hi.roleLabelSiteEngineer, 'Site Engineer (साइट)');
     final en = lookupAppLocalizations(const Locale('en'));
     expect(en.newIssue, 'New Issue');
     expect(en.syncPendingCount(3), '3 sync');
@@ -426,5 +430,7 @@ void main() {
     expect(en.shareSnackSystem('DPR PDF'), contains('share sheet'));
     expect(en.conflictLastWriteWins, contains('Last write wins'));
     expect(en.notifyDprSubmitted, 'DPR submitted');
+    expect(en.issueStatusOpen, 'Open');
+    expect(en.roleLabelProjectManager, 'Project Manager');
   });
 }

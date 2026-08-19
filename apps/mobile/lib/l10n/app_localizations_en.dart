@@ -1403,4 +1403,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notifyOpenAppForDetails => 'Open the app for details';
+
+  @override
+  String get issueStatusOpen => 'Open';
+
+  @override
+  String get issueStatusInProgress => 'In Progress';
+
+  @override
+  String get issueStatusResolved => 'Resolved';
+
+  @override
+  String get issueStatusClosed => 'Closed';
+
+  @override
+  String get roleLabelSiteEngineer => 'Site Engineer';
+
+  @override
+  String get roleLabelProjectManager => 'Project Manager';
+
+  @override
+  String get roleLabelQaQc => 'QA/QC';
+
+  @override
+  String get roleLabelClient => 'Client';
+
+  @override
+  String get roleLabelAdmin => 'Admin';
 }

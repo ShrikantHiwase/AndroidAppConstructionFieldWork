@@ -1,4 +1,5 @@
 import '../../../core/constants/app_constants.dart';
+import '../../../l10n/app_localizations.dart';
 
 enum InviteStatus { pending, accepted }
 
@@ -132,10 +133,10 @@ abstract class InviteAuthBridge {
   Future<InviteAuthGrant?> lookupAcceptedInvite(String email);
 }
 
-String roleLabel(AppRole role) => switch (role) {
-      AppRole.siteEngineer => 'Site Engineer',
-      AppRole.projectManager => 'Project Manager',
-      AppRole.qaQc => 'QA/QC',
-      AppRole.client => 'Client',
-      AppRole.admin => 'Admin',
+String roleLabel(AppRole role, AppLocalizations l10n) => switch (role) {
+      AppRole.siteEngineer => l10n.roleLabelSiteEngineer,
+      AppRole.projectManager => l10n.roleLabelProjectManager,
+      AppRole.qaQc => l10n.roleLabelQaQc,
+      AppRole.client => l10n.roleLabelClient,
+      AppRole.admin => l10n.roleLabelAdmin,
     };
