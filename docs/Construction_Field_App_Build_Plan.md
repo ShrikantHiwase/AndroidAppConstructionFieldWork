@@ -344,7 +344,7 @@ docs/                 # plans and training
 59. ~~Hinglish ARB share + notify~~ — share snack kinds, ConflictPolicy labels, issue/RFI/DPR notify titles via ARB.
 60. ~~Local demo voice seed~~ — synced voice note on yesterday's seeded DPR (`voice_seed_dpr`; mirrors firebase transcript; no outbox).
 61. ~~Hinglish ARB status + roles~~ — Issue/RFI status labels and admin invite role chips via ARB.
-62. ~~Hinglish ARB share text + subjects~~ — DPR / Weekly / Pilot WhatsApp share bodies and share-sheet subjects via ARB (PDF glyph body deferred).
+62. ~~Hinglish ARB share text + subjects~~ — DPR / Weekly / Pilot WhatsApp share bodies and share-sheet subjects via ARB (PDF chrome localized in item 65).
 63. ~~Local demo comment + docs ID parity~~ — `comment_seed_rebar_1` on rebar issue; Pune folders/docs use firebase `folder_seed_*` / `doc_seed_*` + `demo://seed/` URLs.
 64. ~~Hinglish ARB share leftovers~~ — scheduled DPR nudge tray copy, share-sheet hint, document share summary labels, unlockFailed; Hinglish fill for reminder/share chrome.
 65. ~~PDF Hinglish labels + Noto fonts~~ — Field PDF chrome via ARB; Noto Sans + Devanagari fallback so hi locale glyphs render.
@@ -404,7 +404,7 @@ docs/                 # plans and training
 59. ~~Hinglish ARB share + notify~~ — share snack kinds, ConflictPolicy labels, issue/RFI/DPR notify titles via ARB.
 60. ~~Local demo voice seed~~ — synced voice note on yesterday's seeded DPR (`voice_seed_dpr`; mirrors firebase transcript; no outbox).
 61. ~~Hinglish ARB status + roles~~ — Issue/RFI status labels and admin invite role chips via ARB.
-62. ~~Hinglish ARB share text + subjects~~ — DPR / Weekly / Pilot WhatsApp share bodies and share-sheet subjects via ARB (PDF glyph body deferred).
+62. ~~Hinglish ARB share text + subjects~~ — DPR / Weekly / Pilot WhatsApp share bodies and share-sheet subjects via ARB (PDF chrome localized in item 65).
 63. ~~Local demo comment + docs ID parity~~ — `comment_seed_rebar_1` on rebar issue; Pune folders/docs use firebase `folder_seed_*` / `doc_seed_*` + `demo://seed/` URLs.
 64. ~~Hinglish ARB share leftovers~~ — scheduled DPR nudge tray copy, share-sheet hint, document share summary labels, unlockFailed; Hinglish fill for reminder/share chrome.
 65. ~~PDF Hinglish labels + Noto fonts~~ — Field PDF chrome via ARB; Noto Sans + Devanagari fallback so hi locale glyphs render.
