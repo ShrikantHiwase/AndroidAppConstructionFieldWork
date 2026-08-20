@@ -197,7 +197,22 @@ void main() {
     expect(rfis.single.subject, contains('Beam B2'));
     expect(await repo.watchPendingSyncCount().first, 0);
 
+    final comments = await repo
+        .watchComments(parentType: 'issue', parentId: 'issue_seed_rebar')
+        .first;
+    expect(comments, hasLength(1));
+    expect(comments.single.id, 'comment_seed_rebar_1');
+    expect(comments.single.body, contains('bar benders'));
+    expect(comments.single.authorId, 'u_pm');
+    expect(comments.single.synced, isTrue);
+
     await repo.ensureSeedFieldRecords(engineer);
     expect(await repo.watchIssues(engineer.activeProjectId).first, hasLength(2));
+    expect(
+      await repo
+          .watchComments(parentType: 'issue', parentId: 'issue_seed_rebar')
+          .first,
+      hasLength(1),
+    );
   });
 }

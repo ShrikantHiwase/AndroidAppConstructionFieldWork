@@ -101,6 +101,7 @@ docs/              Build plan and training
 | Local demo voice seed | Done |
 | Hinglish status + role labels (ARB) | Done |
 | Hinglish share text + subjects (ARB) | Done |
+| Local demo comment + docs ID parity | Done |
 | FlutterFire configure + store release | Next (needs your Firebase project) |
 | Phase 3 Enterprise hooks | Deferred |
 
