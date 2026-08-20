@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/l10n/app_locale_provider.dart';
+import '../core/notifications/dpr_nudge_scheduler.dart';
 import '../core/notifications/notification_deep_link.dart';
 import '../core/providers/connectivity_provider.dart';
 import '../core/theme/app_theme.dart';
@@ -10,6 +11,7 @@ import '../features/auth/presentation/auth_controller.dart';
 import '../features/auth/presentation/biometric_unlock_page.dart';
 import '../features/auth/presentation/login_page.dart';
 import '../features/auth/presentation/role_home_page.dart';
+import '../features/digests/presentation/digests_providers.dart';
 import '../l10n/app_localizations.dart';
 
 class FieldApp extends ConsumerWidget {
@@ -20,6 +22,19 @@ class FieldApp extends ConsumerWidget {
     final auth = ref.watch(authControllerProvider);
     final firebaseEnabled = ref.watch(firebaseEnabledProvider);
     final localeOverride = ref.watch(appLocaleProvider);
+
+    // Re-schedule tray copy when language toggles.
+    ref.listen(appLocaleProvider, (_, next) {
+      final prefs = ref.read(digestPrefsProvider);
+      final l10n = lookupAppLocalizations(next ?? const Locale('en'));
+      syncDprNudgeSchedule(
+        scheduler: ref.read(dprNudgeSchedulerProvider),
+        enabled: prefs.dprNudgeEnabled,
+        hourLocal: prefs.nudgeHourLocal,
+        title: l10n.dprReminderTitle,
+        body: l10n.dprReminderBody,
+      );
+    });
 
     return MaterialApp(
       onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,

@@ -398,6 +398,11 @@ void main() {
     expect(hi.noPdfPreview, 'PDF preview उपलब्ध नहीं।');
     expect(hi.todaysDprIncomplete, 'आज का DPR अधूरा है');
     expect(hi.dprNudgeReminder(17), contains('DPR submit करो'));
+    expect(hi.dprReminderTitle, 'DPR याद दिलाना');
+    expect(hi.dprReminderBody, contains('submit करो'));
+    expect(hi.shareSheetHint, contains('share sheet'));
+    expect(hi.documentShareOnDevice, contains('Device'));
+    expect(hi.dprShareBy('Asha'), contains('द्वारा'));
     expect(hi.shareSnackClipboard('Digest'), contains('paste करो'));
     expect(hi.conflictAppendOnly, contains('append-only'));
     expect(hi.notifyIssueAssigned, 'Issue assign हो गया');
@@ -427,6 +432,10 @@ void main() {
     expect(en.hasFailsLabel, 'HAS FAILS');
     expect(en.todaysDprIncomplete, "Today's DPR incomplete");
     expect(en.dprNudgeReminder(17), contains('submit today'));
+    expect(en.dprReminderBody, contains('Daily Progress Report'));
+    expect(en.shareSheetHint, contains('WhatsApp'));
+    expect(en.documentShareType('text/plain'), 'Type: text/plain');
+    expect(en.documentShareUrl('demo://x'), 'URL: demo://x');
     expect(en.shareSnackSystem('DPR PDF'), contains('share sheet'));
     expect(en.conflictLastWriteWins, contains('Last write wins'));
     expect(en.notifyDprSubmitted, 'DPR submitted');

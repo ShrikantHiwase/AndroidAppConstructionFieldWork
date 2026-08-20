@@ -529,7 +529,7 @@ class DprDetailPage extends ConsumerWidget {
           SelectableText(shareText),
           const SizedBox(height: 8),
           Text(
-            'PDF and text open the system share sheet (WhatsApp, email, etc.).',
+            l10n.shareSheetHint,
             style: Theme.of(context).textTheme.bodySmall,
           ),
         ],

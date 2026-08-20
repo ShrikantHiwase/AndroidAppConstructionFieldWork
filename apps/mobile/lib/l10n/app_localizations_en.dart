@@ -419,6 +419,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dprReminderTitle => 'DPR reminder';
 
   @override
+  String get dprReminderBody =>
+      'Submit today\'s Daily Progress Report if you haven\'t yet.';
+
+  @override
   String get pmDigests => 'PM digests';
 
   @override
@@ -722,6 +726,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get textPreview => 'Text preview';
+
+  @override
+  String get shareSheetHint =>
+      'PDF and text open the system share sheet (WhatsApp, email, etc.).';
 
   @override
   String get noEvidencePhoto => 'No evidence photo';
@@ -1608,5 +1616,18 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String pilotStatusNeedSamples(int count) {
     return 'NEED $count+';
+  }
+
+  @override
+  String documentShareType(String contentType) {
+    return 'Type: $contentType';
+  }
+
+  @override
+  String get documentShareOnDevice => 'On device / demo local path';
+
+  @override
+  String documentShareUrl(String url) {
+    return 'URL: $url';
   }
 }

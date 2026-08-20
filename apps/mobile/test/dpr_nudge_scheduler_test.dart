@@ -15,6 +15,8 @@ void main() {
       scheduler: fake,
       enabled: true,
       hourLocal: 17,
+      title: 'DPR reminder',
+      body: "Submit today's Daily Progress Report if you haven't yet.",
     );
     expect(fake.scheduledHour, 17);
     expect(fake.scheduledTitle, 'DPR reminder');
@@ -23,6 +25,8 @@ void main() {
       scheduler: fake,
       enabled: false,
       hourLocal: 17,
+      title: 'DPR reminder',
+      body: "Submit today's Daily Progress Report if you haven't yet.",
     );
     expect(fake.cancelled, isTrue);
     expect(fake.scheduledHour, isNull);

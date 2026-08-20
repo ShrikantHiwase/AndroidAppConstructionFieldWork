@@ -261,6 +261,7 @@
   "simulate5PmCheck": "Simulate 5 PM check",
   "noNudgeAlreadySubmitted": "No nudge (DPR already submitted or prefs off).",
   "dprReminderTitle": "DPR reminder",
+  "dprReminderBody": "Submit today's Daily Progress Report if you haven't yet.",
   "pmDigests": "PM digests",
   "pmDigestsSubtitle": "Aggregate open issues, RFIs, and DPR blockers for the active project.",
   "pmDigest": "PM digest",
@@ -435,6 +436,7 @@
     }
   },
   "textPreview": "Text preview",
+  "shareSheetHint": "PDF and text open the system share sheet (WhatsApp, email, etc.).",
   "noEvidencePhoto": "No evidence photo",
   "evidencePhotoQueued": "Evidence photo · queued upload",
   "evidencePhotoSynced": "Evidence photo · synced",
@@ -1127,6 +1129,19 @@
   "@pilotStatusNeedSamples": {
     "placeholders": {
       "count": { "type": "int" }
+    }
+  },
+  "documentShareType": "Type: {contentType}",
+  "@documentShareType": {
+    "placeholders": {
+      "contentType": { "type": "String" }
+    }
+  },
+  "documentShareOnDevice": "On device / demo local path",
+  "documentShareUrl": "URL: {url}",
+  "@documentShareUrl": {
+    "placeholders": {
+      "url": { "type": "String" }
     }
   }
 }

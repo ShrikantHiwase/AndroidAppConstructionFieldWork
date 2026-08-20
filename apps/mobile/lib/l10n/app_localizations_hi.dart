@@ -414,7 +414,11 @@ class AppLocalizationsHi extends AppLocalizations {
       'Nudge नहीं (DPR already submitted या prefs off)।';
 
   @override
-  String get dprReminderTitle => 'DPR reminder';
+  String get dprReminderTitle => 'DPR याद दिलाना';
+
+  @override
+  String get dprReminderBody =>
+      'आज का Daily Progress Report submit करो अगर अभी नहीं किया।';
 
   @override
   String get pmDigests => 'PM digests';
@@ -719,6 +723,10 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get textPreview => 'Text preview';
+
+  @override
+  String get shareSheetHint =>
+      'PDF और text system share sheet खोलते हैं (WhatsApp, email, आदि)।';
 
   @override
   String get noEvidencePhoto => 'Evidence photo नहीं';
@@ -1314,7 +1322,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String pmDigestGenerated(String iso) {
-    return 'Generated: $iso';
+    return 'बनाया: $iso';
   }
 
   @override
@@ -1328,7 +1336,7 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get pmDigestTodayMissing => 'Today DPR: missing / not submitted';
+  String get pmDigestTodayMissing => 'Today DPR: missing / submit नहीं हुआ';
 
   @override
   String get pmDigestTodayOk => 'Today DPR: ok';
@@ -1350,7 +1358,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get shareKindDigest => 'Digest';
 
   @override
-  String get shareKindDocumentSummary => 'Document summary';
+  String get shareKindDocumentSummary => 'Document का summary';
 
   @override
   String get shareKindDprPdf => 'DPR PDF';
@@ -1458,12 +1466,12 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String dprShareDate(String date) {
-    return 'Date: $date';
+    return 'तारीख: $date';
   }
 
   @override
   String dprShareBy(String name) {
-    return 'By: $name';
+    return 'द्वारा: $name';
   }
 
   @override
@@ -1506,7 +1514,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String weeklyShareGenerated(String iso) {
-    return 'Generated: $iso';
+    return 'बनाया: $iso';
   }
 
   @override
@@ -1546,7 +1554,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String pilotShareGenerated(String iso) {
-    return 'Generated: $iso';
+    return 'बनाया: $iso';
   }
 
   @override
@@ -1606,5 +1614,18 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String pilotStatusNeedSamples(int count) {
     return 'NEED $count+';
+  }
+
+  @override
+  String documentShareType(String contentType) {
+    return 'Type: $contentType';
+  }
+
+  @override
+  String get documentShareOnDevice => 'Device / demo local path पर';
+
+  @override
+  String documentShareUrl(String url) {
+    return 'URL: $url';
   }
 }

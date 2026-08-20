@@ -94,11 +94,11 @@ class _DocumentViewerPageState extends ConsumerState<DocumentViewerPage> {
               if (doc == null) return;
               final text = StringBuffer()
                 ..writeln(doc.name)
-                ..writeln('Type: ${doc.contentType}')
+                ..writeln(l10n.documentShareType(doc.contentType))
                 ..writeln(
                   doc.remoteUrl == null
-                      ? (doc.localFilePath ?? 'On device / demo local path')
-                      : 'URL: ${doc.remoteUrl}',
+                      ? (doc.localFilePath ?? l10n.documentShareOnDevice)
+                      : l10n.documentShareUrl(doc.remoteUrl!),
                 );
               final outcome = await ref.read(sharePortProvider).shareText(
                     text: text.toString(),
