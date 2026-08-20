@@ -41,6 +41,9 @@ class LocalFieldRecordsRepository
   static const _commentsKey = 'field.comments';
   static const _outboxKey = 'field.outbox';
   static const _seededKey = 'field.seeded_projects.v1';
+  /// Separate from [_seededKey] so installs that already seeded issues/RFIs
+  /// still pick up `comment_seed_rebar_1` (mirrors firebase/seed).
+  static const _commentsSeededKey = 'field.seeded_comments.v1';
 
   final _issues = <String, Issue>{};
   final _rfis = <String, Rfi>{};
@@ -707,135 +710,159 @@ class LocalFieldRecordsRepository
 
   @override
   Future<void> ensureSeedFieldRecords(AuthSession session) async {
-    final seeded = _prefs.getStringList(_seededKey) ?? [];
-    if (seeded.contains(session.activeProjectId)) return;
-
     final orgId = session.activeProject.orgId;
     final projectId = session.activeProjectId;
+    var changed = false;
 
-    void addIssue({
-      required String id,
-      required String title,
-      required String description,
-      required IssueStatus status,
-      String? assigneeId,
-      String? assigneeName,
-      GeoLocation? location,
-      List<StatusAuditEntry> statusHistory = const [],
-      required DateTime createdAt,
-      required DateTime updatedAt,
-    }) {
-      _issues[id] = Issue(
-        id: id,
-        orgId: orgId,
-        projectId: projectId,
-        title: title,
-        description: description,
-        status: status,
-        createdBy: 'u_engineer',
-        createdByName: 'Asha Patil',
-        createdAt: createdAt,
-        updatedAt: updatedAt,
-        assigneeId: assigneeId,
-        assigneeName: assigneeName,
-        location: location,
-        statusHistory: statusHistory,
-        synced: true,
-      );
-    }
+    final seeded = _prefs.getStringList(_seededKey) ?? [];
+    if (!seeded.contains(projectId)) {
+      void addIssue({
+        required String id,
+        required String title,
+        required String description,
+        required IssueStatus status,
+        String? assigneeId,
+        String? assigneeName,
+        GeoLocation? location,
+        List<StatusAuditEntry> statusHistory = const [],
+        required DateTime createdAt,
+        required DateTime updatedAt,
+      }) {
+        _issues[id] = Issue(
+          id: id,
+          orgId: orgId,
+          projectId: projectId,
+          title: title,
+          description: description,
+          status: status,
+          createdBy: 'u_engineer',
+          createdByName: 'Asha Patil',
+          createdAt: createdAt,
+          updatedAt: updatedAt,
+          assigneeId: assigneeId,
+          assigneeName: assigneeName,
+          location: location,
+          statusHistory: statusHistory,
+          synced: true,
+        );
+      }
 
-    void addRfi({
-      required String id,
-      required String subject,
-      required String question,
-      String? assigneeId,
-      String? assigneeName,
-      required DateTime createdAt,
-    }) {
-      _rfis[id] = Rfi(
-        id: id,
-        orgId: orgId,
-        projectId: projectId,
-        subject: subject,
-        question: question,
-        status: IssueStatus.open,
-        createdBy: 'u_engineer',
-        createdByName: 'Asha Patil',
-        createdAt: createdAt,
-        updatedAt: createdAt,
-        assigneeId: assigneeId,
-        assigneeName: assigneeName,
-        synced: true,
-      );
-    }
+      void addRfi({
+        required String id,
+        required String subject,
+        required String question,
+        String? assigneeId,
+        String? assigneeName,
+        required DateTime createdAt,
+      }) {
+        _rfis[id] = Rfi(
+          id: id,
+          orgId: orgId,
+          projectId: projectId,
+          subject: subject,
+          question: question,
+          status: IssueStatus.open,
+          createdBy: 'u_engineer',
+          createdByName: 'Asha Patil',
+          createdAt: createdAt,
+          updatedAt: createdAt,
+          assigneeId: assigneeId,
+          assigneeName: assigneeName,
+          synced: true,
+        );
+      }
 
-    if (projectId == 'proj_pune_tower') {
-      addIssue(
-        id: 'issue_seed_rebar',
-        title: 'Rebar spacing off grid — Level 02',
-        description:
-            'North grid B2 spacing looks wide vs GA Plan. Photo + GPS on site.',
-        status: IssueStatus.open,
-        assigneeId: 'u_pm',
-        assigneeName: 'Rohit Sharma',
-        location: const GeoLocation(
-          latitude: 18.5912,
-          longitude: 73.7389,
-          accuracyMeters: 8,
-          label: 'Hinjewadi Phase 1',
-        ),
-        createdAt: DateTime.utc(2026, 8, 1, 4, 30),
-        updatedAt: DateTime.utc(2026, 8, 1, 5),
-      );
-      addIssue(
-        id: 'issue_seed_leak',
-        title: 'Water seepage — basement wall',
-        description: 'Damp patch near expansion joint. QA to inspect.',
-        status: IssueStatus.inProgress,
-        assigneeId: 'u_qa',
-        assigneeName: 'Neha Kulkarni',
-        statusHistory: [
-          StatusAuditEntry(
-            from: IssueStatus.open,
-            to: IssueStatus.inProgress,
-            changedBy: 'seed',
-            changedAt: DateTime.utc(2026, 7, 29, 11, 15),
+      if (projectId == 'proj_pune_tower') {
+        addIssue(
+          id: 'issue_seed_rebar',
+          title: 'Rebar spacing off grid — Level 02',
+          description:
+              'North grid B2 spacing looks wide vs GA Plan. Photo + GPS on site.',
+          status: IssueStatus.open,
+          assigneeId: 'u_pm',
+          assigneeName: 'Rohit Sharma',
+          location: const GeoLocation(
+            latitude: 18.5912,
+            longitude: 73.7389,
+            accuracyMeters: 8,
+            label: 'Hinjewadi Phase 1',
           ),
-        ],
-        createdAt: DateTime.utc(2026, 7, 28, 9),
-        updatedAt: DateTime.utc(2026, 7, 29, 11, 15),
-      );
-      addRfi(
-        id: 'rfi_seed_beam',
-        subject: 'Beam B2 depth clash with duct',
-        question: 'Confirm Rev B beam depth vs MEP duct routing on Level 02.',
-        assigneeId: 'u_pm',
-        assigneeName: 'Rohit Sharma',
-        createdAt: DateTime.utc(2026, 8, 1, 6),
-      );
-    } else if (projectId == 'proj_mumbai_metro') {
-      addIssue(
-        id: 'issue_seed_mumbai_access',
-        title: 'Yard gate access badge delay',
-        description: 'Night shift waiting on visitor badges at BKC yard.',
-        status: IssueStatus.open,
-        createdAt: DateTime.utc(2026, 8, 2, 2),
-        updatedAt: DateTime.utc(2026, 8, 2, 2),
-      );
-    } else {
-      // Generic demo project: one open issue so Open queue is never empty.
-      addIssue(
-        id: 'issue_seed_${projectId}_sample',
-        title: 'Sample punch — check alignment',
-        description: 'Demo seed issue for local walkthrough.',
-        status: IssueStatus.open,
-        createdAt: DateTime.now().toUtc(),
-        updatedAt: DateTime.now().toUtc(),
-      );
+          createdAt: DateTime.utc(2026, 8, 1, 4, 30),
+          updatedAt: DateTime.utc(2026, 8, 1, 5),
+        );
+        addIssue(
+          id: 'issue_seed_leak',
+          title: 'Water seepage — basement wall',
+          description: 'Damp patch near expansion joint. QA to inspect.',
+          status: IssueStatus.inProgress,
+          assigneeId: 'u_qa',
+          assigneeName: 'Neha Kulkarni',
+          statusHistory: [
+            StatusAuditEntry(
+              from: IssueStatus.open,
+              to: IssueStatus.inProgress,
+              changedBy: 'seed',
+              changedAt: DateTime.utc(2026, 7, 29, 11, 15),
+            ),
+          ],
+          createdAt: DateTime.utc(2026, 7, 28, 9),
+          updatedAt: DateTime.utc(2026, 7, 29, 11, 15),
+        );
+        addRfi(
+          id: 'rfi_seed_beam',
+          subject: 'Beam B2 depth clash with duct',
+          question: 'Confirm Rev B beam depth vs MEP duct routing on Level 02.',
+          assigneeId: 'u_pm',
+          assigneeName: 'Rohit Sharma',
+          createdAt: DateTime.utc(2026, 8, 1, 6),
+        );
+      } else if (projectId == 'proj_mumbai_metro') {
+        addIssue(
+          id: 'issue_seed_mumbai_access',
+          title: 'Yard gate access badge delay',
+          description: 'Night shift waiting on visitor badges at BKC yard.',
+          status: IssueStatus.open,
+          createdAt: DateTime.utc(2026, 8, 2, 2),
+          updatedAt: DateTime.utc(2026, 8, 2, 2),
+        );
+      } else {
+        // Generic demo project: one open issue so Open queue is never empty.
+        addIssue(
+          id: 'issue_seed_${projectId}_sample',
+          title: 'Sample punch — check alignment',
+          description: 'Demo seed issue for local walkthrough.',
+          status: IssueStatus.open,
+          createdAt: DateTime.now().toUtc(),
+          updatedAt: DateTime.now().toUtc(),
+        );
+      }
+
+      seeded.add(projectId);
+      await _prefs.setStringList(_seededKey, seeded);
+      changed = true;
     }
 
-    seeded.add(projectId);
-    await _prefs.setStringList(_seededKey, seeded);
-    await _persist();
+    // Separate key so installs that already seeded issues still get the comment.
+    final commentsSeeded = _prefs.getStringList(_commentsSeededKey) ?? [];
+    if (!commentsSeeded.contains(projectId) &&
+        projectId == 'proj_pune_tower') {
+      _comments['comment_seed_rebar_1'] = FieldComment(
+        id: 'comment_seed_rebar_1',
+        orgId: orgId,
+        projectId: projectId,
+        parentType: 'issue',
+        parentId: 'issue_seed_rebar',
+        body: 'PM reviewed — assign bar benders tomorrow AM.',
+        authorId: 'u_pm',
+        authorName: 'Rohit Sharma',
+        createdAt: DateTime.utc(2026, 8, 1, 5, 10),
+        synced: true,
+      );
+      commentsSeeded.add(projectId);
+      await _prefs.setStringList(_commentsSeededKey, commentsSeeded);
+      changed = true;
+    }
+
+    if (changed) await _persist();
   }
 }

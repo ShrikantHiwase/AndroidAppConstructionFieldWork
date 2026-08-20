@@ -38,6 +38,25 @@ void main() {
     expect(pdf.localFilePath, DemoDocumentAssets.gaPlanAssetUri);
     expect(docs.any((d) => d.kind == DocContentType.txt), isTrue);
     expect(docs.any((d) => d.kind == DocContentType.csv), isTrue);
+
+    // Pune demo uses firebase/seed stable ids + remoteUrl.
+    expect(session.activeProjectId, 'proj_pune_tower');
+    expect(
+      folders.map((f) => f.id),
+      containsAll([
+        'folder_seed_structural',
+        'folder_seed_mep',
+        'folder_seed_drawings',
+        'folder_seed_specs',
+        'folder_seed_schedules',
+      ]),
+    );
+    expect(pdf.id, 'doc_seed_ga_plan');
+    expect(pdf.remoteUrl, 'demo://seed/ga-plan-level-02.pdf');
+    expect(
+      docs.map((d) => d.id),
+      containsAll(['doc_seed_ga_plan', 'doc_seed_mix_notes', 'doc_seed_cable_csv']),
+    );
   });
 
   test('client cannot upload; engineer can', () async {

@@ -38,7 +38,7 @@ class LocalDocumentsRepository
 
   static const _foldersKey = 'docs.folders';
   static const _documentsKey = 'docs.documents';
-  static const _seededKey = 'docs.seeded_projects.v2';
+  static const _seededKey = 'docs.seeded_projects.v3';
   static const _outboxKey = 'docs.outbox';
 
   final _folders = <String, DocFolder>{};
@@ -146,15 +146,23 @@ class LocalDocumentsRepository
 
     final orgId = session.activeProject.orgId;
     final projectId = session.activeProjectId;
-    final now = DateTime.now().toUtc();
+    final useStableIds = projectId == 'proj_pune_tower';
+    final now = useStableIds
+        ? DateTime.utc(2026, 7, 20, 8)
+        : DateTime.now().toUtc();
+
+    // Drop any prior demo tree for this project (v2 used random ids).
+    _folders.removeWhere((_, f) => f.projectId == projectId);
+    _documents.removeWhere((_, d) => d.projectId == projectId);
 
     DocFolder addFolder({
+      required String id,
       required String name,
       required FolderKind kind,
       String? parentId,
     }) {
       final folder = DocFolder(
-        id: _id('folder'),
+        id: id,
         orgId: orgId,
         projectId: projectId,
         name: name,
@@ -166,25 +174,37 @@ class LocalDocumentsRepository
       return folder;
     }
 
-    final structural = addFolder(name: 'Structural', kind: FolderKind.discipline);
-    final mep = addFolder(name: 'MEP', kind: FolderKind.discipline);
+    final structural = addFolder(
+      id: useStableIds ? 'folder_seed_structural' : _id('folder'),
+      name: 'Structural',
+      kind: FolderKind.discipline,
+    );
+    final mep = addFolder(
+      id: useStableIds ? 'folder_seed_mep' : _id('folder'),
+      name: 'MEP',
+      kind: FolderKind.discipline,
+    );
     final drawings = addFolder(
+      id: useStableIds ? 'folder_seed_drawings' : _id('folder'),
       name: 'Drawings',
       kind: FolderKind.documentType,
       parentId: structural.id,
     );
     final specs = addFolder(
+      id: useStableIds ? 'folder_seed_specs' : _id('folder'),
       name: 'Specifications',
       kind: FolderKind.documentType,
       parentId: structural.id,
     );
     final schedules = addFolder(
+      id: useStableIds ? 'folder_seed_schedules' : _id('folder'),
       name: 'Schedules',
       kind: FolderKind.documentType,
       parentId: mep.id,
     );
 
     void addDoc({
+      required String id,
       required DocFolder folder,
       required String name,
       required String contentType,
@@ -192,21 +212,24 @@ class LocalDocumentsRepository
       String? textContent,
       List<String> pdfPages = const [],
       String? localFilePath,
+      String? remoteUrl,
       bool downloaded = false,
       int? sizeBytes,
+      DateTime? createdAt,
     }) {
+      final at = createdAt ?? now;
       final doc = ProjectDocument(
-        id: _id('doc'),
+        id: id,
         orgId: orgId,
         projectId: projectId,
         folderId: folder.id,
         name: name,
         contentType: contentType,
         kind: kind,
-        createdBy: 'seed',
-        createdByName: 'System',
-        createdAt: now,
-        updatedAt: now,
+        createdBy: useStableIds ? 'u_admin' : 'seed',
+        createdByName: useStableIds ? 'Site Admin' : 'System',
+        createdAt: at,
+        updatedAt: at,
         sizeBytes: sizeBytes ??
             (textContent?.length ?? pdfPages.join().length),
         downloaded: downloaded,
@@ -214,40 +237,49 @@ class LocalDocumentsRepository
         textContent: textContent,
         pdfPages: pdfPages,
         localFilePath: localFilePath,
+        remoteUrl: remoteUrl,
       );
       _documents[doc.id] = doc;
     }
 
     addDoc(
+      id: useStableIds ? 'doc_seed_ga_plan' : _id('doc'),
       folder: drawings,
       name: 'GA Plan Level 02.pdf',
       contentType: 'application/pdf',
       kind: DocContentType.pdf,
       localFilePath: DemoDocumentAssets.gaPlanAssetUri,
+      remoteUrl: useStableIds ? 'demo://seed/ga-plan-level-02.pdf' : null,
       downloaded: true,
       sizeBytes: 5150,
       pdfPages: const [
-        'GA PLAN — LEVEL 02 (fallback text if pdfrx unavailable)',
+        'GA PLAN — LEVEL 02 (seed metadata; open asset in demo or Storage URL when uploaded)',
         'SECTION A-A — Beam B2: 300x600',
         'REVISION LOG — Rev A IFC / Rev B beam depth',
       ],
     );
     addDoc(
+      id: useStableIds ? 'doc_seed_mix_notes' : _id('doc'),
       folder: specs,
       name: 'Concrete mix notes.txt',
       contentType: 'text/plain',
       kind: DocContentType.txt,
       textContent:
           'CONCRETE MIX NOTES\n\nM30 for columns.\nM25 for slabs.\nCure 7 days minimum.\nPhoto evidence required on pour day.',
+      remoteUrl: useStableIds ? 'demo://seed/concrete-mix-notes.txt' : null,
       downloaded: true,
+      createdAt: useStableIds ? DateTime.utc(2026, 7, 20, 8, 5) : null,
     );
     addDoc(
+      id: useStableIds ? 'doc_seed_cable_csv' : _id('doc'),
       folder: schedules,
       name: 'Cable tray schedule.csv',
       contentType: 'text/csv',
       kind: DocContentType.csv,
       textContent:
           'tag,level,size_mm,length_m\nCT-01,L2,300,42\nCT-02,L2,450,18\nCT-03,L3,300,25\n',
+      remoteUrl: useStableIds ? 'demo://seed/cable-tray-schedule.csv' : null,
+      createdAt: useStableIds ? DateTime.utc(2026, 7, 20, 8, 10) : null,
     );
 
     seeded.add(projectId);
