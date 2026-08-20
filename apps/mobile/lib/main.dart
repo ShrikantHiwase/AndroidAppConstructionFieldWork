@@ -10,6 +10,7 @@ import 'core/notifications/fcm_background.dart';
 import 'core/secure/secure_store.dart';
 import 'features/auth/presentation/auth_controller.dart';
 import 'features/digests/data/local_digests_repository.dart';
+import 'l10n/app_localizations.dart';
 import 'sync/background/background_sync_scheduler.dart';
 
 Future<void> main() async {
@@ -32,10 +33,18 @@ Future<void> main() async {
   final nudgeScheduler = LocalNotificationsDprNudgeScheduler();
   await nudgeScheduler.initialize();
   final digestPrefs = LocalDigestsRepository(prefs).getPrefs();
+  final localeCode = prefs.getString('app.locale_code');
+  final l10n = lookupAppLocalizations(
+    localeCode == null || localeCode.isEmpty
+        ? const Locale('en')
+        : Locale(localeCode),
+  );
   await syncDprNudgeSchedule(
     scheduler: nudgeScheduler,
     enabled: digestPrefs.dprNudgeEnabled,
     hourLocal: digestPrefs.nudgeHourLocal,
+    title: l10n.dprReminderTitle,
+    body: l10n.dprReminderBody,
   );
 
   runApp(

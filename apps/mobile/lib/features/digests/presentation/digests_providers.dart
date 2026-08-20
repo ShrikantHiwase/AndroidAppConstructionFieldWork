@@ -23,24 +23,33 @@ final digestPrefsProvider =
   return DigestPrefsController(
     ref.watch(digestsRepositoryProvider),
     scheduler: ref.watch(dprNudgeSchedulerProvider),
+    ref: ref,
   );
 });
 
 class DigestPrefsController extends StateNotifier<DigestPrefs> {
-  DigestPrefsController(this._repo, {required DprNudgeScheduler scheduler})
-      : _scheduler = scheduler,
+  DigestPrefsController(
+    this._repo, {
+    required DprNudgeScheduler scheduler,
+    required Ref ref,
+  })  : _scheduler = scheduler,
+        _ref = ref,
         super(_repo.getPrefs());
 
   final DigestsRepository _repo;
   final DprNudgeScheduler _scheduler;
+  final Ref _ref;
 
   Future<void> update(DigestPrefs prefs) async {
     await _repo.setPrefs(prefs);
     state = prefs;
+    final l10n = digestsCopy(_ref);
     await syncDprNudgeSchedule(
       scheduler: _scheduler,
       enabled: prefs.dprNudgeEnabled,
       hourLocal: prefs.nudgeHourLocal,
+      title: l10n.dprReminderTitle,
+      body: l10n.dprReminderBody,
     );
   }
 }

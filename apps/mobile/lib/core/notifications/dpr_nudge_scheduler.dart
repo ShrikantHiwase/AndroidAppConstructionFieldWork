@@ -219,6 +219,8 @@ Future<void> syncDprNudgeSchedule({
   required DprNudgeScheduler scheduler,
   required bool enabled,
   required int hourLocal,
+  required String title,
+  required String body,
 }) async {
   if (!enabled) {
     await scheduler.cancel();
@@ -226,7 +228,7 @@ Future<void> syncDprNudgeSchedule({
   }
   await scheduler.scheduleDaily(
     hourLocal: hourLocal,
-    title: 'DPR reminder',
-    body: "Submit today's Daily Progress Report if you haven't yet.",
+    title: title,
+    body: body,
   );
 }

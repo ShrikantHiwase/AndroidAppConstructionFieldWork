@@ -824,6 +824,12 @@ abstract class AppLocalizations {
   /// **'DPR reminder'**
   String get dprReminderTitle;
 
+  /// No description provided for @dprReminderBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit today\'s Daily Progress Report if you haven\'t yet.'**
+  String get dprReminderBody;
+
   /// No description provided for @pmDigests.
   ///
   /// In en, this message translates to:
@@ -1381,6 +1387,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Text preview'**
   String get textPreview;
+
+  /// No description provided for @shareSheetHint.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF and text open the system share sheet (WhatsApp, email, etc.).'**
+  String get shareSheetHint;
 
   /// No description provided for @noEvidencePhoto.
   ///
@@ -2850,6 +2862,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'NEED {count}+'**
   String pilotStatusNeedSamples(int count);
+
+  /// No description provided for @documentShareType.
+  ///
+  /// In en, this message translates to:
+  /// **'Type: {contentType}'**
+  String documentShareType(String contentType);
+
+  /// No description provided for @documentShareOnDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'On device / demo local path'**
+  String get documentShareOnDevice;
+
+  /// No description provided for @documentShareUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'URL: {url}'**
+  String documentShareUrl(String url);
 }
 
 class _AppLocalizationsDelegate

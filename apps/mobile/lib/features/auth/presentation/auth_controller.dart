@@ -1,10 +1,13 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../admin/data/firebase_admin_invites_repository.dart';
 import '../../admin/data/local_admin_invites_repository.dart';
 import '../../admin/domain/admin_invites_repository.dart';
+import '../../../core/l10n/app_locale_provider.dart';
 import '../../../core/secure/secure_store.dart';
+import '../../../l10n/app_localizations.dart';
 import '../data/fake_auth_repository.dart';
 import '../data/firebase_auth_repository.dart';
 import '../domain/auth_models.dart';
@@ -75,10 +78,13 @@ class AuthState {
 }
 
 class AuthController extends StateNotifier<AuthState> {
-  AuthController(this._repo) : super(const AuthState(status: AuthStatus.unknown)) {
+  AuthController(this._ref)
+      : _repo = _ref.read(authRepositoryProvider),
+        super(const AuthState(status: AuthStatus.unknown)) {
     _bootstrap();
   }
 
+  final Ref _ref;
   final AuthRepository _repo;
 
   Future<void> _bootstrap() async {
@@ -149,7 +155,9 @@ class AuthController extends StateNotifier<AuthState> {
     if (ok && state.session != null) {
       state = AuthState(status: AuthStatus.signedIn, session: state.session);
     } else {
-      state = state.copyWith(errorMessage: 'Unlock failed');
+      final locale = _ref.read(appLocaleProvider) ?? const Locale('en');
+      final l10n = lookupAppLocalizations(locale);
+      state = state.copyWith(errorMessage: l10n.unlockFailed);
     }
   }
 
@@ -166,7 +174,7 @@ class AuthController extends StateNotifier<AuthState> {
 
 final authControllerProvider =
     StateNotifierProvider<AuthController, AuthState>((ref) {
-  return AuthController(ref.watch(authRepositoryProvider));
+  return AuthController(ref);
 });
 
 final authSessionProvider = Provider<AuthSession?>((ref) {
