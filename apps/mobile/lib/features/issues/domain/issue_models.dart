@@ -1,4 +1,5 @@
 import '../../../core/constants/app_constants.dart';
+import '../../../core/errors/app_error_codes.dart';
 import '../../../l10n/app_localizations.dart';
 
 enum IssueStatus {
@@ -464,10 +465,17 @@ class CreateRfiInput {
 }
 
 class FieldRecordsException implements Exception {
-  FieldRecordsException(this.message);
-  final String message;
+  FieldRecordsException(this.code, {this.arg1, this.arg2});
+
+  final String code;
+  final String? arg1;
+  final String? arg2;
+
+  String get englishMessage =>
+      englishAppErrorMessage(code, arg1: arg1, arg2: arg2);
+
   @override
-  String toString() => message;
+  String toString() => englishMessage;
 }
 
 /// Who can mutate field records for the active role.

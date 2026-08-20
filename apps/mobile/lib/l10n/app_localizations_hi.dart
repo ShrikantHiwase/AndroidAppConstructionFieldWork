@@ -1757,4 +1757,150 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get pdfTodayDprOk => 'ok';
+
+  @override
+  String get errClientReadOnly => 'Client accounts read-only हैं';
+
+  @override
+  String get errClientReadOnlySiteOps =>
+      'Client accounts site ops के लिए read-only हैं';
+
+  @override
+  String get errClientCannotEditDpr => 'Client accounts DPR edit नहीं कर सकते';
+
+  @override
+  String get errClientCannotSubmitDpr =>
+      'Client accounts DPR submit नहीं कर सकते';
+
+  @override
+  String get errClientCannotPin =>
+      'Client accounts drawings पर pin नहीं कर सकते';
+
+  @override
+  String get errClientCannotVoice =>
+      'Client accounts voice notes नहीं जोड़ सकते';
+
+  @override
+  String get errCannotAssign => 'आपके role को assign करने की अनुमति नहीं';
+
+  @override
+  String get errCannotChangeStatus =>
+      'आपके role को status change की अनुमति नहीं';
+
+  @override
+  String get errCannotUploadDocs =>
+      'आपके role को documents upload की अनुमति नहीं';
+
+  @override
+  String get errCannotManageFolders =>
+      'आपके role को folders manage करने की अनुमति नहीं';
+
+  @override
+  String get errOnlyAdminsInvite => 'केवल admins users invite कर सकते हैं';
+
+  @override
+  String get errTitleRequired => 'Title ज़रूरी है';
+
+  @override
+  String get errSubjectRequired => 'Subject ज़रूरी है';
+
+  @override
+  String get errFileNameRequired => 'File name ज़रूरी है';
+
+  @override
+  String get errCommentEmpty => 'Comment खाली नहीं हो सकता';
+
+  @override
+  String get errIssueNotFound => 'Issue नहीं मिला';
+
+  @override
+  String get errIssueWrongProject => 'Issue active project में नहीं है';
+
+  @override
+  String get errRfiNotFound => 'RFI नहीं मिला';
+
+  @override
+  String get errDprNotFound => 'DPR नहीं मिला';
+
+  @override
+  String get errDprWrongProject => 'DPR active project में नहीं है';
+
+  @override
+  String get errDprAlreadySubmitted => 'आज का DPR पहले ही submit हो चुका है';
+
+  @override
+  String get errDprNeedActivity => 'Submit से पहले कम से कम एक activity जोड़ो';
+
+  @override
+  String get errDocumentNotFound => 'Document नहीं मिला';
+
+  @override
+  String get errFolderNotFound => 'Active project में folder नहीं मिला';
+
+  @override
+  String get errParentFolderNotFound => 'Parent folder नहीं मिला';
+
+  @override
+  String get errDrawingNotFound => 'Drawing नहीं मिला';
+
+  @override
+  String get errPageOutOfRange => 'Page range से बाहर है';
+
+  @override
+  String get errPinOutOfBounds => 'Pin drawing page के अंदर होना चाहिए';
+
+  @override
+  String get errParentRequired => 'Parent record ज़रूरी है';
+
+  @override
+  String get errAudioPathRequired => 'Audio path ज़रूरी है';
+
+  @override
+  String get errChecklistItemsRequired => 'Checklist items जोड़ो';
+
+  @override
+  String get errHeadcountInvalid => 'Headcount > 0 होना चाहिए';
+
+  @override
+  String get errMaterialRequired => 'Material ज़रूरी है';
+
+  @override
+  String get errQuantityInvalid => 'Quantity > 0 होना चाहिए';
+
+  @override
+  String errPhotoEvidenceRequired(String kind) {
+    return '$kind के लिए photo evidence ज़रूरी है';
+  }
+
+  @override
+  String errPhotoRequiredOnFail(String label) {
+    return 'Fail पर photo ज़रूरी: $label';
+  }
+
+  @override
+  String get errEmailRequired => 'Valid email ज़रूरी है';
+
+  @override
+  String get errSelectProject => 'कम से कम एक project चुनो';
+
+  @override
+  String errUnknownProject(String id) {
+    return 'Unknown project: $id';
+  }
+
+  @override
+  String errPendingInviteExists(String email) {
+    return '$email के लिए pending invite पहले से है';
+  }
+
+  @override
+  String get errInviteMissingId => 'Invite बना पर inviteId नहीं मिला';
+
+  @override
+  String errCannotMoveStatus(String from, String to) {
+    return '$from से $to में move नहीं हो सकता';
+  }
+
+  @override
+  String get errRemoteFailure => 'Remote request fail हो गया';
 }

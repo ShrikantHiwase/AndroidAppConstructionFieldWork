@@ -10,6 +10,7 @@ import '../../voice_notes/domain/voice_note_models.dart';
 import '../../voice_notes/presentation/voice_notes_section.dart';
 import '../domain/issue_models.dart';
 import 'field_records_providers.dart';
+import '../../../core/errors/localize_app_error.dart';
 
 class IssueDetailPage extends ConsumerStatefulWidget {
   const IssueDetailPage({super.key, required this.issueId});
@@ -169,7 +170,7 @@ class _IssueDetailPageState extends ConsumerState<IssueDetailPage> {
                               } catch (e) {
                                 if (context.mounted) {
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text('$e')),
+                                    SnackBar(content: Text(localizeAppError(e, l10n))),
                                   );
                                 }
                               } finally {
@@ -209,7 +210,7 @@ class _IssueDetailPageState extends ConsumerState<IssueDetailPage> {
                       } catch (e) {
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('$e')),
+                            SnackBar(content: Text(localizeAppError(e, l10n))),
                           );
                         }
                       } finally {
@@ -238,7 +239,7 @@ class _IssueDetailPageState extends ConsumerState<IssueDetailPage> {
           const SizedBox(height: 8),
           commentsAsync.when(
             loading: () => const LinearProgressIndicator(),
-            error: (e, _) => Text('$e'),
+            error: (e, _) => Text(localizeAppError(e, l10n)),
             data: (comments) {
               if (comments.isEmpty) {
                 return Text(l10n.noCommentsYet);
@@ -287,7 +288,7 @@ class _IssueDetailPageState extends ConsumerState<IssueDetailPage> {
                       } catch (e) {
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('$e')),
+                            SnackBar(content: Text(localizeAppError(e, l10n))),
                           );
                         }
                       } finally {

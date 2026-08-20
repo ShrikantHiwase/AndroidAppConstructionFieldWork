@@ -11,6 +11,7 @@ import '../../auth/presentation/auth_controller.dart';
 import '../../pilot/presentation/pilot_providers.dart';
 import '../domain/issue_models.dart';
 import 'field_records_providers.dart';
+import '../../../core/errors/localize_app_error.dart';
 
 class CreateIssuePage extends ConsumerStatefulWidget {
   const CreateIssuePage({super.key});
@@ -73,7 +74,7 @@ class _CreateIssuePageState extends ConsumerState<CreateIssuePage> {
       }
       if (mounted) Navigator.of(context).pop();
     } catch (e) {
-      setState(() => _error = e.toString());
+      setState(() => _error = localizeAppError(e, AppLocalizations.of(context)));
     } finally {
       if (mounted) setState(() => _saving = false);
     }

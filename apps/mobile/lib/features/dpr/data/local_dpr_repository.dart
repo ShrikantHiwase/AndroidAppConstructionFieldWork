@@ -14,6 +14,7 @@ import '../../../sync/remote/syncable_store.dart';
 import '../../auth/domain/auth_models.dart';
 import '../domain/dpr_models.dart';
 import '../domain/dpr_repository.dart';
+import '../../../core/errors/app_error_codes.dart';
 
 class LocalDprRepository
     implements DprRepository, SyncableStore, LocalMediaCache {
@@ -187,7 +188,7 @@ class LocalDprRepository
     required CreateDprInput input,
   }) async {
     if (!canEditDpr(session.activeRole)) {
-      throw DprException('Client accounts cannot edit DPR');
+      throw DprException(AppErrorCodes.clientCannotEditDpr);
     }
     final day = (input.reportDate ?? DateTime.now()).toUtc();
     final existing = await todayDpr(session.activeProjectId, day);
@@ -198,7 +199,7 @@ class LocalDprRepository
     );
     if (existing != null) {
       if (existing.submitted) {
-        throw DprException('Today\'s DPR is already submitted');
+        throw DprException(AppErrorCodes.dprAlreadySubmitted);
       }
       final updated = existing.copyWith(
         weather: input.weather.trim(),
@@ -242,15 +243,15 @@ class LocalDprRepository
     required String dprId,
   }) async {
     if (!canEditDpr(session.activeRole)) {
-      throw DprException('Client accounts cannot submit DPR');
+      throw DprException(AppErrorCodes.clientCannotSubmitDpr);
     }
     final current = _items[dprId];
-    if (current == null) throw DprException('DPR not found');
+    if (current == null) throw DprException(AppErrorCodes.dprNotFound);
     if (current.projectId != session.activeProjectId) {
-      throw DprException('DPR is not in the active project');
+      throw DprException(AppErrorCodes.dprWrongProject);
     }
     if (current.activities.isEmpty) {
-      throw DprException('Add at least one activity before submit');
+      throw DprException(AppErrorCodes.dprNeedActivity);
     }
     final updated = current.copyWith(
       submitted: true,
@@ -661,17 +662,17 @@ class LocalDrawingPinsRepository
     required CreatePinInput input,
   }) async {
     if (!canPinDrawings(session.activeRole)) {
-      throw DrawingException('Client accounts cannot pin drawings');
+      throw DrawingException(AppErrorCodes.clientCannotPin);
     }
     final sheet = _drawings[input.drawingId];
     if (sheet == null || sheet.projectId != session.activeProjectId) {
-      throw DrawingException('Drawing not found');
+      throw DrawingException(AppErrorCodes.drawingNotFound);
     }
     if (input.page < 1 || input.page > sheet.pageCount) {
-      throw DrawingException('Page out of range');
+      throw DrawingException(AppErrorCodes.pageOutOfRange);
     }
     if (input.x < 0 || input.x > 1 || input.y < 0 || input.y > 1) {
-      throw DrawingException('Pin must be within the drawing page');
+      throw DrawingException(AppErrorCodes.pinOutOfBounds);
     }
     final path = input.photoLocalPath;
     final pendingUpload = path != null && path.isNotEmpty;

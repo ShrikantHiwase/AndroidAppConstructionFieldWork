@@ -3102,6 +3102,264 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'ok'**
   String get pdfTodayDprOk;
+
+  /// No description provided for @errClientReadOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Client accounts are read-only'**
+  String get errClientReadOnly;
+
+  /// No description provided for @errClientReadOnlySiteOps.
+  ///
+  /// In en, this message translates to:
+  /// **'Client accounts are read-only for site ops'**
+  String get errClientReadOnlySiteOps;
+
+  /// No description provided for @errClientCannotEditDpr.
+  ///
+  /// In en, this message translates to:
+  /// **'Client accounts cannot edit DPR'**
+  String get errClientCannotEditDpr;
+
+  /// No description provided for @errClientCannotSubmitDpr.
+  ///
+  /// In en, this message translates to:
+  /// **'Client accounts cannot submit DPR'**
+  String get errClientCannotSubmitDpr;
+
+  /// No description provided for @errClientCannotPin.
+  ///
+  /// In en, this message translates to:
+  /// **'Client accounts cannot pin drawings'**
+  String get errClientCannotPin;
+
+  /// No description provided for @errClientCannotVoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Client accounts cannot add voice notes'**
+  String get errClientCannotVoice;
+
+  /// No description provided for @errCannotAssign.
+  ///
+  /// In en, this message translates to:
+  /// **'Your role cannot assign work'**
+  String get errCannotAssign;
+
+  /// No description provided for @errCannotChangeStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Your role cannot change status'**
+  String get errCannotChangeStatus;
+
+  /// No description provided for @errCannotUploadDocs.
+  ///
+  /// In en, this message translates to:
+  /// **'Your role cannot upload documents'**
+  String get errCannotUploadDocs;
+
+  /// No description provided for @errCannotManageFolders.
+  ///
+  /// In en, this message translates to:
+  /// **'Your role cannot manage folders'**
+  String get errCannotManageFolders;
+
+  /// No description provided for @errOnlyAdminsInvite.
+  ///
+  /// In en, this message translates to:
+  /// **'Only admins can invite users'**
+  String get errOnlyAdminsInvite;
+
+  /// No description provided for @errTitleRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Title is required'**
+  String get errTitleRequired;
+
+  /// No description provided for @errSubjectRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Subject is required'**
+  String get errSubjectRequired;
+
+  /// No description provided for @errFileNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'File name is required'**
+  String get errFileNameRequired;
+
+  /// No description provided for @errCommentEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Comment cannot be empty'**
+  String get errCommentEmpty;
+
+  /// No description provided for @errIssueNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Issue not found'**
+  String get errIssueNotFound;
+
+  /// No description provided for @errIssueWrongProject.
+  ///
+  /// In en, this message translates to:
+  /// **'Issue is not in the active project'**
+  String get errIssueWrongProject;
+
+  /// No description provided for @errRfiNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'RFI not found'**
+  String get errRfiNotFound;
+
+  /// No description provided for @errDprNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'DPR not found'**
+  String get errDprNotFound;
+
+  /// No description provided for @errDprWrongProject.
+  ///
+  /// In en, this message translates to:
+  /// **'DPR is not in the active project'**
+  String get errDprWrongProject;
+
+  /// No description provided for @errDprAlreadySubmitted.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s DPR is already submitted'**
+  String get errDprAlreadySubmitted;
+
+  /// No description provided for @errDprNeedActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Add at least one activity before submit'**
+  String get errDprNeedActivity;
+
+  /// No description provided for @errDocumentNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Document not found'**
+  String get errDocumentNotFound;
+
+  /// No description provided for @errFolderNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Folder not found in active project'**
+  String get errFolderNotFound;
+
+  /// No description provided for @errParentFolderNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Parent folder not found'**
+  String get errParentFolderNotFound;
+
+  /// No description provided for @errDrawingNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Drawing not found'**
+  String get errDrawingNotFound;
+
+  /// No description provided for @errPageOutOfRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Page out of range'**
+  String get errPageOutOfRange;
+
+  /// No description provided for @errPinOutOfBounds.
+  ///
+  /// In en, this message translates to:
+  /// **'Pin must be within the drawing page'**
+  String get errPinOutOfBounds;
+
+  /// No description provided for @errParentRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Parent record is required'**
+  String get errParentRequired;
+
+  /// No description provided for @errAudioPathRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Audio path is required'**
+  String get errAudioPathRequired;
+
+  /// No description provided for @errChecklistItemsRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Add checklist items'**
+  String get errChecklistItemsRequired;
+
+  /// No description provided for @errHeadcountInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Headcount must be > 0'**
+  String get errHeadcountInvalid;
+
+  /// No description provided for @errMaterialRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Material required'**
+  String get errMaterialRequired;
+
+  /// No description provided for @errQuantityInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Quantity must be > 0'**
+  String get errQuantityInvalid;
+
+  /// No description provided for @errPhotoEvidenceRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo evidence required for {kind}'**
+  String errPhotoEvidenceRequired(String kind);
+
+  /// No description provided for @errPhotoRequiredOnFail.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo required on fail: {label}'**
+  String errPhotoRequiredOnFail(String label);
+
+  /// No description provided for @errEmailRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Valid email required'**
+  String get errEmailRequired;
+
+  /// No description provided for @errSelectProject.
+  ///
+  /// In en, this message translates to:
+  /// **'Select at least one project'**
+  String get errSelectProject;
+
+  /// No description provided for @errUnknownProject.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown project: {id}'**
+  String errUnknownProject(String id);
+
+  /// No description provided for @errPendingInviteExists.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending invite already exists for {email}'**
+  String errPendingInviteExists(String email);
+
+  /// No description provided for @errInviteMissingId.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite created but no inviteId returned'**
+  String get errInviteMissingId;
+
+  /// No description provided for @errCannotMoveStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot move from {from} to {to}'**
+  String errCannotMoveStatus(String from, String to);
+
+  /// No description provided for @errRemoteFailure.
+  ///
+  /// In en, this message translates to:
+  /// **'Remote request failed'**
+  String get errRemoteFailure;
 }
 
 class _AppLocalizationsDelegate

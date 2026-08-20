@@ -10,6 +10,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../../sync/conflict/conflict_policy.dart';
 import '../../auth/presentation/auth_controller.dart';
 import 'sync_providers.dart';
+import '../../../core/errors/localize_app_error.dart';
 
 class SyncStatusPage extends ConsumerWidget {
   const SyncStatusPage({super.key});
@@ -366,7 +367,7 @@ class SyncStatusPage extends ConsumerWidget {
           const SizedBox(height: 8),
           logsAsync.when(
             loading: () => const LinearProgressIndicator(),
-            error: (e, _) => Text('$e'),
+            error: (e, _) => Text(localizeAppError(e, l10n)),
             data: (logs) {
               if (logs.isEmpty) {
                 return Text(l10n.noSyncEventsYet);

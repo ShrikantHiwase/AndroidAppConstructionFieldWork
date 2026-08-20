@@ -1,3 +1,4 @@
+import '../../../core/errors/app_error_codes.dart';
 import '../../../core/constants/app_constants.dart';
 
 enum VoiceParentType { dpr, issue }
@@ -123,10 +124,17 @@ class VoiceNote {
 }
 
 class VoiceNotesException implements Exception {
-  VoiceNotesException(this.message);
-  final String message;
+  VoiceNotesException(this.code, {this.arg1, this.arg2});
+
+  final String code;
+  final String? arg1;
+  final String? arg2;
+
+  String get englishMessage =>
+      englishAppErrorMessage(code, arg1: arg1, arg2: arg2);
+
   @override
-  String toString() => message;
+  String toString() => englishMessage;
 }
 
 bool canAddVoiceNotes(AppRole role) => role != AppRole.client;

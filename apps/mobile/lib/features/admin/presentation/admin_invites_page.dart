@@ -8,6 +8,7 @@ import '../../auth/domain/auth_models.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../domain/admin_invite_models.dart';
 import 'admin_invites_providers.dart';
+import '../../../core/errors/localize_app_error.dart';
 
 class AdminInvitesPage extends ConsumerStatefulWidget {
   const AdminInvitesPage({super.key});
@@ -66,7 +67,7 @@ class _AdminInvitesPageState extends ConsumerState<AdminInvitesPage> {
         );
       }
     } catch (e) {
-      setState(() => _error = e.toString());
+      setState(() => _error = localizeAppError(e, AppLocalizations.of(context)));
     } finally {
       if (mounted) setState(() => _saving = false);
     }
@@ -172,7 +173,7 @@ class _AdminInvitesPageState extends ConsumerState<AdminInvitesPage> {
           const SizedBox(height: 8),
           invitesAsync.when(
             loading: () => const LinearProgressIndicator(),
-            error: (e, _) => Text('$e'),
+            error: (e, _) => Text(localizeAppError(e, l10n)),
             data: (invites) {
               if (invites.isEmpty) {
                 return Text(l10n.noInvitesYet);

@@ -6,6 +6,7 @@ import '../../../core/constants/app_constants.dart';
 import '../../auth/domain/auth_models.dart';
 import '../domain/admin_invite_models.dart';
 import '../domain/admin_invites_repository.dart';
+import '../../../core/errors/app_error_codes.dart';
 
 /// Injectable callable for tests (avoids live Cloud Functions).
 typedef InviteMemberCaller = Future<Map<String, dynamic>> Function(
@@ -109,19 +110,19 @@ class FirebaseAdminInvitesRepository implements AdminInvitesRepository {
     required List<String> projectIds,
   }) async {
     if (!RolePermissions.canManageUsers(session.activeRole)) {
-      throw AdminInvitesException('Only admins can invite users');
+      throw AdminInvitesException(AppErrorCodes.onlyAdminsInvite);
     }
     final normalized = email.trim().toLowerCase();
     if (normalized.isEmpty || !normalized.contains('@')) {
-      throw AdminInvitesException('Valid email required');
+      throw AdminInvitesException(AppErrorCodes.emailRequired);
     }
     if (projectIds.isEmpty) {
-      throw AdminInvitesException('Select at least one project');
+      throw AdminInvitesException(AppErrorCodes.selectProject);
     }
     final known = session.projects.map((p) => p.id).toSet();
     for (final id in projectIds) {
       if (!known.contains(id)) {
-        throw AdminInvitesException('Unknown project: $id');
+        throw AdminInvitesException(AppErrorCodes.unknownProject, arg1: id);
       }
     }
 
@@ -138,7 +139,7 @@ class FirebaseAdminInvitesRepository implements AdminInvitesRepository {
 
       final inviteId = data['inviteId']?.toString();
       if (inviteId == null || inviteId.isEmpty) {
-        throw AdminInvitesException('Invite created but no inviteId returned');
+        throw AdminInvitesException(AppErrorCodes.inviteMissingId);
       }
 
       if (_firestoreOverride != null || _inviteMemberOverride == null) {
@@ -170,11 +171,17 @@ class FirebaseAdminInvitesRepository implements AdminInvitesRepository {
         acceptedUserId: data['uid']?.toString(),
       );
     } on FirebaseFunctionsException catch (e) {
-      throw AdminInvitesException(e.message ?? e.code);
+      throw AdminInvitesException(
+        AppErrorCodes.remoteFailure,
+        arg1: e.message ?? e.code,
+      );
     } on AdminInvitesException {
       rethrow;
     } catch (e) {
-      throw AdminInvitesException(e.toString());
+      throw AdminInvitesException(
+        AppErrorCodes.remoteFailure,
+        arg1: e.toString(),
+      );
     }
   }
 

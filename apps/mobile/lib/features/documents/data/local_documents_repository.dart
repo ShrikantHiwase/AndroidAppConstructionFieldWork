@@ -15,6 +15,7 @@ import '../../auth/domain/auth_models.dart';
 import '../domain/document_models.dart';
 import '../domain/documents_repository.dart';
 import '../domain/pdf_open_source.dart';
+import '../../../core/errors/app_error_codes.dart';
 
 class LocalDocumentsRepository
     implements DocumentsRepository, SyncableStore, LocalMediaCache {
@@ -293,14 +294,14 @@ class LocalDocumentsRepository
     required UploadDocumentInput input,
   }) async {
     if (!canUploadDocuments(session.activeRole)) {
-      throw DocumentsException('Your role cannot upload documents');
+      throw DocumentsException(AppErrorCodes.cannotUploadDocs);
     }
     final folder = _folders[input.folderId];
     if (folder == null || folder.projectId != session.activeProjectId) {
-      throw DocumentsException('Folder not found in active project');
+      throw DocumentsException(AppErrorCodes.folderNotFound);
     }
     if (input.name.trim().isEmpty) {
-      throw DocumentsException('File name is required');
+      throw DocumentsException(AppErrorCodes.fileNameRequired);
     }
     final now = DateTime.now().toUtc();
     final kind = DocContentTypeX.fromMimeOrName(input.contentType, input.name);
@@ -358,7 +359,7 @@ class LocalDocumentsRepository
   @override
   Future<ProjectDocument> markDownloaded(String documentId) async {
     final current = _documents[documentId];
-    if (current == null) throw DocumentsException('Document not found');
+    if (current == null) throw DocumentsException(AppErrorCodes.documentNotFound);
     final updated = current.copyWith(
       downloaded: true,
       updatedAt: DateTime.now().toUtc(),
@@ -376,12 +377,12 @@ class LocalDocumentsRepository
     String? parentId,
   }) async {
     if (!canManageFolders(session.activeRole)) {
-      throw DocumentsException('Your role cannot manage folders');
+      throw DocumentsException(AppErrorCodes.cannotManageFolders);
     }
     if (parentId != null) {
       final parent = _folders[parentId];
       if (parent == null || parent.projectId != session.activeProjectId) {
-        throw DocumentsException('Parent folder not found');
+        throw DocumentsException(AppErrorCodes.parentFolderNotFound);
       }
     }
     final folder = DocFolder(

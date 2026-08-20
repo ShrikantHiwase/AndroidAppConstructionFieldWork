@@ -8,6 +8,7 @@ import '../../auth/domain/auth_models.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../../issues/domain/issue_models.dart';
 import '../../issues/presentation/field_records_providers.dart';
+import '../../../core/errors/localize_app_error.dart';
 
 class RfisListPage extends ConsumerWidget {
   const RfisListPage({super.key});
@@ -47,7 +48,7 @@ class RfisListPage extends ConsumerWidget {
           : null,
       body: rfisAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('$e')),
+        error: (e, _) => Center(child: Text(localizeAppError(e, l10n))),
         data: (rfis) {
           if (rfis.isEmpty) {
             return Center(child: Text(l10n.noRfisYet));
@@ -129,7 +130,7 @@ class _CreateRfiPageState extends ConsumerState<CreateRfiPage> {
       }
       if (mounted) Navigator.of(context).pop();
     } catch (e) {
-      setState(() => _error = e.toString());
+      setState(() => _error = localizeAppError(e, AppLocalizations.of(context)));
     } finally {
       if (mounted) setState(() => _saving = false);
     }
@@ -345,7 +346,7 @@ class _RfiDetailPageState extends ConsumerState<RfiDetailPage> {
                       } catch (e) {
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('$e')),
+                            SnackBar(content: Text(localizeAppError(e, l10n))),
                           );
                         }
                       } finally {
@@ -359,7 +360,7 @@ class _RfiDetailPageState extends ConsumerState<RfiDetailPage> {
           Text(l10n.threadedResponses, style: Theme.of(context).textTheme.titleMedium),
           commentsAsync.when(
             loading: () => const LinearProgressIndicator(),
-            error: (e, _) => Text('$e'),
+            error: (e, _) => Text(localizeAppError(e, l10n)),
             data: (comments) => Column(
               children: comments
                   .map(

@@ -7,6 +7,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../domain/weekly_progress_models.dart';
 import 'weekly_progress_providers.dart';
+import '../../../core/errors/localize_app_error.dart';
 
 class WeeklyProgressPage extends ConsumerWidget {
   const WeeklyProgressPage({super.key});
@@ -37,7 +38,7 @@ class WeeklyProgressPage extends ConsumerWidget {
       appBar: AppBar(title: Text(l10n.weeklyProgress)),
       body: packAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('$e')),
+        error: (e, _) => Center(child: Text(localizeAppError(e, l10n))),
         data: (pack) {
           if (pack == null) {
             return Center(child: Text(l10n.progressPackUnavailable));

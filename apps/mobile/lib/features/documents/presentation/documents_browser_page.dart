@@ -7,6 +7,7 @@ import '../domain/document_models.dart';
 import 'document_viewer_page.dart';
 import 'documents_providers.dart';
 import 'upload_document_page.dart';
+import '../../../core/errors/localize_app_error.dart';
 
 class DocumentsBrowserPage extends ConsumerStatefulWidget {
   const DocumentsBrowserPage({super.key});
@@ -72,7 +73,7 @@ class _DocumentsBrowserPageState extends ConsumerState<DocumentsBrowserPage> {
       ),
       body: foldersAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('$e')),
+        error: (e, _) => Center(child: Text(localizeAppError(e, l10n))),
         data: (allFolders) {
           final children = allFolders
               .where((f) => f.parentId == _current?.id)
@@ -81,7 +82,7 @@ class _DocumentsBrowserPageState extends ConsumerState<DocumentsBrowserPage> {
 
           return docsAsync.when(
             loading: () => const Center(child: CircularProgressIndicator()),
-            error: (e, _) => Center(child: Text('$e')),
+            error: (e, _) => Center(child: Text(localizeAppError(e, l10n))),
             data: (docs) {
               if (children.isEmpty && docs.isEmpty) {
                 return Center(

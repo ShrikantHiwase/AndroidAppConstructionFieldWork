@@ -14,6 +14,7 @@ import '../../voice_notes/domain/voice_note_models.dart';
 import '../../voice_notes/presentation/voice_notes_section.dart';
 import '../domain/dpr_models.dart';
 import 'dpr_providers.dart';
+import '../../../core/errors/localize_app_error.dart';
 
 class DprHomePage extends ConsumerWidget {
   const DprHomePage({super.key});
@@ -42,7 +43,7 @@ class DprHomePage extends ConsumerWidget {
           : null,
       body: dprs.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('$e')),
+        error: (e, _) => Center(child: Text(localizeAppError(e, l10n))),
         data: (list) {
           if (list.isEmpty) {
             return Center(child: Text(l10n.noDprsYet));
@@ -182,7 +183,7 @@ class _TodaysDprPageState extends ConsumerState<TodaysDprPage> {
         );
       }
     } catch (e) {
-      setState(() => _error = e.toString());
+      setState(() => _error = localizeAppError(e, AppLocalizations.of(context)));
     } finally {
       if (mounted) setState(() => _saving = false);
     }

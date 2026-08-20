@@ -1,3 +1,4 @@
+import '../../../core/errors/app_error_codes.dart';
 import '../../../core/constants/app_constants.dart';
 
 enum SafetyKind { toolboxTalk, observation, incident }
@@ -491,10 +492,17 @@ class MaterialLog {
 }
 
 class SiteOpsException implements Exception {
-  SiteOpsException(this.message);
-  final String message;
+  SiteOpsException(this.code, {this.arg1, this.arg2});
+
+  final String code;
+  final String? arg1;
+  final String? arg2;
+
+  String get englishMessage =>
+      englishAppErrorMessage(code, arg1: arg1, arg2: arg2);
+
   @override
-  String toString() => message;
+  String toString() => englishMessage;
 }
 
 bool canMutateSiteOps(AppRole role) => role != AppRole.client;
