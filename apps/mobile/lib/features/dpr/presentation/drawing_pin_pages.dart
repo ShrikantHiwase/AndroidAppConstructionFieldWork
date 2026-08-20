@@ -10,6 +10,7 @@ import '../../issues/domain/issue_models.dart';
 import '../../issues/presentation/field_records_providers.dart';
 import '../domain/dpr_models.dart';
 import 'dpr_providers.dart';
+import '../../../core/errors/localize_app_error.dart';
 
 class DrawingsListPage extends ConsumerWidget {
   const DrawingsListPage({super.key});
@@ -23,7 +24,7 @@ class DrawingsListPage extends ConsumerWidget {
       appBar: AppBar(title: Text(l10n.drawingsTitle)),
       body: drawings.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('$e')),
+        error: (e, _) => Center(child: Text(localizeAppError(e, l10n))),
         data: (list) {
           if (list.isEmpty) {
             return Center(child: Text(l10n.noDrawingsSeededYet));
@@ -249,7 +250,7 @@ class _DrawingPinPageState extends ConsumerState<DrawingPinPage> {
                           } catch (e) {
                             if (context.mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('$e')),
+                                SnackBar(content: Text(localizeAppError(e, l10n))),
                               );
                             }
                           } finally {

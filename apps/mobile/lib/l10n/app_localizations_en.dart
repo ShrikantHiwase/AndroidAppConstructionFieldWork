@@ -1759,4 +1759,144 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pdfTodayDprOk => 'ok';
+
+  @override
+  String get errClientReadOnly => 'Client accounts are read-only';
+
+  @override
+  String get errClientReadOnlySiteOps =>
+      'Client accounts are read-only for site ops';
+
+  @override
+  String get errClientCannotEditDpr => 'Client accounts cannot edit DPR';
+
+  @override
+  String get errClientCannotSubmitDpr => 'Client accounts cannot submit DPR';
+
+  @override
+  String get errClientCannotPin => 'Client accounts cannot pin drawings';
+
+  @override
+  String get errClientCannotVoice => 'Client accounts cannot add voice notes';
+
+  @override
+  String get errCannotAssign => 'Your role cannot assign work';
+
+  @override
+  String get errCannotChangeStatus => 'Your role cannot change status';
+
+  @override
+  String get errCannotUploadDocs => 'Your role cannot upload documents';
+
+  @override
+  String get errCannotManageFolders => 'Your role cannot manage folders';
+
+  @override
+  String get errOnlyAdminsInvite => 'Only admins can invite users';
+
+  @override
+  String get errTitleRequired => 'Title is required';
+
+  @override
+  String get errSubjectRequired => 'Subject is required';
+
+  @override
+  String get errFileNameRequired => 'File name is required';
+
+  @override
+  String get errCommentEmpty => 'Comment cannot be empty';
+
+  @override
+  String get errIssueNotFound => 'Issue not found';
+
+  @override
+  String get errIssueWrongProject => 'Issue is not in the active project';
+
+  @override
+  String get errRfiNotFound => 'RFI not found';
+
+  @override
+  String get errDprNotFound => 'DPR not found';
+
+  @override
+  String get errDprWrongProject => 'DPR is not in the active project';
+
+  @override
+  String get errDprAlreadySubmitted => 'Today\'s DPR is already submitted';
+
+  @override
+  String get errDprNeedActivity => 'Add at least one activity before submit';
+
+  @override
+  String get errDocumentNotFound => 'Document not found';
+
+  @override
+  String get errFolderNotFound => 'Folder not found in active project';
+
+  @override
+  String get errParentFolderNotFound => 'Parent folder not found';
+
+  @override
+  String get errDrawingNotFound => 'Drawing not found';
+
+  @override
+  String get errPageOutOfRange => 'Page out of range';
+
+  @override
+  String get errPinOutOfBounds => 'Pin must be within the drawing page';
+
+  @override
+  String get errParentRequired => 'Parent record is required';
+
+  @override
+  String get errAudioPathRequired => 'Audio path is required';
+
+  @override
+  String get errChecklistItemsRequired => 'Add checklist items';
+
+  @override
+  String get errHeadcountInvalid => 'Headcount must be > 0';
+
+  @override
+  String get errMaterialRequired => 'Material required';
+
+  @override
+  String get errQuantityInvalid => 'Quantity must be > 0';
+
+  @override
+  String errPhotoEvidenceRequired(String kind) {
+    return 'Photo evidence required for $kind';
+  }
+
+  @override
+  String errPhotoRequiredOnFail(String label) {
+    return 'Photo required on fail: $label';
+  }
+
+  @override
+  String get errEmailRequired => 'Valid email required';
+
+  @override
+  String get errSelectProject => 'Select at least one project';
+
+  @override
+  String errUnknownProject(String id) {
+    return 'Unknown project: $id';
+  }
+
+  @override
+  String errPendingInviteExists(String email) {
+    return 'Pending invite already exists for $email';
+  }
+
+  @override
+  String get errInviteMissingId => 'Invite created but no inviteId returned';
+
+  @override
+  String errCannotMoveStatus(String from, String to) {
+    return 'Cannot move from $from to $to';
+  }
+
+  @override
+  String get errRemoteFailure => 'Remote request failed';
 }

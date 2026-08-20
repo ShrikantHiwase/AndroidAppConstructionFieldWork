@@ -9,6 +9,7 @@ import '../domain/issue_models.dart';
 import 'create_issue_page.dart';
 import 'field_records_providers.dart';
 import 'issue_detail_page.dart';
+import '../../../core/errors/localize_app_error.dart';
 
 class IssuesListPage extends ConsumerWidget {
   const IssuesListPage({super.key});
@@ -61,7 +62,7 @@ class IssuesListPage extends ConsumerWidget {
           : null,
       body: issuesAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('$e')),
+        error: (e, _) => Center(child: Text(localizeAppError(e, l10n))),
         data: (issues) {
           if (issues.isEmpty) {
             return Center(child: Text(l10n.noIssuesYet));

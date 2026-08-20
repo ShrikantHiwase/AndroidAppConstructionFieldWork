@@ -7,6 +7,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../domain/pilot_models.dart';
 import 'pilot_providers.dart';
+import '../../../core/errors/localize_app_error.dart';
 
 class PilotHubPage extends ConsumerWidget {
   const PilotHubPage({super.key});
@@ -76,7 +77,7 @@ class PilotHubPage extends ConsumerWidget {
           const SizedBox(height: 12),
           snapshotAsync.when(
             loading: () => const LinearProgressIndicator(),
-            error: (e, _) => Text('$e'),
+            error: (e, _) => Text(localizeAppError(e, l10n)),
             data: (snap) {
               if (snap == null) return Text(l10n.noSnapshot);
               final rate = snap.syncFailureRate;

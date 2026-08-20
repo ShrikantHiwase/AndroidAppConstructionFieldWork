@@ -7,6 +7,7 @@ import '../../../core/constants/app_constants.dart';
 import '../../auth/domain/auth_models.dart';
 import '../domain/admin_invite_models.dart';
 import '../domain/admin_invites_repository.dart';
+import '../../../core/errors/app_error_codes.dart';
 
 class LocalAdminInvitesRepository implements AdminInvitesRepository {
   LocalAdminInvitesRepository(this._prefs) {
@@ -85,19 +86,19 @@ class LocalAdminInvitesRepository implements AdminInvitesRepository {
     required List<String> projectIds,
   }) async {
     if (!RolePermissions.canManageUsers(session.activeRole)) {
-      throw AdminInvitesException('Only admins can invite users');
+      throw AdminInvitesException(AppErrorCodes.onlyAdminsInvite);
     }
     final normalized = _normalizeEmail(email);
     if (normalized.isEmpty || !normalized.contains('@')) {
-      throw AdminInvitesException('Valid email required');
+      throw AdminInvitesException(AppErrorCodes.emailRequired);
     }
     if (projectIds.isEmpty) {
-      throw AdminInvitesException('Select at least one project');
+      throw AdminInvitesException(AppErrorCodes.selectProject);
     }
     final known = session.projects.map((p) => p.id).toSet();
     for (final id in projectIds) {
       if (!known.contains(id)) {
-        throw AdminInvitesException('Unknown project: $id');
+        throw AdminInvitesException(AppErrorCodes.unknownProject, arg1: id);
       }
     }
     final duplicate = _items.values.any(
@@ -107,7 +108,7 @@ class LocalAdminInvitesRepository implements AdminInvitesRepository {
           i.status == InviteStatus.pending,
     );
     if (duplicate) {
-      throw AdminInvitesException('Pending invite already exists for $normalized');
+      throw AdminInvitesException(AppErrorCodes.pendingInviteExists, arg1: normalized);
     }
 
     final now = DateTime.now().toUtc();

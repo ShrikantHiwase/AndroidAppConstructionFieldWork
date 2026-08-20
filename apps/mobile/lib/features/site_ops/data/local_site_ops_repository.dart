@@ -13,6 +13,7 @@ import '../../../sync/remote/storage_uploader.dart';
 import '../../../sync/remote/syncable_store.dart';
 import '../../auth/domain/auth_models.dart';
 import '../domain/site_ops_models.dart';
+import '../../../core/errors/app_error_codes.dart';
 
 abstract class SiteOpsRepository {
   Stream<List<SafetyRecord>> watchSafety(String projectId);
@@ -171,7 +172,7 @@ class LocalSiteOpsRepository
 
   void _ensure(AuthSession session) {
     if (!canMutateSiteOps(session.activeRole)) {
-      throw SiteOpsException('Client accounts are read-only for site ops');
+      throw SiteOpsException(AppErrorCodes.clientReadOnlySiteOps);
     }
   }
 
@@ -226,12 +227,12 @@ class LocalSiteOpsRepository
     int? photoByteSizeBytes,
   }) async {
     _ensure(session);
-    if (title.trim().isEmpty) throw SiteOpsException('Title required');
+    if (title.trim().isEmpty) throw SiteOpsException(AppErrorCodes.titleRequired);
     final photoRequired = kind != SafetyKind.toolboxTalk;
     final attached = hasPhoto ||
         (photoLocalPath != null && photoLocalPath.isNotEmpty);
     if (photoRequired && !attached) {
-      throw SiteOpsException('Photo evidence required for ${kind.name}');
+      throw SiteOpsException(AppErrorCodes.photoEvidenceRequired, arg1: kind.name);
     }
     final now = DateTime.now().toUtc();
     final pendingUpload =
@@ -289,13 +290,13 @@ class LocalSiteOpsRepository
     required List<InspectionItem> items,
   }) async {
     _ensure(session);
-    if (title.trim().isEmpty) throw SiteOpsException('Title required');
-    if (items.isEmpty) throw SiteOpsException('Add checklist items');
+    if (title.trim().isEmpty) throw SiteOpsException(AppErrorCodes.titleRequired);
+    if (items.isEmpty) throw SiteOpsException(AppErrorCodes.checklistItemsRequired);
     for (final item in items) {
       if (item.result == InspectionResult.fail &&
           item.photoOnFail &&
           !item.hasPhoto) {
-        throw SiteOpsException('Photo required on fail: ${item.label}');
+        throw SiteOpsException(AppErrorCodes.photoRequiredOnFail, arg1: item.label);
       }
     }
     final preparedItems = items.map((item) {
@@ -359,7 +360,7 @@ class LocalSiteOpsRepository
     int? photoByteSizeBytes,
   }) async {
     _ensure(session);
-    if (headcount <= 0) throw SiteOpsException('Headcount must be > 0');
+    if (headcount <= 0) throw SiteOpsException(AppErrorCodes.headcountInvalid);
     final path = photoLocalPath;
     final pendingUpload = path != null && path.isNotEmpty;
     final muster = LabourMuster(
@@ -422,8 +423,8 @@ class LocalSiteOpsRepository
     int? photoByteSizeBytes,
   }) async {
     _ensure(session);
-    if (material.trim().isEmpty) throw SiteOpsException('Material required');
-    if (quantity <= 0) throw SiteOpsException('Quantity must be > 0');
+    if (material.trim().isEmpty) throw SiteOpsException(AppErrorCodes.materialRequired);
+    if (quantity <= 0) throw SiteOpsException(AppErrorCodes.quantityInvalid);
     final path = photoLocalPath;
     final pendingUpload = path != null && path.isNotEmpty;
     final log = MaterialLog(

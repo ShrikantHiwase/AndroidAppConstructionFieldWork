@@ -8,6 +8,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../domain/document_models.dart';
 import 'documents_providers.dart';
+import '../../../core/errors/localize_app_error.dart';
 
 class UploadDocumentPage extends ConsumerStatefulWidget {
   const UploadDocumentPage({super.key, required this.folderId});
@@ -99,7 +100,7 @@ class _UploadDocumentPageState extends ConsumerState<UploadDocumentPage> {
       }
       if (mounted) Navigator.of(context).pop();
     } catch (e) {
-      setState(() => _error = e.toString());
+      setState(() => _error = localizeAppError(e, AppLocalizations.of(context)));
     } finally {
       if (mounted) setState(() => _saving = false);
     }

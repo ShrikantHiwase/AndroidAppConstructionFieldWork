@@ -9,6 +9,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../domain/site_ops_models.dart';
 import 'site_ops_providers.dart';
+import '../../../core/errors/localize_app_error.dart';
 
 class SiteOpsHubPage extends ConsumerWidget {
   const SiteOpsHubPage({super.key, this.initialTab = 0});
@@ -67,7 +68,7 @@ class _SafetyTab extends ConsumerWidget {
           : null,
       body: list.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('$e')),
+        error: (e, _) => Center(child: Text(localizeAppError(e, l10n))),
         data: (rows) {
           if (rows.isEmpty) {
             return Center(child: Text(l10n.noSafetyRecordsYet));
@@ -248,7 +249,10 @@ class _SafetyTab extends ConsumerWidget {
           );
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$e')));
+        final l10n = AppLocalizations.of(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(localizeAppError(e, l10n))),
+        );
       }
     }
   }
@@ -274,7 +278,7 @@ class _QaTab extends ConsumerWidget {
           : null,
       body: list.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('$e')),
+        error: (e, _) => Center(child: Text(localizeAppError(e, l10n))),
         data: (rows) {
           if (rows.isEmpty) {
             return Center(child: Text(l10n.noInspectionsYet));
@@ -358,7 +362,10 @@ class _QaTab extends ConsumerWidget {
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$e')));
+        final l10n = AppLocalizations.of(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(localizeAppError(e, l10n))),
+        );
       }
     }
   }
@@ -384,7 +391,7 @@ class _LabourTab extends ConsumerWidget {
           : null,
       body: list.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('$e')),
+        error: (e, _) => Center(child: Text(localizeAppError(e, l10n))),
         data: (rows) {
           if (rows.isEmpty) {
             return Center(
@@ -542,7 +549,10 @@ class _LabourTab extends ConsumerWidget {
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$e')));
+        final l10n = AppLocalizations.of(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(localizeAppError(e, l10n))),
+        );
       }
     }
   }
@@ -568,7 +578,7 @@ class _MaterialsTab extends ConsumerWidget {
           : null,
       body: list.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('$e')),
+        error: (e, _) => Center(child: Text(localizeAppError(e, l10n))),
         data: (rows) {
           if (rows.isEmpty) {
             return Center(child: Text(l10n.noMaterialLogsYet));
@@ -786,7 +796,10 @@ class _MaterialsTab extends ConsumerWidget {
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$e')));
+        final l10n = AppLocalizations.of(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(localizeAppError(e, l10n))),
+        );
       }
     } finally {
       materialCtrl.dispose();

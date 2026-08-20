@@ -1,3 +1,4 @@
+import '../../../core/errors/app_error_codes.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../l10n/app_localizations.dart';
 
@@ -103,10 +104,17 @@ class AdminInvite {
 }
 
 class AdminInvitesException implements Exception {
-  AdminInvitesException(this.message);
-  final String message;
+  AdminInvitesException(this.code, {this.arg1, this.arg2});
+
+  final String code;
+  final String? arg1;
+  final String? arg2;
+
+  String get englishMessage =>
+      englishAppErrorMessage(code, arg1: arg1, arg2: arg2);
+
   @override
-  String toString() => message;
+  String toString() => englishMessage;
 }
 
 /// Grant FakeAuth can turn into a session (invite-scoped memberships).

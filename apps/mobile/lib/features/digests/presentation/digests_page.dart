@@ -11,6 +11,7 @@ import '../../dpr/presentation/dpr_pages.dart';
 import '../../dpr/presentation/dpr_providers.dart';
 import '../domain/digest_models.dart';
 import 'digests_providers.dart';
+import '../../../core/errors/localize_app_error.dart';
 
 class DigestsPage extends ConsumerWidget {
   const DigestsPage({super.key});
@@ -74,7 +75,7 @@ class DigestsPage extends ConsumerWidget {
           ],
           nudgeAsync.when(
             loading: () => const SizedBox.shrink(),
-            error: (e, _) => Text('$e'),
+            error: (e, _) => Text(localizeAppError(e, l10n)),
             data: (nudge) {
               if (nudge == null) {
                 return Text(
@@ -160,7 +161,7 @@ class DigestsPage extends ConsumerWidget {
             const SizedBox(height: 8),
             digestAsync.when(
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (e, _) => Text('$e'),
+              error: (e, _) => Text(localizeAppError(e, l10n)),
               data: (digest) {
                 if (digest == null) {
                   return Text(l10n.digestUnavailableRole);

@@ -1237,5 +1237,66 @@
     }
   },
 "pdfTodayDprMissing": "missing / not submitted",
-  "pdfTodayDprOk": "ok"
+  "pdfTodayDprOk": "ok",
+"errClientReadOnly": "Client accounts are read-only",
+  "errClientReadOnlySiteOps": "Client accounts are read-only for site ops",
+  "errClientCannotEditDpr": "Client accounts cannot edit DPR",
+  "errClientCannotSubmitDpr": "Client accounts cannot submit DPR",
+  "errClientCannotPin": "Client accounts cannot pin drawings",
+  "errClientCannotVoice": "Client accounts cannot add voice notes",
+  "errCannotAssign": "Your role cannot assign work",
+  "errCannotChangeStatus": "Your role cannot change status",
+  "errCannotUploadDocs": "Your role cannot upload documents",
+  "errCannotManageFolders": "Your role cannot manage folders",
+  "errOnlyAdminsInvite": "Only admins can invite users",
+  "errTitleRequired": "Title is required",
+  "errSubjectRequired": "Subject is required",
+  "errFileNameRequired": "File name is required",
+  "errCommentEmpty": "Comment cannot be empty",
+  "errIssueNotFound": "Issue not found",
+  "errIssueWrongProject": "Issue is not in the active project",
+  "errRfiNotFound": "RFI not found",
+  "errDprNotFound": "DPR not found",
+  "errDprWrongProject": "DPR is not in the active project",
+  "errDprAlreadySubmitted": "Today's DPR is already submitted",
+  "errDprNeedActivity": "Add at least one activity before submit",
+  "errDocumentNotFound": "Document not found",
+  "errFolderNotFound": "Folder not found in active project",
+  "errParentFolderNotFound": "Parent folder not found",
+  "errDrawingNotFound": "Drawing not found",
+  "errPageOutOfRange": "Page out of range",
+  "errPinOutOfBounds": "Pin must be within the drawing page",
+  "errParentRequired": "Parent record is required",
+  "errAudioPathRequired": "Audio path is required",
+  "errChecklistItemsRequired": "Add checklist items",
+  "errHeadcountInvalid": "Headcount must be > 0",
+  "errMaterialRequired": "Material required",
+  "errQuantityInvalid": "Quantity must be > 0",
+  "errPhotoEvidenceRequired": "Photo evidence required for {kind}",
+  "@errPhotoEvidenceRequired": {
+    "placeholders": { "kind": { "type": "String" } }
+  },
+  "errPhotoRequiredOnFail": "Photo required on fail: {label}",
+  "@errPhotoRequiredOnFail": {
+    "placeholders": { "label": { "type": "String" } }
+  },
+  "errEmailRequired": "Valid email required",
+  "errSelectProject": "Select at least one project",
+  "errUnknownProject": "Unknown project: {id}",
+  "@errUnknownProject": {
+    "placeholders": { "id": { "type": "String" } }
+  },
+  "errPendingInviteExists": "Pending invite already exists for {email}",
+  "@errPendingInviteExists": {
+    "placeholders": { "email": { "type": "String" } }
+  },
+  "errInviteMissingId": "Invite created but no inviteId returned",
+  "errCannotMoveStatus": "Cannot move from {from} to {to}",
+  "@errCannotMoveStatus": {
+    "placeholders": {
+      "from": { "type": "String" },
+      "to": { "type": "String" }
+    }
+  },
+  "errRemoteFailure": "Remote request failed"
 }

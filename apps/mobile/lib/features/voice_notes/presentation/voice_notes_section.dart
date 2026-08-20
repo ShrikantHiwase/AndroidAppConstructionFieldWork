@@ -12,6 +12,7 @@ import '../../auth/domain/auth_models.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../domain/voice_note_models.dart';
 import 'voice_notes_providers.dart';
+import '../../../core/errors/localize_app_error.dart';
 
 /// Lists voice notes for a parent and offers capture (Fake or live mic).
 class VoiceNotesSection extends ConsumerWidget {
@@ -48,7 +49,7 @@ class VoiceNotesSection extends ConsumerWidget {
         const SizedBox(height: 8),
         notesAsync.when(
           loading: () => const LinearProgressIndicator(),
-          error: (e, _) => Text('$e'),
+          error: (e, _) => Text(localizeAppError(e, l10n)),
           data: (notes) {
             if (notes.isEmpty) {
               return Text(
@@ -181,7 +182,7 @@ class _AddVoiceButton extends ConsumerWidget {
           } catch (e) {
             if (context.mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('$e')),
+                SnackBar(content: Text(localizeAppError(e, l10n))),
               );
             }
           }

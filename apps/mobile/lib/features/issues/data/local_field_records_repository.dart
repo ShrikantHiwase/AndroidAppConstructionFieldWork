@@ -12,6 +12,7 @@ import '../../../sync/remote/storage_uploader.dart';
 import '../../auth/domain/auth_models.dart';
 import '../domain/field_records_repository.dart';
 import '../domain/issue_models.dart';
+import '../../../core/errors/app_error_codes.dart';
 
 /// Offline-first field records store with sync outbox.
 ///
@@ -136,19 +137,19 @@ class LocalFieldRecordsRepository
 
   void _ensureCanMutate(AuthSession session) {
     if (!canMutateFieldRecords(session.activeRole)) {
-      throw FieldRecordsException('Client accounts are read-only');
+      throw FieldRecordsException(AppErrorCodes.clientReadOnly);
     }
   }
 
   void _ensureCanAssign(AuthSession session) {
     if (!RolePermissions.canAssignWork(session.activeRole)) {
-      throw FieldRecordsException('Your role cannot assign work');
+      throw FieldRecordsException(AppErrorCodes.cannotAssign);
     }
   }
 
   void _ensureCanChangeStatus(AuthSession session) {
     if (!RolePermissions.canChangeIssueStatus(session.activeRole)) {
-      throw FieldRecordsException('Your role cannot change status');
+      throw FieldRecordsException(AppErrorCodes.cannotChangeStatus);
     }
   }
 
@@ -224,7 +225,7 @@ class LocalFieldRecordsRepository
   }) async {
     _ensureCanMutate(session);
     if (input.title.trim().isEmpty) {
-      throw FieldRecordsException('Title is required');
+      throw FieldRecordsException(AppErrorCodes.titleRequired);
     }
     final now = DateTime.now().toUtc();
     final issue = Issue(
@@ -282,14 +283,16 @@ class LocalFieldRecordsRepository
   }) async {
     _ensureCanChangeStatus(session);
     final current = _issues[issueId];
-    if (current == null) throw FieldRecordsException('Issue not found');
+    if (current == null) throw FieldRecordsException(AppErrorCodes.issueNotFound);
     if (current.projectId != session.activeProjectId) {
-      throw FieldRecordsException('Issue is not in the active project');
+      throw FieldRecordsException(AppErrorCodes.issueWrongProject);
     }
     if (!current.status.nextStatuses.contains(status) &&
         current.status != status) {
       throw FieldRecordsException(
-        'Cannot move from ${current.status.label} to ${status.label}',
+        AppErrorCodes.cannotMoveStatus,
+        arg1: current.status.name,
+        arg2: status.name,
       );
     }
     final now = DateTime.now().toUtc();
@@ -332,7 +335,7 @@ class LocalFieldRecordsRepository
   }) async {
     _ensureCanAssign(session);
     final current = _issues[issueId];
-    if (current == null) throw FieldRecordsException('Issue not found');
+    if (current == null) throw FieldRecordsException(AppErrorCodes.issueNotFound);
     final now = DateTime.now().toUtc();
     final updated = current.copyWith(
       assigneeId: assigneeId,
@@ -362,7 +365,7 @@ class LocalFieldRecordsRepository
   }) async {
     _ensureCanMutate(session);
     if (input.subject.trim().isEmpty) {
-      throw FieldRecordsException('Subject is required');
+      throw FieldRecordsException(AppErrorCodes.subjectRequired);
     }
     final now = DateTime.now().toUtc();
     final rfi = Rfi(
@@ -400,7 +403,7 @@ class LocalFieldRecordsRepository
   }) async {
     _ensureCanAssign(session);
     final current = _rfis[rfiId];
-    if (current == null) throw FieldRecordsException('RFI not found');
+    if (current == null) throw FieldRecordsException(AppErrorCodes.rfiNotFound);
     final now = DateTime.now().toUtc();
     final updated = current.copyWith(
       assigneeId: assigneeId,
@@ -431,7 +434,7 @@ class LocalFieldRecordsRepository
   }) async {
     _ensureCanChangeStatus(session);
     final current = _rfis[rfiId];
-    if (current == null) throw FieldRecordsException('RFI not found');
+    if (current == null) throw FieldRecordsException(AppErrorCodes.rfiNotFound);
     final now = DateTime.now().toUtc();
     final updated = current.copyWith(
       status: status,
@@ -461,7 +464,7 @@ class LocalFieldRecordsRepository
   }) async {
     _ensureCanMutate(session);
     if (body.trim().isEmpty) {
-      throw FieldRecordsException('Comment cannot be empty');
+      throw FieldRecordsException(AppErrorCodes.commentEmpty);
     }
     final comment = FieldComment(
       id: _newId('comment'),

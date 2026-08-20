@@ -15,6 +15,7 @@ import '../../../sync/remote/syncable_store.dart';
 import '../../auth/domain/auth_models.dart';
 import '../domain/voice_note_models.dart';
 import '../domain/voice_notes_repository.dart';
+import '../../../core/errors/app_error_codes.dart';
 
 class LocalVoiceNotesRepository
     implements VoiceNotesRepository, SyncableStore, LocalMediaCache {
@@ -111,13 +112,13 @@ class LocalVoiceNotesRepository
     bool offline = false,
   }) async {
     if (!canAddVoiceNotes(session.activeRole)) {
-      throw VoiceNotesException('Client accounts cannot add voice notes');
+      throw VoiceNotesException(AppErrorCodes.clientCannotVoice);
     }
     if (parentId.trim().isEmpty) {
-      throw VoiceNotesException('Parent record is required');
+      throw VoiceNotesException(AppErrorCodes.parentRequired);
     }
     if (audioLocalPath.trim().isEmpty) {
-      throw VoiceNotesException('Audio path is required');
+      throw VoiceNotesException(AppErrorCodes.audioPathRequired);
     }
     final now = DateTime.now().toUtc();
     final id = 'voice_${now.microsecondsSinceEpoch}_${++_seq}';

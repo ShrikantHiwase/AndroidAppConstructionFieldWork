@@ -1,3 +1,4 @@
+import '../../../core/errors/app_error_codes.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../l10n/app_localizations.dart';
 
@@ -221,10 +222,17 @@ class CreateDprInput {
 }
 
 class DprException implements Exception {
-  DprException(this.message);
-  final String message;
+  DprException(this.code, {this.arg1, this.arg2});
+
+  final String code;
+  final String? arg1;
+  final String? arg2;
+
+  String get englishMessage =>
+      englishAppErrorMessage(code, arg1: arg1, arg2: arg2);
+
   @override
-  String toString() => message;
+  String toString() => englishMessage;
 }
 
 bool canEditDpr(AppRole role) => role != AppRole.client;
@@ -414,10 +422,17 @@ class CreatePinInput {
 }
 
 class DrawingException implements Exception {
-  DrawingException(this.message);
-  final String message;
+  DrawingException(this.code, {this.arg1, this.arg2});
+
+  final String code;
+  final String? arg1;
+  final String? arg2;
+
+  String get englishMessage =>
+      englishAppErrorMessage(code, arg1: arg1, arg2: arg2);
+
   @override
-  String toString() => message;
+  String toString() => englishMessage;
 }
 
 bool canPinDrawings(AppRole role) => role != AppRole.client;
