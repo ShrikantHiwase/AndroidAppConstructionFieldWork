@@ -212,6 +212,7 @@ class DigestsPage extends ConsumerWidget {
                         final bytes = await FieldPdfExport.digest(
                           digest: digest,
                           projectName: projectName,
+                          l10n: l10n,
                         );
                         final day = digest.generatedAt
                             .toIso8601String()

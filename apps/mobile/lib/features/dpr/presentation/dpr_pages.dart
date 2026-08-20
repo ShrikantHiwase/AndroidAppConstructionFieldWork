@@ -415,6 +415,7 @@ class DprDetailPage extends ConsumerWidget {
       final bytes = await FieldPdfExport.dpr(
         report: current,
         projectName: projectName,
+        l10n: l10n,
       );
       final outcome = await ref.read(sharePortProvider).shareFile(
             bytes: bytes,

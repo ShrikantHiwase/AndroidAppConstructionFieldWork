@@ -10,6 +10,8 @@ import 'package:construction_field_app/features/digests/domain/digest_models.dar
 import 'package:construction_field_app/features/pilot/domain/pilot_models.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   test('RecordingSharePort records text and subject', () async {
     final port = RecordingSharePort();
     final outcome = await port.shareText(
@@ -24,9 +26,11 @@ void main() {
 
   test('RecordingSharePort records PDF file shares', () async {
     final port = RecordingSharePort();
+    final en = lookupAppLocalizations(const Locale('en'));
     final bytes = await FieldPdfExport.dpr(
       report: _sampleDpr(),
       projectName: 'Pune Tower',
+      l10n: en,
     );
     final outcome = await port.shareFile(
       bytes: bytes,
@@ -103,9 +107,12 @@ void main() {
 
   test('FieldPdfExport builds non-empty DPR, digest, pilot, weekly PDFs',
       () async {
+    final en = lookupAppLocalizations(const Locale('en'));
+    final hi = lookupAppLocalizations(const Locale('hi'));
     final dprBytes = await FieldPdfExport.dpr(
       report: _sampleDpr(),
       projectName: 'Pune Tower',
+      l10n: en,
     );
     expect(dprBytes.length, greaterThan(200));
     // PDF magic header
@@ -114,6 +121,7 @@ void main() {
     final digestBytes = await FieldPdfExport.digest(
       digest: _sampleDigest(),
       projectName: 'Pune Tower',
+      l10n: en,
     );
     expect(digestBytes.length, greaterThan(200));
     expect(String.fromCharCodes(digestBytes.take(4)), '%PDF');
@@ -121,6 +129,7 @@ void main() {
     final pilotBytes = await FieldPdfExport.pilot(
       snapshot: _samplePilot(),
       projectName: 'Pune Tower',
+      l10n: en,
     );
     expect(pilotBytes.length, greaterThan(200));
     expect(String.fromCharCodes(pilotBytes.take(4)), '%PDF');
@@ -128,9 +137,21 @@ void main() {
     final weeklyBytes = await FieldPdfExport.weekly(
       pack: _sampleWeekly(),
       projectName: 'Pune Tower',
+      l10n: en,
     );
     expect(weeklyBytes.length, greaterThan(200));
     expect(String.fromCharCodes(weeklyBytes.take(4)), '%PDF');
+
+    // Hinglish labels + Devanagari font path must still produce a valid PDF.
+    final hiDpr = await FieldPdfExport.dpr(
+      report: _sampleDpr(),
+      projectName: 'Pune Tower',
+      l10n: hi,
+    );
+    expect(String.fromCharCodes(hiDpr.take(4)), '%PDF');
+    expect(hiDpr.length, greaterThan(200));
+    expect(hi.pdfPageOf(1, 1), contains('पेज'));
+    expect(hi.pdfDate, 'तारीख');
 
     final port = RecordingSharePort();
     await port.shareFile(

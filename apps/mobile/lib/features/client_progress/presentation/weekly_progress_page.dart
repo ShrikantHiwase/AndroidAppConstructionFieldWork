@@ -119,6 +119,7 @@ class WeeklyProgressPage extends ConsumerWidget {
                   final bytes = await FieldPdfExport.weekly(
                     pack: pack,
                     projectName: projectName,
+                    l10n: l10n,
                   );
                   final weekKey =
                       pack.weekStart.toIso8601String().split('T').first;

@@ -91,6 +91,7 @@ class PilotHubPage extends ConsumerWidget {
                 final bytes = await FieldPdfExport.pilot(
                   snapshot: snap,
                   projectName: projectName,
+                  l10n: l10n,
                 );
                 final day =
                     snap.generatedAt.toIso8601String().split('T').first;

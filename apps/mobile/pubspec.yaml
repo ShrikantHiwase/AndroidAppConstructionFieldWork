@@ -60,3 +60,6 @@ flutter:
   generate: true
   assets:
     - assets/demo/ga_plan_level_02.pdf
+    - assets/fonts/NotoSans-Regular.ttf
+    - assets/fonts/NotoSans-Bold.ttf
+    - assets/fonts/NotoSansDevanagari-Regular.ttf
