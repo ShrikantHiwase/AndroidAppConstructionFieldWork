@@ -1143,5 +1143,99 @@
     "placeholders": {
       "url": { "type": "String" }
     }
-  }
+  },
+"pdfDigestTitle": "PM DIGEST",
+  "pdfWeeklyTitle": "WEEKLY PROGRESS",
+  "pdfPilotTitle": "PILOT / HYPERCARE",
+  "pdfPageOf": "Page {page} of {pages}",
+  "@pdfPageOf": {
+    "placeholders": {
+      "page": { "type": "int" },
+      "pages": { "type": "int" }
+    }
+  },
+  "pdfStatus": "Status",
+  "pdfGenerated": "Generated",
+  "pdfQueue": "Queue",
+  "pdfNoneRecorded": "None recorded.",
+  "pdfDailyHighlights": "Daily highlights",
+  "pdfTodayDpr": "Today DPR",
+  "pdfOpenIssues": "Open issues",
+  "pdfOpenRfis": "Open RFIs",
+  "pdfSubmittedDprDays": "Submitted DPR days",
+  "pdfDprDays": "DPR days",
+  "pdfDprSubmit": "DPR submit",
+  "pdfIssueCreate": "Issue create",
+  "pdfPendingSync": "Pending sync",
+  "pdfSyncErrors": "Sync errors",
+  "pdfUatChecklist": "UAT checklist",
+  "pdfNa": "n/a",
+  "pdfDate": "Date",
+  "pdfBy": "By",
+  "pdfWeather": "Weather",
+  "pdfManpower": "Manpower",
+  "pdfActivities": "Activities",
+  "pdfBlockers": "Blockers",
+  "pdfWeek": "Week",
+  "pdfWeatherManpowerLine": "Weather: {weather} · Manpower: {manpower}",
+  "@pdfWeatherManpowerLine": {
+    "placeholders": {
+      "weather": { "type": "String" },
+      "manpower": { "type": "String" }
+    }
+  },
+  "pdfBlockersLine": "Blockers: {blockers}",
+  "@pdfBlockersLine": {
+    "placeholders": {
+      "blockers": { "type": "String" }
+    }
+  },
+  "pdfMetricLine": "{value} (target {target}) {status}",
+  "@pdfMetricLine": {
+    "placeholders": {
+      "value": { "type": "String" },
+      "target": { "type": "String" },
+      "status": { "type": "String" }
+    }
+  },
+  "pdfSyncErrorsLine": "{errors} / {logs} ({rate}, target <2%) {status}",
+  "@pdfSyncErrorsLine": {
+    "placeholders": {
+      "errors": { "type": "int" },
+      "logs": { "type": "int" },
+      "rate": { "type": "String" },
+      "status": { "type": "String" }
+    }
+  },
+  "pdfCountOfTotal": "{done} / {total}",
+  "@pdfCountOfTotal": {
+    "placeholders": {
+      "done": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "pdfSubmittedDaysValue": "{count} / 7",
+  "@pdfSubmittedDaysValue": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "pdfDprDaysValue": "{days} (target >=4) {status}",
+  "@pdfDprDaysValue": {
+    "placeholders": {
+      "days": { "type": "int" },
+      "status": { "type": "String" }
+    }
+  },
+  "pdfMedianValue": "{median} (n={n}, target {target}) {status}",
+  "@pdfMedianValue": {
+    "placeholders": {
+      "median": { "type": "String" },
+      "n": { "type": "int" },
+      "target": { "type": "String" },
+      "status": { "type": "String" }
+    }
+  },
+"pdfTodayDprMissing": "missing / not submitted",
+  "pdfTodayDprOk": "ok"
 }

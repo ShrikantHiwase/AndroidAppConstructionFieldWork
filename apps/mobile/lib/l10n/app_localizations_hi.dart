@@ -1628,4 +1628,133 @@ class AppLocalizationsHi extends AppLocalizations {
   String documentShareUrl(String url) {
     return 'URL: $url';
   }
+
+  @override
+  String get pdfDigestTitle => 'PM DIGEST';
+
+  @override
+  String get pdfWeeklyTitle => 'WEEKLY PROGRESS';
+
+  @override
+  String get pdfPilotTitle => 'PILOT / HYPERCARE';
+
+  @override
+  String pdfPageOf(int page, int pages) {
+    return 'पेज $page / $pages';
+  }
+
+  @override
+  String get pdfStatus => 'Status';
+
+  @override
+  String get pdfGenerated => 'Generated';
+
+  @override
+  String get pdfQueue => 'Queue';
+
+  @override
+  String get pdfNoneRecorded => 'कुछ record नहीं।';
+
+  @override
+  String get pdfDailyHighlights => 'Daily highlights';
+
+  @override
+  String get pdfTodayDpr => 'Today DPR';
+
+  @override
+  String get pdfOpenIssues => 'Open issues';
+
+  @override
+  String get pdfOpenRfis => 'Open RFIs';
+
+  @override
+  String get pdfSubmittedDprDays => 'Submitted DPR days';
+
+  @override
+  String get pdfDprDays => 'DPR days';
+
+  @override
+  String get pdfDprSubmit => 'DPR submit';
+
+  @override
+  String get pdfIssueCreate => 'Issue create';
+
+  @override
+  String get pdfPendingSync => 'Pending sync';
+
+  @override
+  String get pdfSyncErrors => 'Sync errors';
+
+  @override
+  String get pdfUatChecklist => 'UAT checklist';
+
+  @override
+  String get pdfNa => 'n/a';
+
+  @override
+  String get pdfDate => 'तारीख';
+
+  @override
+  String get pdfBy => 'द्वारा';
+
+  @override
+  String get pdfWeather => 'Weather';
+
+  @override
+  String get pdfManpower => 'Manpower';
+
+  @override
+  String get pdfActivities => 'Activities';
+
+  @override
+  String get pdfBlockers => 'Blockers';
+
+  @override
+  String get pdfWeek => 'Week';
+
+  @override
+  String pdfWeatherManpowerLine(String weather, String manpower) {
+    return 'Weather: $weather · Manpower: $manpower';
+  }
+
+  @override
+  String pdfBlockersLine(String blockers) {
+    return 'Blockers: $blockers';
+  }
+
+  @override
+  String pdfMetricLine(String value, String target, String status) {
+    return '$value (target $target) $status';
+  }
+
+  @override
+  String pdfSyncErrorsLine(int errors, int logs, String rate, String status) {
+    return '$errors / $logs ($rate, target <2%) $status';
+  }
+
+  @override
+  String pdfCountOfTotal(int done, int total) {
+    return '$done / $total';
+  }
+
+  @override
+  String pdfSubmittedDaysValue(int count) {
+    return '$count / 7';
+  }
+
+  @override
+  String pdfDprDaysValue(int days, String status) {
+    return '$days (target >=4) $status';
+  }
+
+  @override
+  String pdfMedianValue(String median, int n, String target, String status) {
+    return '$median (n=$n, target $target) $status';
+  }
+
+  @override
+  String get pdfTodayDprMissing => 'missing / submit नहीं हुआ';
+
+  @override
+  String get pdfTodayDprOk => 'ok';
 }

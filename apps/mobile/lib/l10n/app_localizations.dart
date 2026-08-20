@@ -2880,6 +2880,228 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'URL: {url}'**
   String documentShareUrl(String url);
+
+  /// No description provided for @pdfDigestTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'PM DIGEST'**
+  String get pdfDigestTitle;
+
+  /// No description provided for @pdfWeeklyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'WEEKLY PROGRESS'**
+  String get pdfWeeklyTitle;
+
+  /// No description provided for @pdfPilotTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'PILOT / HYPERCARE'**
+  String get pdfPilotTitle;
+
+  /// No description provided for @pdfPageOf.
+  ///
+  /// In en, this message translates to:
+  /// **'Page {page} of {pages}'**
+  String pdfPageOf(int page, int pages);
+
+  /// No description provided for @pdfStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get pdfStatus;
+
+  /// No description provided for @pdfGenerated.
+  ///
+  /// In en, this message translates to:
+  /// **'Generated'**
+  String get pdfGenerated;
+
+  /// No description provided for @pdfQueue.
+  ///
+  /// In en, this message translates to:
+  /// **'Queue'**
+  String get pdfQueue;
+
+  /// No description provided for @pdfNoneRecorded.
+  ///
+  /// In en, this message translates to:
+  /// **'None recorded.'**
+  String get pdfNoneRecorded;
+
+  /// No description provided for @pdfDailyHighlights.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily highlights'**
+  String get pdfDailyHighlights;
+
+  /// No description provided for @pdfTodayDpr.
+  ///
+  /// In en, this message translates to:
+  /// **'Today DPR'**
+  String get pdfTodayDpr;
+
+  /// No description provided for @pdfOpenIssues.
+  ///
+  /// In en, this message translates to:
+  /// **'Open issues'**
+  String get pdfOpenIssues;
+
+  /// No description provided for @pdfOpenRfis.
+  ///
+  /// In en, this message translates to:
+  /// **'Open RFIs'**
+  String get pdfOpenRfis;
+
+  /// No description provided for @pdfSubmittedDprDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Submitted DPR days'**
+  String get pdfSubmittedDprDays;
+
+  /// No description provided for @pdfDprDays.
+  ///
+  /// In en, this message translates to:
+  /// **'DPR days'**
+  String get pdfDprDays;
+
+  /// No description provided for @pdfDprSubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'DPR submit'**
+  String get pdfDprSubmit;
+
+  /// No description provided for @pdfIssueCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Issue create'**
+  String get pdfIssueCreate;
+
+  /// No description provided for @pdfPendingSync.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending sync'**
+  String get pdfPendingSync;
+
+  /// No description provided for @pdfSyncErrors.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync errors'**
+  String get pdfSyncErrors;
+
+  /// No description provided for @pdfUatChecklist.
+  ///
+  /// In en, this message translates to:
+  /// **'UAT checklist'**
+  String get pdfUatChecklist;
+
+  /// No description provided for @pdfNa.
+  ///
+  /// In en, this message translates to:
+  /// **'n/a'**
+  String get pdfNa;
+
+  /// No description provided for @pdfDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get pdfDate;
+
+  /// No description provided for @pdfBy.
+  ///
+  /// In en, this message translates to:
+  /// **'By'**
+  String get pdfBy;
+
+  /// No description provided for @pdfWeather.
+  ///
+  /// In en, this message translates to:
+  /// **'Weather'**
+  String get pdfWeather;
+
+  /// No description provided for @pdfManpower.
+  ///
+  /// In en, this message translates to:
+  /// **'Manpower'**
+  String get pdfManpower;
+
+  /// No description provided for @pdfActivities.
+  ///
+  /// In en, this message translates to:
+  /// **'Activities'**
+  String get pdfActivities;
+
+  /// No description provided for @pdfBlockers.
+  ///
+  /// In en, this message translates to:
+  /// **'Blockers'**
+  String get pdfBlockers;
+
+  /// No description provided for @pdfWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Week'**
+  String get pdfWeek;
+
+  /// No description provided for @pdfWeatherManpowerLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Weather: {weather} · Manpower: {manpower}'**
+  String pdfWeatherManpowerLine(String weather, String manpower);
+
+  /// No description provided for @pdfBlockersLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Blockers: {blockers}'**
+  String pdfBlockersLine(String blockers);
+
+  /// No description provided for @pdfMetricLine.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} (target {target}) {status}'**
+  String pdfMetricLine(String value, String target, String status);
+
+  /// No description provided for @pdfSyncErrorsLine.
+  ///
+  /// In en, this message translates to:
+  /// **'{errors} / {logs} ({rate}, target <2%) {status}'**
+  String pdfSyncErrorsLine(int errors, int logs, String rate, String status);
+
+  /// No description provided for @pdfCountOfTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'{done} / {total}'**
+  String pdfCountOfTotal(int done, int total);
+
+  /// No description provided for @pdfSubmittedDaysValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} / 7'**
+  String pdfSubmittedDaysValue(int count);
+
+  /// No description provided for @pdfDprDaysValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{days} (target >=4) {status}'**
+  String pdfDprDaysValue(int days, String status);
+
+  /// No description provided for @pdfMedianValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{median} (n={n}, target {target}) {status}'**
+  String pdfMedianValue(String median, int n, String target, String status);
+
+  /// No description provided for @pdfTodayDprMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'missing / not submitted'**
+  String get pdfTodayDprMissing;
+
+  /// No description provided for @pdfTodayDprOk.
+  ///
+  /// In en, this message translates to:
+  /// **'ok'**
+  String get pdfTodayDprOk;
 }
 
 class _AppLocalizationsDelegate

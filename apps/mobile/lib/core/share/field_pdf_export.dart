@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
@@ -7,19 +8,52 @@ import '../../features/client_progress/domain/weekly_progress_models.dart';
 import '../../features/digests/domain/digest_models.dart';
 import '../../features/dpr/domain/dpr_models.dart';
 import '../../features/pilot/domain/pilot_models.dart';
+import '../../l10n/app_localizations.dart';
 
 /// Builds printable field PDFs for WhatsApp / email share (no Firebase).
+///
+/// Uses bundled Noto Sans (+ Devanagari fallback) so Hinglish ARB labels
+/// render instead of Helvetica tofu boxes.
 class FieldPdfExport {
   const FieldPdfExport._();
+
+  static Future<pw.ThemeData>? _themeFuture;
+
+  static Future<pw.ThemeData> _loadTheme() {
+    return _themeFuture ??= () async {
+      final regular = pw.Font.ttf(
+        await rootBundle.load('assets/fonts/NotoSans-Regular.ttf'),
+      );
+      final bold = pw.Font.ttf(
+        await rootBundle.load('assets/fonts/NotoSans-Bold.ttf'),
+      );
+      final devanagari = pw.Font.ttf(
+        await rootBundle.load('assets/fonts/NotoSansDevanagari-Regular.ttf'),
+      );
+      return pw.ThemeData.withFont(
+        base: regular,
+        bold: bold,
+        fontFallback: [devanagari],
+      );
+    }();
+  }
+
+  /// Test-only: clear cached theme between cases if needed.
+  static void debugResetTheme() {
+    _themeFuture = null;
+  }
 
   static Future<Uint8List> dpr({
     required DailyProgressReport report,
     required String projectName,
+    required AppLocalizations l10n,
   }) async {
+    final theme = await _loadTheme();
     final date = report.reportDate.toIso8601String().split('T').first;
     final doc = pw.Document(
       title: 'DPR $date — $projectName',
       author: report.createdByName,
+      theme: theme,
     );
 
     doc.addPage(
@@ -30,7 +64,7 @@ class FieldPdfExport {
           crossAxisAlignment: pw.CrossAxisAlignment.start,
           children: [
             pw.Text(
-              'DAILY PROGRESS REPORT',
+              l10n.dprShareHeader,
               style: pw.TextStyle(
                 fontSize: 18,
                 fontWeight: pw.FontWeight.bold,
@@ -48,26 +82,32 @@ class FieldPdfExport {
         footer: (context) => pw.Align(
           alignment: pw.Alignment.centerRight,
           child: pw.Text(
-            'Page ${context.pageNumber} of ${context.pagesCount}',
+            l10n.pdfPageOf(context.pageNumber, context.pagesCount),
             style: const pw.TextStyle(fontSize: 9, color: PdfColors.grey600),
           ),
         ),
         build: (context) => [
-          _kv('Date', date),
-          _kv('By', report.createdByName),
-          _kv('Status', report.submitted ? 'Submitted' : 'Draft'),
-          _kv('Weather', report.weather.isEmpty ? '—' : report.weather),
+          _kv(l10n.pdfDate, date),
+          _kv(l10n.pdfBy, report.createdByName),
           _kv(
-            'Manpower',
+            l10n.pdfStatus,
+            report.submitted ? l10n.submittedLabel : l10n.draftLabel,
+          ),
+          _kv(
+            l10n.pdfWeather,
+            report.weather.isEmpty ? '—' : report.weather,
+          ),
+          _kv(
+            l10n.pdfManpower,
             report.manpowerSummary.isEmpty ? '—' : report.manpowerSummary,
           ),
           pw.SizedBox(height: 16),
           pw.Text(
-            'Activities',
+            l10n.pdfActivities,
             style: pw.TextStyle(fontSize: 13, fontWeight: pw.FontWeight.bold),
           ),
           pw.SizedBox(height: 6),
-          if (report.activities.isEmpty) pw.Text('None recorded.'),
+          if (report.activities.isEmpty) pw.Text(l10n.pdfNoneRecorded),
           if (report.activities.isNotEmpty)
             ...report.activities.map(
               (a) => pw.Padding(
@@ -79,8 +119,8 @@ class FieldPdfExport {
                     pw.Expanded(
                       child: pw.Text(
                         '${a.description}'
-                        '${a.location == null ? '' : ' @ ${a.location}'}'
-                        '${a.photoCount == 0 ? '' : ' (${a.photoCount} photo)'}',
+                        '${a.location == null ? '' : l10n.dprShareLocationPart(a.location!)}'
+                        '${a.photoCount == 0 ? '' : l10n.dprSharePhotoPart(a.photoCount)}',
                       ),
                     ),
                   ],
@@ -89,11 +129,11 @@ class FieldPdfExport {
             ),
           pw.SizedBox(height: 12),
           pw.Text(
-            'Blockers',
+            l10n.pdfBlockers,
             style: pw.TextStyle(fontSize: 13, fontWeight: pw.FontWeight.bold),
           ),
           pw.SizedBox(height: 4),
-          pw.Text(report.blockers.isEmpty ? 'None' : report.blockers),
+          pw.Text(report.blockers.isEmpty ? l10n.noneLabel : report.blockers),
         ],
       ),
     );
@@ -104,11 +144,14 @@ class FieldPdfExport {
   static Future<Uint8List> digest({
     required PmDigestSnapshot digest,
     required String projectName,
+    required AppLocalizations l10n,
   }) async {
+    final theme = await _loadTheme();
     final generated = digest.generatedAt.toIso8601String();
     final doc = pw.Document(
       title: 'PM digest — $projectName',
       author: 'Construction Field App',
+      theme: theme,
     );
 
     doc.addPage(
@@ -119,7 +162,7 @@ class FieldPdfExport {
           crossAxisAlignment: pw.CrossAxisAlignment.start,
           children: [
             pw.Text(
-              'PM DIGEST',
+              l10n.pdfDigestTitle,
               style: pw.TextStyle(
                 fontSize: 18,
                 fontWeight: pw.FontWeight.bold,
@@ -137,25 +180,27 @@ class FieldPdfExport {
         footer: (context) => pw.Align(
           alignment: pw.Alignment.centerRight,
           child: pw.Text(
-            'Page ${context.pageNumber} of ${context.pagesCount}',
+            l10n.pdfPageOf(context.pageNumber, context.pagesCount),
             style: const pw.TextStyle(fontSize: 9, color: PdfColors.grey600),
           ),
         ),
         build: (context) => [
-          _kv('Generated', generated),
-          _kv('Open issues', '${digest.openIssueCount}'),
-          _kv('Open RFIs', '${digest.openRfiCount}'),
+          _kv(l10n.pdfGenerated, generated),
+          _kv(l10n.pdfOpenIssues, '${digest.openIssueCount}'),
+          _kv(l10n.pdfOpenRfis, '${digest.openRfiCount}'),
           _kv(
-            'Today DPR',
-            digest.missingTodayDpr ? 'missing / not submitted' : 'ok',
+            l10n.pdfTodayDpr,
+            digest.missingTodayDpr
+                ? l10n.pdfTodayDprMissing
+                : l10n.pdfTodayDprOk,
           ),
           pw.SizedBox(height: 16),
           pw.Text(
-            'Queue',
+            l10n.pdfQueue,
             style: pw.TextStyle(fontSize: 13, fontWeight: pw.FontWeight.bold),
           ),
           pw.SizedBox(height: 6),
-          if (digest.items.isEmpty) pw.Text('Queue is clear.'),
+          if (digest.items.isEmpty) pw.Text(l10n.queueIsClear),
           if (digest.items.isNotEmpty)
             ...digest.items.map(
               (item) => pw.Padding(
@@ -188,11 +233,14 @@ class FieldPdfExport {
   static Future<Uint8List> weekly({
     required WeeklyProgressSnapshot pack,
     required String projectName,
+    required AppLocalizations l10n,
   }) async {
+    final theme = await _loadTheme();
     final generated = pack.generatedAt.toIso8601String();
     final doc = pw.Document(
       title: 'Weekly progress — $projectName',
       author: 'Construction Field App',
+      theme: theme,
     );
 
     doc.addPage(
@@ -203,7 +251,7 @@ class FieldPdfExport {
           crossAxisAlignment: pw.CrossAxisAlignment.start,
           children: [
             pw.Text(
-              'WEEKLY PROGRESS',
+              l10n.pdfWeeklyTitle,
               style: pw.TextStyle(
                 fontSize: 18,
                 fontWeight: pw.FontWeight.bold,
@@ -221,23 +269,25 @@ class FieldPdfExport {
         footer: (context) => pw.Align(
           alignment: pw.Alignment.centerRight,
           child: pw.Text(
-            'Page ${context.pageNumber} of ${context.pagesCount}',
+            l10n.pdfPageOf(context.pageNumber, context.pagesCount),
             style: const pw.TextStyle(fontSize: 9, color: PdfColors.grey600),
           ),
         ),
         build: (context) => [
-          _kv('Week', pack.weekRangeLabel),
-          _kv('Generated', generated),
-          _kv('Submitted DPR days', '${pack.submittedDprDays} / 7'),
-          _kv('Open issues', '${pack.openIssueCount}'),
+          _kv(l10n.pdfWeek, pack.weekRangeLabel),
+          _kv(l10n.pdfGenerated, generated),
+          _kv(
+            l10n.pdfSubmittedDprDays,
+            l10n.pdfSubmittedDaysValue(pack.submittedDprDays),
+          ),
+          _kv(l10n.pdfOpenIssues, '${pack.openIssueCount}'),
           pw.SizedBox(height: 16),
           pw.Text(
-            'Daily highlights',
+            l10n.pdfDailyHighlights,
             style: pw.TextStyle(fontSize: 13, fontWeight: pw.FontWeight.bold),
           ),
           pw.SizedBox(height: 6),
-          if (pack.days.isEmpty)
-            pw.Text('No submitted DPRs in this ISO week yet.'),
+          if (pack.days.isEmpty) pw.Text(l10n.weeklyShareEmptyWeek),
           if (pack.days.isNotEmpty)
             ...pack.days.map(
               (day) => pw.Padding(
@@ -250,7 +300,10 @@ class FieldPdfExport {
                       style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
                     ),
                     pw.Text(
-                      'Weather: ${day.weather} · Manpower: ${day.manpowerSummary}',
+                      l10n.pdfWeatherManpowerLine(
+                        day.weather,
+                        day.manpowerSummary,
+                      ),
                       style: const pw.TextStyle(
                         fontSize: 11,
                         color: PdfColors.grey700,
@@ -261,7 +314,7 @@ class FieldPdfExport {
                     ),
                     if (day.blockers != null)
                       pw.Text(
-                        'Blockers: ${day.blockers}',
+                        l10n.pdfBlockersLine(day.blockers!),
                         style: const pw.TextStyle(
                           fontSize: 11,
                           color: PdfColors.red700,
@@ -274,7 +327,7 @@ class FieldPdfExport {
           if (pack.openIssueTitles.isNotEmpty) ...[
             pw.SizedBox(height: 12),
             pw.Text(
-              'Open issues',
+              l10n.openIssuesSection,
               style: pw.TextStyle(fontSize: 13, fontWeight: pw.FontWeight.bold),
             ),
             pw.SizedBox(height: 6),
@@ -290,16 +343,27 @@ class FieldPdfExport {
   static Future<Uint8List> pilot({
     required PilotMetricsSnapshot snapshot,
     required String projectName,
+    required AppLocalizations l10n,
   }) async {
+    final theme = await _loadTheme();
     final generated = snapshot.generatedAt.toIso8601String();
     final rate = snapshot.syncFailureRate;
     final rateLabel = rate == null
-        ? 'n/a'
+        ? l10n.pdfNa
         : '${(rate * 100).toStringAsFixed(1)}%';
     final doc = pw.Document(
       title: 'Pilot snapshot — $projectName',
       author: 'Construction Field App',
+      theme: theme,
     );
+
+    String statusOkBelow(bool? met, {required int needSamples}) {
+      return switch (met) {
+        true => l10n.pilotStatusOk,
+        false => l10n.pilotStatusBelow,
+        null => l10n.pilotStatusNeedSamples(needSamples),
+      };
+    }
 
     doc.addPage(
       pw.MultiPage(
@@ -309,7 +373,7 @@ class FieldPdfExport {
           crossAxisAlignment: pw.CrossAxisAlignment.start,
           children: [
             pw.Text(
-              'PILOT / HYPERCARE',
+              l10n.pdfPilotTitle,
               style: pw.TextStyle(
                 fontSize: 18,
                 fontWeight: pw.FontWeight.bold,
@@ -327,48 +391,62 @@ class FieldPdfExport {
         footer: (context) => pw.Align(
           alignment: pw.Alignment.centerRight,
           child: pw.Text(
-            'Page ${context.pageNumber} of ${context.pagesCount}',
+            l10n.pdfPageOf(context.pageNumber, context.pagesCount),
             style: const pw.TextStyle(fontSize: 9, color: PdfColors.grey600),
           ),
         ),
         build: (context) => [
-          _kv('Generated', generated),
+          _kv(l10n.pdfGenerated, generated),
           _kv(
-            'DPR days',
-            '${snapshot.dprSubmittedDaysThisWeek} (target >=4) '
-            '${snapshot.dprTargetMet ? 'OK' : 'BELOW'}',
+            l10n.pdfDprDays,
+            l10n.pdfDprDaysValue(
+              snapshot.dprSubmittedDaysThisWeek,
+              snapshot.dprTargetMet ? l10n.pilotStatusOk : l10n.pilotStatusBelow,
+            ),
           ),
           _kv(
-            'DPR submit',
-            '${snapshot.dprSubmitMedianLabel} '
-            '(n=${snapshot.dprSubmitSampleCount}, target <3m) '
-            '${switch (snapshot.dprSubmitTargetMet) {
-              true => 'OK',
-              false => 'BELOW',
-              null => 'NEED ${PilotMetricsSnapshot.dprSubmitMinSamples}+',
-            }}',
+            l10n.pdfDprSubmit,
+            l10n.pdfMedianValue(
+              snapshot.dprSubmitMedianLabel,
+              snapshot.dprSubmitSampleCount,
+              '<3m',
+              statusOkBelow(
+                snapshot.dprSubmitTargetMet,
+                needSamples: PilotMetricsSnapshot.dprSubmitMinSamples,
+              ),
+            ),
           ),
           _kv(
-            'Issue create',
-            '${snapshot.issueCreateMedianLabel} '
-            '(n=${snapshot.issueCreateSampleCount}, target <90s) '
-            '${switch (snapshot.issueCreateTargetMet) {
-              true => 'OK',
-              false => 'BELOW',
-              null => 'NEED ${PilotMetricsSnapshot.issueCreateMinSamples}+',
-            }}',
+            l10n.pdfIssueCreate,
+            l10n.pdfMedianValue(
+              snapshot.issueCreateMedianLabel,
+              snapshot.issueCreateSampleCount,
+              '<90s',
+              statusOkBelow(
+                snapshot.issueCreateTargetMet,
+                needSamples: PilotMetricsSnapshot.issueCreateMinSamples,
+              ),
+            ),
           ),
-          _kv('Open issues', '${snapshot.openIssueCount}'),
-          _kv('Pending sync', '${snapshot.pendingSyncCount}'),
+          _kv(l10n.pdfOpenIssues, '${snapshot.openIssueCount}'),
+          _kv(l10n.pdfPendingSync, '${snapshot.pendingSyncCount}'),
           _kv(
-            'Sync errors',
-            '${snapshot.syncErrorCount} / ${snapshot.syncLogCount} '
-            '($rateLabel, target <2%) '
-            '${snapshot.syncTargetMet ? 'OK' : 'WATCH'}',
+            l10n.pdfSyncErrors,
+            l10n.pdfSyncErrorsLine(
+              snapshot.syncErrorCount,
+              snapshot.syncLogCount,
+              rateLabel,
+              snapshot.syncTargetMet
+                  ? l10n.pilotStatusOk
+                  : l10n.pilotStatusWatch,
+            ),
           ),
           _kv(
-            'UAT checklist',
-            '${snapshot.checklistCompleted} / ${snapshot.checklistTotal}',
+            l10n.pdfUatChecklist,
+            l10n.pdfCountOfTotal(
+              snapshot.checklistCompleted,
+              snapshot.checklistTotal,
+            ),
           ),
         ],
       ),
