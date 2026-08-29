@@ -40,6 +40,8 @@ class LocalVoiceNotesRepository
   static const _key = 'voice.notes';
   static const _outboxKey = 'voice.outbox';
   static const _seededKey = 'voice.seeded_projects.v1';
+  /// Issue voice on rebar (additive for installs that already seeded DPR voice).
+  static const _issueSeededKey = 'voice.issue_seeded.v1';
 
   final _items = <String, VoiceNote>{};
   final _controller = StreamController<List<VoiceNote>>.broadcast();
@@ -382,48 +384,75 @@ class LocalVoiceNotesRepository
 
   @override
   Future<void> ensureSeedVoiceNotes(AuthSession session) async {
-    final seeded = _prefs.getStringList(_seededKey) ?? [];
-    if (seeded.contains(session.activeProjectId)) return;
-
     final now = DateTime.now().toUtc();
     final yesterday = DateTime.utc(now.year, now.month, now.day)
         .subtract(const Duration(days: 1));
     final orgId = session.activeProject.orgId;
     final projectId = session.activeProjectId;
-    // Matches LocalDprRepository.ensureSeedDprs parent id.
-    final dprId =
-        'dpr_seed_${projectId}_${yesterday.toIso8601String().split('T').first}';
+    var changed = false;
 
-    final (noteId, transcript, remoteUrl) = switch (projectId) {
-      'proj_mumbai_metro' => (
-          'voice_seed_dpr_mumbai',
-          'Yard staging ready. Waiting on visitor badges for night shift.',
-          'demo://seed/voice-dpr-mumbai.m4a',
-        ),
-      _ => (
-          'voice_seed_dpr',
-          'Slab shuttering 80 percent. Need beam depth answer before pour.',
-          'demo://seed/voice-dpr-0801.m4a',
-        ),
-    };
+    final seeded = _prefs.getStringList(_seededKey) ?? [];
+    if (!seeded.contains(projectId)) {
+      // Matches LocalDprRepository.ensureSeedDprs parent id.
+      final dprId =
+          'dpr_seed_${projectId}_${yesterday.toIso8601String().split('T').first}';
 
-    _items[noteId] = VoiceNote(
-      id: noteId,
-      orgId: orgId,
-      projectId: projectId,
-      parentType: VoiceParentType.dpr,
-      parentId: dprId,
-      transcript: transcript,
-      createdBy: 'u_engineer',
-      createdByName: 'Asha Patil',
-      createdAt: yesterday.add(const Duration(hours: 11, minutes: 40)),
-      remoteAudioUrl: remoteUrl,
-      transcriptPending: false,
-      synced: true,
-    );
+      final (noteId, transcript, remoteUrl) = switch (projectId) {
+        'proj_mumbai_metro' => (
+            'voice_seed_dpr_mumbai',
+            'Yard staging ready. Waiting on visitor badges for night shift.',
+            'demo://seed/voice-dpr-mumbai.m4a',
+          ),
+        _ => (
+            'voice_seed_dpr',
+            'Slab shuttering 80 percent. Need beam depth answer before pour.',
+            'demo://seed/voice-dpr-0801.m4a',
+          ),
+      };
 
-    seeded.add(projectId);
-    await _prefs.setStringList(_seededKey, seeded);
-    await _persist();
+      _items[noteId] = VoiceNote(
+        id: noteId,
+        orgId: orgId,
+        projectId: projectId,
+        parentType: VoiceParentType.dpr,
+        parentId: dprId,
+        transcript: transcript,
+        createdBy: 'u_engineer',
+        createdByName: 'Asha Patil',
+        createdAt: yesterday.add(const Duration(hours: 11, minutes: 40)),
+        remoteAudioUrl: remoteUrl,
+        transcriptPending: false,
+        synced: true,
+      );
+
+      seeded.add(projectId);
+      await _prefs.setStringList(_seededKey, seeded);
+      changed = true;
+    }
+
+    final issueSeeded = _prefs.getStringList(_issueSeededKey) ?? [];
+    if (!issueSeeded.contains(projectId) &&
+        projectId == 'proj_pune_tower') {
+      _items['voice_seed_issue_rebar'] = VoiceNote(
+        id: 'voice_seed_issue_rebar',
+        orgId: orgId,
+        projectId: projectId,
+        parentType: VoiceParentType.issue,
+        parentId: 'issue_seed_rebar',
+        transcript:
+            'Grid B2 spacing looks wide on site — photo taken, need PM assign.',
+        createdBy: 'u_engineer',
+        createdByName: 'Asha Patil',
+        createdAt: DateTime.utc(2026, 8, 1, 4, 50),
+        remoteAudioUrl: 'demo://seed/voice-issue-rebar.m4a',
+        transcriptPending: false,
+        synced: true,
+      );
+      issueSeeded.add(projectId);
+      await _prefs.setStringList(_issueSeededKey, issueSeeded);
+      changed = true;
+    }
+
+    if (changed) await _persist();
   }
 }

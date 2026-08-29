@@ -206,11 +206,25 @@ void main() {
     expect(comments.single.authorId, 'u_pm');
     expect(comments.single.synced, isTrue);
 
+    final rfiComments = await repo
+        .watchComments(parentType: 'rfi', parentId: 'rfi_seed_beam')
+        .first;
+    expect(rfiComments, hasLength(1));
+    expect(rfiComments.single.id, 'comment_seed_rfi_beam_1');
+    expect(rfiComments.single.body, contains('Rev B'));
+    expect(rfiComments.single.synced, isTrue);
+
     await repo.ensureSeedFieldRecords(engineer);
     expect(await repo.watchIssues(engineer.activeProjectId).first, hasLength(2));
     expect(
       await repo
           .watchComments(parentType: 'issue', parentId: 'issue_seed_rebar')
+          .first,
+      hasLength(1),
+    );
+    expect(
+      await repo
+          .watchComments(parentType: 'rfi', parentId: 'rfi_seed_beam')
           .first,
       hasLength(1),
     );

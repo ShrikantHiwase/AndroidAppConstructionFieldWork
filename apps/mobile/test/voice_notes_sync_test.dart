@@ -109,11 +109,27 @@ void main() {
     expect(notes.single.remoteAudioUrl, startsWith('demo://'));
     expect(await voices.watchPendingSyncCount().first, 0);
 
+    final issueNotes = await voices.listForParent(
+      parentType: VoiceParentType.issue,
+      parentId: 'issue_seed_rebar',
+    );
+    expect(issueNotes, hasLength(1));
+    expect(issueNotes.single.id, 'voice_seed_issue_rebar');
+    expect(issueNotes.single.transcript, contains('Grid B2'));
+    expect(issueNotes.single.synced, isTrue);
+
     await voices.ensureSeedVoiceNotes(session);
     expect(
       await voices.listForParent(
         parentType: VoiceParentType.dpr,
         parentId: dprId,
+      ),
+      hasLength(1),
+    );
+    expect(
+      await voices.listForParent(
+        parentType: VoiceParentType.issue,
+        parentId: 'issue_seed_rebar',
       ),
       hasLength(1),
     );

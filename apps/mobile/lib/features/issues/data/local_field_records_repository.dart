@@ -45,6 +45,8 @@ class LocalFieldRecordsRepository
   /// Separate from [_seededKey] so installs that already seeded issues/RFIs
   /// still pick up `comment_seed_rebar_1` (mirrors firebase/seed).
   static const _commentsSeededKey = 'field.seeded_comments.v1';
+  /// RFI thread reply seed (additive for installs that already have v1 comments).
+  static const _rfiCommentsSeededKey = 'field.seeded_rfi_comments.v1';
 
   final _issues = <String, Issue>{};
   final _rfis = <String, Rfi>{};
@@ -863,6 +865,27 @@ class LocalFieldRecordsRepository
       );
       commentsSeeded.add(projectId);
       await _prefs.setStringList(_commentsSeededKey, commentsSeeded);
+      changed = true;
+    }
+
+    final rfiCommentsSeeded =
+        _prefs.getStringList(_rfiCommentsSeededKey) ?? [];
+    if (!rfiCommentsSeeded.contains(projectId) &&
+        projectId == 'proj_pune_tower') {
+      _comments['comment_seed_rfi_beam_1'] = FieldComment(
+        id: 'comment_seed_rfi_beam_1',
+        orgId: orgId,
+        projectId: projectId,
+        parentType: 'rfi',
+        parentId: 'rfi_seed_beam',
+        body: 'Use Rev B beam depth 600mm — MEP to re-route duct locally.',
+        authorId: 'u_pm',
+        authorName: 'Rohit Sharma',
+        createdAt: DateTime.utc(2026, 8, 1, 6, 30),
+        synced: true,
+      );
+      rfiCommentsSeeded.add(projectId);
+      await _prefs.setStringList(_rfiCommentsSeededKey, rfiCommentsSeeded);
       changed = true;
     }
 

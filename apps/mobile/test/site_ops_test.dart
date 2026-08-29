@@ -158,15 +158,30 @@ void main() {
     final materials =
         await repo.watchMaterials(engineer.activeProjectId).first;
 
-    expect(safety, hasLength(1));
-    expect(safety.single.id, 'safety_seed_observation');
-    expect(safety.single.title, contains('edge protection'));
-    expect(safety.single.synced, isTrue);
+    expect(safety, hasLength(2));
+    expect(
+      safety.map((s) => s.id),
+      containsAll(['safety_seed_observation', 'safety_seed_toolbox']),
+    );
+    final observation =
+        safety.firstWhere((s) => s.id == 'safety_seed_observation');
+    expect(observation.title, contains('edge protection'));
+    expect(observation.hasPhoto, isTrue);
+    expect(observation.photoRemoteUrl, 'demo://seed/safety-edge.jpg');
+    expect(observation.synced, isTrue);
+    final toolbox = safety.firstWhere((s) => s.id == 'safety_seed_toolbox');
+    expect(toolbox.kind, SafetyKind.toolboxTalk);
+    expect(toolbox.hasPhoto, isFalse);
+    expect(toolbox.synced, isTrue);
 
     expect(inspections, hasLength(1));
     expect(inspections.single.id, 'insp_seed_slab');
     expect(inspections.single.title, contains('pre-pour'));
     expect(inspections.single.hasFailures, isTrue);
+    final failItem =
+        inspections.single.items.firstWhere((i) => i.id == 'insp_item_2');
+    expect(failItem.hasPhoto, isTrue);
+    expect(failItem.photoRemoteUrl, 'demo://seed/qa-formwork.jpg');
     expect(inspections.single.synced, isTrue);
 
     expect(muster, hasLength(1));
@@ -184,7 +199,7 @@ void main() {
     expect(await repo.watchPendingSyncCount().first, 0);
 
     await repo.ensureSeedSiteOps(engineer);
-    expect(await repo.watchSafety(engineer.activeProjectId).first, hasLength(1));
+    expect(await repo.watchSafety(engineer.activeProjectId).first, hasLength(2));
     expect(
       await repo.watchInspections(engineer.activeProjectId).first,
       hasLength(1),
