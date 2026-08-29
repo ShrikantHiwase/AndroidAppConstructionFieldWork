@@ -151,6 +151,16 @@
       "authorEmail": "pm@demo.rayns",
       "createdAt": "2026-08-01T05:10:00.000Z",
       "synced": true
+    },
+    "comment_seed_rfi_beam_1": {
+      "orgId": "org_demo",
+      "projectId": "proj_pune_tower",
+      "parentType": "rfi",
+      "parentId": "rfi_seed_beam",
+      "body": "Use Rev B beam depth 600mm — MEP to re-route duct locally.",
+      "authorEmail": "pm@demo.rayns",
+      "createdAt": "2026-08-01T06:30:00.000Z",
+      "synced": true
     }
   },
   "dprs": {
@@ -294,6 +304,18 @@
     }
   },
   "safety_records": {
+    "safety_seed_toolbox": {
+      "orgId": "org_demo",
+      "projectId": "proj_pune_tower",
+      "kind": "toolboxTalk",
+      "title": "Morning toolbox — Level 02 PPE",
+      "notes": "Helmets, harness, and edge awareness brief.",
+      "createdByEmail": "engineer@demo.rayns",
+      "createdAt": "2026-08-01T06:30:00.000Z",
+      "photoRequired": false,
+      "hasPhoto": false,
+      "synced": true
+    },
     "safety_seed_observation": {
       "orgId": "org_demo",
       "projectId": "proj_pune_tower",
@@ -303,7 +325,8 @@
       "createdByEmail": "engineer@demo.rayns",
       "createdAt": "2026-08-01T07:00:00.000Z",
       "photoRequired": true,
-      "hasPhoto": false,
+      "hasPhoto": true,
+      "photoRemoteUrl": "demo://seed/safety-edge.jpg",
       "synced": true
     }
   },
@@ -325,7 +348,8 @@
           "label": "Formwork alignment",
           "result": "fail",
           "photoOnFail": true,
-          "hasPhoto": false
+          "hasPhoto": true,
+          "photoRemoteUrl": "demo://seed/qa-formwork.jpg"
         }
       ],
       "createdByEmail": "qa@demo.rayns",
@@ -375,6 +399,18 @@
       "createdByEmail": "engineer@demo.rayns",
       "createdAt": "2026-08-01T11:40:00.000Z",
       "remoteAudioUrl": "demo://seed/voice-dpr-0801.m4a",
+      "transcriptPending": false,
+      "synced": true
+    },
+    "voice_seed_issue_rebar": {
+      "orgId": "org_demo",
+      "projectId": "proj_pune_tower",
+      "parentType": "issue",
+      "parentId": "issue_seed_rebar",
+      "transcript": "Grid B2 spacing looks wide on site — photo taken, need PM assign.",
+      "createdByEmail": "engineer@demo.rayns",
+      "createdAt": "2026-08-01T04:50:00.000Z",
+      "remoteAudioUrl": "demo://seed/voice-issue-rebar.m4a",
       "transcriptPending": false,
       "synced": true
     }

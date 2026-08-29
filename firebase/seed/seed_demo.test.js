@@ -93,6 +93,11 @@ describe("demo seed enrichment", () => {
     assert.equal(comment.data.authorId, "uid_pm");
     assert.equal(comment.data.parentId, "issue_seed_rebar");
 
+    const rfiComment = docs.find((d) => d.id === "comment_seed_rfi_beam_1");
+    assert.equal(rfiComment.data.parentType, "rfi");
+    assert.equal(rfiComment.data.parentId, "rfi_seed_beam");
+    assert.equal(rfiComment.data.authorId, "uid_pm");
+
     const pin = docs.find((d) => d.id === "pin_seed_rebar");
     assert.equal(pin.data.drawingId, "drawing_proj_pune_tower_ga02");
     assert.equal(pin.data.issueId, "issue_seed_rebar");
@@ -104,6 +109,23 @@ describe("demo seed enrichment", () => {
     const voice = docs.find((d) => d.id === "voice_seed_dpr");
     assert.equal(voice.data.parentId, "dpr_seed_pune_0801");
     assert.equal(voice.data.parentType, "dpr");
+
+    const issueVoice = docs.find((d) => d.id === "voice_seed_issue_rebar");
+    assert.equal(issueVoice.data.parentType, "issue");
+    assert.equal(issueVoice.data.parentId, "issue_seed_rebar");
+
+    const toolbox = docs.find((d) => d.id === "safety_seed_toolbox");
+    assert.equal(toolbox.data.kind, "toolboxTalk");
+    assert.equal(toolbox.data.hasPhoto, false);
+
+    const observation = docs.find((d) => d.id === "safety_seed_observation");
+    assert.equal(observation.data.hasPhoto, true);
+    assert.equal(observation.data.photoRemoteUrl, "demo://seed/safety-edge.jpg");
+
+    const inspection = docs.find((d) => d.id === "insp_seed_slab");
+    const failItem = inspection.data.items.find((i) => i.id === "insp_item_2");
+    assert.equal(failItem.hasPhoto, true);
+    assert.equal(failItem.photoRemoteUrl, "demo://seed/qa-formwork.jpg");
   });
 
   it("rejects bad seed shapes", () => {

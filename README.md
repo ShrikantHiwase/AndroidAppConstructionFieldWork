@@ -105,6 +105,7 @@ docs/              Build plan and training
 | Hinglish share leftovers (ARB) | Done |
 | PDF Hinglish labels + Noto fonts | Done |
 | Hinglish domain errors (ARB) | Done |
+| Local demo evidence seed parity | Done |
 | FlutterFire configure + store release | Next (needs your Firebase project) |
 | Phase 3 Enterprise hooks | Deferred |
 
