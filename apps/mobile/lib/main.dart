@@ -1,4 +1,9 @@
+import 'dart:async';
+import 'dart:ui';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,7 +19,34 @@ import 'l10n/app_localizations.dart';
 import 'sync/background/background_sync_scheduler.dart';
 
 Future<void> main() async {
+  await runZonedGuarded(_bootstrap, _reportUncaughtError);
+}
+
+void _reportUncaughtError(Object error, StackTrace stack) {
+  // Crashlytics is deferred until FlutterFire configure (see docs/Telemetry.md);
+  // until then keep uncaught errors visible in logs instead of dying silently.
+  debugPrint('Uncaught error: $error\n$stack');
+}
+
+Future<void> _bootstrap() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  FlutterError.onError = (details) {
+    FlutterError.presentError(details);
+    _reportUncaughtError(details.exception, details.stack ?? StackTrace.empty);
+  };
+  PlatformDispatcher.instance.onError = (error, stack) {
+    _reportUncaughtError(error, stack);
+    return true;
+  };
+
+  // Field forms are portrait workflows on phones; landscape support is a
+  // deliberate tablet follow-up rather than an accidental rotation.
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+
   final prefs = await SharedPreferences.getInstance();
   final secure = createSecureStore(prefs);
   await secure.migrateFromPrefs(prefs);

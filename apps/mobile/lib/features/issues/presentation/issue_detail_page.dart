@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/notifications/notification_providers.dart';
 import '../../../core/providers/connectivity_provider.dart';
+import '../../../core/widgets/evidence_thumbnail.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/domain/auth_models.dart';
 import '../../auth/presentation/auth_controller.dart';
@@ -78,7 +79,9 @@ class _IssueDetailPageState extends ConsumerState<IssueDetailPage> {
     final canComment = canMutateFieldRecords(session.activeRole);
 
     return Scaffold(
-      appBar: AppBar(title: Text(issue.title)),
+      appBar: AppBar(
+        title: Text(issue.title, maxLines: 1, overflow: TextOverflow.ellipsis),
+      ),
       body: ListView(
         padding: const EdgeInsets.all(24),
         children: [
@@ -115,8 +118,12 @@ class _IssueDetailPageState extends ConsumerState<IssueDetailPage> {
             ...issue.attachments.map(
               (a) => ListTile(
                 contentPadding: EdgeInsets.zero,
-                leading: const Icon(Icons.image_outlined),
-                title: Text(a.fileName),
+                leading: EvidenceThumbnail(localPath: a.localPath),
+                title: Text(
+                  a.fileName,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
                 subtitle: Text(
                   a.pendingUpload
                       ? l10n.queuedForUpload

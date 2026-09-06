@@ -41,6 +41,8 @@ class FieldApp extends ConsumerWidget {
       navigatorKey: rootNavigatorKey,
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light(),
+      darkTheme: AppTheme.dark(),
+      themeMode: ThemeMode.system,
       locale: localeOverride,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
@@ -67,8 +69,12 @@ class _BootSplash extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Matches the native launch background for a seamless handoff.
     return const Scaffold(
-      body: Center(child: CircularProgressIndicator()),
+      backgroundColor: Color(0xFF1B4D3E),
+      body: Center(
+        child: CircularProgressIndicator(color: Colors.white),
+      ),
     );
   }
 }

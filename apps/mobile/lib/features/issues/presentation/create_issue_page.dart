@@ -6,6 +6,7 @@ import '../../../core/device/evidence_capture.dart';
 import '../../../core/device/evidence_image_policy.dart';
 import '../../../core/providers/connectivity_provider.dart';
 import '../../../core/telemetry/telemetry_providers.dart';
+import '../../../core/widgets/evidence_thumbnail.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../../pilot/presentation/pilot_providers.dart';
@@ -188,8 +189,12 @@ class _CreateIssuePageState extends ConsumerState<CreateIssuePage> {
                     : l10n.uploadedStatus;
                 return ListTile(
                   contentPadding: EdgeInsets.zero,
-                  leading: const Icon(Icons.image_outlined),
-                  title: Text(a.fileName),
+                  leading: EvidenceThumbnail(localPath: a.localPath),
+                  title: Text(
+                    a.fileName,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                   subtitle: Text(
                     size == null ? status : '$status · ~$size',
                   ),

@@ -7,6 +7,8 @@ import '../../../core/device/evidence_image_policy.dart';
 import '../../../core/share/field_pdf_export.dart';
 import '../../../core/share/share_port.dart';
 import '../../../core/telemetry/telemetry_providers.dart';
+import '../../../core/widgets/async_error_view.dart';
+import '../../../core/widgets/evidence_thumbnail.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../../pilot/presentation/pilot_providers.dart';
@@ -43,7 +45,10 @@ class DprHomePage extends ConsumerWidget {
           : null,
       body: dprs.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text(localizeAppError(e, l10n))),
+        error: (e, _) => AsyncErrorView(
+          error: e,
+          onRetry: () => ref.invalidate(dprsProvider),
+        ),
         data: (list) {
           if (list.isEmpty) {
             return Center(child: Text(l10n.noDprsYet));
@@ -61,9 +66,7 @@ class DprHomePage extends ConsumerWidget {
                     color: Theme.of(context).colorScheme.outlineVariant,
                   ),
                 ),
-                title: Text(
-                  dpr.reportDate.toIso8601String().split('T').first,
-                ),
+                title: Text(dpr.reportDate.toIso8601String().split('T').first),
                 subtitle: Text(
                   '${dpr.submitted ? l10n.submittedLabel : l10n.draftLabel} · '
                   '${l10n.activitiesCount(dpr.activities.length)}'
@@ -140,6 +143,30 @@ class _TodaysDprPageState extends ConsumerState<TodaysDprPage> {
     super.dispose();
   }
 
+  Future<void> _confirmSubmit() async {
+    final l10n = AppLocalizations.of(context);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l10n.submitDprConfirmTitle),
+        content: Text(l10n.submitDprConfirmBody),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: Text(l10n.cancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: Text(l10n.submitDpr),
+          ),
+        ],
+      ),
+    );
+    if (confirmed ?? false) {
+      await _save(submit: true);
+    }
+  }
+
   Future<void> _save({required bool submit}) async {
     final session = ref.read(authSessionProvider);
     if (session == null) return;
@@ -148,7 +175,9 @@ class _TodaysDprPageState extends ConsumerState<TodaysDprPage> {
       _error = null;
     });
     try {
-      var dpr = await ref.read(dprRepositoryProvider).createOrUpdateToday(
+      var dpr = await ref
+          .read(dprRepositoryProvider)
+          .createOrUpdateToday(
             session: session,
             input: CreateDprInput(
               weather: _weather.text,
@@ -162,10 +191,9 @@ class _TodaysDprPageState extends ConsumerState<TodaysDprPage> {
             .read(dprRepositoryProvider)
             .submit(session: session, dprId: dpr.id);
         final elapsedMs = _openedAt.elapsedMilliseconds;
-        await ref.read(dprSubmitTimingProvider.notifier).record(
-              durationMs: elapsedMs,
-              projectId: session.activeProjectId,
-            );
+        await ref
+            .read(dprSubmitTimingProvider.notifier)
+            .record(durationMs: elapsedMs, projectId: session.activeProjectId);
         await logTelemetryEvent(
           ref,
           name: 'dpr_submit',
@@ -177,13 +205,13 @@ class _TodaysDprPageState extends ConsumerState<TodaysDprPage> {
       }
       if (mounted) {
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute<void>(
-            builder: (_) => DprDetailPage(dprId: dpr.id),
-          ),
+          MaterialPageRoute<void>(builder: (_) => DprDetailPage(dprId: dpr.id)),
         );
       }
     } catch (e) {
-      setState(() => _error = localizeAppError(e, AppLocalizations.of(context)));
+      setState(
+        () => _error = localizeAppError(e, AppLocalizations.of(context)),
+      );
     } finally {
       if (mounted) setState(() => _saving = false);
     }
@@ -249,8 +277,9 @@ class _TodaysDprPageState extends ConsumerState<TodaysDprPage> {
                           description: text,
                           hasPhoto: hasPhoto,
                           photoLocalPath: hasPhoto ? path : null,
-                          photoByteSizeBytes:
-                              hasPhoto ? _pendingPhotoBytes : null,
+                          photoByteSizeBytes: hasPhoto
+                              ? _pendingPhotoBytes
+                              : null,
                         ),
                       );
                       _activity.clear();
@@ -313,19 +342,21 @@ class _TodaysDprPageState extends ConsumerState<TodaysDprPage> {
           ..._activities.map(
             (a) => ListTile(
               contentPadding: EdgeInsets.zero,
-              leading: Icon(
-                a.hasPhoto
-                    ? Icons.photo_outlined
-                    : Icons.check_circle_outline,
+              leading: a.hasPhoto
+                  ? EvidenceThumbnail(localPath: a.photoLocalPath)
+                  : const Icon(Icons.check_circle_outline),
+              title: Text(
+                a.description,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
               ),
-              title: Text(a.description),
               subtitle: Text(
                 a.hasPhoto
                     ? (a.pendingPhotoUpload
-                        ? l10n.evidencePhotoQueued
-                        : a.photoRemoteUrl != null
-                            ? l10n.evidencePhotoSynced
-                            : '${l10n.evidencePhotoAttached}'
+                          ? l10n.evidencePhotoQueued
+                          : a.photoRemoteUrl != null
+                          ? l10n.evidencePhotoSynced
+                          : '${l10n.evidencePhotoAttached}'
                                 '${a.photoByteSizeBytes == null ? '' : ' · ${EvidenceImagePolicy.formatBytes(a.photoByteSizeBytes!)}'}')
                     : l10n.noEvidencePhoto,
               ),
@@ -370,7 +401,7 @@ class _TodaysDprPageState extends ConsumerState<TodaysDprPage> {
             ),
             const SizedBox(height: 8),
             FilledButton.tonal(
-              onPressed: _saving ? null : () => _save(submit: true),
+              onPressed: _saving ? null : _confirmSubmit,
               child: Text(l10n.submitDpr),
             ),
           ],
@@ -389,7 +420,8 @@ class DprDetailPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final session = ref.watch(authSessionProvider);
-    final list = ref.watch(dprsProvider).valueOrNull ?? const <DailyProgressReport>[];
+    final list =
+        ref.watch(dprsProvider).valueOrNull ?? const <DailyProgressReport>[];
     DailyProgressReport? dpr;
     for (final item in list) {
       if (item.id == dprId) {
@@ -406,10 +438,7 @@ class DprDetailPage extends ConsumerWidget {
     final current = dpr;
     final projectName = session.activeProject.name;
     final dateLabel = current.reportDate.toIso8601String().split('T').first;
-    final shareText = current.toShareText(
-      projectName: projectName,
-      l10n: l10n,
-    );
+    final shareText = current.toShareText(projectName: projectName, l10n: l10n);
     final subject = l10n.shareSubjectDpr(dateLabel, projectName);
 
     Future<void> sharePdf() async {
@@ -418,7 +447,9 @@ class DprDetailPage extends ConsumerWidget {
         projectName: projectName,
         l10n: l10n,
       );
-      final outcome = await ref.read(sharePortProvider).shareFile(
+      final outcome = await ref
+          .read(sharePortProvider)
+          .shareFile(
             bytes: bytes,
             filename: 'dpr_$dateLabel.pdf',
             subject: subject,
@@ -441,10 +472,9 @@ class DprDetailPage extends ConsumerWidget {
     }
 
     Future<void> shareAsText() async {
-      final outcome = await ref.read(sharePortProvider).shareText(
-            text: shareText,
-            subject: subject,
-          );
+      final outcome = await ref
+          .read(sharePortProvider)
+          .shareText(text: shareText, subject: subject);
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -495,8 +525,8 @@ class DprDetailPage extends ConsumerWidget {
               subtitle: Text(
                 a.hasPhoto
                     ? (a.pendingPhotoUpload
-                        ? l10n.evidencePhotoQueued
-                        : l10n.photoEvidenceCount(a.photoCount))
+                          ? l10n.evidencePhotoQueued
+                          : l10n.photoEvidenceCount(a.photoCount))
                     : l10n.noEvidencePhoto,
               ),
             ),
@@ -526,7 +556,10 @@ class DprDetailPage extends ConsumerWidget {
             label: Text(l10n.shareAsText),
           ),
           const SizedBox(height: 16),
-          Text(l10n.textPreview, style: Theme.of(context).textTheme.titleMedium),
+          Text(
+            l10n.textPreview,
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
           const SizedBox(height: 8),
           SelectableText(shareText),
           const SizedBox(height: 8),
