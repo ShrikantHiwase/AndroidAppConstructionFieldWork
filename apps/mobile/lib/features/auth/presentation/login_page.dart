@@ -16,6 +16,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   final _email = TextEditingController(text: 'engineer@demo.rayns');
   final _password = TextEditingController(text: 'demo1234');
   final _formKey = GlobalKey<FormState>();
+  var _obscurePassword = true;
+
+  static final _emailPattern = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
 
   static const _demoHints = [
     'engineer@demo.rayns',
@@ -35,7 +38,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   Future<void> _submit() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
     await ref.read(authControllerProvider.notifier).signIn(
-          email: _email.text,
+          email: _email.text.trim(),
           password: _password.text,
         );
   }
@@ -96,23 +99,43 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   TextFormField(
                     controller: _email,
                     keyboardType: TextInputType.emailAddress,
+                    textInputAction: TextInputAction.next,
                     autofillHints: const [AutofillHints.email],
                     decoration: InputDecoration(
                       labelText: l10n.emailLabel,
                       border: const OutlineInputBorder(),
                     ),
-                    validator: (v) => (v == null || v.trim().isEmpty)
-                        ? l10n.emailRequired
-                        : null,
+                    validator: (v) {
+                      final value = v?.trim() ?? '';
+                      if (value.isEmpty) return l10n.emailRequired;
+                      if (!_emailPattern.hasMatch(value)) {
+                        return l10n.emailInvalid;
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 16),
                   TextFormField(
                     controller: _password,
-                    obscureText: true,
+                    obscureText: _obscurePassword,
+                    textInputAction: TextInputAction.done,
                     autofillHints: const [AutofillHints.password],
                     decoration: InputDecoration(
                       labelText: l10n.passwordLabel,
                       border: const OutlineInputBorder(),
+                      suffixIcon: IconButton(
+                        tooltip: _obscurePassword
+                            ? l10n.showPassword
+                            : l10n.hidePassword,
+                        icon: Icon(
+                          _obscurePassword
+                              ? Icons.visibility_outlined
+                              : Icons.visibility_off_outlined,
+                        ),
+                        onPressed: () => setState(
+                          () => _obscurePassword = !_obscurePassword,
+                        ),
+                      ),
                     ),
                     validator: (v) =>
                         (v == null || v.isEmpty) ? l10n.passwordRequired : null,

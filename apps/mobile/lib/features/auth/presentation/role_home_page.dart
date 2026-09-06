@@ -18,6 +18,7 @@ import '../../dpr/presentation/drawing_pin_pages.dart';
 import '../../issues/presentation/create_issue_page.dart';
 import '../../issues/presentation/issues_list_page.dart';
 import '../../pilot/presentation/pilot_hub_page.dart';
+import '../../rfis/presentation/rfis_pages.dart';
 import '../../site_ops/presentation/site_ops_hub_page.dart';
 import '../../sync/presentation/sync_status_page.dart';
 import '../domain/auth_models.dart';
@@ -55,157 +56,167 @@ class _RoleHomePageState extends ConsumerState<RoleHomePage> {
 
     return switch (session.activeRole) {
       AppRole.siteEngineer => _RoleScaffold(
-          session: session,
-          title: l10n.roleEngineerTitle,
-          subtitle: l10n.roleEngineerSubtitle,
-          actions: [
-            _PrimaryAction(
-              Icons.report_problem_outlined,
-              l10n.newIssue,
-              onPressed: () => _open(context, const CreateIssuePage()),
-            ),
-            _PrimaryAction(
-              Icons.assignment_outlined,
-              l10n.todaysDpr,
-              onPressed: () => _open(context, const TodaysDprPage()),
-            ),
-            _PrimaryAction(
-              Icons.push_pin_outlined,
-              l10n.pinOnDrawing,
-              onPressed: () => _open(context, const DrawingsListPage()),
-            ),
-            _PrimaryAction(
-              Icons.health_and_safety_outlined,
-              l10n.siteOps,
-              onPressed: () => _open(context, const SiteOpsHubPage()),
-            ),
-            _PrimaryAction(
-              Icons.notifications_active_outlined,
-              l10n.reminders,
-              onPressed: () => _open(context, const DigestsPage()),
-            ),
-          ],
-        ),
+        session: session,
+        title: l10n.roleEngineerTitle,
+        subtitle: l10n.roleEngineerSubtitle,
+        actions: [
+          _PrimaryAction(
+            Icons.report_problem_outlined,
+            l10n.newIssue,
+            onPressed: () => _open(context, const CreateIssuePage()),
+          ),
+          _PrimaryAction(
+            Icons.assignment_outlined,
+            l10n.todaysDpr,
+            onPressed: () => _open(context, const TodaysDprPage()),
+          ),
+          _PrimaryAction(
+            Icons.push_pin_outlined,
+            l10n.pinOnDrawing,
+            onPressed: () => _open(context, const DrawingsListPage()),
+          ),
+          _PrimaryAction(
+            Icons.help_outline,
+            l10n.rfisTitle,
+            onPressed: () => _open(context, const RfisListPage()),
+          ),
+          _PrimaryAction(
+            Icons.health_and_safety_outlined,
+            l10n.siteOps,
+            onPressed: () => _open(context, const SiteOpsHubPage()),
+          ),
+          _PrimaryAction(
+            Icons.notifications_active_outlined,
+            l10n.reminders,
+            onPressed: () => _open(context, const DigestsPage()),
+          ),
+        ],
+      ),
       AppRole.projectManager => _RoleScaffold(
-          session: session,
-          title: l10n.rolePmTitle,
-          subtitle: l10n.rolePmSubtitle,
-          actions: [
-            _PrimaryAction(
-              Icons.inbox_outlined,
-              l10n.openQueue,
-              onPressed: () => _open(context, const IssuesListPage()),
-            ),
-            _PrimaryAction(
-              Icons.assignment_outlined,
-              l10n.dprs,
-              onPressed: () => _open(context, const DprHomePage()),
-            ),
-            _PrimaryAction(
-              Icons.notifications_active_outlined,
-              l10n.digests,
-              onPressed: () => _open(context, const DigestsPage()),
-            ),
-            _PrimaryAction(
-              Icons.calendar_view_week_outlined,
-              l10n.weeklyPack,
-              onPressed: () => _open(context, const WeeklyProgressPage()),
-            ),
-            _PrimaryAction(
-              Icons.health_and_safety_outlined,
-              l10n.siteOps,
-              onPressed: () => _open(context, const SiteOpsHubPage()),
-            ),
-            _PrimaryAction(
-              Icons.flag_outlined,
-              l10n.pilot,
-              onPressed: () => _open(context, const PilotHubPage()),
-            ),
-          ],
-        ),
+        session: session,
+        title: l10n.rolePmTitle,
+        subtitle: l10n.rolePmSubtitle,
+        actions: [
+          _PrimaryAction(
+            Icons.inbox_outlined,
+            l10n.openQueue,
+            onPressed: () => _open(context, const IssuesListPage()),
+          ),
+          _PrimaryAction(
+            Icons.help_outline,
+            l10n.rfisTitle,
+            onPressed: () => _open(context, const RfisListPage()),
+          ),
+          _PrimaryAction(
+            Icons.assignment_outlined,
+            l10n.dprs,
+            onPressed: () => _open(context, const DprHomePage()),
+          ),
+          _PrimaryAction(
+            Icons.notifications_active_outlined,
+            l10n.digests,
+            onPressed: () => _open(context, const DigestsPage()),
+          ),
+          _PrimaryAction(
+            Icons.calendar_view_week_outlined,
+            l10n.weeklyPack,
+            onPressed: () => _open(context, const WeeklyProgressPage()),
+          ),
+          _PrimaryAction(
+            Icons.health_and_safety_outlined,
+            l10n.siteOps,
+            onPressed: () => _open(context, const SiteOpsHubPage()),
+          ),
+          _PrimaryAction(
+            Icons.flag_outlined,
+            l10n.pilot,
+            onPressed: () => _open(context, const PilotHubPage()),
+          ),
+        ],
+      ),
       AppRole.qaQc => _RoleScaffold(
-          session: session,
-          title: l10n.roleQaTitle,
-          subtitle: l10n.roleQaSubtitle,
-          actions: [
-            _PrimaryAction(
-              Icons.checklist_outlined,
-              l10n.inspections,
-              onPressed: () =>
-                  _open(context, const SiteOpsHubPage(initialTab: 1)),
-            ),
-            _PrimaryAction(
-              Icons.report_problem_outlined,
-              l10n.qualityIssues,
-              onPressed: () => _open(context, const IssuesListPage()),
-            ),
-            _PrimaryAction(
-              Icons.health_and_safety_outlined,
-              l10n.siteOps,
-              onPressed: () => _open(context, const SiteOpsHubPage()),
-            ),
-          ],
-        ),
+        session: session,
+        title: l10n.roleQaTitle,
+        subtitle: l10n.roleQaSubtitle,
+        actions: [
+          _PrimaryAction(
+            Icons.checklist_outlined,
+            l10n.inspections,
+            onPressed: () =>
+                _open(context, const SiteOpsHubPage(initialTab: 1)),
+          ),
+          _PrimaryAction(
+            Icons.report_problem_outlined,
+            l10n.qualityIssues,
+            onPressed: () => _open(context, const IssuesListPage()),
+          ),
+          _PrimaryAction(
+            Icons.health_and_safety_outlined,
+            l10n.siteOps,
+            onPressed: () => _open(context, const SiteOpsHubPage()),
+          ),
+        ],
+      ),
       AppRole.client => _RoleScaffold(
-          session: session,
-          title: l10n.roleClientTitle,
-          subtitle: l10n.roleClientSubtitle,
-          actions: [
-            _PrimaryAction(
-              Icons.calendar_view_week_outlined,
-              l10n.weeklyProgress,
-              onPressed: () => _open(context, const WeeklyProgressPage()),
-            ),
-            _PrimaryAction(
-              Icons.list_alt_outlined,
-              l10n.issues,
-              onPressed: () => _open(context, const IssuesListPage()),
-            ),
-            _PrimaryAction(
-              Icons.folder_open_outlined,
-              l10n.documents,
-              onPressed: () => _open(context, const DocumentsBrowserPage()),
-            ),
-          ],
-          readOnly: true,
-        ),
+        session: session,
+        title: l10n.roleClientTitle,
+        subtitle: l10n.roleClientSubtitle,
+        actions: [
+          _PrimaryAction(
+            Icons.calendar_view_week_outlined,
+            l10n.weeklyProgress,
+            onPressed: () => _open(context, const WeeklyProgressPage()),
+          ),
+          _PrimaryAction(
+            Icons.list_alt_outlined,
+            l10n.issues,
+            onPressed: () => _open(context, const IssuesListPage()),
+          ),
+          _PrimaryAction(
+            Icons.folder_open_outlined,
+            l10n.documents,
+            onPressed: () => _open(context, const DocumentsBrowserPage()),
+          ),
+        ],
+        readOnly: true,
+      ),
       AppRole.admin => _RoleScaffold(
-          session: session,
-          title: l10n.roleAdminTitle,
-          subtitle: l10n.roleAdminSubtitle,
-          actions: [
-            _PrimaryAction(
-              Icons.folder_open_outlined,
-              l10n.documents,
-              onPressed: () => _open(context, const DocumentsBrowserPage()),
-            ),
-            _PrimaryAction(
-              Icons.list_alt_outlined,
-              l10n.issues,
-              onPressed: () => _open(context, const IssuesListPage()),
-            ),
-            _PrimaryAction(
-              Icons.calendar_view_week_outlined,
-              l10n.weeklyPack,
-              onPressed: () => _open(context, const WeeklyProgressPage()),
-            ),
-            _PrimaryAction(
-              Icons.person_add_outlined,
-              l10n.inviteUser,
-              onPressed: () => _open(context, const AdminInvitesPage()),
-            ),
-            _PrimaryAction(
-              Icons.notifications_active_outlined,
-              l10n.digests,
-              onPressed: () => _open(context, const DigestsPage()),
-            ),
-            _PrimaryAction(
-              Icons.flag_outlined,
-              l10n.pilot,
-              onPressed: () => _open(context, const PilotHubPage()),
-            ),
-          ],
-        ),
+        session: session,
+        title: l10n.roleAdminTitle,
+        subtitle: l10n.roleAdminSubtitle,
+        actions: [
+          _PrimaryAction(
+            Icons.folder_open_outlined,
+            l10n.documents,
+            onPressed: () => _open(context, const DocumentsBrowserPage()),
+          ),
+          _PrimaryAction(
+            Icons.list_alt_outlined,
+            l10n.issues,
+            onPressed: () => _open(context, const IssuesListPage()),
+          ),
+          _PrimaryAction(
+            Icons.calendar_view_week_outlined,
+            l10n.weeklyPack,
+            onPressed: () => _open(context, const WeeklyProgressPage()),
+          ),
+          _PrimaryAction(
+            Icons.person_add_outlined,
+            l10n.inviteUser,
+            onPressed: () => _open(context, const AdminInvitesPage()),
+          ),
+          _PrimaryAction(
+            Icons.notifications_active_outlined,
+            l10n.digests,
+            onPressed: () => _open(context, const DigestsPage()),
+          ),
+          _PrimaryAction(
+            Icons.flag_outlined,
+            l10n.pilot,
+            onPressed: () => _open(context, const PilotHubPage()),
+          ),
+        ],
+      ),
     };
   }
 
@@ -235,6 +246,33 @@ class _RoleScaffold extends ConsumerWidget {
   final String subtitle;
   final List<_PrimaryAction> actions;
   final bool readOnly;
+
+  Future<void> _confirmSignOut(
+    BuildContext context,
+    WidgetRef ref,
+    AppLocalizations l10n,
+  ) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l10n.signOutConfirmTitle),
+        content: Text(l10n.signOutConfirmBody),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: Text(l10n.cancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: Text(l10n.signOut),
+          ),
+        ],
+      ),
+    );
+    if (confirmed ?? false) {
+      await ref.read(authControllerProvider.notifier).signOut();
+    }
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -272,8 +310,7 @@ class _RoleScaffold extends ConsumerWidget {
           ),
           IconButton(
             tooltip: l10n.languagePickerLabel,
-            onPressed: () =>
-                ref.read(appLocaleProvider.notifier).cycle(),
+            onPressed: () => ref.read(appLocaleProvider.notifier).cycle(),
             icon: const Icon(Icons.translate_outlined),
           ),
           IconButton(
@@ -287,17 +324,14 @@ class _RoleScaffold extends ConsumerWidget {
             tooltip: l10n.tooltipSyncStatus,
             onPressed: () {
               Navigator.of(context).push(
-                MaterialPageRoute<void>(
-                  builder: (_) => const SyncStatusPage(),
-                ),
+                MaterialPageRoute<void>(builder: (_) => const SyncStatusPage()),
               );
             },
             icon: const Icon(Icons.sync),
           ),
           IconButton(
             tooltip: l10n.signOut,
-            onPressed: () =>
-                ref.read(authControllerProvider.notifier).signOut(),
+            onPressed: () => _confirmSignOut(context, ref, l10n),
             icon: const Icon(Icons.logout),
           ),
         ],
@@ -316,10 +350,7 @@ class _RoleScaffold extends ConsumerWidget {
           Text(subtitle, style: textTheme.bodyLarge),
           if (readOnly) ...[
             const SizedBox(height: 8),
-            Text(
-              l10n.clientReadOnlyNote,
-              style: textTheme.bodySmall,
-            ),
+            Text(l10n.clientReadOnlyNote, style: textTheme.bodySmall),
           ],
           const SizedBox(height: 20),
           Text(l10n.permissions, style: textTheme.titleMedium),

@@ -105,6 +105,7 @@ docs/              Build plan and training
 | Hinglish share leftovers (ARB) | Done |
 | PDF Hinglish labels + Noto fonts | Done |
 | Hinglish domain errors (ARB) | Done |
+| Professional polish pass (dark theme, error handlers, confirms, thumbnails, Android release config) | Done |
 | FlutterFire configure + store release | Next (needs your Firebase project) |
 | Phase 3 Enterprise hooks | Deferred |
 

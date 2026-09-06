@@ -53,5 +53,9 @@
 	<string>Attach GPS to field records and check labour muster geofence.</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>Unlock Field Evidence after app resume.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Pick existing site photos from your library as evidence.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Save captured site evidence photos to your library.</string>
 </dict>
 </plist>

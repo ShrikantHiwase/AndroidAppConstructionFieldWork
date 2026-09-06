@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Hard-hat glyph centred in the adaptive-icon safe zone. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Dome -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M34,62 a20,20 0 0 1 40,0 z" />
+    <!-- Centre ridge -->
+    <path
+        android:fillColor="#1B4D3E"
+        android:pathData="M50,42 h8 v14 h-8 z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M51.5,40 h5 v16 h-5 z" />
+    <!-- Brim -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M28,62 h52 a4,4 0 0 1 4,4 v0 a4,4 0 0 1 -4,4 h-52 a4,4 0 0 1 -4,-4 v0 a4,4 0 0 1 4,-4 z" />
+</vector>

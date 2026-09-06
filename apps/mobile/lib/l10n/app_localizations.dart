@@ -1532,6 +1532,54 @@ abstract class AppLocalizations {
   /// **'Save'**
   String get save;
 
+  /// No description provided for @retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
+
+  /// No description provided for @signOutConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out?'**
+  String get signOutConfirmTitle;
+
+  /// No description provided for @signOutConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Unsynced items stay safe on this device and sync after you sign back in.'**
+  String get signOutConfirmBody;
+
+  /// No description provided for @submitDprConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit today\'s DPR?'**
+  String get submitDprConfirmTitle;
+
+  /// No description provided for @submitDprConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'After submitting, the DPR is locked and can no longer be edited.'**
+  String get submitDprConfirmBody;
+
+  /// No description provided for @emailInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid email address'**
+  String get emailInvalid;
+
+  /// No description provided for @showPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Show password'**
+  String get showPassword;
+
+  /// No description provided for @hidePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide password'**
+  String get hidePassword;
+
   /// No description provided for @photoRequiredObservation.
   ///
   /// In en, this message translates to:

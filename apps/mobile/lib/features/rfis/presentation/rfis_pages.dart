@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/notifications/notification_providers.dart';
 import '../../../core/providers/connectivity_provider.dart';
+import '../../../core/widgets/async_error_view.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/domain/auth_models.dart';
 import '../../auth/presentation/auth_controller.dart';
@@ -48,39 +49,51 @@ class RfisListPage extends ConsumerWidget {
           : null,
       body: rfisAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text(localizeAppError(e, l10n))),
+        error: (e, _) => AsyncErrorView(
+          error: e,
+          onRetry: () => ref.invalidate(rfisProvider),
+        ),
         data: (rfis) {
           if (rfis.isEmpty) {
             return Center(child: Text(l10n.noRfisYet));
           }
-          return ListView.separated(
-            padding: const EdgeInsets.all(16),
-            itemCount: rfis.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 8),
-            itemBuilder: (context, index) {
-              final rfi = rfis[index];
-              return ListTile(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  side: BorderSide(
-                    color: Theme.of(context).colorScheme.outlineVariant,
-                  ),
-                ),
-                title: Text(rfi.subject),
-                subtitle: Text(
-                  '${rfi.status.localizedLabel(l10n)}'
-                  '${rfi.assigneeName == null ? '' : ' · ${rfi.assigneeName}'}'
-                  '${rfi.synced ? '' : l10n.notSyncedSuffix}',
-                ),
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute<void>(
-                      builder: (_) => RfiDetailPage(rfiId: rfi.id),
+          return RefreshIndicator(
+            onRefresh: () => ref.refresh(rfisProvider.future),
+            child: ListView.separated(
+              padding: const EdgeInsets.all(16),
+              itemCount: rfis.length,
+              separatorBuilder: (_, __) => const SizedBox(height: 8),
+              itemBuilder: (context, index) {
+                final rfi = rfis[index];
+                return ListTile(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    side: BorderSide(
+                      color: Theme.of(context).colorScheme.outlineVariant,
                     ),
-                  );
-                },
-              );
-            },
+                  ),
+                  title: Text(
+                    rfi.subject,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  subtitle: Text(
+                    '${rfi.status.localizedLabel(l10n)}'
+                    '${rfi.assigneeName == null ? '' : ' · ${rfi.assigneeName}'}'
+                    '${rfi.synced ? '' : l10n.notSyncedSuffix}',
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => RfiDetailPage(rfiId: rfi.id),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
           );
         },
       ),
@@ -118,7 +131,9 @@ class _CreateRfiPageState extends ConsumerState<CreateRfiPage> {
       _error = null;
     });
     try {
-      await ref.read(fieldRecordsRepositoryProvider).createRfi(
+      await ref
+          .read(fieldRecordsRepositoryProvider)
+          .createRfi(
             session: session,
             input: CreateRfiInput(
               subject: _subject.text,
@@ -130,7 +145,9 @@ class _CreateRfiPageState extends ConsumerState<CreateRfiPage> {
       }
       if (mounted) Navigator.of(context).pop();
     } catch (e) {
-      setState(() => _error = localizeAppError(e, AppLocalizations.of(context)));
+      setState(
+        () => _error = localizeAppError(e, AppLocalizations.of(context)),
+      );
     } finally {
       if (mounted) setState(() => _saving = false);
     }
@@ -154,8 +171,9 @@ class _CreateRfiPageState extends ConsumerState<CreateRfiPage> {
                     labelText: l10n.subjectLabel,
                     border: const OutlineInputBorder(),
                   ),
-                  validator: (v) =>
-                      (v == null || v.trim().isEmpty) ? l10n.requiredField : null,
+                  validator: (v) => (v == null || v.trim().isEmpty)
+                      ? l10n.requiredField
+                      : null,
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
@@ -165,8 +183,9 @@ class _CreateRfiPageState extends ConsumerState<CreateRfiPage> {
                     labelText: l10n.questionLabel,
                     border: const OutlineInputBorder(),
                   ),
-                  validator: (v) =>
-                      (v == null || v.trim().isEmpty) ? l10n.requiredField : null,
+                  validator: (v) => (v == null || v.trim().isEmpty)
+                      ? l10n.requiredField
+                      : null,
                 ),
               ],
             ),
@@ -225,11 +244,9 @@ class _RfiDetailPageState extends ConsumerState<RfiDetailPage> {
     required String body,
     Map<String, String> data = const {},
   }) async {
-    await ref.read(pushNotificationServiceProvider).notifyLocal(
-          title: title,
-          body: body,
-          data: data,
-        );
+    await ref
+        .read(pushNotificationServiceProvider)
+        .notifyLocal(title: title, body: body, data: data);
   }
 
   @override
@@ -244,8 +261,9 @@ class _RfiDetailPageState extends ConsumerState<RfiDetailPage> {
       }
     }
     final session = ref.watch(authSessionProvider);
-    final commentsAsync =
-        ref.watch(commentsProvider((type: 'rfi', id: widget.rfiId)));
+    final commentsAsync = ref.watch(
+      commentsProvider((type: 'rfi', id: widget.rfiId)),
+    );
 
     if (rfi == null || session == null) {
       return Scaffold(
@@ -256,8 +274,9 @@ class _RfiDetailPageState extends ConsumerState<RfiDetailPage> {
 
     final current = rfi;
     final activeSession = session;
-    final canStatus =
-        RolePermissions.canChangeIssueStatus(activeSession.activeRole);
+    final canStatus = RolePermissions.canChangeIssueStatus(
+      activeSession.activeRole,
+    );
     final canAssign = RolePermissions.canAssignWork(activeSession.activeRole);
     final canComment = canMutateFieldRecords(activeSession.activeRole);
 
@@ -266,7 +285,10 @@ class _RfiDetailPageState extends ConsumerState<RfiDetailPage> {
       body: ListView(
         padding: const EdgeInsets.all(24),
         children: [
-          Text(current.status.localizedLabel(l10n), style: Theme.of(context).textTheme.titleMedium),
+          Text(
+            current.status.localizedLabel(l10n),
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
           const SizedBox(height: 8),
           Text(current.question),
           const SizedBox(height: 8),
@@ -301,7 +323,8 @@ class _RfiDetailPageState extends ConsumerState<RfiDetailPage> {
                                     );
                                 await _notify(
                                   title: l10n.notifyRfiStatusUpdated,
-                                  body: '${current.subject} → ${s.localizedLabel(l10n)}',
+                                  body:
+                                      '${current.subject} → ${s.localizedLabel(l10n)}',
                                   data: {
                                     'type': 'rfi_status',
                                     'rfiId': current.id,
@@ -309,6 +332,14 @@ class _RfiDetailPageState extends ConsumerState<RfiDetailPage> {
                                   },
                                 );
                                 await _afterMutate();
+                              } catch (e) {
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(localizeAppError(e, l10n)),
+                                    ),
+                                  );
+                                }
                               } finally {
                                 if (mounted) setState(() => _busy = false);
                               }
@@ -327,7 +358,9 @@ class _RfiDetailPageState extends ConsumerState<RfiDetailPage> {
                   : () async {
                       setState(() => _busy = true);
                       try {
-                        await ref.read(fieldRecordsRepositoryProvider).assignRfi(
+                        await ref
+                            .read(fieldRecordsRepositoryProvider)
+                            .assignRfi(
                               session: activeSession,
                               rfiId: current.id,
                               assigneeId: 'u_engineer',
@@ -357,7 +390,10 @@ class _RfiDetailPageState extends ConsumerState<RfiDetailPage> {
             ),
           ],
           const SizedBox(height: 16),
-          Text(l10n.threadedResponses, style: Theme.of(context).textTheme.titleMedium),
+          Text(
+            l10n.threadedResponses,
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
           commentsAsync.when(
             loading: () => const LinearProgressIndicator(),
             error: (e, _) => Text(localizeAppError(e, l10n)),
@@ -389,7 +425,9 @@ class _RfiDetailPageState extends ConsumerState<RfiDetailPage> {
                   : () async {
                       setState(() => _busy = true);
                       try {
-                        await ref.read(fieldRecordsRepositoryProvider).addComment(
+                        await ref
+                            .read(fieldRecordsRepositoryProvider)
+                            .addComment(
                               session: activeSession,
                               parentType: 'rfi',
                               parentId: current.id,
@@ -397,6 +435,12 @@ class _RfiDetailPageState extends ConsumerState<RfiDetailPage> {
                             );
                         _comment.clear();
                         await _afterMutate();
+                      } catch (e) {
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(localizeAppError(e, l10n))),
+                          );
+                        }
                       } finally {
                         if (mounted) setState(() => _busy = false);
                       }

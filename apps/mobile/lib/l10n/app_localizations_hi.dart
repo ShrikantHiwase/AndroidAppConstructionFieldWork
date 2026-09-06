@@ -798,6 +798,32 @@ class AppLocalizationsHi extends AppLocalizations {
   String get save => 'Save करो';
 
   @override
+  String get retry => 'फिर से try करो';
+
+  @override
+  String get signOutConfirmTitle => 'Sign out करें?';
+
+  @override
+  String get signOutConfirmBody =>
+      'Unsynced items इसी device पर safe रहेंगे, sign in के बाद sync हो जाएंगे।';
+
+  @override
+  String get submitDprConfirmTitle => 'आज का DPR submit करें?';
+
+  @override
+  String get submitDprConfirmBody =>
+      'Submit के बाद DPR lock हो जाएगा, फिर edit नहीं होगा।';
+
+  @override
+  String get emailInvalid => 'सही email address डालें';
+
+  @override
+  String get showPassword => 'Password दिखाओ';
+
+  @override
+  String get hidePassword => 'Password छिपाओ';
+
+  @override
   String get photoRequiredObservation =>
       'Observation / incident के लिए photo evidence ज़रूरी।';
 

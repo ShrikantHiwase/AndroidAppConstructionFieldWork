@@ -801,6 +801,32 @@ class AppLocalizationsEn extends AppLocalizations {
   String get save => 'Save';
 
   @override
+  String get retry => 'Retry';
+
+  @override
+  String get signOutConfirmTitle => 'Sign out?';
+
+  @override
+  String get signOutConfirmBody =>
+      'Unsynced items stay safe on this device and sync after you sign back in.';
+
+  @override
+  String get submitDprConfirmTitle => 'Submit today\'s DPR?';
+
+  @override
+  String get submitDprConfirmBody =>
+      'After submitting, the DPR is locked and can no longer be edited.';
+
+  @override
+  String get emailInvalid => 'Enter a valid email address';
+
+  @override
+  String get showPassword => 'Show password';
+
+  @override
+  String get hidePassword => 'Hide password';
+
+  @override
   String get photoRequiredObservation =>
       'Photo evidence required for observations / incidents.';
 

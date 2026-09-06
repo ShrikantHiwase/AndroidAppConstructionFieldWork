@@ -349,7 +349,8 @@ docs/                 # plans and training
 64. ~~Hinglish ARB share leftovers~~ — scheduled DPR nudge tray copy, share-sheet hint, document share summary labels, unlockFailed; Hinglish fill for reminder/share chrome.
 65. ~~PDF Hinglish labels + Noto fonts~~ — Field PDF chrome via ARB; Noto Sans + Devanagari fallback so hi locale glyphs render.
 66. ~~Hinglish ARB domain errors~~ — repository/SnackBar errors via stable codes + `localizeAppError` (field/DPR/site ops/docs/voice/admin).
-67. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift remains a follow-up.
+67. ~~Professional polish pass~~ — global error handlers + portrait lock; dark theme + Noto UI fonts; RFI home entry; sign-out / DPR-submit confirms; retry + pull-to-refresh; evidence thumbnails; docs `PopScope` back; login validation; Android label/adaptive icon/branded splash/R8 + upload-key wiring; iOS photo-library strings.
+68. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift remains a follow-up.
 7. ~~Pilot / UAT pack~~ — training guide, UAT checklist, hypercare metrics docs + in-app Pilot hub (checklist + live snapshot). Live-site execution and store tracks still need your Firebase project / devices.
 8. ~~Admin invites~~ — in-app create invite + demo accept via FakeAuth (scoped memberships); Cloud Functions email later.
 9. ~~Device sensors~~ — `geolocator` / `image_picker` / `local_auth` / `record` / `file_picker` with Fake defaults; enable native via `--dart-define=USE_NATIVE_SENSORS=true`. See `docs/Device_Sensors.md`.
@@ -410,6 +411,7 @@ docs/                 # plans and training
 64. ~~Hinglish ARB share leftovers~~ — scheduled DPR nudge tray copy, share-sheet hint, document share summary labels, unlockFailed; Hinglish fill for reminder/share chrome.
 65. ~~PDF Hinglish labels + Noto fonts~~ — Field PDF chrome via ARB; Noto Sans + Devanagari fallback so hi locale glyphs render.
 66. ~~Hinglish ARB domain errors~~ — repository/SnackBar errors via stable codes + `localizeAppError` (field/DPR/site ops/docs/voice/admin).
-67. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift remains a follow-up.
+67. ~~Professional polish pass~~ — global error handlers + portrait lock; dark theme + Noto UI fonts; RFI home entry; sign-out / DPR-submit confirms; retry + pull-to-refresh; evidence thumbnails; docs `PopScope` back; login validation; Android label/adaptive icon/branded splash/R8 + upload-key wiring; iOS photo-library strings.
+68. **Next (operator):** `flutterfire configure` + seed + live UAT / store tracks. Drift remains a follow-up.
 
 No native-only Android path; iOS ships from the same Flutter codebase. Enterprise BIM/Forge remains a WebView module after MVP.

@@ -82,6 +82,10 @@ flutter run --dart-define=USE_NATIVE_SENSORS=true
 
 ## 7. Store tracks
 
+- [ ] Create an Android **upload keystore** and drop `android/key.properties`
+  (`storeFile` / `storePassword` / `keyAlias` / `keyPassword`); release builds
+  auto-pick it up (`app/build.gradle.kts`), else they fall back to debug signing.
+  R8 minify + resource shrinking are already enabled for release.
 - [ ] Play internal testing / TestFlight build
 - [ ] Crashlytics + Analytics packages (scaffolding ships as NoOp — add packages when Firebase is live; see [Telemetry.md](Telemetry.md))
 - [ ] Privacy policy / data safety forms for location + camera
